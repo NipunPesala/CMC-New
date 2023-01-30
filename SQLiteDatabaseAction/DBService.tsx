@@ -393,7 +393,6 @@ export const tableIndexKey = () => {
       console.log('table create query transaction:', 'success');
     },
   );
-
   return null;
 
 } catch (error) {

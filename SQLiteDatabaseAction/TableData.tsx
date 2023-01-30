@@ -1181,7 +1181,7 @@ export const tableData = [
         autoIncrement: false,
         shouldNotAllowNull: false,
       },
-      
+
     ]
   },
   {
@@ -1222,7 +1222,7 @@ export const tableData = [
         autoIncrement: false,
         shouldNotAllowNull: false,
       },
-       {
+      {
         name: 'type_id',
         dataType: 'TEXT',
         isPrimaryKey: false,
@@ -1236,7 +1236,7 @@ export const tableData = [
         autoIncrement: false,
         shouldNotAllowNull: false,
       },
-      
+
     ]
   },
   {
@@ -1277,7 +1277,117 @@ export const tableData = [
         autoIncrement: false,
         shouldNotAllowNull: false,
       },
-      
+
+    ]
+  },
+  {
+    name: 'Customer_Items',
+    columns: [
+      {
+        name: '_Id',
+        dataType: 'INTEGER',
+        isPrimaryKey: true,
+        autoIncrement: true,
+        shouldNotAllowNull: false,
+      },
+      {
+        name: 'ItemId',
+        dataType: 'INTEGER',
+        isPrimaryKey: false,
+        autoIncrement: false,
+        shouldNotAllowNull: false,
+      },
+      {
+        name: 'ItemCode',
+        dataType: 'TEXT',
+        isPrimaryKey: false,
+        autoIncrement: false,
+        shouldNotAllowNull: false,
+      },
+      {
+        name: 'ItemName',
+        dataType: 'TEXT',
+        isPrimaryKey: false,
+        autoIncrement: false,
+        shouldNotAllowNull: false,
+      },
+      {
+        name: 'Customer',
+        dataType: 'TEXT',
+        isPrimaryKey: false,
+        autoIncrement: false,
+        shouldNotAllowNull: false,
+      },
+      {
+        name: 'CustomerName',
+        dataType: 'TEXT',
+        isPrimaryKey: false,
+        autoIncrement: false,
+        shouldNotAllowNull: false,
+      },
+      {
+        name: 'status',
+        dataType: 'TEXT',
+        isPrimaryKey: false,
+        autoIncrement: false,
+        shouldNotAllowNull: false,
+      },
+
+    ]
+  },
+  {
+    name: 'Item_serialNO',
+    columns: [
+      {
+        name: '_Id',
+        dataType: 'INTEGER',
+        isPrimaryKey: true,
+        autoIncrement: true,
+        shouldNotAllowNull: false,
+      },
+      {
+        name: 'ItemId',
+        dataType: 'INTEGER',
+        isPrimaryKey: false,
+        autoIncrement: false,
+        shouldNotAllowNull: false,
+      },
+      {
+        name: 'ItemCode',
+        dataType: 'TEXT',
+        isPrimaryKey: false,
+        autoIncrement: false,
+        shouldNotAllowNull: false,
+      },
+      {
+        name: 'ItemName',
+        dataType: 'TEXT',
+        isPrimaryKey: false,
+        autoIncrement: false,
+        shouldNotAllowNull: false,
+      },
+      {
+        name: 'msnfSN',
+        dataType: 'TEXT',
+        isPrimaryKey: false,
+        autoIncrement: false,
+        shouldNotAllowNull: false,
+      },
+      {
+        name: 'InternalSN',
+        dataType: 'TEXT',
+        isPrimaryKey: false,
+        autoIncrement: false,
+        shouldNotAllowNull: false,
+      },
+      {
+        name: 'status',
+        dataType: 'TEXT',
+        isPrimaryKey: false,
+        autoIncrement: false,
+        shouldNotAllowNull: false,
+      },
+
     ]
   },
 ]
