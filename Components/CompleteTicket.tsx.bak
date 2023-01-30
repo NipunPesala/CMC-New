@@ -1,0 +1,467 @@
+import React, { useState, useEffect, createRef } from "react";
+import {
+    View,
+    Text,
+    StyleSheet,
+    TouchableOpacity, Alert,
+    ScrollView, ToastAndroid
+} from "react-native";
+import ActionButton from "./ActionButton";
+import comStyles from "../Constant/Components.styles";
+import CheckBox from '@react-native-community/checkbox';
+import InputText from "./InputText";
+import { useNavigation } from "@react-navigation/native";
+import SignatureCapture from 'react-native-signature-capture';
+import { CompleteTicket_Update } from "../SQLiteDatabaseAction/DBControllers/TicketController";
+import { getASYNC_CURRENT_TICKET_ID, getCurrentServiceCallID } from "../Constant/AsynStorageFuntion"
+import ComponentsStyles from "../Constant/Components.styles";
+
+
+var id: any;
+var serviceID: any;
+const CompleteTicket = () => {
+
+    const [pending, setPending] = useState(false);
+    const [hold, setHold] = useState(false);
+    const [complete, setComplete] = useState(false);
+    const [EngeneerRemark, setEngeneerRemark] = useState('');
+    const [nic, setnic] = useState('');
+    const [CusRemark, setCusRemark] = useState('');
+    const [signature, setsignature] = useState('');
+
+    const navigation = useNavigation();
+    const sign = createRef();
+
+    const resetSign = () => {
+        sign.current.resetImage();
+    };
+    const saveSign = () => {
+        sign.current.saveImage();
+        console.log(sign);
+        navigation.navigate('PickupandDelevaryScreen');
+    };
+    const handleComplete = () => {
+
+        console.log(pending, "---", hold, "---", complete);
+
+        if (complete == true) {
+
+            if (EngeneerRemark != null) {
+                if (nic != null) {
+                    if (CusRemark != null) {
+                        if (signature != null) {
+
+                            try {
+                                CompleteTicket_Update(EngeneerRemark, nic, CusRemark, "1", "3", id, (result: any) => {
+
+
+                                    if (result === "success") {
+                                        ToastAndroid.show("Complete success ", ToastAndroid.SHORT);
+
+                                        // navigation.navigate('RequestDetails', {
+                                        //     callID: id,
+                                        // });
+                                        navigation.navigate('ServiceCall');
+                                    } else {
+
+                                        Alert.alert(
+                                            "Failed...!",
+                                            " Save Failed.",
+                                            [
+                                                {
+                                                    text: "OK", onPress: () => {
+
+                                                    }
+                                                }
+                                            ]
+                                        );
+
+                                    }
+
+                                });
+                            } catch (error) {
+                                console.log(error);
+
+                            }
+
+
+                        } else {
+                            Alert.alert(
+                                "Failed...!",
+                                " Enter Customer Signature",
+                                [
+                                    {
+                                        text: "OK", onPress: () => {
+
+                                        }
+                                    }
+                                ]
+                            );
+                        }
+                    } else {
+                        Alert.alert(
+                            "Failed...!",
+                            " Enter Customer Remark",
+                            [
+                                {
+                                    text: "OK", onPress: () => {
+
+                                    }
+                                }
+                            ]
+                        );
+                    }
+
+                } else {
+                    Alert.alert(
+                        "Failed...!",
+                        " Enter National ID",
+                        [
+                            {
+                                text: "OK", onPress: () => {
+
+                                }
+                            }
+                        ]
+                    );
+                }
+            } else {
+                Alert.alert(
+                    "Failed...!",
+                    " Enter Engineer Remark",
+                    [
+                        {
+                            text: "OK", onPress: () => {
+
+                            }
+                        }
+                    ]
+                );
+            }
+
+            console.log(EngeneerRemark, "--", nic, "--", CusRemark, "--", signature);
+
+
+        } else {
+            Alert.alert(
+                "Failed...!",
+                " Select Complete Option.",
+                [
+                    {
+                        text: "OK", onPress: () => {
+
+                        }
+                    }
+                ]
+            );
+        }
+
+
+
+
+    }
+
+    useEffect(() => {
+
+        getASYNC_CURRENT_TICKET_ID().then(res => {
+            console.log(res);
+            id = res;
+            console.log(id, "=====================================");
+
+            // setTicketID(id);
+
+        });
+
+        getCurrentServiceCallID().then(res => {
+            console.log(res);
+            serviceID = res;
+            console.log(serviceID, "============serviceID=========================");
+
+            // setTicketID(id);
+
+        });
+    }, []);
+    return (
+
+
+        <View style={style.modalMainContainer}>
+            <TouchableOpacity style={style.dashStyle} onPress={() => navigation.navigate('TicketDetails')} />
+
+            <View style={{ flexDirection: "row", marginTop: 10, }}>
+
+                <ActionButton title="Cancel" style={style.loginBtn} textStyle={style.txtStyle} onPress={() => navigation.navigate('TicketDetails')} />
+
+
+                <ActionButton title="Complete" style={style.completebtn} onPress={handleComplete} />
+
+            </View>
+
+            <Text style={style.maintxt}>Complete Ticket</Text>
+            <Text style={style.modalTitle}>Select Service Ticket Status</Text>
+
+
+            <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", marginTop: 10, }}>
+
+                <CheckBox
+                    value={pending}
+                    onValueChange={() => setPending(!pending)}
+                    onCheckColor={comStyles.COLORS.ORANGE}
+                    onFillColor={comStyles.COLORS.ORANGE}
+
+                />
+                <Text style={style.label1}>Pending</Text>
+
+                <CheckBox
+                    value={hold}
+                    onValueChange={() => setHold(!hold)}
+                    onCheckColor={comStyles.COLORS.HIGH_BUTTON_RED}
+                    onFillColor={comStyles.COLORS.HIGH_BUTTON_RED}
+
+                />
+                <Text style={style.label2}>Hold</Text>
+
+                <CheckBox
+                    value={complete}
+                    onValueChange={() => setComplete(!complete)}
+                    onCheckColor={comStyles.COLORS.LOW_BUTTON_GREEN}
+                    onFillColor={comStyles.COLORS.LOW_BUTTON_GREEN}
+
+                />
+                <Text style={style.label3}>Complete</Text>
+
+            </View>
+
+
+            <View  style={{margin:5}}>
+
+                <InputText
+                    placeholder="Service Engineer Remarks*"
+                    placeholderColor={comStyles.COLORS.HEADER_BLACK}
+
+                    style={{
+                        borderColor: "#cfcccc",
+                        paddingLeft: 5,
+                        fontSize: 12,
+
+                    }}
+                    bdrStyle={{
+                        paddingTop: 5,
+                        paddingBottom: 0,
+
+                    }}
+                    stateValue={EngeneerRemark}
+                    setState={(val: any) => setEngeneerRemark(val)}
+                    max={30}
+                />
+                <InputText
+                    placeholder="Customer NIC*"
+                    placeholderColor={comStyles.COLORS.HEADER_BLACK}
+                    style={{
+                        borderColor: "#cfcccc",
+                        paddingLeft: 5,
+                        fontSize: 12,
+
+                    }}
+                    bdrStyle={{
+                        paddingTop: 5,
+                        paddingBottom: 0,
+
+                    }}
+
+                    stateValue={nic}
+                    setState={(val: any) => setnic(val)}
+                    max={12}
+                />
+                <InputText
+                    placeholder="Service Engineer Remarks*"
+                    placeholderColor={comStyles.COLORS.HEADER_BLACK}
+
+                    style={{
+                        borderColor: "#cfcccc",
+                        paddingLeft: 5,
+                        fontSize: 12,
+
+                    }}
+                    bdrStyle={{
+                        paddingTop: 5,
+                        paddingBottom: 0,
+
+                    }}
+                    stateValue={EngeneerRemark}
+                    setState={(val: any) => setEngeneerRemark(val)}
+                    max={15}
+                />
+                <View style={{ height: '35%', width: 400, margin: 5, marginTop: 20, borderColor: 'black', borderWidth: 2 }}>
+
+                    <SignatureCapture
+                        style={style.signature}
+                        ref={sign}
+                        showNativeButtons={false}
+                        showTitleLabel={false}
+                        viewMode={'portrait'}
+                    />
+                </View>
+
+
+            </View>
+        </View >
+
+    );
+
+
+}
+const style = StyleSheet.create({
+
+    modalMainContainer: {
+        // justifyContent: "center",
+        alignItems: "center",
+        // flex: 1,
+        backgroundColor: ComponentsStyles.COLORS.WHITE,
+    },
+    completebtn:{
+        flex: 0.5,
+        marginRight:10,
+    },
+    signature: {
+        flex: 1,
+        borderColor: '#000033',
+        borderWidth: 1,
+    },
+    modalSubContainer: {
+        justifyContent: "center",
+        alignItems: "center",
+        flexDirection: "row",
+        marginBottom: 5,
+
+
+    },
+
+    container: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        marginTop: 10,
+        marginBottom: 5
+    },
+
+    modalRegularTitle: {
+        fontFamily: comStyles.FONT_FAMILY.REGULAR,
+        color: comStyles.COLORS.HEADER_BLACK,
+        fontSize: 15,
+        marginRight: 5
+    },
+
+    modalTitle: {
+
+        fontFamily: comStyles.FONT_FAMILY.REGULAR,
+        color: comStyles.COLORS.HEADER_BLACK,
+        fontSize: 14
+
+    },
+    txtUpload: {
+        justifyContent: "center",
+        alignItems: "center",
+        flexDirection: "column",
+        marginBottom: 10,
+        borderBottomWidth: 0.5,
+        borderStyle: "dashed",
+        width: '100%',
+        marginTop: 25,
+
+
+    },
+    subtxt: {
+        color: comStyles.COLORS.WHITE,
+        fontSize: 15,
+        fontFamily: comStyles.FONT_FAMILY.SEMI_BOLD,
+        marginBottom: 10
+    },
+    ActionButton: {
+        marginTop: 20,
+        marginBottom: 10
+    },
+    maintxt: {
+        color: comStyles.COLORS.BLACK,
+        fontSize: 18,
+        fontFamily: comStyles.FONT_FAMILY.SEMI_BOLD,
+        marginBottom: 10,
+        marginTop: 10
+    },
+    subTitle: {
+        backgroundColor: comStyles.COLORS.WHITE,
+        borderColor: '#dcdcdc',
+        borderWidth: 1,
+        textAlignVertical: "center",
+        borderRadius: 4,
+        marginTop: 5,
+        marginBottom: 10
+    },
+    btn: {
+        backgroundColor: comStyles.COLORS.ICON_BLUE,
+        color: comStyles.COLORS.WHITE
+    },
+    iconBtn: {
+        marginTop: 10,
+        backgroundColor: comStyles.COLORS.ICON_BLUE,
+        color: comStyles.COLORS.WHITE
+
+    },
+    textStyle: {
+        color: comStyles.COLORS.HEADER_BLACK,
+        fontFamily: comStyles.FONT_FAMILY.SEMI_BOLD,
+    },
+    dashStyle: {
+        width: 50,
+        height: 5,
+        backgroundColor: comStyles.COLORS.DASH_COLOR,
+        borderRadius: 20,
+        marginTop: 10,
+    },
+    txtStyle: {
+        color: comStyles.COLORS.ICON_BLUE
+    },
+    loginBtn: {
+        backgroundColor: 'transparent',
+        borderWidth: 1,
+        borderColor: comStyles.COLORS.ICON_BLUE,
+        flex: 0.5,
+        marginRight: 10,
+        marginLeft:10,
+
+
+    },
+
+    selectedbutton: {
+        backgroundColor: comStyles.COLORS.ICON_BLUE,
+        flex: 0.5,
+        borderRadius: 5,
+    },
+    selectedBUTTON_TEXT: {
+        color: comStyles.COLORS.WHITE,
+    },
+    defaultbutton: {
+        backgroundColor: comStyles.COLORS.WHITE,
+        borderWidth: 1,
+        borderColor: comStyles.COLORS.ICON_BLUE,
+        justifyContent: 'center',
+        borderRadius: 5,
+        flex: 0.5
+    },
+    defaultBUTTON_TEXT: {
+        color: comStyles.COLORS.REQUEST_DETAILS_ASH,
+    },
+    label1: {
+        color: comStyles.COLORS.ORANGE,
+        marginRight: 10
+    },
+    label2: {
+        color: comStyles.COLORS.HIGH_BUTTON_RED,
+        marginRight: 10
+    },
+    label3: {
+        color: comStyles.COLORS.LOW_BUTTON_GREEN,
+    }
+
+
+
+});
+export default CompleteTicket;

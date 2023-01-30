@@ -1,0 +1,244 @@
+{
+    "ServiceHeaderList_Object": [{
+            "service_Id": 2,
+            "customer_name": "TestCustomer",
+            "customer_address": "no address",
+            "customer_mobile": "12345677654321",
+            "contact_no": "0711067032",
+            "item_code": "dfgh3456",
+            "item_description": "sdfghjkjhgf",
+            "subject": "No Subject",
+            "handle_by": "Kasun",
+            "secretary": "No",
+            "address": "Nugegoda",
+            "mobile": "0741568652",
+            "status": 1,
+            "attend_status": 0,
+            "latitude": 16.31280,
+            "longitude": 89.0245633,
+            "priority": "high",
+            "service_description": "service description",
+            "type": "confirm",
+            "service_more_info_Object": {
+                "Content": "noContent",
+                "Planned_To_Start": "2022-03-15",
+                "Planned_To_End": "2022-03-17",
+                "Created_By": "user",
+                "Remarks": "no Remark",
+                "Item_Code": "001",
+                "MFR_Serial_No": "34567876",
+                "Item_Description": "sample",
+                "Item_Group": "no group"
+            },
+            "service_history_Object": [{
+                    "Service_No": 1,
+                    "Description": "error",
+                    "Ticket_Type": "Machenics",
+                    "Status": "Complete",
+                    "Date": "2022-02-25"
+                },
+                {
+                    "Service_No": 2,
+                    "Description": "error",
+                    "Ticket_Type": "Electronic",
+                    "Status": "Complete",
+                    "Date": "2022-02-25"
+                }
+            ],
+            "service_tickets_Object": [{
+                "ticketId": 1,
+                "serviceId": 2,
+                "start_date": "2022-03-15",
+                "end_date": "2022-03-17",
+                "item_Description": "item_Description",
+                "content": "content",
+                "assign_to": "assign_to",
+                "priority": "priority",
+                "status": "status",
+                "ticket_spareparts_Object": [{
+                        "id": "1",
+                        "name": "Belt",
+                        "description": "ProductDescription",
+                        "qty": "10"
+                    },
+                    {
+                        "id": "2",
+                        "name": "Nuts",
+                        "description": "ProductDescription",
+                        "qty": "10"
+                    },
+                    {
+                        "id": "3",
+                        "name": "Bolt",
+                        "description": "ProductDescription",
+                        "qty": "5"
+                    }
+                ]
+            }, {
+                "ticketId": 2,
+                "serviceId": 2,
+                "start_date": "2022-03-15",
+                "end_date": "2022-03-20",
+                "item_Description": "item_Description",
+                "content": "content",
+                "assign_to": "assign_to",
+                "priority": "priority",
+                "status": "status",
+                "ticket_spareparts_Object": [{
+                        "id": "4",
+                        "name": "Wire",
+                        "description": "ProductDescription",
+                        "qty": "10"
+                    },
+                    {
+                        "id": "2",
+                        "name": "Nuts",
+                        "description": "ProductDescription",
+                        "qty": "10"
+                    },
+                    {
+                        "id": "3",
+                        "name": "Bolt",
+                        "description": "ProductDescription",
+                        "qty": "5"
+                    }
+                ]
+            }, {
+                "ticketId": 3,
+                "serviceId": 2,
+                "start_date": "2022-03-15",
+                "end_date": "2022-03-25",
+                "item_Description": "item_Description",
+                "content": "content",
+                "assign_to": "assign_to",
+                "priority": "priority",
+                "status": "status",
+                "ticket_spareparts_Object": [{
+                        "id": "4",
+                        "name": "Wire",
+                        "description": "ProductDescription",
+                        "qty": "10"
+                    },
+                    {
+                        "id": "2",
+                        "name": "Nuts",
+                        "description": "ProductDescription",
+                        "qty": "10"
+                    },
+                    {
+                        "id": "5",
+                        "name": "Led",
+                        "description": "ProductDescription",
+                        "qty": "5"
+                    }
+                ]
+            }, {
+                "ticketId": 4,
+                "serviceId": 2,
+                "start_date": "2022-02-23",
+                "end_date": "2022-02-25",
+                "item_Description": "item_Description",
+                "content": "content",
+                "assign_to": "assign_to",
+                "priority": "priority",
+                "status": "status",
+                "ticket_spareparts_Object": [{
+                        "id": "5",
+                        "name": "Led",
+                        "description": "ProductDescription",
+                        "qty": "10"
+                    },
+                    {
+                        "id": "2",
+                        "name": "Nuts",
+                        "description": "ProductDescription",
+                        "qty": "10"
+                    },
+                    {
+                        "id": "6",
+                        "name": "rubber",
+                        "description": "ProductDescription",
+                        "qty": "5"
+                    }
+                ]
+            }]
+        },
+        {
+            "service_Id": 3,
+            "customer_name": "TestCustomer3",
+            "customer_address": "no address",
+            "customer_mobile": "12345677654321",
+            "contact_no": "0711067032",
+            "item_code": "dfgh3456",
+            "item_description": "sdfghjkjhgf",
+            "subject": "No Subject",
+            "handle_by": "Kasun",
+            "secretary": "No",
+            "address": "Nugegoda",
+            "mobile": "0741568652",
+            "status": 1,
+            "attend_status": 0,
+            "latitude": 16.31280,
+            "longitude": 89.0245633,
+            "priority": "low",
+            "service_description": "service description",
+            "type": "received",
+            "service_more_info_Object": {
+                "Content": "noContent",
+                "Planned_To_Start": "2022-03-15",
+                "Planned_To_End": "2022-03-17",
+                "Created_By": "user",
+                "Remarks": "no Remark",
+                "Item_Code": "001",
+                "MFR_Serial_No": "34567876",
+                "Item_Description": "sample",
+                "Item_Group": "no group"
+            },
+            "service_history_Object": [{
+                    "Service_No": 3,
+                    "Description": "error",
+                    "TicketType": "Valding",
+                    "Status": "Complete",
+                    "Date": "2022-02-25"
+                },
+                {
+                    "Service_No": 4,
+                    "Description": "error",
+                    "TicketType": "Electronic",
+                    "Status": "Complete",
+                    "Date": "2022-02-25"
+                }
+            ],
+            "service_tickets_Object": [{
+                "ticketId": 5,
+                "serviceId": 3,
+                "start_date": "2022-03-15",
+                "end_date": "2022-03-18",
+                "item_Description": "item_Description",
+                "content": "content",
+                "assign_to": "assign_to",
+                "priority": "priority",
+                "status": "status",
+                "ticket_spareparts_Object": [{
+                        "id": "1",
+                        "name": "Belt",
+                        "description": "ProductDescription",
+                        "qty": "10"
+                    },
+                    {
+                        "id": "2",
+                        "name": "Nuts",
+                        "description": "ProductDescription",
+                        "qty": "10"
+                    },
+                    {
+                        "id": "3",
+                        "name": "Bolt",
+                        "description": "ProductDescription",
+                        "qty": "5"
+                    }
+                ]
+            }]
+        }
+    ]
+}
