@@ -123,8 +123,6 @@ const AttendanceScreen = () => {
   //   setcustomDate(datec);
   //   setFilterText(datec);
   // };
-
-
   const getallTicketLast7Days = () => {
     let currentDate7 = moment().subtract(7,'days').format('YYYY-MM-DD HH:mm:ss');
     getServiceTicketFor7Days(currentDate7,(result:any) =>{
