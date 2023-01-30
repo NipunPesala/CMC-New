@@ -278,10 +278,12 @@ const Login = () => {
                 .then(function (response) {
                     console.log(response.status);
                     if (response.status == 200) {
-                        if (response.data.message == "Login Successful") {
+                        if (response.data.message == "User found.") {
                             AsyncStorage.setItem(AsyncStorageConstants.ASYNC_STORAGE_LOGIN_NAME, response.data.Username);
-                            AsyncStorage.setItem(AsyncStorageConstants.ASYNC_TOCKEN, response.data.Data[0].Token);
-                            AsyncStorage.setItem(AsyncStorageConstants.ASYNC_LOGIN_USERID, response.data.Data[0].UserId);
+                            // AsyncStorage.setItem(AsyncStorageConstants.ASYNC_TOCKEN, response.data.Data[0].Token);
+                            // AsyncStorage.setItem(AsyncStorageConstants.ASYNC_LOGIN_USERID, response.data.Data[0].UserId);
+                            AsyncStorage.setItem(AsyncStorageConstants.ASYNC_TOCKEN, response.data.token);
+                            // AsyncStorage.setItem(AsyncStorageConstants.ASYNC_LOGIN_USERID, response.data.Data[0].UserId);
                             if (readingType == "OUT" || readingType == "") {
                                 // last record has day end .so need to add day statrt
                                 setLoginHeading("LOGIN TO START THE DATE");
