@@ -222,37 +222,37 @@ const Login = () => {
 
         //........................................................
 
-        insertServiceData();
-        setLoginHeading("LOGIN");
-        setShowQuckAcess(true);
-        navigation.navigate("BottomNavi");
+        // insertServiceData();
+        // setLoginHeading("LOGIN");
+        // setShowQuckAcess(true);
+        // navigation.navigate("BottomNavi");
 
         // ..............................................................
 
 
 
-        // if (uName == "" || pword == "") {
-        //     const sendData = {
-        //         username: uName,
-        //         pasword: pword
-        //     }
+        if (uName == "" || pword == "") {
+            const sendData = {
+                username: uName,
+                pasword: pword
+            }
 
-        //     console.log("empty");
+            console.log("empty");
 
-        //     Alert.alert(
-        //         "Empty Fields Found!",
-        //         "Please Enter Username and Password",
-        //         [
-        //             { text: "OK", onPress: () => console.log("OK Pressed") }
-        //         ]
-        //     );
+            Alert.alert(
+                "Empty Fields Found!",
+                "Please Enter Username and Password",
+                [
+                    { text: "OK", onPress: () => console.log("OK Pressed") }
+                ]
+            );
 
-        // }
+        }
 
-        // else {
+        else {
 
-        //      Get_Login_API_Data();
-        // }
+             Get_Login_API_Data();
+        }
 
 
 
@@ -278,7 +278,7 @@ const Login = () => {
                 .then(function (response) {
                     console.log(response.status);
                     if (response.status == 200) {
-                        if (response.data.ResponseDescription == "Login Successful") {
+                        if (response.data.message == "Login Successful") {
                             AsyncStorage.setItem(AsyncStorageConstants.ASYNC_STORAGE_LOGIN_NAME, response.data.Username);
                             AsyncStorage.setItem(AsyncStorageConstants.ASYNC_TOCKEN, response.data.Data[0].Token);
                             AsyncStorage.setItem(AsyncStorageConstants.ASYNC_LOGIN_USERID, response.data.Data[0].UserId);
@@ -300,9 +300,9 @@ const Login = () => {
 
                             Alert.alert(
                                 "Invalid Details!",
-                                response.data.ResponseDescription,
+                                response.data.message,
                                 [
-                                    { text: "OK", onPress: () => console.log("OK Pressed") }
+                                    { text: "OK", onPress: () => console.log( response.data.message) }
                                 ]
                             );
                         }
@@ -310,9 +310,9 @@ const Login = () => {
                     } else {
                         Alert.alert(
                             "Invalid Details!",
-                            response.data.ResponseDescription.ErrorDescription,
+                            response.data.message.ErrorDescription,
                             [
-                                { text: "OK", onPress: () => console.log("OK Pressed") }
+                                { text: "OK", onPress: () => console.log( response.data.message.ErrorDescription) }
                             ]
                         );
                     }
@@ -325,10 +325,10 @@ const Login = () => {
                     console.log("-------------", error);
 
                     Alert.alert(
-                        "Invalid Details!",
+                        "Login Failed!",
                         error,
                         [
-                            { text: "OK", onPress: () => console.log("OK Pressed") }
+                            { text: "OK", onPress: () => console.log(error) }
                         ]
                     );
 
