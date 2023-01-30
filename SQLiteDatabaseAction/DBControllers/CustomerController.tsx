@@ -12,16 +12,16 @@ export const saveCustomer = (data, callBack) => {
                     columns: `CusID,CusCode,CusName,Address,status`,
                     values: '?,?,?,?,?',
                     params: [
-                        // data[i].customer,
-                        // data[i].CusCode,
-                        // data[i].custmrName,
-                        // data[i].Address,
-                        // data[i].status,
-                        data[i].CusID,
+                        data[i].customer,
                         data[i].CusCode,
-                        data[i].CusName,
+                        data[i].custmrName,
                         data[i].Address,
                         data[i].status,
+                        // data[i].CusID,
+                        // data[i].CusCode,
+                        // data[i].CusName,
+                        // data[i].Address,
+                        // data[i].status,
                     ],
                     primaryKey: 'CusID',
                     subQuery: `CusCode = EXCLUDED.CusCode,
@@ -54,7 +54,7 @@ export const getAllCustomers = (callBack:any) =>{
         'SELECT CusName,Address,CusID FROM CUSTOMER WHERE status=1',
         [],
         (resp, err) => {
-           console.log(" **************  all customers ************  " + resp);
+           console.log("************** all customers ************  " + resp);
             callBack(resp, err);
         },
     );

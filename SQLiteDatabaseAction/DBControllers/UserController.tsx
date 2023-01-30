@@ -9,6 +9,14 @@ export const saveUser = (data:any, callBack:any) => {
                     columns: `user_id,NIC,userTypeId,name,mobile_number,email,status`,
                     values: '?,?,?,?,?,?,?',
                     params: [
+                        // data[i].id,
+                        // data[i].NIC,
+                        // data[i].userTypeId,
+                        // data[i].UserName,
+                        // data[i].ContactNumber,
+                        // data[i].Email,
+                        // data[i].Status,
+
                         data[i].id,
                         data[i].NIC,
                         data[i].userTypeId,
