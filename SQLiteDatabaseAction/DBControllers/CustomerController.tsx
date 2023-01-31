@@ -1,6 +1,6 @@
 import * as DB from '../DBService';
 
-export const saveCustomer = (data, callBack) => {
+export const saveCustomer = (data:any, callBack:any) => {
     var response:any;
 
     for (let i = 0; i < data.length; ++i) {
@@ -29,7 +29,7 @@ export const saveCustomer = (data, callBack) => {
                     status = EXCLUDED.status`,
                 },
             ],
-            (res, err) => {
+            (res:any, err:any) => {
                 if(res === 'success'){
                     response =true;
                     console.log("___________Customer________________",response);
@@ -53,7 +53,7 @@ export const getAllCustomers = (callBack:any) =>{
     DB.searchData(
         'SELECT CusName,Address,CusID FROM CUSTOMER WHERE status=1',
         [],
-        (resp, err) => {
+        (resp:any, err:any) => {
            console.log("************** all customers ************  " + resp);
             callBack(resp, err);
         },
@@ -64,7 +64,7 @@ export const getAllCustomers = (callBack:any) =>{
         DB.searchData(
             'SELECT * FROM CUSTOMER WHERE status=1',
             [],
-            (resp, err) => {
+            (resp:any, err:any) => {
               //  console.log(" **************  all customers ************  " + resp);
                 callBack(resp, err);
             },
