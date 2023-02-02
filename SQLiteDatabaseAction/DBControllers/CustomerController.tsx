@@ -13,7 +13,7 @@ export const saveCustomer = (data:any, callBack:any) => {
                     values: '?,?,?,?,?',
                     params: [
                         data[i].customer,
-                        data[i].CusCode,
+                        data[i].customer,
                         data[i].custmrName,
                         data[i].Address,
                         data[i].status,
@@ -51,7 +51,7 @@ export const saveCustomer = (data:any, callBack:any) => {
 export const getAllCustomers = (callBack:any) =>{
 
     DB.searchData(
-        'SELECT CusName,Address,CusID FROM CUSTOMER WHERE status=1',
+        'SELECT CusName,Address,CusID FROM CUSTOMER',
         [],
         (resp:any, err:any) => {
            console.log("************** all customers ************  " + resp);
@@ -62,7 +62,7 @@ export const getAllCustomers = (callBack:any) =>{
     export const getAllCustomerINFO = (callBack:any) =>{
 
         DB.searchData(
-            'SELECT * FROM CUSTOMER WHERE status=1',
+            'SELECT * FROM CUSTOMER',
             [],
             (resp:any, err:any) => {
               //  console.log(" **************  all customers ************  " + resp);

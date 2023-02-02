@@ -27,6 +27,9 @@ import * as DB_ServiceType from '../../SQLiteDatabaseAction/DBControllers/Servic
 import * as DB_UserTypes from '../../SQLiteDatabaseAction/DBControllers/Users_TypesController';
 import * as DB_User from '../../SQLiteDatabaseAction/DBControllers/UserController';
 import * as DB_ItemSerialNo from '../../SQLiteDatabaseAction/DBControllers/ItemSerialNoController';
+import * as DB_Priority from '../../SQLiteDatabaseAction/DBControllers/PriorityController';
+import { priorityListInitial, Service_types } from "../../Constant/DummyData";
+
 let SyncArray1: any[] = [];
 let arrayindex = 0;
 var TOCKEN_KEY: any;
@@ -46,12 +49,13 @@ const SyncScreen = () => {
     get_ASYNC_TOCKEN().then(res => {
       TOCKEN_KEY = res;
       Sync_Customer(TOCKEN_KEY);
-      // Sync_Item(TOCKEN_KEY);
-      // Sync_ServiceType(TOCKEN_KEY);
-      // Sync_User_Type(TOCKEN_KEY);
-      // Sync_User(TOCKEN_KEY);
-      // Sync_CustomerItems(TOCKEN_KEY);
-      // Sync_ItemSerialNo(TOCKEN_KEY);
+      Sync_Item(TOCKEN_KEY);
+      Sync_ServiceType(TOCKEN_KEY);
+      Sync_User_Type(TOCKEN_KEY);
+      Sync_User(TOCKEN_KEY);
+      Sync_CustomerItems(TOCKEN_KEY);
+      Sync_ItemSerialNo(TOCKEN_KEY);
+      Sync_Priority();
     })
 
 
@@ -74,7 +78,7 @@ const SyncScreen = () => {
                 id: arrayindex,
               });
               setSyncArray(SyncArray1);
-              Sync_CustomerItems(TOCKEN_KEY);
+
 
             } else {
               SyncArray1.push({
@@ -82,7 +86,7 @@ const SyncScreen = () => {
                 id: arrayindex,
               });
               setSyncArray(SyncArray1);
-              Sync_CustomerItems(TOCKEN_KEY);
+
             }
           });
         } else {
@@ -92,7 +96,7 @@ const SyncScreen = () => {
             id: arrayindex,
           });
           setSyncArray(SyncArray1);
-          Sync_CustomerItems(TOCKEN_KEY);
+
         }
       })
       .catch((error) => {
@@ -102,7 +106,7 @@ const SyncScreen = () => {
         });
         setSyncArray(SyncArray1);
         console.log('errorrrrr ' + error);
-        Sync_CustomerItems(TOCKEN_KEY);
+
       });
   }
 
@@ -123,7 +127,7 @@ const SyncScreen = () => {
                 id: arrayindex,
               });
               setSyncArray(SyncArray1);
-              Sync_User(TOCKEN_KEY);
+
 
             } else {
               SyncArray1.push({
@@ -131,7 +135,7 @@ const SyncScreen = () => {
                 id: arrayindex,
               });
               setSyncArray(SyncArray1);
-              Sync_User(TOCKEN_KEY);
+
             }
           });
         } else {
@@ -141,7 +145,7 @@ const SyncScreen = () => {
             id: arrayindex,
           });
           setSyncArray(SyncArray1);
-          Sync_User(TOCKEN_KEY);
+
         }
       })
       .catch((error) => {
@@ -151,7 +155,7 @@ const SyncScreen = () => {
         });
         setSyncArray(SyncArray1);
         console.log('errorrrrr ' + error);
-        Sync_User(TOCKEN_KEY);
+
       });
   }
   //----------------------------------  service type download ----------------------------------------------
@@ -172,7 +176,7 @@ const SyncScreen = () => {
                 id: arrayindex,
               });
               setSyncArray(SyncArray1);
-              Sync_User_Type(TOCKEN_KEY);
+
 
             } else {
               SyncArray1.push({
@@ -180,7 +184,7 @@ const SyncScreen = () => {
                 id: arrayindex,
               });
               setSyncArray(SyncArray1);
-              Sync_User_Type(TOCKEN_KEY);
+
             }
           });
         } else {
@@ -190,7 +194,7 @@ const SyncScreen = () => {
             id: arrayindex,
           });
           setSyncArray(SyncArray1);
-          Sync_User_Type(TOCKEN_KEY);
+
         }
       })
       .catch((error) => {
@@ -200,7 +204,7 @@ const SyncScreen = () => {
         });
         setSyncArray(SyncArray1);
         console.log('errorrrrr ' + error);
-        Sync_User_Type(TOCKEN_KEY);
+
       });
   }
 
@@ -221,7 +225,7 @@ const SyncScreen = () => {
                 id: arrayindex,
               });
               setSyncArray(SyncArray1);
-              Sync_ServiceType(TOCKEN_KEY);
+
 
             } else {
               SyncArray1.push({
@@ -229,7 +233,7 @@ const SyncScreen = () => {
                 id: arrayindex,
               });
               setSyncArray(SyncArray1);
-              Sync_ServiceType(TOCKEN_KEY);
+
             }
           });
         } else {
@@ -239,7 +243,7 @@ const SyncScreen = () => {
             id: arrayindex,
           });
           setSyncArray(SyncArray1);
-          Sync_ServiceType(TOCKEN_KEY);
+
         }
       })
       .catch((error) => {
@@ -249,7 +253,7 @@ const SyncScreen = () => {
         });
         setSyncArray(SyncArray1);
         console.log('errorrrrr ' + error);
-        Sync_ServiceType(TOCKEN_KEY);
+
       });
   }
 
@@ -272,14 +276,14 @@ const SyncScreen = () => {
                 id: arrayindex,
               });
               setSyncArray(SyncArray1);
-              Sync_Item(TOCKEN_KEY);
+
             } else {
               SyncArray1.push({
                 name: 'Customer Save Failed...',
                 id: arrayindex,
               });
               setSyncArray(SyncArray1);
-              Sync_Item(TOCKEN_KEY);
+
             }
           });
         } else {
@@ -290,7 +294,7 @@ const SyncScreen = () => {
             id: arrayindex,
           });
           setSyncArray(SyncArray1);
-          Sync_Item(TOCKEN_KEY);
+
         }
       })
       .catch((error) => {
@@ -300,7 +304,7 @@ const SyncScreen = () => {
         });
         setSyncArray(SyncArray1);
         console.log('errorrrrr ' + error);
-        Sync_Item(TOCKEN_KEY);
+
       });
   }
 
@@ -323,14 +327,14 @@ const SyncScreen = () => {
                 id: arrayindex,
               });
               setSyncArray(SyncArray1);
-              Sync_ItemSerialNo(TOCKEN_KEY);
+
             } else {
               SyncArray1.push({
                 name: 'Customer Items Save Failed...',
                 id: arrayindex,
               });
               setSyncArray(SyncArray1);
-              Sync_ItemSerialNo(TOCKEN_KEY);
+
             }
           });
         } else {
@@ -341,7 +345,7 @@ const SyncScreen = () => {
             id: arrayindex,
           });
           setSyncArray(SyncArray1);
-          Sync_ItemSerialNo(TOCKEN_KEY);
+
         }
       })
       .catch((error) => {
@@ -351,13 +355,13 @@ const SyncScreen = () => {
         });
         setSyncArray(SyncArray1);
         console.log('errorrrrr ' + error);
-        Sync_ItemSerialNo(TOCKEN_KEY);
+
       });
   }
 
-   //----------------------------- Download  Item Serial No -------------------------------
+  //----------------------------- Download  Item Serial No -------------------------------
 
-   const Sync_ItemSerialNo = (Key: any) => {
+  const Sync_ItemSerialNo = (Key: any) => {
 
     const AuthStr = 'Bearer '.concat(Key);
     const URL = GET_URL + "items";
@@ -401,6 +405,37 @@ const SyncScreen = () => {
         console.log('errorrrrr ' + error);
       });
   }
+
+  //-------------------------------- Download Priority -----------------------------
+
+  const Sync_Priority = () => {
+
+    DB_Priority.savePriority(priorityListInitial, (res: any, error: any) => {
+
+      arrayindex++;
+      
+      SyncArray1.push({
+        name: 'Priority Download Sucsessfully...',
+        id: arrayindex,
+      });
+      setSyncArray(SyncArray1);
+    })
+  }
+
+  // ------------------ Download Service Types -------------------
+  // const Sync_ServiceTypes = () => {
+  //   DB_ServiceType.saveServiceType(Service_types, (res: any, error: any) => {
+     
+  //     arrayindex++;
+      
+  //     SyncArray1.push({
+  //       name: 'Service Types Download Sucsessfully...',
+  //       id: arrayindex,
+  //     });
+  //     setSyncArray(SyncArray1);
+  // })
+
+  // }
 
 
   const cancelAndGoBack = () => {
