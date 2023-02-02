@@ -99,3 +99,13 @@ export const updateExpences = (ticketID:any,ExpenseTypeID:any,Amount:any,Remark:
     );
   };
 
+
+  export const updateSycnExpences = (ticketID:any,callBack:any) => {
+    DB.updateData(
+      'UPDATE EXPENCES SET ServiceCall_ID=?,ExpenseTypeID=?,Amount=?,Remark=?,CreatedBy=?,CreateDate=?,RelaventDate=?,status=? WHERE _Id=?',
+      [ticketID],
+      (resp:any, err:any) => {
+        callBack(resp, err);
+      },
+    );
+  };

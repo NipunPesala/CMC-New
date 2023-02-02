@@ -24,11 +24,15 @@ import DialogInput from 'react-native-dialog-input';
 import moment from "moment";
 import { saveTicketSpareparts } from "../SQLiteDatabaseAction/DBControllers/TicketController";
 import { getASYNC_CURRENT_SP_REQUEST_ID, getASYNC_CURRENT_TICKET_ID } from "../Constant/AsynStorageFuntion";
-import { getSearchSpareParts} from '../SQLiteDatabaseAction/DBControllers/SparePartsController';
+import { getSearchSpareParts,updateSyncSpareParts} from '../SQLiteDatabaseAction/DBControllers/SparePartsController';
 import Header from "./Header";
+import { BASE_URL_GET } from "../Constant/Commen_API_Url";
+import { getCustomerIDAsyncStorage, get_ASYNC_TOCKEN } from "../Constant/AsynStorageFuntion";
+import axios from "axios";
 var spareID: any;
 var id: any;
 var reqID: any;
+var TOCKEN_KEY: any;
 const AddSparePartsComponent = () => {
 
     const [recent, setRecent] = useState(false);
@@ -129,6 +133,86 @@ const AddSparePartsComponent = () => {
 
 
     }
+
+
+
+ const UploadSpareParts = () => {
+        try {
+    
+          get_ASYNC_TOCKEN().then(res => {
+            TOCKEN_KEY = res;
+            const AuthStr = 'Bearer '.concat(TOCKEN_KEY);
+           
+         // console.log( 'AuthStr####3%%%%%%%%%%%%%',AuthStr);
+    
+        const prams= {
+          "UserName": "",
+          "objServiceCallList": [
+            {
+              "spId": requestID,  //need to code
+              "SparePartNo": TicketID,
+              "description": Description,
+              "stock_qty": qty,
+              "Item_Group":"",
+              "department":"",
+              "BrandName":"",
+              "status":0,
+
+
+              }
+          ]
+        }
+         
+         console.log('--NEW SpareParts  UPLOAD JSON--', prams);
+    
+          const headers = {
+            'Authorization': AuthStr
+          }
+          const URL = BASE_URL_GET+"spare-parts";
+          axios.post(URL, prams, {
+            headers: headers
+          })
+            .then((response) => {
+                console.log("[s][t][a][t][u][s][]",response.status);
+                if (response.status == 200) {
+
+               console.log('<------ SpareParts UPLOAD Method --->', response.data)
+               console.log(response.data.UniqueNo);
+               
+               if(response.data.ErrorId=0){
+                // this use fro update sync flag as 1 
+                updateSyncSpareParts(response.data.UniqueNo, (result: any) => {
+
+                });
+                ToastAndroid.show(response.data.ErrorDescription, ToastAndroid.LONG);
+               }
+               
+            }else{
+                Alert.alert(
+                    "Invalid Details!",
+                    "Bad Request",
+                    [
+                        { text: "OK", onPress: () => console.log("OK Pressed") }
+                    ]
+                );
+
+                }
+    
+            })
+            .catch((error) => {
+              Alert.alert('error', error.response)
+    
+            })
+    
+       })
+        } catch (error) {
+          console.log(">>>>>>>>>>>>", error);
+    
+        }
+      }
+    
+
+
     const showDialog = (data: any) => {
 
         console.log(data.spId,"------------------",data.description);

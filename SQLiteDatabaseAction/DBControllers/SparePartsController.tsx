@@ -76,3 +76,14 @@ export const getSearchSpareParts = (txt:String, callBack:any) => {
         },
     );
 }
+
+
+export const updateSyncSpareParts= (ticketID:any,callBack:any) => {
+    DB.updateData(
+      'UPDATE TICKET SET syncStatus=1 WHERE ticketId=?',
+      [ticketID],
+      (resp:any, err:any) => {
+        callBack(resp, err);
+      },
+    );
+  };

@@ -1,11 +1,11 @@
-import React, {useState, useEffect} from 'react';
-import {View, StyleSheet, Platform, ToastAndroid, Alert} from 'react-native';
-import {ScrollView, TouchableOpacity} from 'react-native-gesture-handler';
-import {Text} from 'react-native-paper';
+import React, { useState, useEffect } from 'react';
+import { View, StyleSheet, Platform, ToastAndroid, Alert } from 'react-native';
+import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
+import { Text } from 'react-native-paper';
 import SafeAreaView from 'react-native-safe-area-view';
 import ComponentsStyles from '../Constant/Components.styles';
 import ActionButton from './ActionButton';
-import {useNavigation} from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import InputText from './InputText';
 import moment from 'moment';
 import {
@@ -16,18 +16,22 @@ import {
   saveExpences,
   getExpenceById,
   updateExpences,
+  updateSycnExpences,
 } from '../SQLiteDatabaseAction/DBControllers/ExpencesController';
-import {Dropdown} from 'react-native-element-dropdown';
+import { Dropdown } from 'react-native-element-dropdown';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import {getAllExpencesType} from '../SQLiteDatabaseAction/DBControllers/ExpencesTypeController';
+import { getAllExpencesType } from '../SQLiteDatabaseAction/DBControllers/ExpencesTypeController';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import Header from './Header';
+import { get_ASYNC_TOCKEN, get_ASYNC_USERID } from "../Constant/AsynStorageFuntion";
+import { BASE_URL_GET } from "../Constant/Commen_API_Url";
+import axios from "axios";
 var id: any;
 var loginUser: any;
 var type: any;
 var exid: any;
 const AddExpencesNew = (props: any) => {
-  const {navigation, route} = props;
+  const { navigation, route } = props;
   const [isFocus, setIsFocus] = useState(false);
 
   const [craeteDate, setCreateDate] = useState('');
@@ -42,7 +46,8 @@ const AddExpencesNew = (props: any) => {
   const [dateType, setDateType] = useState('');
   const [title, settitle] = useState('');
   const [btntitle, setbtntitle] = useState('');
-
+  var TOCKEN_KEY: any;
+  
   const onChange = (event, selectedDate) => {
     const currentDate = selectedDate;
     setShow(Platform.OS === 'ios');
@@ -151,7 +156,7 @@ const AddExpencesNew = (props: any) => {
           Alert.alert('Failed...!', 'Service Call Save Failed.', [
             {
               text: 'OK',
-              onPress: () => {},
+              onPress: () => { },
             },
           ]);
         }
@@ -168,7 +173,7 @@ const AddExpencesNew = (props: any) => {
         onPress: () => console.log('Cancel Pressed'),
         style: 'cancel',
       },
-      {text: 'OK', onPress: () => navigation.goBack()},
+      { text: 'OK', onPress: () => navigation.goBack() },
     ]);
   };
 
@@ -240,11 +245,87 @@ const AddExpencesNew = (props: any) => {
       });
     });
   };
+
+  const UploadExpences = () => {
+    try {
+
+      get_ASYNC_TOCKEN().then(res => {
+        TOCKEN_KEY = res;
+        const AuthStr = 'Bearer '.concat(TOCKEN_KEY);
+       
+     // console.log( 'AuthStr####3%%%%%%%%%%%%%',AuthStr);
+
+    const prams= {
+      "UserName": "",
+      "objServiceCallList": [
+        {
+          "ServiceCall_ID": TicketID,  //need to code
+          "ExpenseTypeID": expencesTypeId,
+          "Amount": amount,
+          "Remark": remark,
+          "CreatedBy":loginUser,
+          "CreateDate":craeteDate,
+          "RelaventDate":startDate,
+          "status":0,
+
+          }
+      ]
+    }
+     
+     console.log('--Expences Uplod json--', prams);
+
+      const headers = {
+        'Authorization': AuthStr
+      }
+      const URL = BASE_URL_GET+"expence";
+      axios.post(URL, prams, {
+        headers: headers
+      })
+        .then((response) => {
+            console.log("[s][t][a][t][u][s][]",response.status);
+            if (response.status == 200) {
+
+           console.log('<------ NEW SERVICE CALL UPLOAD Method --->', response.data)
+           console.log(response.data.UniqueNo);
+           
+           if(response.data.ErrorId=0){
+            // this use fro update sync flag as 1 
+            updateSycnExpences(response.data.UniqueNo, (result: any) => {
+
+            });
+            ToastAndroid.show(response.data.ErrorDescription, ToastAndroid.LONG);
+           }
+           
+        }else{
+            Alert.alert(
+                "Invalid Details!",
+                "Bad Request",
+                [
+                    { text: "OK", onPress: () => console.log("OK Pressed") }
+                ]
+            );
+
+            }
+
+        })
+        .catch((error) => {
+          Alert.alert('error', error.response)
+
+        })
+
+   })
+    } catch (error) {
+      console.log(">>>>>>>>>>>>", error);
+
+    }
+  }
+
+
   return (
     <SafeAreaView style={ComponentsStyles.CONTAINER}>
       {/* <TouchableOpacity style={style.dashStyle} onPress={() => navigation.goBack()} /> */}
       <Header title="" isBtn={true} btnOnPress={() => navigation.goBack()} />
-      <View style={{padding: 5}} />
+      <View style={{ padding: 5 }} />
       <View
         style={{
           flexDirection: 'row',
@@ -270,7 +351,7 @@ const AddExpencesNew = (props: any) => {
         />
         <ActionButton
           title={btntitle}
-          style={{flex: 0.5}}
+          style={{ flex: 0.5 }}
           onPress={() => saveExpencesData()}
         />
       </View>
@@ -298,11 +379,11 @@ const AddExpencesNew = (props: any) => {
             editable={false}
             style={ComponentsStyles.serviceTicketInput}
           />
-          <View style={{zIndex: 50}}>
+          <View style={{ zIndex: 50 }}>
             <Dropdown
               style={[
                 style.dropdown,
-                isFocus && {borderColor: ComponentsStyles.COLORS.BORDER_COLOR},
+                isFocus && { borderColor: ComponentsStyles.COLORS.BORDER_COLOR },
               ]}
               placeholderStyle={style.placeholderStyle}
               selectedTextStyle={style.selectedTextStyle}
@@ -340,7 +421,7 @@ const AddExpencesNew = (props: any) => {
             />
           </View>
 
-          <View style={{padding: 5}} />
+          <View style={{ padding: 5 }} />
           <InputText
             placeholderColor={ComponentsStyles.COLORS.HEADER_BLACK}
             placeholder="Enter Amount"
@@ -352,8 +433,8 @@ const AddExpencesNew = (props: any) => {
             keyType={"number-pad"}
           />
 
-          <View style={{flexDirection: 'row'}}>
-            <View style={{flex: 3}}>
+          <View style={{ flexDirection: 'row' }}>
+            <View style={{ flex: 3 }}>
               <InputText
                 placeholderColor={ComponentsStyles.COLORS.HEADER_BLACK}
                 placeholder="Date relevent to Expences"
@@ -364,7 +445,7 @@ const AddExpencesNew = (props: any) => {
               />
             </View>
             <View
-              style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+              style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
               <AntDesign
                 name="calendar"
                 size={30}
@@ -395,7 +476,7 @@ const AddExpencesNew = (props: any) => {
           onChange={onChange}
         />
       )}
-      <View style={{padding: 30}} />
+      <View style={{ padding: 30 }} />
     </SafeAreaView>
   );
 };
