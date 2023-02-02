@@ -6,7 +6,7 @@ export const saveExpences = (data, callBack) => {
             [
                 {
                     table: 'EXPENCES',
-                    columns: `ServiceCall_ID,ExpenseTypeID,Amount,Remark,CreatedBy,CreateDate,RelaventDate,status`,
+                    columns: `ServiceCall_ID,ExpenseTypeID,Amount,Remark,CreatedBy,CreateDate,RelaventDate,,isSync`,
                     values: '?,?,?,?,?,?,?,?',
                     params: [
                         data[i].ServiceCall_ID,
@@ -17,6 +17,7 @@ export const saveExpences = (data, callBack) => {
                         data[i].CreateDate,
                         data[i].RelaventDate,
                         data[i].status,
+                        data[i].isSync,
                     ],
                     primaryKey: '_Id',
                     subQuery: `ServiceCall_ID = EXCLUDED.ServiceCall_ID,
@@ -102,7 +103,7 @@ export const updateExpences = (ticketID:any,ExpenseTypeID:any,Amount:any,Remark:
 
   export const updateSycnExpences = (ticketID:any,callBack:any) => {
     DB.updateData(
-      'UPDATE EXPENCES SET ServiceCall_ID=?,ExpenseTypeID=?,Amount=?,Remark=?,CreatedBy=?,CreateDate=?,RelaventDate=?,status=? WHERE _Id=?',
+      'UPDATE EXPENCES SET isSync=true WHERE ticketId=?',
       [ticketID],
       (resp:any, err:any) => {
         callBack(resp, err);

@@ -10,8 +10,8 @@ export const saveResourceRequest = (data:any, callBack:any) => {
             [
                 {
                     table: 'RESOURCE_REQUEST',
-                    columns: `RequestID,ResourceID,ServiceCall_id,RequestDate,HandoverDate,CreatedDate,Remark,status`,
-                    values: '?,?,?,?,?,?,?,?',
+                    columns: `RequestID,ResourceID,ServiceCall_id,RequestDate,HandoverDate,CreatedDate,Remark,status,isSync`,
+                    values: '?,?,?,?,?,?,?,?,?',
                     params: [
                         data[i].RequestID,
                         data[i].ResourceID,
@@ -21,6 +21,7 @@ export const saveResourceRequest = (data:any, callBack:any) => {
                         data[i].CreatedDate,
                         data[i].Remark,
                         data[i].status,
+                        data[i].isSync,
                     ],
                     primaryKey: 'RequestID',
                     subQuery: `ResourceID = EXCLUDED.ResourceID,
@@ -128,3 +129,13 @@ export const RequestBydate = (date:any,resourceID:any,callback:any) => {
       );
 
 };
+
+export const updateSyncResourceRequest= (RID:any,callBack:any) => {
+    DB.updateData(
+      'UPDATE RESOURCE_REQUEST SET isSync=true WHERE ResourceID=?',
+      [RID],
+      (resp:any, err:any) => {
+        callBack(resp, err);
+      },
+    );
+  };

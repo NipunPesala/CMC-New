@@ -273,8 +273,8 @@ const CompleteTicket = () => {
           title="Cancel"
           style={style.loginBtn}
           textStyle={style.txtStyle}
-          // onPress={() => navigation.navigate('TicketDetails')}
-          onPress={handleEmail1}
+          onPress={() => navigation.navigate('TicketDetails')}
+         // onPress={handleEmail1}
         />
 
         <ActionButton

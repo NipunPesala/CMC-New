@@ -79,6 +79,7 @@ const AddExpencesNew = (props: any) => {
         CreateDate: craeteDate,
         RelaventDate: startDate,
         status: 0,
+        isSync:false,
       },
     ];
     // if(!/^[0-9]+$/.test(amount)){
@@ -256,7 +257,7 @@ const AddExpencesNew = (props: any) => {
      // console.log( 'AuthStr####3%%%%%%%%%%%%%',AuthStr);
 
     const prams= {
-      "UserName": "",
+
       "objServiceCallList": [
         {
           "ServiceCall_ID": TicketID,  //need to code

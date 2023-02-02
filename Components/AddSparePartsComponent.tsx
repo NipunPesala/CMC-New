@@ -146,8 +146,7 @@ const AddSparePartsComponent = () => {
          // console.log( 'AuthStr####3%%%%%%%%%%%%%',AuthStr);
     
         const prams= {
-          "UserName": "",
-          "objServiceCallList": [
+          "objSparePartList": [
             {
               "spId": requestID,  //need to code
               "SparePartNo": TicketID,
