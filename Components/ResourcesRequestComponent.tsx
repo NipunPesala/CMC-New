@@ -23,8 +23,13 @@ import { getLastServiceId, saveResourceRequest, getAllResource, DeleteResource, 
 import { getRESOURCE_ID, getRESOURCE_Type } from "../Constant/AsynStorageFuntion";
 import { getServiceTicketID } from "../SQLiteDatabaseAction/DBControllers/TicketController";
 import Headernav from "./Header";
+import { getCustomerIDAsyncStorage, get_ASYNC_TOCKEN } from "../Constant/AsynStorageFuntion";
+import { BASE_URL_GET } from "../Constant/Commen_API_Url";
+import axios from "axios";
+import { updateSyncResourceRequest} from '../SQLiteDatabaseAction/DBControllers/ResourceRequestController';
 var resourceID: any;
 var Type: any;
+var TOCKEN_KEY: any;
 const ResourcesRequestComponent = (props: any) => {
     const { navigation, route } = props;
     const [startDate, setStartDate] = useState('');
@@ -91,6 +96,81 @@ const ResourcesRequestComponent = (props: any) => {
         });
 
     }
+
+    // uplode funtion 
+
+    const UploadResourcesRequest = () => {
+        try {
+    
+          get_ASYNC_TOCKEN().then(res => {
+            TOCKEN_KEY = res;
+            const AuthStr = 'Bearer '.concat(TOCKEN_KEY);
+           
+         // console.log( 'AuthStr####3%%%%%%%%%%%%%',AuthStr);
+    
+        const prams= {
+          "objSparePartList": [
+            {
+              "ResorceRequestID": ResourceID,  //need to code
+              "ticketId": selectServiceCallID,
+              "resourceID": serviceId,
+              "request_Date": startDate,
+              "handover_Date":endDate,
+              "Remark":remark,
+              "created_At":datec,
+
+
+              }
+          ]
+        }
+         
+         console.log('--NEW resources  UPLOAD JSON--', prams);
+    
+          const headers = {
+            'Authorization': AuthStr
+          }
+          const URL = BASE_URL_GET+"resource";
+          axios.post(URL, prams, {
+            headers: headers
+          })
+            .then((response) => {
+                console.log("[s][t][a][t][u][s][]",response.status);
+                if (response.status == 200) {
+
+               console.log('<------ SpareParts UPLOAD Method --->', response.data)
+               console.log(response.data.UniqueNo);
+               
+               if(response.data.ErrorId=0){
+                // this use fro update sync flag as 1 
+                updateSyncResourceRequest(response.data.UniqueNo, (result: any) => {
+
+                });
+                ToastAndroid.show(response.data.ErrorDescription, ToastAndroid.LONG);
+               }
+               
+            }else{
+                Alert.alert(
+                    "Invalid Details!",
+                    "Bad Request",
+                    [
+                        { text: "OK", onPress: () => console.log("OK Pressed") }
+                    ]
+                );
+
+                }
+    
+            })
+            .catch((error) => {
+              Alert.alert('error', error.response)
+    
+            })
+    
+       })
+        } catch (error) {
+          console.log(">>>>>>>>>>>>", error);
+    
+        }
+      }
     const generateCallID = () => {
 
         //console.log(" generate ********************");

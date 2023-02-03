@@ -757,6 +757,13 @@ export const tableData = [
         autoIncrement: false,
         shouldNotAllowNull: false,
       },
+      {
+        name: 'isSync',
+        dataType: 'TEXT',
+        isPrimaryKey: false,
+        autoIncrement: false,
+        shouldNotAllowNull: false,
+      },
     ]
   },
   {
@@ -1144,6 +1151,13 @@ export const tableData = [
       {
         name: 'status',
         dataType: 'INTEGER',
+        isPrimaryKey: false,
+        autoIncrement: false,
+        shouldNotAllowNull: false,
+      },
+      {
+        name: 'isSync',
+        dataType: 'TEXT',
         isPrimaryKey: false,
         autoIncrement: false,
         shouldNotAllowNull: false,
