@@ -278,11 +278,11 @@ const Login = () => {
                 .then(function (response) {
                     console.log(response.status);
                     if (response.status == 200) {
-                        if (response.data.message == "User found.") {
+                        if (response.data.ResponseDescription == "Login Successful") {
                             AsyncStorage.setItem(AsyncStorageConstants.ASYNC_STORAGE_LOGIN_NAME, response.data.Username);
-                            // AsyncStorage.setItem(AsyncStorageConstants.ASYNC_TOCKEN, response.data.Data[0].Token);
+                            AsyncStorage.setItem(AsyncStorageConstants.ASYNC_TOCKEN, response.data.Data[0].Token);
                             // AsyncStorage.setItem(AsyncStorageConstants.ASYNC_LOGIN_USERID, response.data.Data[0].UserId);
-                            AsyncStorage.setItem(AsyncStorageConstants.ASYNC_TOCKEN, response.data.token);
+                            // AsyncStorage.setItem(AsyncStorageConstants.ASYNC_TOCKEN, response.data.token);
                             // AsyncStorage.setItem(AsyncStorageConstants.ASYNC_LOGIN_USERID, response.data.Data[0].UserId);
                             if (readingType == "OUT" || readingType == "") {
                                 // last record has day end .so need to add day statrt
@@ -302,9 +302,9 @@ const Login = () => {
 
                             Alert.alert(
                                 "Invalid Details!",
-                                response.data.message,
+                                response.data.ResponseDescription,
                                 [
-                                    { text: "OK", onPress: () => console.log( response.data.message) }
+                                    { text: "OK", onPress: () => console.log( response.data.ResponseDescription) }
                                 ]
                             );
                         }

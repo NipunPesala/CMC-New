@@ -2,7 +2,7 @@ import { CALLBACK_TYPE } from 'react-native-gesture-handler/lib/typescript/handl
 import { err } from 'react-native-svg/lib/typescript/xml';
 import * as DB from '../DBService';
 
-export const saveServiceType = (data, callBack) => {
+export const saveServiceType = (data:any, callBack:any) => {
     var response:any;
     for (let i = 0; i < data.length; ++i) {
         DB.indateData(
@@ -12,14 +12,14 @@ export const saveServiceType = (data, callBack) => {
                     columns: `typeId,typeName,description,status`,
                     values: '?,?,?,?',
                     params: [
-                        // data[i].ProblemTypeCode,
-                        // data[i].ProblemTypeName,
-                        // data[i].ProblemTypeValue,
-                        // data[i].Status,
-                        data[i].typeId,
-                        data[i].typeName,
-                        data[i].description,
-                        data[i].status,
+                        data[i].ProblemTypeCode,
+                        data[i].ProblemTypeName,
+                        data[i].ProblemTypeValue,
+                        data[i].Status,
+                        // data[i].typeId,
+                        // data[i].typeName,
+                        // data[i].description,
+                        // data[i].status,
                     ],
                     primaryKey: 'typeId',
                     subQuery: `typeName = EXCLUDED.typeName,
