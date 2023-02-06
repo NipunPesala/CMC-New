@@ -258,6 +258,11 @@ const Login = () => {
 
     };
 
+    const firstTimeLogingsync=()=>{
+        navigation.navigate("SyncScreen");
+
+    }
+
     const Get_Login_API_Data = () => {
         const params = {
             "username": uName,
@@ -289,6 +294,7 @@ const Login = () => {
                                 setLoginHeading("LOGIN TO START THE DATE");
                                 setShowQuckAcess(false);
                                 slideInModal();
+                                firstTimeLogingsync();
                             } else {
                                 // insertServiceData();
                                 setLoginHeading("LOGIN");
