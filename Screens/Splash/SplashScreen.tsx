@@ -62,7 +62,7 @@ class SplashScreen extends Component {
                    
                     <Animated.View style={[truckStyle]}>
                         <Animated.Image
-                            source={require('../../assets/images/company_logo.png')}
+                            source={require('../../assets/images/image0032_removebg.png')}
 
                             style={[
                                 {

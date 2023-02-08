@@ -25,14 +25,19 @@ import {
   getASYNC_CURRENT_TICKET_ID,
   getCurrentServiceCallID,
 } from '../Constant/AsynStorageFuntion';
+import { get_ASYNC_TOCKEN } from "../Constant/AsynStorageFuntion";
 import email from 'react-native-email';
 import { getDataForEmail } from "../SQLiteDatabaseAction/DBControllers/ServiceController";
 import AsyncStorage from '@react-native-community/async-storage';
 import AsyncStorageConstants from '../Constant/AsyncStorageConstants';
+import axios from "axios";
+import { BASE_URL_GET } from "../Constant/Commen_API_Url";
 let height = Dimensions.get("screen").height;
 import moment from 'moment';
+import {uplodeCompTicketAync} from "../SQLiteDatabaseAction/DBControllers/TicketController";
 var id: any;
 var serviceID: any;
+var TOCKEN_KEY: any;
 const CompleteTicket = () => {
   const [pending, setPending] = useState(false);
   const [hold, setHold] = useState(false);
@@ -257,10 +262,72 @@ const CompleteTicket = () => {
     setattend_status('3');
   };
 
-  const checkInput = () => {
-    console.log('hii its work');
-  };
+  
+  const UploadServiceCall = () => {
+    try {
 
+      get_ASYNC_TOCKEN().then(res => {
+        TOCKEN_KEY = res;
+        const AuthStr = 'Bearer '.concat(TOCKEN_KEY);
+       
+     // console.log( 'AuthStr####3%%%%%%%%%%%%%',AuthStr);
+
+    const prams= {
+          "UserName": "",
+          "UserID": 1,  //need to code
+          "serviceId": id,
+          "Attend_status": attend_status,
+          "created_At": "",
+  
+    }
+     
+     console.log('--NEW  Complite ticket JSON--', prams);
+
+      const headers = {
+        'Authorization': AuthStr
+      }
+      const URL = BASE_URL_GET+"service-ticket/status";
+      axios.post(URL, prams, {
+        headers: headers
+      })
+        .then((response) => {
+            console.log("[s][t][a][t][u][s][]",response.status);
+            if (response.status == 200) {
+
+           console.log('<------ NEW complite ticket UPLOAD Method --->', response.data)
+           console.log(response.data.UniqueNo);
+           
+           if(response.data.ErrorId=0){
+            // this use fro update sync flag as 1 
+            uplodeCompTicketAync(response.data.UniqueNo, (result: any) => {
+
+            });
+            ToastAndroid.show(response.data.ErrorDescription, ToastAndroid.LONG);
+           }
+           
+        }else{
+            Alert.alert(
+                "Invalid Details!",
+                "Bad Request",
+                [
+                    { text: "OK", onPress: () => console.log("OK Pressed") }
+                ]
+            );
+
+            }
+
+        })
+        .catch((error) => {
+          Alert.alert('error', error.response)
+
+        })
+
+   })
+    } catch (error) {
+      console.log(">>>>>>>>>>>>", error);
+
+    }
+  }
 
   return (
     <SafeAreaView style={ComStyles.CONTAINER}>

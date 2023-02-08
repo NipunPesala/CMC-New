@@ -300,6 +300,16 @@ export const updateActualendDate = (ticketID:any,Sdate:any,callBack:any) => {
       },
     );
   };
+
+  export const uplodeCompTicketAync = (ticketID:any,callBack:any) => {
+    DB.updateData(
+      'UPDATE TICKET SET syncStatus=1 WHERE ticketId=?',
+      [ticketID],
+      (resp:any, err:any) => {
+        callBack(resp, err);
+      },
+    );
+  };
 //====================================================
   export const updateTicket = (serviceId:any,startDate:any,endDate:any,itemDescription:any,content:any,assignTo:any,priority:any,attend_status:any,status:any,engRemark:any,cusNic:any,cusRemark:any,signatureStatus:any,ticketId:any,callBack:any) => {
  
