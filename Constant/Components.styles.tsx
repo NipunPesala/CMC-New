@@ -72,6 +72,19 @@ export default ({
         marginRight: 13,
         flex: 1,
     },
+    CONTENTLOG: {
+        marginBottom: 0,
+        marginLeft: 0,
+        marginRight: 0,
+       
+
+    },
+    CONTENTLOG2: {
+        paddingTop:height*0.25,
+        marginLeft: 13,
+        marginRight: 13,
+    },
+    
     SEPARATE_LINE: {
         backgroundColor: '#D0CFCF',
         width: '100%',

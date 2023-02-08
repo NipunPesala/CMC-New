@@ -16,6 +16,7 @@ import {
     TouchableOpacity,
     Platform,
     Alert,
+    ScrollView,
 } from "react-native";
 //import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -451,7 +452,8 @@ const Login = () => {
                         // console.log(result, "/////////////......................//////////");
 
                         if (result === "success") {
-
+                           // firstTimeLogingsync();
+                           console.log('this is a check sync navigation');
                             navigation.navigate("BottomNavi");
 
                         } else {
@@ -614,6 +616,7 @@ const Login = () => {
     return (
         <SafeAreaView style={comStyles.CONTAINER}>
 
+        
             <Animated.View
                 style={{
                     ...StyleSheet.absoluteFillObject,
@@ -631,6 +634,9 @@ const Login = () => {
                         }
                     })
                 }}>
+
+
+                
                 <View style={style.modalCont}>
 
                     {/* ........................................ meter reading modal start.......................................... */}
@@ -649,7 +655,7 @@ const Login = () => {
                             <Text style={styles.modalRegularTitle}>Time: </Text>
                             <Text style={styles.modalTitle}>{moment().utcOffset('+05:30').format(' hh:mm a')}</Text>
                         </View>
-
+                  
                         <View style={styles.modalMainContainer}>
                             <Text style={{ fontFamily: comStyles.FONT_FAMILY.BOLD, color: comStyles.COLORS.HEADER_BLACK, fontSize: 15, marginTop: 10 }}>Add the meter you are starting from</Text>
                         </View>
@@ -705,10 +711,15 @@ const Login = () => {
 
 
                 </View>
-            </Animated.View>
 
+              
+            </Animated.View>
+           
             <ImageBackground source={require('../../assets/images/loginBackground.png')} style={comStyles.CONTAINER}>
-                <View style={comStyles.CONTENT}>
+            <ScrollView
+            style={comStyles.CONTENTLOG}
+            showsVerticalScrollIndicator={true}>
+                <View style={comStyles.CONTENTLOG2}>
                     <View style={style.box1}>
                     </View>
 
@@ -756,6 +767,7 @@ const Login = () => {
                         </View>
                     </View>
                 </View>
+                </ScrollView>
             </ImageBackground>
             {/* <OrientationLoadingOverlay
                 visible={loandingspinner}
@@ -764,6 +776,7 @@ const Login = () => {
                 messageFontSize={16}
                 message="Loading..."
             /> */}
+        
         </SafeAreaView >
     );
 }
