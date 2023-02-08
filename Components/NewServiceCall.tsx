@@ -78,7 +78,7 @@ const NewServiceCall = (props: any) => {
         { label: 'Maduka', value: '3' }
     ];
 
-    const [loandingspinner, setloandingspinner] = useState(true);
+    // const [loandingspinner, setloandingspinner] = useState(true);
 
     const [value1, setValue1] = useState(null);
     const [isFocus, setIsFocus] = useState(false);
@@ -450,14 +450,14 @@ const NewServiceCall = (props: any) => {
 
 
         getAllCustomers((result: any) => {
-            console.log("<><><><><><><><><cus info2222"+ result);
+            // console.log("<><><><><><><><><cus info2222"+ result);
             setCustomerList(result);
         });
 
     }
 
 
-    const onChangePicker = (event, type) => {
+    const onChangePicker = (event:any, type:any) => {
 
         console.log(type, ">>>>>>>>>>>>>>>>>>>");
 
@@ -484,7 +484,7 @@ const NewServiceCall = (props: any) => {
         }
     }
 
-    const onChange = (event, selectedDate) => {
+    const onChange = (event:any, selectedDate:any) => {
         const currentDate = selectedDate;
         setShow(Platform.OS === 'ios');
         if (dateType == "fromDate") {
@@ -616,18 +616,18 @@ const NewServiceCall = (props: any) => {
         getServiceCallTypes();
         getItem();
         getCustomers();
-        getAllUserTypesData();
-        getContactPerson();
+        // getAllUserTypesData();
+        // getContactPerson();
 
         Mode = route.params.mode;
 
-        console.log(Mode, "Update mode------------- ", loandingspinner);
+        // console.log(Mode, "Update mode------------- ", loandingspinner);
         if (Mode == 1) {
             console.log('this is mode =1');
             setformHeading("Update Service Call");
             setsavebutton("Update");
             console.log('list service call cus---'+route.params.cusList.length);
-            setloandingspinner(true);
+            // setloandingspinner(true);
             console.log('length is ---'+route.params.cusList?.length);
             if (route.params.cusList?.length > 0) {
                 SetPreviousAddedData(route.params.serviceID);
@@ -659,17 +659,17 @@ const NewServiceCall = (props: any) => {
             // })
 
             getServiceCallTypes();
-            getItem();
+            // getItem();
             getCustomers();
-            getAllUserTypesData();
-            getContactPerson();
+            // getAllUserTypesData();
+            // getContactPerson();
             Mode = route.params.mode;
 
             console.log(Mode, "Update mode------------ ");
             if (Mode == 1) {
                 setformHeading("Update Service Call");
                 setsavebutton("Update");
-                setloandingspinner(true);
+                // setloandingspinner(true);
 
 
                 if (route.params.cusList?.length > 0) {
@@ -700,7 +700,7 @@ const NewServiceCall = (props: any) => {
 
         getAllContactPerson((result: any) => {
             setContactPersonList(result);
-            setloandingspinner(false);
+            // setloandingspinner(false);
 
 
         });
@@ -721,11 +721,11 @@ const NewServiceCall = (props: any) => {
 
     }
     const SetPreviousAddedData = (id: any) => {
-        console.log(route.params.serviceID, "Update mode 2 ", loandingspinner);
+        // console.log(route.params.serviceID, "Update mode 2 ", loandingspinner);
         setServiceId(id);
 
         // setloandingspinner(true);
-        console.log(route.params.serviceID, "Update mode 3 ", loandingspinner);
+        // console.log(route.params.serviceID, "Update mode 3 ", loandingspinner);
         try {
             getServiceById(id, (result: any) => {
                 console.log('cus list length ----', result);
@@ -806,10 +806,10 @@ const NewServiceCall = (props: any) => {
                     setContactPerson(data.name);
                 });
             });
-            setloandingspinner(false);
+            // setloandingspinner(false);
         } catch (error) {
             console.log("NEW SERVICECALL/setPreviousAddedData", error)
-            setloandingspinner(false);
+            // setloandingspinner(false);
         }
     }
 
@@ -873,7 +873,7 @@ const NewServiceCall = (props: any) => {
                             onChange={item => {
                                 console.log('%%%%-----', item);
                                 setSelectCustomer(item.CusName);
-                                changeCusAddress(item.Address);
+                                // changeCusAddress(item.Address);
                                 setcustomerID(item.CusID);
 
                                 setIsFocus(false);
@@ -1389,12 +1389,12 @@ const NewServiceCall = (props: any) => {
             )}
 
             <View style={{ padding: 30 }} />
-            <Spinner
+            {/* <Spinner
                 visible={loandingspinner}
                 color={ComponentsStyles.COLORS.WHITE}
                 size="large"
                 textContent={'Loading...'}
-            />
+            /> */}
         </SafeAreaView >
     );
 }

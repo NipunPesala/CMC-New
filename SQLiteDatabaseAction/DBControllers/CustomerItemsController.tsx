@@ -9,7 +9,7 @@ export const saveCustomerItems = (data:any, callBack:any) => {
             [
                 {
                     table: 'Customer_Items',
-                    columns: `ItemId,ItemCode,ItemName,Customer,CustomerName,status`,
+                    columns: `ItemId,ItemCode,ItemName,CustomerCode,CustomerName,status`,
                     values: '?,?,?,?,?,?',
                     params: [
                         data[i].Id,
@@ -24,7 +24,7 @@ export const saveCustomerItems = (data:any, callBack:any) => {
             (res:any, err:any) => {
                 if(res === 'success'){
                     response =true;
-                    console.log("___________CustomerItems________________",response);
+                    // console.log("___________CustomerItems________________",response);
     
                    
                 }else{
@@ -35,7 +35,7 @@ export const saveCustomerItems = (data:any, callBack:any) => {
         );
         
     }
-    console.log(response,"=========================");
+    console.log(response,"========================= customer items saved");
     callBack(true);
     
 };

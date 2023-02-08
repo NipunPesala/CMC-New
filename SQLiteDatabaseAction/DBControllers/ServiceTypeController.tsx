@@ -30,7 +30,7 @@ export const saveServiceType = (data:any, callBack:any) => {
             (res, err) => {
                 if(res === 'success'){
                     response =true;
-                    console.log("___________Customer________________",response);
+                    // console.log("___________Customer________________",response);
     
                    
                 }else{
@@ -40,6 +40,7 @@ export const saveServiceType = (data:any, callBack:any) => {
             },
         );
     }
+    console.log(" service types saved ..............  ");
     callBack(true);
 };
 

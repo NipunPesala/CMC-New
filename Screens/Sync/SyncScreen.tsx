@@ -28,7 +28,9 @@ import * as DB_UserTypes from '../../SQLiteDatabaseAction/DBControllers/Users_Ty
 import * as DB_User from '../../SQLiteDatabaseAction/DBControllers/UserController';
 import * as DB_ItemSerialNo from '../../SQLiteDatabaseAction/DBControllers/ItemSerialNoController';
 import * as DB_Priority from '../../SQLiteDatabaseAction/DBControllers/PriorityController';
+import * as DB_SpareParts from '../../SQLiteDatabaseAction/DBControllers/SparePartsController';
 import { priorityListInitial, Service_types } from "../../Constant/DummyData";
+import { logProfileData } from 'react-native-calendars/src/Profiler';
 
 let SyncArray1: any[] = [];
 let arrayindex = 0;
@@ -55,7 +57,9 @@ const SyncScreen = () => {
       Sync_User(TOCKEN_KEY);
       Sync_CustomerItems(TOCKEN_KEY);
       Sync_ItemSerialNo(TOCKEN_KEY);
+      Sync_SpareParts(TOCKEN_KEY);
       Sync_Priority();
+     
     })
 
 
@@ -370,21 +374,41 @@ const SyncScreen = () => {
         if (response.status === 200) {
           DB_ItemSerialNo.saveItemSerialNo(response.data, (res: any) => {
 
-            if (res = true) {
+            console.log(" response status .....*********   ", res)
+
+             if (res == 1) {
+
+              console.log("pending..............");
               arrayindex++;
 
               SyncArray1.push({
-                name: 'Item Serial No Download Sucsessfully...',
+                name: 'Item Serial No Downloading...',
                 id: arrayindex,
               });
               setSyncArray(SyncArray1);
-            } else {
+
+            } else if(res == 3){
+
+              console.log("iwaraiiiiiiiiiiiiiiiiiiiiiiiiiii >>>>>>>>>>>");
+              
+                arrayindex++;
+  
+                SyncArray1.push({
+                  name: 'Item Serial No Download Sucsessfully...',
+                  id: arrayindex,
+                });
+                setSyncArray(SyncArray1);
+
+            }else if(res == 2) {
+
               SyncArray1.push({
                 name: 'Item Serial No Save Failed...',
                 id: arrayindex,
               });
               setSyncArray(SyncArray1);
             }
+
+            
           });
         } else {
           console.log('fails');
@@ -398,7 +422,7 @@ const SyncScreen = () => {
       })
       .catch((error) => {
         SyncArray1.push({
-          name: 'Item Serial No Save Failed...',
+          name: 'Item Serial No Download Failed...',
           id: arrayindex,
         });
         setSyncArray(SyncArray1);
@@ -422,20 +446,51 @@ const SyncScreen = () => {
     })
   }
 
-  // ------------------ Download Service Types -------------------
-  // const Sync_ServiceTypes = () => {
-  //   DB_ServiceType.saveServiceType(Service_types, (res: any, error: any) => {
-     
-  //     arrayindex++;
-      
-  //     SyncArray1.push({
-  //       name: 'Service Types Download Sucsessfully...',
-  //       id: arrayindex,
-  //     });
-  //     setSyncArray(SyncArray1);
-  // })
+  // ------------------ Download Spare parts -------------------
+  const Sync_SpareParts = (Key: any) => {
+    const AuthStr = 'Bearer '.concat(Key);
+    const URL = GET_URL + "spare-parts";
+    axios.get(URL, { headers: { Authorization: AuthStr } })
+      .then(response => {
+        if (response.status === 200) {
+          DB_SpareParts.saveSpareParts(response.data, (res: any) => {
 
-  // }
+            if (res = true) {
+              arrayindex++;
+
+              SyncArray1.push({
+                name: 'Spare Parts Download Sucsessfully...',
+                id: arrayindex,
+              });
+              setSyncArray(SyncArray1);
+            } else {
+              SyncArray1.push({
+                name: 'Spare Parts Save Failed...',
+                id: arrayindex,
+              });
+              setSyncArray(SyncArray1);
+            }
+          });
+        } else {
+          console.log('fails');
+
+          SyncArray1.push({
+            name: 'Spare Parts Download Failed...',
+            id: arrayindex,
+          });
+          setSyncArray(SyncArray1);
+        }
+      })
+      .catch((error) => {
+        SyncArray1.push({
+          name: 'Spare Parts Save Failed...',
+          id: arrayindex,
+        });
+        setSyncArray(SyncArray1);
+        console.log('errorrrrr ' + error);
+      });
+
+  }
 
 
   const cancelAndGoBack = () => {

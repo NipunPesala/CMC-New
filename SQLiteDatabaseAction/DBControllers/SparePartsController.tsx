@@ -1,22 +1,20 @@
 import * as DB from '../DBService';
 
-export const saveSpareParts = (data, callBack) => {
+export const saveSpareParts = (data:any, callBack:any) => {
     for (let i = 0; i < data.length; ++i) {
         DB.indateData(
             [
                 {
                     table: 'SPARE_PARTS',
-                    columns: `spId,SparePartNo,description,stock_qty,Item_Group,department,BrandName,status`,
-                    values: '?,?,?,?,?,?,?,?',
+                    columns: `spId,SparePartNo,description,stock_qty,Item_Group,Item_Type`,
+                    values: '?,?,?,?,?,?',
                     params: [
-                        data[i].spId,
-                        data[i].SparePartNo,
-                        data[i].description,
-                        data[i].stock_qty,
-                        data[i].Item_Group,
-                        data[i].department,
-                        data[i].BrandName,
-                        data[i].status,
+                        data[i].Id,
+                        data[i].ItemCode,
+                        data[i].ItemName,
+                        data[i].Onhand,
+                        data[i].ItmsGrpCod,
+                        data[i].ItemType,
                     ],
                     primaryKey: 'spId',
                 //     subQuery: `name = EXCLUDED.name,
@@ -24,14 +22,16 @@ export const saveSpareParts = (data, callBack) => {
                 // price = EXCLUDED.price,status = EXCLUDED.status`,
                 },
             ],
-            (res, err) => {
+            (res:any, err:any) => {
                 callBack(res, err);
             },
         );
     }
+    console.log("spare parts saved ,,,,,,,,,,,,  ");
+    callBack(true);
 };
 
-export const deleteAllSpareParts = (callBack) => {
+export const deleteAllSpareParts = (callBack:any) => {
 
     DB.deleteData(
         [
@@ -41,18 +41,18 @@ export const deleteAllSpareParts = (callBack) => {
                 params: [],
             },
         ],
-        (resp, err) => {
+        (resp:any, err:any) => {
             callBack(resp, err);
         },
     );
 
 };
 
-export const getSparePartsById = (spId, callBack) => {
+export const getSparePartsById = (spId:any, callBack:any) => {
     DB.searchData(
         'SELECT * FROM SPARE_PARTS WHERE spId=?',
         [spId],
-        (resp, err) => {
+        (resp:any, err:any) => {
             callBack(resp, err);
         },
     );
@@ -61,7 +61,7 @@ export const getSparePartsAllData = ( callBack:any) => {
     DB.searchData(
         'SELECT * FROM SPARE_PARTS',
         [],
-        (resp, err) => {
+        (resp:any, err:any) => {
             callBack(resp, err);
         },
     );

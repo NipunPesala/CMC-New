@@ -630,27 +630,13 @@ export const tableData = [
       },
       {
         name: 'Item_Group',
-        dataType: 'TEXT',
+        dataType: 'INTEGER',
         isPrimaryKey: false,
         autoIncrement: false,
         shouldNotAllowNull: false,
       },
       {
-        name: 'department',
-        dataType: 'TEXT',
-        isPrimaryKey: false,
-        autoIncrement: false,
-        shouldNotAllowNull: false,
-      },
-      {
-        name: 'BrandName',
-        dataType: 'TEXT',
-        isPrimaryKey: false,
-        autoIncrement: false,
-        shouldNotAllowNull: false,
-      },
-      {
-        name: 'status',
+        name: 'Item_Type',
         dataType: 'TEXT',
         isPrimaryKey: false,
         autoIncrement: false,
@@ -1326,7 +1312,7 @@ export const tableData = [
         shouldNotAllowNull: false,
       },
       {
-        name: 'Customer',
+        name: 'CustomerCode',
         dataType: 'TEXT',
         isPrimaryKey: false,
         autoIncrement: false,

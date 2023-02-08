@@ -32,7 +32,7 @@ export const saveCustomer = (data:any, callBack:any) => {
             (res:any, err:any) => {
                 if(res === 'success'){
                     response =true;
-                    console.log("___________Customer________________",response);
+                    // console.log("___________Customer________________",response);
     
                    
                 }else{
@@ -43,7 +43,7 @@ export const saveCustomer = (data:any, callBack:any) => {
         );
         
     }
-    console.log(response,"=========================");
+    console.log(response,"========================= customer");
     callBack(true);
     
 };
@@ -54,7 +54,7 @@ export const getAllCustomers = (callBack:any) =>{
         'SELECT CusName,Address,CusID FROM CUSTOMER',
         [],
         (resp:any, err:any) => {
-           console.log("************** all customers ************  " + resp);
+           console.log("************** all customers ************  " + resp.length);
             callBack(resp, err);
         },
     );

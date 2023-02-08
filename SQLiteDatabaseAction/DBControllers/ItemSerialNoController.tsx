@@ -23,19 +23,36 @@ export const saveItemSerialNo = (data:any, callBack:any) => {
             ],
             (res:any, err:any) => {
                 if(res === 'success'){
-                    response =true;
-                    console.log("___________ItemSRN________________",response);
-    
+
+                    response =1;
+                    
+                    // console.log(i+1 , "-------------------count ...................",data.length);
                    
                 }else{
-                    response =false;
+                    response =2;
                 }
                 
             },
         );
+
+        if( i+1 == data.length){
+            response = 3;
+
+            callBack(response);
+            console.log(" done unaaaaaaaa");
+        }else if(i == 0){
+
+            response =1;
+            callBack(response);
+            console.log(" first time .....");
+        }
+
+       
         
     }
-    console.log(response,"=========================");
-    callBack(true);
+
+
+    console.log("___________ItemSRN________________",response);
+    // callBack(response);
     
 };

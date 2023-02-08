@@ -29,7 +29,7 @@ export const saveItem = (data, callBack) => {
             (res, err) => {
                 if(res === 'success'){
                     response =true;
-                    console.log("____________Item_______________",response);
+                    // console.log("____________Item_______________",response);
     
                    
                 }else{
@@ -39,6 +39,7 @@ export const saveItem = (data, callBack) => {
         );
     }
 
+    console.log(" item saves finished ............. ")
     callBack(true);
 };
 
@@ -72,9 +73,20 @@ export const getServiceTypeById = (itemID, callBack) => {
 export const getAllItems = (callBack:any) =>{
 
     DB.searchData(
-        'SELECT itemCode,description,itemID FROM ITEM WHERE status=1',
+        'SELECT itemCode,description,itemID FROM ITEM WHERE status=sns_Active',
         [],
         (resp, err) => {
+            callBack(resp, err);
+        },
+    );
+}
+
+export const getAllCustomerVsItems = (cusID:any,callBack:any) =>{
+
+    DB.searchData(
+        'SELECT itemCode,description,itemID FROM ITEM WHERE status=sns_Active',
+        [],
+        (resp:any, err:any) => {
             callBack(resp, err);
         },
     );
