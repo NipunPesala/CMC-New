@@ -80,7 +80,7 @@ export default ({
 
     },
     CONTENTLOG2: {
-        paddingTop:height*0.25,
+        paddingTop:10,
         marginLeft: 13,
         marginRight: 13,
     },

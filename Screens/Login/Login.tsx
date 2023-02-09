@@ -260,7 +260,7 @@ const Login = () => {
     };
 
     const firstTimeLogingsync=()=>{
-        navigation.navigate("SyncScreen");
+        navigation.navigate("AddExpencesNew");
 
     }
 
@@ -295,7 +295,6 @@ const Login = () => {
                                 setLoginHeading("LOGIN TO START THE DATE");
                                 setShowQuckAcess(false);
                                 slideInModal();
-                                firstTimeLogingsync();
                             } else {
                                 // insertServiceData();
                                 setLoginHeading("LOGIN");
@@ -444,7 +443,7 @@ const Login = () => {
                         }
                     ]
 
-                    // console.log(data.mrId);
+                     console.log('--------------this is a  insertMeterReading------------');
 
 
 
@@ -453,8 +452,9 @@ const Login = () => {
 
                         if (result === "success") {
                            // firstTimeLogingsync();
-                           console.log('this is a check sync navigation');
-                            navigation.navigate("BottomNavi");
+                           console.log('*************this is a check sync navigation*****');
+                           //firstTimeLogingsync()
+                           navigation.navigate("BottomNavi");
 
                         } else {
 
@@ -516,7 +516,7 @@ const Login = () => {
 
                         if (result === "success") {
 
-                            navigation.navigate("BottomNavi");
+                            navigation.navigate("SyncScreen");
 
                         } else {
 
@@ -720,6 +720,9 @@ const Login = () => {
             style={comStyles.CONTENTLOG}
             showsVerticalScrollIndicator={true}>
                 <View style={comStyles.CONTENTLOG2}>
+                    <View style={style.box3}>
+                    <Image source={require('../../assets/images/image007Main.png')} style={style.logoMain} />
+                    </View>
                     <View style={style.box1}>
                     </View>
 
