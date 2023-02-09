@@ -35,17 +35,25 @@ export const saveItemSerialNo = (data:any, callBack:any) => {
             },
         );
 
-        if( i+1 == data.length){
-            response = 3;
+        if(response == 1){
 
-            callBack(response);
-            console.log(" done unaaaaaaaa");
-        }else if(i == 0){
+            if( i+1 == data.length){
+                response = 3;
+    
+                callBack(response);
+                console.log(" done unaaaaaaaa");
+            }else if(i == 0){
+    
+                // response =1;
+                callBack(response);
+                console.log(" first time .....");
+            }
 
-            response =1;
+        }else if(response == 2){
             callBack(response);
-            console.log(" first time .....");
         }
+
+        
 
        
         
