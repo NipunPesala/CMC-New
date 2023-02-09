@@ -203,6 +203,7 @@ const AttendanceScreen = () => {
     var formattedDate = format(Old_date, 'yyyy-MM-dd');
     setlastDate(formattedDate);
     getAllAttendanceDetailsbyDates(formattedDate);
+    setShowCalendar(false);
   };
   const handlecustomedays = (currentMode: any) => {
     setfirst30dayse(false);
@@ -224,6 +225,7 @@ const AttendanceScreen = () => {
     var formattedDate = format(Old_date, 'yyyy-MM-dd');
     setlastDate(formattedDate);
     getAllAttendanceDetailsbyDates(formattedDate);
+    setShowCalendar(false);
   };
   const HandleAttendanceDetails = () => {
     setAttendanceDetails(true);
@@ -551,6 +553,22 @@ const AttendanceScreen = () => {
     setEndDate('');
 }
 
+const arrorPressRight=()=>{
+
+  console.log('this is a arrow press Right');
+  console.log(attendanceDetails1);
+  setAttendanceDetails(false);
+  setRemarks(true);
+}
+
+const arrorPressLeft=()=>{
+
+  console.log('this is a arrow press Left');
+  setAttendanceDetails(true);
+  setbottomview(true);
+  setRemarks(false);
+}
+
   ////////////////////////end==============================
 
   return (
@@ -823,6 +841,8 @@ const AttendanceScreen = () => {
           customestyle={Style.arrowbar}
           leftarrow="leftcircle"
           rightarrow="rightcircle"
+          iconOnPressR={arrorPressRight}
+          iconOnPressL={arrorPressLeft}
         />
 
         {/* <ScrollView directionalLockEnabled={false} horizontal={true}> */}
