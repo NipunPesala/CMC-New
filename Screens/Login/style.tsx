@@ -13,8 +13,14 @@ export default StyleSheet.create({
     },
 
     box1: {
-        flex: 0.5
-    },
+       flex: 0.5
+    }, 
+    box3: {
+        //flex: 0.5,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginBottom:200,
+     }, 
 
     box2: {
 
@@ -49,10 +55,16 @@ export default StyleSheet.create({
     },
 
     logo: {
-        width: 60,
-        height: 15,
+       width: 60,
+        height: 15, 
     },
-
+    logoMain: {
+        width: 320,
+        height: 50, 
+        paddingTop:50,
+        //paddingBottom:50,
+        marginTop:50,
+    },
     footer: {
         fontSize: 10,
         fontFamily: comStyles.FONT_FAMILY.SEMI_BOLD,
