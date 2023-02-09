@@ -37,6 +37,7 @@ let SyncArray1: any[] = [];
 let arrayindex = 0;
 var TOCKEN_KEY: any;
 var GET_URL = "http://124.43.13.162:4500/api/";
+
 const SyncScreen = () => {
 
   const navigation = useNavigation();
@@ -44,7 +45,7 @@ const SyncScreen = () => {
 
   const [SyncArray, setSyncArray]: any[] = useState([]);
   const [Token_Key, setToken_Key] = useState("");
-  const [onRefresh, setOnRefresh] = useState(true);
+  const [onRefresh, setOnRefresh] = useState(false);
   const [syncText, setsyncText] = useState('');
 
   const syncbtn = () => {
@@ -54,14 +55,10 @@ const SyncScreen = () => {
     get_ASYNC_TOCKEN().then(res => {
       TOCKEN_KEY = res;
       Sync_Customer(TOCKEN_KEY);
-      // Sync_Item(TOCKEN_KEY);
-      // Sync_ServiceType(TOCKEN_KEY);
-      // Sync_User_Type(TOCKEN_KEY);
-      // Sync_User(TOCKEN_KEY);
-      // Sync_CustomerItems(TOCKEN_KEY);
-      // Sync_ItemSerialNo(TOCKEN_KEY);
-      // Sync_SpareParts(TOCKEN_KEY);
-      // Sync_Priority();
+
+
+      setOnRefresh(false);
+    
 
     })
 
@@ -80,42 +77,74 @@ const SyncScreen = () => {
         console.log("+++++++++++++++++++++Sync_User+++++++++++++++++++++++++");
         if (response.status === 200) {
           DB_User.saveUser(response.data, (res: any) => {
-            if (res = true) {
+
+            setOnRefresh(false);
+
+            if (res == 1) {
               arrayindex++;
 
               SyncArray1.push({
-                name: 'User Download Sucsessfully...',
+                name: 'User Downloading...',
                 id: arrayindex,
               });
               setSyncArray(SyncArray1);
+              setOnRefresh(true);
+              // Sync_CustomerItems(TOCKEN_KEY);
 
+            } else if (res == 2) {
 
-            } else {
+              arrayindex++;
+
               SyncArray1.push({
-                name: 'User Save Failed...',
+                name: 'User Download Failed...',
                 id: arrayindex,
               });
               setSyncArray(SyncArray1);
+              setOnRefresh(true);
+              Sync_CustomerItems(TOCKEN_KEY);
+
+            } else if (res == 3) {
+
+              arrayindex++;
+
+              SyncArray1.push({
+                name: 'User Download Successfully...',
+                id: arrayindex,
+              });
+              setSyncArray(SyncArray1);
+              setOnRefresh(true);
+              Sync_CustomerItems(TOCKEN_KEY);
 
             }
           });
         } else {
 
+          arrayindex++;
+
+          setOnRefresh(false);
           SyncArray1.push({
             name: 'User Download Failed...',
             id: arrayindex,
           });
           setSyncArray(SyncArray1);
+          setOnRefresh(true);
+          Sync_CustomerItems(TOCKEN_KEY);
 
         }
       })
       .catch((error) => {
+
+        arrayindex++;
+
+        setOnRefresh(false);
         SyncArray1.push({
           name: 'User Download Failed...',
           id: arrayindex,
         });
         setSyncArray(SyncArray1);
         console.log('errorrrrr ' + error);
+        setOnRefresh(true);
+        Sync_CustomerItems(TOCKEN_KEY);
 
       });
   }
@@ -129,43 +158,74 @@ const SyncScreen = () => {
         console.log("+++++++++++++++++++++Sync_User_Type+++++++++++++++++++++++++");
         if (response.status === 200) {
           DB_UserTypes.saveTechnitian(response.data, (res: any) => {
-            if (res = true) {
+
+
+            setOnRefresh(false);
+
+
+            if (res == 1) {
+
               arrayindex++;
 
               SyncArray1.push({
-                name: 'User Type Download Sucsessfully...',
+                name: 'User Type Downloading...',
                 id: arrayindex,
               });
               setSyncArray(SyncArray1);
+              setOnRefresh(true);
+              // Sync_User(TOCKEN_KEY);
 
+            } else if (res == 2) {
+              arrayindex++;
 
-            } else {
               SyncArray1.push({
                 name: 'User Type Save Failed...',
                 id: arrayindex,
               });
               setSyncArray(SyncArray1);
+              setOnRefresh(true);
+              Sync_User(TOCKEN_KEY);
 
+            } else if (res == 3) {
+
+              arrayindex++;
+
+              SyncArray1.push({
+                name: 'User Type Download Successfully...',
+                id: arrayindex,
+              });
+              setSyncArray(SyncArray1);
+              setOnRefresh(true);
+              Sync_User(TOCKEN_KEY);
             }
+
           });
         } else {
 
+          arrayindex++;
+
+          setOnRefresh(false);
           SyncArray1.push({
             name: 'User Type Download Failed...',
             id: arrayindex,
           });
           setSyncArray(SyncArray1);
-
+          setOnRefresh(true);
+          Sync_User(TOCKEN_KEY);
         }
       })
       .catch((error) => {
+
+        arrayindex++;
+        setOnRefresh(false);
         SyncArray1.push({
           name: 'User Type Download Failed...',
           id: arrayindex,
         });
         setSyncArray(SyncArray1);
         console.log('errorrrrr ' + error);
-
+        setOnRefresh(true);
+        Sync_User(TOCKEN_KEY);
       });
   }
   //----------------------------------  service type download ----------------------------------------------
@@ -174,47 +234,78 @@ const SyncScreen = () => {
     const URL = GET_URL + "service-call/problem-types";
     axios.get(URL, { headers: { Authorization: AuthStr } })
       .then(response => {
-        console.log("+++++++++++++++++++++Sync_ServiceType+++++++++++++++++++++++++");
 
         if (response.status === 200) {
           DB_ServiceType.saveServiceType(response.data, (res: any) => {
-            if (res = true) {
+
+            setOnRefresh(false);
+            if (res == 1) {
+
               arrayindex++;
 
               SyncArray1.push({
-                name: 'Service Type Download Sucsessfully...',
+                name: 'Service Type Downloading...',
                 id: arrayindex,
               });
               setSyncArray(SyncArray1);
+              setOnRefresh(true);
+              // Sync_User_Type(TOCKEN_KEY);
 
+            } else if (res == 2) {
 
-            } else {
+              arrayindex++;
+
               SyncArray1.push({
-                name: 'Service Type Save Failed...',
+                name: 'Service Type Download Failed...',
                 id: arrayindex,
               });
               setSyncArray(SyncArray1);
+              setOnRefresh(true);
+              Sync_User_Type(TOCKEN_KEY);
+
+            } else if (res == 3) {
+
+              arrayindex++;
+
+              SyncArray1.push({
+                name: 'Service Type Download Successfully...',
+                id: arrayindex,
+              });
+
+              setSyncArray(SyncArray1);
+              setOnRefresh(true);
+              Sync_User_Type(TOCKEN_KEY);
 
             }
           });
         } else {
+
+          setOnRefresh(false);
+
+          arrayindex++;
 
           SyncArray1.push({
             name: 'Service Type Download Failed...',
             id: arrayindex,
           });
           setSyncArray(SyncArray1);
-
+          setOnRefresh(true);
+          Sync_User_Type(TOCKEN_KEY);
         }
       })
       .catch((error) => {
+
+        arrayindex++;
+
+        setOnRefresh(false);
         SyncArray1.push({
-          name: 'Service Type Save Failed...',
+          name: 'Service Type Download Failed...',
           id: arrayindex,
         });
         setSyncArray(SyncArray1);
+        setOnRefresh(true);
         console.log('errorrrrr ' + error);
-
+        Sync_User_Type(TOCKEN_KEY);
       });
   }
 
@@ -227,6 +318,8 @@ const SyncScreen = () => {
         if (response.status === 200) {
           DB_Item.saveItem(response.data, (res: any) => {
 
+            setOnRefresh(false);
+
             if (res == 1) {
 
               arrayindex++;
@@ -237,7 +330,7 @@ const SyncScreen = () => {
               });
               setSyncArray(SyncArray1);
               setOnRefresh(true);
-              console.log(" array ...........   ", arrayindex)
+              // Sync_ServiceType(TOCKEN_KEY);
 
             } else if (res == 2) {
 
@@ -249,7 +342,7 @@ const SyncScreen = () => {
               });
               setSyncArray(SyncArray1);
               setOnRefresh(true);
-              console.log(" array ...........   ", arrayindex)
+              Sync_ServiceType(TOCKEN_KEY);
 
             } else if (res == 3) {
 
@@ -261,31 +354,41 @@ const SyncScreen = () => {
                 name: 'Item Downloaded Successfully...',
                 id: arrayindex,
               });
+
               setSyncArray(SyncArray1);
-              console.log("success Item 11 ..................", SyncArray1.length);
               setOnRefresh(true);
-              console.log(" array success ...........   ", arrayindex)
+              Sync_ServiceType(TOCKEN_KEY);
 
             }
           });
         } else {
+
+          arrayindex++;
+
+          setOnRefresh(false);
 
           SyncArray1.push({
             name: 'Item Download Failed...',
             id: arrayindex,
           });
           setSyncArray(SyncArray1);
+          Sync_ServiceType(TOCKEN_KEY);
           setOnRefresh(true);
 
         }
       })
       .catch((error) => {
+
+        setOnRefresh(false);
+
+        arrayindex++;
         SyncArray1.push({
           name: 'Item Download Failed...',
           id: arrayindex,
         });
         setSyncArray(SyncArray1);
         console.log('errorrrrr ' + error);
+        Sync_ServiceType(TOCKEN_KEY);
         setOnRefresh(true);
 
       });
@@ -302,74 +405,74 @@ const SyncScreen = () => {
         if (response.status === 200) {
           DB_Customer.saveCustomer(response.data, (res: any) => {
 
+            setOnRefresh(false);
 
             if (res == 1) {
 
               arrayindex++;
-
-              setsyncText(syncText + "Customer Downloading...");
 
               SyncArray1.push({
                 name: 'Customer Downloading...',
                 id: arrayindex,
               });
               setSyncArray(SyncArray1);
-
-
-
+              setOnRefresh(true);
 
             } else if (res == 2) {
 
               arrayindex++;
 
               SyncArray1.push({
-                name: 'Customer Save Failed...',
+                name: 'Customer Download Failed...',
                 id: arrayindex,
               });
               setSyncArray(SyncArray1);
-              setsyncText(syncText + "\n" + 'Customer Save Failed...');
+              setOnRefresh(true);
+              // setsyncText(syncText + "\n" + 'Customer Save Failed...');
 
-              // Sync_Item(TOCKEN_KEY);
+              Sync_Item(TOCKEN_KEY);
 
 
             } else if (res == 3) {
 
-
-
               arrayindex++;
-
-              console.log(syncText);
-              setsyncText(syncText + "\n" + 'Customer Downloaded Successfully...');
-              console.log(syncText);
 
               SyncArray1.push({
                 name: 'Customer Downloaded Successfully...',
                 id: arrayindex,
               });
               setSyncArray(SyncArray1);
-
-              // Sync_Item(TOCKEN_KEY);
+              setOnRefresh(true);
+              Sync_Item(TOCKEN_KEY);
 
             }
           });
         } else {
-          console.log('fails');
 
+          setOnRefresh(false);
+
+          arrayindex++;
           SyncArray1.push({
             name: 'Customer Download Failed...',
             id: arrayindex,
           });
           setSyncArray(SyncArray1);
+          setOnRefresh(true);
 
-
+          Sync_Item(TOCKEN_KEY);
         }
       })
       .catch((error) => {
+
+        setOnRefresh(false);
+        arrayindex++;
         SyncArray1.push({
-          name: 'Customer Save Failed...',
+          name: 'Customer Download Failed...',
           id: arrayindex,
         });
         setSyncArray(SyncArray1);
+        setOnRefresh(true);
+        Sync_Item(TOCKEN_KEY);
 
 
       });
@@ -386,42 +489,73 @@ const SyncScreen = () => {
         if (response.status === 200) {
           DB_CstomerItems.saveCustomerItems(response.data, (res: any) => {
 
-            if (res = true) {
+            setOnRefresh(false);
+
+            if (res == 1) {
               arrayindex++;
 
               SyncArray1.push({
-                name: 'Customer Items Download Sucsessfully...',
+                name: 'Customer Items Downloading...',
                 id: arrayindex,
               });
               setSyncArray(SyncArray1);
+              setOnRefresh(true);
+              // Sync_ItemSerialNo(TOCKEN_KEY);
 
-            } else {
+            } else if (res == 2) {
+
+              arrayindex++;
+
               SyncArray1.push({
-                name: 'Customer Items Save Failed...',
+                name: 'Customer Items Download Failed...',
                 id: arrayindex,
               });
               setSyncArray(SyncArray1);
+              setOnRefresh(true);
+              Sync_ItemSerialNo(TOCKEN_KEY);
+
+            } else if (res == 3) {
+
+              arrayindex++;
+
+              SyncArray1.push({
+                name: 'Customer Items Download Successfully...',
+                id: arrayindex,
+              });
+              setSyncArray(SyncArray1);
+              setOnRefresh(true);
+              Sync_ItemSerialNo(TOCKEN_KEY);
 
             }
           });
         } else {
-          console.log('fails');
+
+          arrayindex++;
+
+          setOnRefresh(false);
 
           SyncArray1.push({
             name: 'Customer Items Download Failed...',
             id: arrayindex,
           });
           setSyncArray(SyncArray1);
+          setOnRefresh(true);
+          Sync_ItemSerialNo(TOCKEN_KEY);
 
         }
       })
       .catch((error) => {
+
+        arrayindex++;
+        setOnRefresh(false);
         SyncArray1.push({
-          name: 'Customer Items Save Failed...',
+          name: 'Customer Items Download Failed...',
           id: arrayindex,
         });
         setSyncArray(SyncArray1);
         console.log('errorrrrr ' + error);
+        setOnRefresh(true);
+        Sync_ItemSerialNo(TOCKEN_KEY);
 
       });
   }
@@ -437,11 +571,9 @@ const SyncScreen = () => {
         if (response.status === 200) {
           DB_ItemSerialNo.saveItemSerialNo(response.data, (res: any) => {
 
-            console.log(" response status .....*********   ", res)
+            setOnRefresh(false);
 
             if (res == 1) {
-
-              console.log("pending..............");
               arrayindex++;
 
               SyncArray1.push({
@@ -449,10 +581,10 @@ const SyncScreen = () => {
                 id: arrayindex,
               });
               setSyncArray(SyncArray1);
+              setOnRefresh(true);
+              // Sync_SpareParts(TOCKEN_KEY);
 
             } else if (res == 3) {
-
-              console.log("iwaraiiiiiiiiiiiiiiiiiiiiiiiiiii >>>>>>>>>>>");
 
               arrayindex++;
 
@@ -461,35 +593,49 @@ const SyncScreen = () => {
                 id: arrayindex,
               });
               setSyncArray(SyncArray1);
+              setOnRefresh(true);
+              Sync_SpareParts(TOCKEN_KEY);
 
             } else if (res == 2) {
 
+              arrayindex++;
+
               SyncArray1.push({
-                name: 'Item Serial No Save Failed...',
+                name: 'Item Serial No Download Failed...',
                 id: arrayindex,
               });
               setSyncArray(SyncArray1);
+              setOnRefresh(true);
+              Sync_SpareParts(TOCKEN_KEY);
             }
 
 
           });
         } else {
-          console.log('fails');
+
+          arrayindex++;
+          setOnRefresh(false);
 
           SyncArray1.push({
             name: 'Item Serial No Download Failed...',
             id: arrayindex,
           });
           setSyncArray(SyncArray1);
+          setOnRefresh(true);
+          Sync_SpareParts(TOCKEN_KEY);
         }
       })
       .catch((error) => {
+        arrayindex++;
+        setOnRefresh(false);
         SyncArray1.push({
           name: 'Item Serial No Download Failed...',
           id: arrayindex,
         });
         setSyncArray(SyncArray1);
         console.log('errorrrrr ' + error);
+        setOnRefresh(true);
+        Sync_SpareParts(TOCKEN_KEY);
       });
   }
 
@@ -499,14 +645,69 @@ const SyncScreen = () => {
 
     DB_Priority.savePriority(priorityListInitial, (res: any, error: any) => {
 
-      arrayindex++;
+      setOnRefresh(false);
 
-      SyncArray1.push({
-        name: 'Priority Download Sucsessfully...',
-        id: arrayindex,
-      });
-      setSyncArray(SyncArray1);
+      if (res == 1) {
+
+        arrayindex++;
+
+        SyncArray1.push({
+          name: 'Priority Downloading...',
+          id: arrayindex,
+        });
+        setSyncArray(SyncArray1);
+        setOnRefresh(true);
+
+      }else if (res == 2) {
+
+        arrayindex++;
+
+        SyncArray1.push({
+          name: 'Priority Download Failed...',
+          id: arrayindex,
+        });
+        setSyncArray(SyncArray1);
+        setOnRefresh(true);
+        setOnRefresh(false);
+
+        arrayindex++;
+
+        SyncArray1.push({
+          name: 'Finished...',
+          id: arrayindex,
+        });
+        setSyncArray(SyncArray1);
+    
+        setOnRefresh(true);
+        setOnRefresh(false);
+
+      }else if (res == 3) {
+
+        arrayindex++;
+
+        SyncArray1.push({
+          name: 'Priority Download Sucsessfully...',
+          id: arrayindex,
+        });
+        setSyncArray(SyncArray1);
+        setOnRefresh(true);
+        setOnRefresh(false);
+
+        arrayindex++;
+
+        SyncArray1.push({
+          name: 'Finished...',
+          id: arrayindex,
+        });
+        setSyncArray(SyncArray1);
+    
+        setOnRefresh(true);
+        setOnRefresh(false);
+
+      }
+      
     })
+
   }
 
   // ------------------ Download Spare parts -------------------
@@ -518,7 +719,33 @@ const SyncScreen = () => {
         if (response.status === 200) {
           DB_SpareParts.saveSpareParts(response.data, (res: any) => {
 
-            if (res = true) {
+            setOnRefresh(false);
+
+            if (res == 1) {
+              arrayindex++;
+
+              SyncArray1.push({
+                name: 'Spare Parts Downloading...',
+                id: arrayindex,
+              });
+              setSyncArray(SyncArray1);
+              setOnRefresh(true);
+              // Sync_Priority();
+
+            } else if (res == 2) {
+
+              arrayindex++;
+
+              SyncArray1.push({
+                name: 'Spare Parts Download Failed...',
+                id: arrayindex,
+              });
+              setSyncArray(SyncArray1);
+              setOnRefresh(true);
+              Sync_Priority();
+
+            } else if (res == 3) {
+
               arrayindex++;
 
               SyncArray1.push({
@@ -526,31 +753,39 @@ const SyncScreen = () => {
                 id: arrayindex,
               });
               setSyncArray(SyncArray1);
-            } else {
-              SyncArray1.push({
-                name: 'Spare Parts Save Failed...',
-                id: arrayindex,
-              });
-              setSyncArray(SyncArray1);
+              setOnRefresh(true);
+              Sync_Priority();
             }
           });
         } else {
           console.log('fails');
+
+          setOnRefresh(false);
+
+          arrayindex++;
 
           SyncArray1.push({
             name: 'Spare Parts Download Failed...',
             id: arrayindex,
           });
           setSyncArray(SyncArray1);
+          setOnRefresh(true);
+          Sync_Priority();
         }
       })
       .catch((error) => {
+
+        setOnRefresh(false);
+
+        arrayindex++;
         SyncArray1.push({
-          name: 'Spare Parts Save Failed...',
+          name: 'Spare Parts Download Failed...',
           id: arrayindex,
         });
         setSyncArray(SyncArray1);
         console.log('errorrrrr ' + error);
+        setOnRefresh(true);
+        Sync_Priority();
       });
 
   }
@@ -574,6 +809,8 @@ const SyncScreen = () => {
 
   }
 
+
+
   return (
 
     <SafeAreaView style={ComStyles.CONTAINER}>
@@ -582,7 +819,7 @@ const SyncScreen = () => {
 
 
         <View style={{ flex: 1.5, marginBottom: 5 }}>
-          {/* <FlatList
+          <FlatList
             showsHorizontalScrollIndicator={false}
             // data={Arrays.SelectPackage.Wash.filter(ob => ob.extras == true)}
             data={SyncArray}
@@ -601,20 +838,22 @@ const SyncScreen = () => {
                 </View>
               );
             }}
+            onRefresh={() => null}
+            refreshing={onRefresh}
             keyExtractor={item => `${item.id}`}
-          /> */}
+          />
 
 
-          {
+          {/* {
 
-            SyncArray.map((item) => (
+            SyncArray1.map((item) => (
               <Text key={item.id}>{item.name}</Text>
             )
 
             )
 
-          }
-        
+          } */}
+
 
 
         </View>

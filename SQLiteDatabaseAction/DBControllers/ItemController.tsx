@@ -35,7 +35,8 @@ export const saveItem = (data, callBack) => {
                         response = 3;
             
                         callBack(response);
-                        console.log(" item unaaaaaaaa");
+                        console.log(" item iwara unaaaaaaaa");
+
                     }else if(i == 0){
             
                         response =1;
