@@ -253,7 +253,6 @@ const Login = () => {
         else {
 
              Get_Login_API_Data();
-             
         }
 
 
@@ -296,7 +295,7 @@ const Login = () => {
                                 setLoginHeading("LOGIN TO START THE DATE");
                                 setShowQuckAcess(false);
                                 slideInModal();
-                                firstTimeLogingsync();
+                                // firstTimeLogingsync();
                             } else {
                                 // insertServiceData();
                                 setLoginHeading("LOGIN");

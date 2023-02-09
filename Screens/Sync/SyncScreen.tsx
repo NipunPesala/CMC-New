@@ -11,6 +11,7 @@ import {
   StyleSheet,
   Platform,
   Alert,
+  RefreshControl,
 } from 'react-native';
 import ActionButton from '../../Components/ActionButton';
 import ComStyles from "../../Constant/Components.styles";
@@ -43,6 +44,8 @@ const SyncScreen = () => {
 
   const [SyncArray, setSyncArray]: any[] = useState([]);
   const [Token_Key, setToken_Key] = useState("");
+  const [onRefresh, setOnRefresh] = useState(true);
+  const [syncText, setsyncText] = useState('');
 
   const syncbtn = () => {
 
@@ -51,19 +54,22 @@ const SyncScreen = () => {
     get_ASYNC_TOCKEN().then(res => {
       TOCKEN_KEY = res;
       Sync_Customer(TOCKEN_KEY);
-      Sync_Item(TOCKEN_KEY);
-      Sync_ServiceType(TOCKEN_KEY);
-      Sync_User_Type(TOCKEN_KEY);
-      Sync_User(TOCKEN_KEY);
-      Sync_CustomerItems(TOCKEN_KEY);
-      Sync_ItemSerialNo(TOCKEN_KEY);
-      Sync_SpareParts(TOCKEN_KEY);
-      Sync_Priority();
-     
+      // Sync_Item(TOCKEN_KEY);
+      // Sync_ServiceType(TOCKEN_KEY);
+      // Sync_User_Type(TOCKEN_KEY);
+      // Sync_User(TOCKEN_KEY);
+      // Sync_CustomerItems(TOCKEN_KEY);
+      // Sync_ItemSerialNo(TOCKEN_KEY);
+      // Sync_SpareParts(TOCKEN_KEY);
+      // Sync_Priority();
+
     })
 
 
   }
+
+
+
 
   //----------------------------------  user download ----------------------------------------------
   const Sync_User = (Key: any) => {
@@ -221,22 +227,44 @@ const SyncScreen = () => {
         if (response.status === 200) {
           DB_Item.saveItem(response.data, (res: any) => {
 
-            if (res = true) {
+            if (res == 1) {
+
               arrayindex++;
 
               SyncArray1.push({
-                name: 'Item Download Sucsessfully...',
+                name: 'Item Downloading...',
                 id: arrayindex,
               });
               setSyncArray(SyncArray1);
+              setOnRefresh(true);
+              console.log(" array ...........   ", arrayindex)
 
+            } else if (res == 2) {
 
-            } else {
+              arrayindex++;
+
               SyncArray1.push({
                 name: 'Item Save Failed...',
                 id: arrayindex,
               });
               setSyncArray(SyncArray1);
+              setOnRefresh(true);
+              console.log(" array ...........   ", arrayindex)
+
+            } else if (res == 3) {
+
+              console.log("success item ..................", SyncArray1.length);
+
+              arrayindex++;
+
+              SyncArray1.push({
+                name: 'Item Downloaded Successfully...',
+                id: arrayindex,
+              });
+              setSyncArray(SyncArray1);
+              console.log("success Item 11 ..................", SyncArray1.length);
+              setOnRefresh(true);
+              console.log(" array success ...........   ", arrayindex)
 
             }
           });
@@ -247,6 +275,7 @@ const SyncScreen = () => {
             id: arrayindex,
           });
           setSyncArray(SyncArray1);
+          setOnRefresh(true);
 
         }
       })
@@ -257,6 +286,7 @@ const SyncScreen = () => {
         });
         setSyncArray(SyncArray1);
         console.log('errorrrrr ' + error);
+        setOnRefresh(true);
 
       });
   }
@@ -272,21 +302,53 @@ const SyncScreen = () => {
         if (response.status === 200) {
           DB_Customer.saveCustomer(response.data, (res: any) => {
 
-            if (res = true) {
+
+            if (res == 1) {
+
               arrayindex++;
 
+              setsyncText(syncText + "Customer Downloading...");
+
               SyncArray1.push({
-                name: 'Customer Download Sucsessfully...',
+                name: 'Customer Downloading...',
                 id: arrayindex,
               });
               setSyncArray(SyncArray1);
 
-            } else {
+
+
+
+            } else if (res == 2) {
+
+              arrayindex++;
+
               SyncArray1.push({
                 name: 'Customer Save Failed...',
                 id: arrayindex,
               });
               setSyncArray(SyncArray1);
+              setsyncText(syncText + "\n" + 'Customer Save Failed...');
+
+              // Sync_Item(TOCKEN_KEY);
+
+
+            } else if (res == 3) {
+
+
+
+              arrayindex++;
+
+              console.log(syncText);
+              setsyncText(syncText + "\n" + 'Customer Downloaded Successfully...');
+              console.log(syncText);
+
+              SyncArray1.push({
+                name: 'Customer Downloaded Successfully...',
+                id: arrayindex,
+              });
+              setSyncArray(SyncArray1);
+
+              // Sync_Item(TOCKEN_KEY);
 
             }
           });
@@ -299,6 +361,7 @@ const SyncScreen = () => {
           });
           setSyncArray(SyncArray1);
 
+
         }
       })
       .catch((error) => {
@@ -307,7 +370,7 @@ const SyncScreen = () => {
           id: arrayindex,
         });
         setSyncArray(SyncArray1);
-        console.log('errorrrrr ' + error);
+
 
       });
   }
@@ -376,7 +439,7 @@ const SyncScreen = () => {
 
             console.log(" response status .....*********   ", res)
 
-             if (res == 1) {
+            if (res == 1) {
 
               console.log("pending..............");
               arrayindex++;
@@ -387,19 +450,19 @@ const SyncScreen = () => {
               });
               setSyncArray(SyncArray1);
 
-            } else if(res == 3){
+            } else if (res == 3) {
 
               console.log("iwaraiiiiiiiiiiiiiiiiiiiiiiiiiii >>>>>>>>>>>");
-              
-                arrayindex++;
-  
-                SyncArray1.push({
-                  name: 'Item Serial No Download Sucsessfully...',
-                  id: arrayindex,
-                });
-                setSyncArray(SyncArray1);
 
-            }else if(res == 2) {
+              arrayindex++;
+
+              SyncArray1.push({
+                name: 'Item Serial No Download Sucsessfully...',
+                id: arrayindex,
+              });
+              setSyncArray(SyncArray1);
+
+            } else if (res == 2) {
 
               SyncArray1.push({
                 name: 'Item Serial No Save Failed...',
@@ -408,7 +471,7 @@ const SyncScreen = () => {
               setSyncArray(SyncArray1);
             }
 
-            
+
           });
         } else {
           console.log('fails');
@@ -437,7 +500,7 @@ const SyncScreen = () => {
     DB_Priority.savePriority(priorityListInitial, (res: any, error: any) => {
 
       arrayindex++;
-      
+
       SyncArray1.push({
         name: 'Priority Download Sucsessfully...',
         id: arrayindex,
@@ -504,6 +567,13 @@ const SyncScreen = () => {
     ]);
   }
 
+  const handleRefresh = () => {
+
+    setOnRefresh(false);
+    syncbtn();
+
+  }
+
   return (
 
     <SafeAreaView style={ComStyles.CONTAINER}>
@@ -512,7 +582,7 @@ const SyncScreen = () => {
 
 
         <View style={{ flex: 1.5, marginBottom: 5 }}>
-          <FlatList
+          {/* <FlatList
             showsHorizontalScrollIndicator={false}
             // data={Arrays.SelectPackage.Wash.filter(ob => ob.extras == true)}
             data={SyncArray}
@@ -532,7 +602,21 @@ const SyncScreen = () => {
               );
             }}
             keyExtractor={item => `${item.id}`}
-          />
+          /> */}
+
+
+          {
+
+            SyncArray.map((item) => (
+              <Text key={item.id}>{item.name}</Text>
+            )
+
+            )
+
+          }
+        
+
+
         </View>
 
         <View style={{ flexDirection: 'row', flex: 0.25 }}>

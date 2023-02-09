@@ -26,21 +26,35 @@ export const saveItem = (data, callBack) => {
                     status = EXCLUDED.status`,
                 },
             ],
-            (res, err) => {
+            (res:any, err:any) => {
                 if(res === 'success'){
-                    response =true;
-                    // console.log("____________Item_______________",response);
+
+                    console.log(i,"___________Item________________",response);
+
+                    if( i+1 == data.length){
+                        response = 3;
+            
+                        callBack(response);
+                        console.log(" item unaaaaaaaa");
+                    }else if(i == 0){
+            
+                        response =1;
+                        callBack(response);
+                        console.log(" item first time .....");
+                    }
     
                    
                 }else{
-                    response =false;
+                    // response =false;
+                    response =2;
+                    callBack(response);
                 }
             },
         );
     }
 
-    console.log(" item saves finished ............. ")
-    callBack(true);
+    // console.log(" item saves finished ............. ")
+    // callBack(true);
 };
 
 export const deleteItem = (callBack) => {
