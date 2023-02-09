@@ -625,7 +625,7 @@ const NewServiceCall = (props: any) => {
         getServiceCallTypes();
         getItem();
         getCustomers();
-        // getAllUserTypesData();
+        getAllUserTypesData();
         // getContactPerson();
 
         Mode = route.params.mode;
@@ -670,9 +670,9 @@ const NewServiceCall = (props: any) => {
             // })
 
             getServiceCallTypes();
-            // getItem();
+            getItem();
             getCustomers();
-            // getAllUserTypesData();
+            getAllUserTypesData();
             // getContactPerson();
             Mode = route.params.mode;
 
