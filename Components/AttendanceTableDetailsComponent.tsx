@@ -23,6 +23,7 @@ type ParamTypes = {
   btnOnPress?: Function;
   batchStyle?:any;
   txtstyle?:any;
+  batchLabelStyle?:any;
 };
 
 const AttendanceTableDetailsComponent = ({
@@ -41,7 +42,8 @@ const AttendanceTableDetailsComponent = ({
   iconOnPress,
   btnOnPress,
   batchStyle,
-  txtstyle
+  txtstyle,
+  batchLabelStyle
 }: ParamTypes) => {
   return (
     <View style={styles.container}>
@@ -71,7 +73,7 @@ const AttendanceTableDetailsComponent = ({
           </View>
         ) : null}
         {isHeadertitle6 ? (
-          <View style={styles.headersubContainer}>
+          <View style={styles.headersubContainer,batchLabelStyle}>
             <Text style={styles.textStyle}>{Headertitle6}</Text>
           </View>
         ) : null}

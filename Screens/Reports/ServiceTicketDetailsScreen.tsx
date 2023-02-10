@@ -188,13 +188,13 @@ const btnCloseOnpress=()=>{
                 isHeadertitle2={true}
                 Headertitle2="Assing to"
                 isHeadertitle3={true}
-                Headertitle3="Ticket Status"
+                Headertitle3="Service Call Id"
                 isHeadertitle4={false}
                 Headertitle4="Ticket Content"
                 isHeadertitle5={true}
                 Headertitle5=" Ticket Content"
                 isHeadertitle6={true}
-                Headertitle6="Service Call Id"
+                Headertitle6="Ticket Status"
 
             />
              <FlatList
@@ -212,12 +212,12 @@ const btnCloseOnpress=()=>{
                                     isHeadertitle2={true}
                                     Headertitle2={item.assignTo}
                                     isHeadertitle3={true}
-                                    batchStyle={item.status==0?style.openstyle:item.status==1?style.pendingstyle:item.status==2?style.holdstyle:style.Completestyle}
-                                    Headertitle3={item.status==0?"Open":item.status==1?"Pending":item.status==2?"Hold":"Completed"}
+                                    batchLabelStyle={item.attend_status==0?style.openstyle:item.attend_status==1?style.pendingstyle:item.attend_status==2?style.holdstyle:style.Completestyle}
+                                    Headertitle6={item.attend_status==0?"Open":item.attend_status==1?"Pending":item.attend_status==2?"Hold":"Completed"}
                                     isHeadertitle4={true}
                                     Headertitle4={item.content}
                                     isHeadertitle6={true}
-                                    Headertitle6={item.serviceId}
+                                    Headertitle3={item.serviceId}
                             
                                 />
 

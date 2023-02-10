@@ -69,6 +69,7 @@ export default StyleSheet.create({
     Completestyle: {
         backgroundColor: '#1E8449',
         borderRadius: 10,
+        justifyContent:"center"
     },
     pendingstyle: {
         backgroundColor: '#e2a25d',
