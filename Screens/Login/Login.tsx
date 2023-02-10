@@ -60,6 +60,7 @@ import PushNotification from "react-native-push-notification";
 let height = Dimensions.get("screen").height;
 // requestPermission();
 //Permission.checkPermission();
+var login_Status:any;
 const Login = () => {
 
     const [uName, setuName] = useState('');
@@ -100,7 +101,14 @@ const Login = () => {
                 if (result.length > 0) {
 
                     setLoginStatus(true);
-
+                    console.log("second");
+                    AsyncStorage.setItem(AsyncStorageConstants.ASYNC_LOGIN_STATUS, "SECOND");
+                    login_Status="SECOND"
+                }else if(result.length == 0){
+                    console.log("first");
+                    AsyncStorage.setItem(AsyncStorageConstants.ASYNC_LOGIN_STATUS, "FIRST");
+                    setLoginStatus(false);
+                    login_Status="FIRST"
                 }
 
             });
@@ -518,9 +526,12 @@ const Login = () => {
 
                         if (result === "success") {
 
+                            console.log(login_Status,'>>>>>>>>>>>');
+                            
                             slideOutModal();
-
-                            navigation.navigate("SyncScreen");
+                             navigation.navigate('SyncScreen', {
+                        LoginStatus: login_Status,
+                      });
 
                         } else {
 

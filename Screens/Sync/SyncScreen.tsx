@@ -32,42 +32,61 @@ import * as DB_Priority from '../../SQLiteDatabaseAction/DBControllers/PriorityC
 import * as DB_SpareParts from '../../SQLiteDatabaseAction/DBControllers/SparePartsController';
 import { priorityListInitial, Service_types } from "../../Constant/DummyData";
 import { logProfileData } from 'react-native-calendars/src/Profiler';
-
+import { getASYNC_LOGIN_STATUS } from "../../Constant/AsynStorageFuntion"
 let SyncArray1: any[] = [];
 let arrayindex = 0;
 var TOCKEN_KEY: any;
+var LoginType: any;
 var GET_URL = "http://124.43.13.162:4500/api/";
 
-const SyncScreen = () => {
+const SyncScreen = (props: any) => {
 
-  const navigation = useNavigation();
+  const { navigation, route } = props;
 
 
   const [SyncArray, setSyncArray]: any[] = useState([]);
   const [Token_Key, setToken_Key] = useState("");
   const [onRefresh, setOnRefresh] = useState(false);
+  const [disablebtn, setdisablebtn] = useState(false);
   const [syncText, setsyncText] = useState('');
+  const [btntitle, setbtntitle] = useState('');
 
-  const route=useRoute();
+  // const route=useRoute();
 
   const syncbtn = () => {
 
-    SyncArray1 = [];
-    setSyncArray([]);
-    get_ASYNC_TOCKEN().then(res => {
-      TOCKEN_KEY = res;
-      Sync_Customer(TOCKEN_KEY);
+    if(btntitle=="Sync"){
+      SyncArray1 = [];
+      setSyncArray([]);
+      get_ASYNC_TOCKEN().then(res => {
+        TOCKEN_KEY = res;
+        Sync_Customer(TOCKEN_KEY);
+  
+  
+        setOnRefresh(false);
+        setdisablebtn(false)
+  
+      })
+    }else{
+      Alert.alert("Colse")
+    }
 
-
-      setOnRefresh(false);
-    
-
-    })
 
 
   }
 
-
+  useEffect(() => {
+    setdisablebtn(true);
+    LoginType = route.params.LoginStatus;
+   console.log(LoginType,'----------');
+   if(LoginType=="FIRST"){
+    setbtntitle('Close')
+    setdisablebtn(false)
+   }else{
+    setbtntitle('Sync')
+   }
+   
+}, [])
 
 
   //----------------------------------  user download ----------------------------------------------
@@ -679,7 +698,8 @@ const SyncScreen = () => {
           id: arrayindex,
         });
         setSyncArray(SyncArray1);
-    
+        setdisablebtn(true);
+        setbtntitle('Close')
         setOnRefresh(true);
         setOnRefresh(false);
 
@@ -702,9 +722,10 @@ const SyncScreen = () => {
           id: arrayindex,
         });
         setSyncArray(SyncArray1);
-    
+        setdisablebtn(true);
         setOnRefresh(true);
         setOnRefresh(false);
+        setbtntitle('Close')
 
       }
       
@@ -793,7 +814,12 @@ const SyncScreen = () => {
   }
 
 
-  const cancelAndGoBack = () => {
+  const AlertSync_close_press = () => {
+console.log("CCCCCCCCCCCCCC");
+navigation.navigate("BottomNavi");
+  }
+
+    const cancelAndGoBack = () => {
 
     
     Alert.alert('Cancle', 'Are you sure ? ', [
@@ -802,7 +828,7 @@ const SyncScreen = () => {
         onPress: () => console.log('Cancel Pressed'),
         style: 'cancel',
       },
-      { text: 'OK', onPress: () =>  navigation.navigate('BottomNavi'), }
+      { text: 'OK', onPress: () =>  AlertSync_close_press() }
     ]);
   }
 
@@ -863,18 +889,18 @@ const SyncScreen = () => {
         </View>
 
         <View style={{ flexDirection: 'row', flex: 0.25 }}>
-          <View style={{ flex: 1, padding: 3 }}>
-            <ActionButton title="Sync" onPress={() => syncbtn()} />
-          </View>
-          <View style={{ flex: 1, padding: 3 }}>
-            <ActionButton title="Close"
-              onPress={() => cancelAndGoBack()}
-            />
-          </View>
+
+          {
+            disablebtn === true ? <View style={{ flex: 1, padding: 3 }}>
+            <ActionButton  title={btntitle} onPress={() => syncbtn()} />
+          </View> : null
+          }
+          
+          
         </View>
       </View>
 
     </SafeAreaView>
   );
 };
-export default SyncScreen;
+export default SyncScreen; 

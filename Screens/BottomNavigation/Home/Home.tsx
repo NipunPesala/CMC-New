@@ -295,7 +295,7 @@ const Home = () => {
       // navigation.navigate('RequestDetails')
     });
   };
-
+  
   // const getServiceTickets = () => {
 
   //     getServiceTicket(result: any) => {
@@ -757,7 +757,7 @@ const Home = () => {
             is_icon={true}
             icon_name="sync"
             iconColor={comStyles.COLORS.ICON_BLUE}
-            onPress={() => navigation.navigate('SyncScreen')}
+            onPress={() =>      navigation.navigate('SyncScreen', { LoginStatus: "SECOND",})}
           />
         </View>
         <View style={{padding: 30}} />
