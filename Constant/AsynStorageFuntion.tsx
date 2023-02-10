@@ -149,6 +149,17 @@ export const ClearAsyncStorage = async () => {
       }
     }
 
+    
+    export const getASYNC_LOGIN_STATUS = async () => {
+      try {
+        const value = await AsyncStorage.getItem(AsyncStorageConstants.ASYNC_LOGIN_STATUS)
+        return value
+    
+      } catch (e) {
+        console.log('Failed to fetch the data from storage')
+      }
+    }
+
   //   set_data = async (storage_key, value) => {
   //     try {
   //         const value_to_store = JSON.stringify(value);

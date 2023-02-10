@@ -44,5 +44,6 @@ export default class AsyncStorageConstants {
     static ASYNC_RESOURCE_Type = 'RESOURCE_Type';
     static ASYNC_TOCKEN = 'LoginToken';
     static ASYNC_LOGIN_USERID = 'LoginUserID';
+    static ASYNC_LOGIN_STATUS = 'Login_Status';
 
 }
