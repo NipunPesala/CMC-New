@@ -105,7 +105,7 @@ const TicketDetails = (props: any) => {
 
           
 
-            console.log(" Spare Parts  ................  " , result );
+            // console.log(" Spare Parts  ................  " , result );
             
         });
     }

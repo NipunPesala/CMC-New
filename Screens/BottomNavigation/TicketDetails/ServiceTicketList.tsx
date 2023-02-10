@@ -21,7 +21,7 @@ const InprogressTask = () => {
     const [ticketListUpdate, setTicketListUpdate] = useState([]);
     const routeNav=useRoute();
     useEffect(() => {
-        getServiceTicket();
+        // getServiceTicket();
         const focusHandler = navigation.addListener('focus', () => {
             getTicketList();
            
@@ -94,12 +94,12 @@ const InprogressTask = () => {
 
     }
 
-    const handleOnPressUpdateBtn = (status:any,customerList:any) => {
+    const handleOnPressUpdateBtn = (ticketID:any,customerList:any) => {
        
-        getServiceTicket(status);
+        getServiceTicket(ticketID);
         console.log('-------over get detcket ddetails-------------');
         navigation.navigate('NewServiceTicket', {
-            ticketID: status,
+            ticketID: ticketID,
             mode:1,
             tickList:ticketListUpdate,
             navigate:1,
@@ -159,7 +159,7 @@ const InprogressTask = () => {
                                                 nameAddress={true}
                                                 isbtn={true}
                                                 isIcon={false}
-                                                btnTitle="Update"
+                                                btnTitle="View Details"
                                                 onPresBtn={() => handleOnPressUpdateBtn(item.ticketId,ticketListUpdate)}
                                             />
                                     

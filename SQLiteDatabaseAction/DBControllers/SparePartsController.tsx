@@ -88,7 +88,7 @@ export const getSparePartsAllData = (callBack: any) => {
 
 export const getSearchSpareParts = (txt: String, callBack: any) => {
     DB.searchData(
-        'SELECT * FROM SPARE_PARTS WHERE (SparePartNo like ? OR description like ?) AND  status=1',
+        'SELECT * FROM SPARE_PARTS WHERE (SparePartNo like ? OR description like ?) ',
         [`%${txt}%`, `%${txt}%`],
         (resp: any, err: any) => {
             callBack(resp, err);

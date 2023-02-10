@@ -81,6 +81,9 @@ const SparePartsScreen = () => {
 
     const searchSpareParts = (text:any) => {
 
+        console.log(" txt .............  " , text);
+        
+
         setSearchText(text);
 
         getSearchSpareParts(text , (result:any) => {

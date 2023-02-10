@@ -91,16 +91,19 @@ const NewServiceTicket = (props: any) => {
         }
     }
     const sendData = () => {
+
+
+
         const jsonData = [
             {
                 ticketId: TicketID,
-                serviceCallId: selectServiceCallID,
+                serviceId: selectServiceCallID,
                 content: content,
                 itemDescription: "sample",
                 startDate: startDate,
                 endDate: endDate,
                 priority: selectPriority,
-                assignPerson: selectAssignPerson,
+                assignTo: selectAssignPerson,
                 attend_status: "0",
                 status: '0',
                 engRemark: '',
@@ -170,7 +173,7 @@ const NewServiceTicket = (props: any) => {
                 if (result === "success") {
 
                  //need check internet connection true false
-                 UploadServiceTicket();
+                //  UploadServiceTicket();
 
                     ToastAndroid.show("New Service Ticket Create Success ", ToastAndroid.SHORT);
                     navigation.navigate('Home');
