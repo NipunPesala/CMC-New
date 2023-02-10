@@ -424,7 +424,7 @@ const ServiceCall = () => {
                                                     nameAddress={true}
                                                     isbtn={recieve}
                                                     isIcon={confirm}
-                                                    isUpdate={recieve}
+                                                    isUpdate={false}
                                                     onPressIcon={() => handleclicked(item.serviceId)}
                                                     onPresBtn={() => getServiceID(item.serviceId)}
                                                     onPresBtnupdate = {() => _handleOnPress(item.serviceId,customerList)}

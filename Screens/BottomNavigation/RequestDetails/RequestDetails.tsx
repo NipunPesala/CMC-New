@@ -277,7 +277,8 @@ const RequestDetails = (props: any) => {
 
                             <Tickets 
                             btnEnable={isServiceActive}
-                            enableStatusUpdate={!isServiceActive}
+                            // enableStatusUpdate={!isServiceActive}
+                            enableStatusUpdate={false}
                              />
                             :
                             loadScreen == "location" ?
