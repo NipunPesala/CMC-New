@@ -6,8 +6,8 @@ export const saveExpences = (data, callBack) => {
             [
                 {
                     table: 'EXPENCES',
-                    columns: `ServiceCall_ID,ExpenseTypeID,Amount,Remark,CreatedBy,CreateDate,RelaventDate,,isSync`,
-                    values: '?,?,?,?,?,?,?,?',
+                    columns: `ServiceCall_ID,ExpenseTypeID,Amount,Remark,CreatedBy,CreateDate,RelaventDate,status,isSync`,
+                    values: '?,?,?,?,?,?,?,?,?',
                     params: [
                         data[i].ServiceCall_ID,
                         data[i].ExpenseTypeID,

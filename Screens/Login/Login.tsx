@@ -58,9 +58,9 @@ import ComponentsStyles from "../../Constant/Components.styles";
 import PushNotification from "react-native-push-notification";
 //import {Permission,PERMISSION_TYPE}from '../../Constant/AppPermission';
 let height = Dimensions.get("screen").height;
-// requestPermission();
+requestPermission();
 //Permission.checkPermission();
-var login_Status:any;
+var login_Status: any;
 const Login = () => {
 
     const [uName, setuName] = useState('');
@@ -103,12 +103,12 @@ const Login = () => {
                     setLoginStatus(true);
                     console.log("second");
                     AsyncStorage.setItem(AsyncStorageConstants.ASYNC_LOGIN_STATUS, "SECOND");
-                    login_Status="SECOND"
-                }else if(result.length == 0){
+                    login_Status = "SECOND"
+                } else if (result.length == 0) {
                     console.log("first");
                     AsyncStorage.setItem(AsyncStorageConstants.ASYNC_LOGIN_STATUS, "FIRST");
                     setLoginStatus(false);
-                    login_Status="FIRST"
+                    login_Status = "FIRST"
                 }
 
             });
@@ -130,13 +130,13 @@ const Login = () => {
 
     }
 
-    const createChannels =()=>{
+    const createChannels = () => {
 
         PushNotification.createChannel(
             {
-              channelId: "test_channel", // (required)
-              channelName: "Test Channel", // (required)
-              vibrate: true, // (optional) default: true. Creates the default vibration pattern if true.
+                channelId: "test_channel", // (required)
+                channelName: "Test Channel", // (required)
+                vibrate: true, // (optional) default: true. Creates the default vibration pattern if true.
             })
     }
 
@@ -225,7 +225,7 @@ const Login = () => {
 
         // });
     }
-    
+
     const login = () => {
 
         console.log(uName, '--', pword);
@@ -261,27 +261,34 @@ const Login = () => {
 
         else {
 
-             Get_Login_API_Data();
+            Get_Login_API_Data();
+            //  navigation.navigate("BottomNavi");
         }
 
 
 
     };
 
-    const firstTimeLogingsync=()=>{
+    const firstTimeLogingsync = () => {
         navigation.navigate("AddExpencesNew");
 
     }
 
     const Get_Login_API_Data = () => {
-        const params = {
-            "username": uName,
-            "password": pword
+        // const params = {
 
-        }
+
+        //     // 'username': uName,
+        //     // 'password': pword
+        //     // JSON.stringify({ name: 'John Doe' });
+        // }
+        let data = JSON.stringify({
+            password: pword,
+            username: uName
+        })
         try {
 
-            axios.post("http://124.43.13.162:4500/api/auth/login", params, {
+            axios.post("http://124.43.13.162:4500/api/auth/login", data, {
 
                 "headers": {
 
@@ -298,7 +305,7 @@ const Login = () => {
                             AsyncStorage.setItem(AsyncStorageConstants.ASYNC_TOCKEN, response.data.Data[0].Token);
                             // AsyncStorage.setItem(AsyncStorageConstants.ASYNC_LOGIN_USERID, response.data.Data[0].UserId);
                             // AsyncStorage.setItem(AsyncStorageConstants.ASYNC_TOCKEN, response.data.token);
-                            // AsyncStorage.setItem(AsyncStorageConstants.ASYNC_LOGIN_USERID, response.data.Data[0].UserId);
+                            AsyncStorage.setItem(AsyncStorageConstants.ASYNC_LOGIN_USERID, "1");
                             if (readingType == "OUT" || readingType == "") {
                                 // last record has day end .so need to add day statrt
                                 setLoginHeading("LOGIN TO START THE DATE");
@@ -313,14 +320,14 @@ const Login = () => {
 
 
                             }
-
+                            // navigation.navigate("BottomNavi");
                         } else {
 
                             Alert.alert(
                                 "Invalid Details!",
                                 response.data.ResponseDescription,
                                 [
-                                    { text: "OK", onPress: () => console.log( response.data.ResponseDescription) }
+                                    { text: "OK", onPress: () => console.log(response.data.ResponseDescription) }
                                 ]
                             );
                         }
@@ -330,7 +337,7 @@ const Login = () => {
                             "Invalid Details!",
                             response.data.message.ErrorDescription,
                             [
-                                { text: "OK", onPress: () => console.log( response.data.message.ErrorDescription) }
+                                { text: "OK", onPress: () => console.log(response.data.message.ErrorDescription) }
                             ]
                         );
                     }
@@ -404,20 +411,47 @@ const Login = () => {
     }
     const slideInModal = () => {
 
-        setIsShowSweep(false);
-        console.log('sampleIn');
+        try {
 
-        Animated.timing(modalStyle, {
-            toValue: height / 3.2,
-            duration: 500,
-            useNativeDriver: false,
-        }).start();
+            setIsShowSweep(false);
+            console.log('sampleIn');
+
+            Animated.timing(modalStyle, {
+                toValue: height / 3.2,
+                duration: 500,
+                useNativeDriver: false,
+            }).start();
+
+        } catch (error) {
+            Alert.alert(error + "");
+        }
+
+
     };
     //#endregion
 
     //#region SlideOutModal
 
     const slideOutModal = () => {
+
+
+        try {
+
+
+            setIsShowSweep(true);
+            Keyboard.dismiss();
+            Animated.timing(modalStyle, {
+                toValue: height,
+                duration: 500,
+                useNativeDriver: false,
+            }).start();
+
+
+        } catch (error) {
+            Alert.alert(error + "");
+        }
+
+
         setIsShowSweep(true);
         Keyboard.dismiss();
         Animated.timing(modalStyle, {
@@ -453,7 +487,7 @@ const Login = () => {
                         }
                     ]
 
-                     console.log('--------------this is a  insertMeterReading------------');
+                    console.log('--------------this is a  insertMeterReading------------');
 
 
 
@@ -461,10 +495,10 @@ const Login = () => {
                         // console.log(result, "/////////////......................//////////");
 
                         if (result === "success") {
-                           // firstTimeLogingsync();
-                           console.log('*************this is a check sync navigation*****');
-                           //firstTimeLogingsync()
-                           navigation.navigate("BottomNavi");
+                            // firstTimeLogingsync();
+                            console.log('*************this is a check sync navigation*****');
+                            //firstTimeLogingsync()
+                            navigation.navigate("BottomNavi");
 
                         } else {
 
@@ -526,12 +560,14 @@ const Login = () => {
 
                         if (result === "success") {
 
-                            console.log(login_Status,'>>>>>>>>>>>');
-                            
+                            console.log(login_Status, '>>>>>>>>>>>');
+
                             slideOutModal();
-                             navigation.navigate('SyncScreen', {
-                        LoginStatus: login_Status,
-                      });
+                            navigation.navigate('SyncScreen', {
+                                LoginStatus: login_Status,
+                            });
+
+                            // navigation.navigate("BottomNavi");
 
                         } else {
 
@@ -631,7 +667,7 @@ const Login = () => {
     return (
         <SafeAreaView style={comStyles.CONTAINER}>
 
-        
+
             <Animated.View
                 style={{
                     ...StyleSheet.absoluteFillObject,
@@ -651,7 +687,7 @@ const Login = () => {
                 }}>
 
 
-                
+
                 <View style={style.modalCont}>
 
                     {/* ........................................ meter reading modal start.......................................... */}
@@ -670,7 +706,7 @@ const Login = () => {
                             <Text style={styles.modalRegularTitle}>Time: </Text>
                             <Text style={styles.modalTitle}>{moment().utcOffset('+05:30').format(' hh:mm a')}</Text>
                         </View>
-                  
+
                         <View style={styles.modalMainContainer}>
                             <Text style={{ fontFamily: comStyles.FONT_FAMILY.BOLD, color: comStyles.COLORS.HEADER_BLACK, fontSize: 15, marginTop: 10 }}>Add the meter you are starting from</Text>
                         </View>
@@ -727,64 +763,64 @@ const Login = () => {
 
                 </View>
 
-              
+
             </Animated.View>
-           
+
             <ImageBackground source={require('../../assets/images/loginBackground.png')} style={comStyles.CONTAINER}>
-            <ScrollView
-            style={comStyles.CONTENTLOG}
-            showsVerticalScrollIndicator={true}>
-                <View style={comStyles.CONTENTLOG2}>
-                    <View style={style.box3}>
-                    <Image source={require('../../assets/images/image007Main.png')} style={style.logoMain} />
-                    </View>
-                    <View style={style.box1}>
-                    </View>
+                <ScrollView
+                    style={comStyles.CONTENTLOG}
+                    showsVerticalScrollIndicator={true}>
+                    <View style={comStyles.CONTENTLOG2}>
+                        <View style={style.box3}>
+                            <Image source={require('../../assets/images/image007Main.png')} style={style.logoMain} />
+                        </View>
+                        <View style={style.box1}>
+                        </View>
 
-                    <View style={style.box2}>
-                        <InputText is_icon={true}
-                            icon_name="user"
-                            editable={true}
-                            placeholder="ENTER USER NAME"
-                            stateValue={uName}
-                            setState={(val: any) => setuName(val)}
-                            placeholderColor={comStyles.COLORS.ICON_BLUE}
-                        />
-                        <InputText is_icon={true}
-                            icon_name="lock"
-                            editable={true}
-                            stateValue={pword}
-                            setState={(val: any) => setPword(val)}
-                            placeholder="ENTER PASSWORD"
-                            secureTextEntry={true}
-                            placeholderColor={comStyles.COLORS.ICON_BLUE}
-                        />
+                        <View style={style.box2}>
+                            <InputText is_icon={true}
+                                icon_name="user"
+                                editable={true}
+                                placeholder="ENTER USER NAME"
+                                stateValue={uName}
+                                setState={(val: any) => setuName(val)}
+                                placeholderColor={comStyles.COLORS.ICON_BLUE}
+                            />
+                            <InputText is_icon={true}
+                                icon_name="lock"
+                                editable={true}
+                                stateValue={pword}
+                                setState={(val: any) => setPword(val)}
+                                placeholder="ENTER PASSWORD"
+                                secureTextEntry={true}
+                                placeholderColor={comStyles.COLORS.ICON_BLUE}
+                            />
 
-                        <View style={comStyles.separateLine} />
-                        <ActionButton title={LoginHeading}
-                            onPress={() => login()} style={style.ActionButton} />
-                        <Text style={style.subtxt}>or</Text>
-
-
-
-                        <ActionButton title="LOGIN TO QUICK ACCESS"
-                            onPress={() => navigation.navigate("BottomNavi")}
-                            style={loginStatus === true ? style.loginBtn : style.loginBtndesable}
-                            disabled={!loginStatus}
-                            textStyle={loginStatus === false ? style.desable_BUTTON_TEXT : null}
-
-                        />
-
-                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                            <View style={comStyles.separateLine} />
+                            <ActionButton title={LoginHeading}
+                                onPress={() => login()} style={style.ActionButton} />
+                            <Text style={style.subtxt}>or</Text>
 
 
-                            <Text style={style.footer}>Powered by</Text>
-                            <Image source={require('../../assets/images/logo.png')} style={style.logo} />
+
+                            <ActionButton title="LOGIN TO QUICK ACCESS"
+                                onPress={() => navigation.navigate("BottomNavi")}
+                                style={loginStatus === true ? style.loginBtn : style.loginBtndesable}
+                                disabled={!loginStatus}
+                                textStyle={loginStatus === false ? style.desable_BUTTON_TEXT : null}
+
+                            />
+
+                            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
 
 
+                                <Text style={style.footer}>Powered by</Text>
+                                <Image source={require('../../assets/images/logo.png')} style={style.logo} />
+
+
+                            </View>
                         </View>
                     </View>
-                </View>
                 </ScrollView>
             </ImageBackground>
             {/* <OrientationLoadingOverlay
@@ -794,7 +830,7 @@ const Login = () => {
                 messageFontSize={16}
                 message="Loading..."
             /> */}
-        
+
         </SafeAreaView >
     );
 }

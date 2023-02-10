@@ -98,13 +98,21 @@ const InprogressTask = () => {
        
         getServiceTicket(ticketID);
         console.log('-------over get detcket ddetails-------------');
-        navigation.navigate('NewServiceTicket', {
+        // navigation.navigate('NewServiceTicket', {
+        //     ticketID: ticketID,
+        //     mode:1,
+        //     tickList:ticketListUpdate,
+        //     navigate:1,
+    
+        // });
+
+
+        navigation.navigate('TicketDetails', {
             ticketID: ticketID,
-            mode:1,
-            tickList:ticketListUpdate,
-            navigate:1,
     
         });
+
+        
       };
 
   

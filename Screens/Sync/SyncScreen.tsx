@@ -1,4 +1,4 @@
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
 import {
   View,
@@ -30,7 +30,8 @@ import * as DB_User from '../../SQLiteDatabaseAction/DBControllers/UserControlle
 import * as DB_ItemSerialNo from '../../SQLiteDatabaseAction/DBControllers/ItemSerialNoController';
 import * as DB_Priority from '../../SQLiteDatabaseAction/DBControllers/PriorityController';
 import * as DB_SpareParts from '../../SQLiteDatabaseAction/DBControllers/SparePartsController';
-import { priorityListInitial, Service_types } from "../../Constant/DummyData";
+import * as DB_ExpenseType from '../../SQLiteDatabaseAction/DBControllers/ExpencesTypeController';
+import { ExpencesType, priorityListInitial, Service_types } from "../../Constant/DummyData";
 import { logProfileData } from 'react-native-calendars/src/Profiler';
 import { getASYNC_LOGIN_STATUS } from "../../Constant/AsynStorageFuntion"
 let SyncArray1: any[] = [];
@@ -39,9 +40,12 @@ var TOCKEN_KEY: any;
 var LoginType: any;
 var GET_URL = "http://124.43.13.162:4500/api/";
 
+var ButtonTitle:any;
 const SyncScreen = (props: any) => {
 
   const { navigation, route } = props;
+
+  const navi = useNavigation();
 
 
   const [SyncArray, setSyncArray]: any[] = useState([]);
@@ -55,20 +59,32 @@ const SyncScreen = (props: any) => {
 
   const syncbtn = () => {
 
-    if(btntitle=="Sync"){
+    console.log(ButtonTitle,"111111111111111111111111",btntitle);
+    
+    if (ButtonTitle == "Sync") {
+      console.log("2222222222222222222222222");
       SyncArray1 = [];
       setSyncArray([]);
       get_ASYNC_TOCKEN().then(res => {
         TOCKEN_KEY = res;
         Sync_Customer(TOCKEN_KEY);
-  
-  
+
+
         setOnRefresh(false);
         setdisablebtn(false)
-  
+
       })
-    }else{
-      Alert.alert("Colse")
+    } else {
+      // Alert.alert("Colse")
+      console.log("close .............. ");
+
+      if (LoginType == "FIRST") {
+        navi.navigate("BottomNavi");
+      } else {
+        navi.navigate("Home");
+
+      }
+
     }
 
 
@@ -78,15 +94,18 @@ const SyncScreen = (props: any) => {
   useEffect(() => {
     setdisablebtn(true);
     LoginType = route.params.LoginStatus;
-   console.log(LoginType,'----------');
-   if(LoginType=="FIRST"){
-    setbtntitle('Close')
-    setdisablebtn(false)
-   }else{
-    setbtntitle('Sync')
-   }
-   
-}, [])
+    console.log(LoginType, '-----111111111111111111111111111111111111111-----');
+    if (LoginType == "FIRST") {
+      setbtntitle('Sync')
+      ButtonTitle="Sync";
+      setdisablebtn(false)
+      syncbtn();
+    } else {
+      setbtntitle('Sync')
+      ButtonTitle="Sync";
+    }
+
+  }, [])
 
 
   //----------------------------------  user download ----------------------------------------------
@@ -660,79 +679,6 @@ const SyncScreen = (props: any) => {
       });
   }
 
-  //-------------------------------- Download Priority -----------------------------
-
-  const Sync_Priority = () => {
-
-    DB_Priority.savePriority(priorityListInitial, (res: any, error: any) => {
-
-      setOnRefresh(false);
-
-      if (res == 1) {
-
-        arrayindex++;
-
-        SyncArray1.push({
-          name: 'Priority Downloading...',
-          id: arrayindex,
-        });
-        setSyncArray(SyncArray1);
-        setOnRefresh(true);
-
-      }else if (res == 2) {
-
-        arrayindex++;
-
-        SyncArray1.push({
-          name: 'Priority Download Failed...',
-          id: arrayindex,
-        });
-        setSyncArray(SyncArray1);
-        setOnRefresh(true);
-        setOnRefresh(false);
-
-        arrayindex++;
-
-        SyncArray1.push({
-          name: 'Finished...',
-          id: arrayindex,
-        });
-        setSyncArray(SyncArray1);
-        setdisablebtn(true);
-        setbtntitle('Close')
-        setOnRefresh(true);
-        setOnRefresh(false);
-
-      }else if (res == 3) {
-
-        arrayindex++;
-
-        SyncArray1.push({
-          name: 'Priority Download Sucsessfully...',
-          id: arrayindex,
-        });
-        setSyncArray(SyncArray1);
-        setOnRefresh(true);
-        setOnRefresh(false);
-
-        arrayindex++;
-
-        SyncArray1.push({
-          name: 'Finished...',
-          id: arrayindex,
-        });
-        setSyncArray(SyncArray1);
-        setdisablebtn(true);
-        setOnRefresh(true);
-        setOnRefresh(false);
-        setbtntitle('Close')
-
-      }
-      
-    })
-
-  }
-
   // ------------------ Download Spare parts -------------------
   const Sync_SpareParts = (Key: any) => {
     const AuthStr = 'Bearer '.concat(Key);
@@ -765,7 +711,7 @@ const SyncScreen = (props: any) => {
               });
               setSyncArray(SyncArray1);
               setOnRefresh(true);
-              Sync_Priority();
+              Sync_ExpenseType();
 
             } else if (res == 3) {
 
@@ -777,7 +723,7 @@ const SyncScreen = (props: any) => {
               });
               setSyncArray(SyncArray1);
               setOnRefresh(true);
-              Sync_Priority();
+              Sync_ExpenseType();
             }
           });
         } else {
@@ -793,7 +739,7 @@ const SyncScreen = (props: any) => {
           });
           setSyncArray(SyncArray1);
           setOnRefresh(true);
-          Sync_Priority();
+          Sync_ExpenseType();
         }
       })
       .catch((error) => {
@@ -808,27 +754,156 @@ const SyncScreen = (props: any) => {
         setSyncArray(SyncArray1);
         console.log('errorrrrr ' + error);
         setOnRefresh(true);
-        Sync_Priority();
+        Sync_ExpenseType();
       });
+
+  }
+
+  //-------------------------------- Download Expense Type -----------------------------
+
+  const Sync_ExpenseType = () => {
+
+    DB_ExpenseType.saveExpencesType(ExpencesType, (res: any, error: any) => {
+
+      setOnRefresh(false);
+
+
+      if (res == 1) {
+
+        arrayindex++;
+
+        SyncArray1.push({
+          name: 'Expense Type Downloading...',
+          id: arrayindex,
+        });
+        setSyncArray(SyncArray1);
+        setOnRefresh(true);
+
+      } else if (res == 2) {
+
+        arrayindex++;
+
+        SyncArray1.push({
+          name: 'Expense Type Download Failed...',
+          id: arrayindex,
+        });
+        setSyncArray(SyncArray1);
+        setOnRefresh(true);
+        Sync_Priority();
+
+      } else if (res == 3) {
+
+        arrayindex++;
+
+        SyncArray1.push({
+          name: 'Expense Type Download Sucsessfully...',
+          id: arrayindex,
+        });
+        setSyncArray(SyncArray1);
+        setOnRefresh(true);
+        Sync_Priority();
+      }
+
+    })
+
+  }
+
+  //-------------------------------- Download Priority -----------------------------
+
+  const Sync_Priority = () => {
+
+    DB_Priority.savePriority(priorityListInitial, (res: any, error: any) => {
+
+      setOnRefresh(false);
+
+      if (res == 1) {
+
+        arrayindex++;
+
+        SyncArray1.push({
+          name: 'Priority Downloading...',
+          id: arrayindex,
+        });
+        setSyncArray(SyncArray1);
+        setOnRefresh(true);
+
+      } else if (res == 2) {
+
+        arrayindex++;
+
+        SyncArray1.push({
+          name: 'Priority Download Failed...',
+          id: arrayindex,
+        });
+        setSyncArray(SyncArray1);
+        setOnRefresh(true);
+        setOnRefresh(false);
+
+        arrayindex++;
+
+        SyncArray1.push({
+          name: 'Finished...',
+          id: arrayindex,
+        });
+        setSyncArray(SyncArray1);
+        setdisablebtn(true);
+        setbtntitle('Close')
+        ButtonTitle="Close";
+        setOnRefresh(true);
+        setOnRefresh(false);
+
+      } else if (res == 3) {
+
+        arrayindex++;
+
+        SyncArray1.push({
+          name: 'Priority Download Sucsessfully...',
+          id: arrayindex,
+        });
+        setSyncArray(SyncArray1);
+        setOnRefresh(true);
+        setOnRefresh(false);
+
+        arrayindex++;
+
+        SyncArray1.push({
+          name: 'Finished...',
+          id: arrayindex,
+        });
+        setSyncArray(SyncArray1);
+        setdisablebtn(true);
+        setOnRefresh(true);
+        setOnRefresh(false);
+        setbtntitle('Close')
+        ButtonTitle="Close";
+
+      }
+
+    })
 
   }
 
 
   const AlertSync_close_press = () => {
-console.log("CCCCCCCCCCCCCC");
-navigation.navigate("BottomNavi");
+    // console.log("CCCCCCCCCCCCCC");
+    if (LoginType == "FIRST") {
+      navi.navigate("BottomNavi");
+    } else {
+      navi.navigate("Home");
+
+    }
   }
 
-    const cancelAndGoBack = () => {
+  const cancelAndGoBack = () => {
 
-    
+
     Alert.alert('Cancle', 'Are you sure ? ', [
       {
         text: 'Cancel',
         onPress: () => console.log('Cancel Pressed'),
         style: 'cancel',
       },
-      { text: 'OK', onPress: () =>  AlertSync_close_press() }
+      { text: 'OK', onPress: () => AlertSync_close_press() }
     ]);
   }
 
@@ -892,11 +967,11 @@ navigation.navigate("BottomNavi");
 
           {
             disablebtn === true ? <View style={{ flex: 1, padding: 3 }}>
-            <ActionButton  title={btntitle} onPress={() => syncbtn()} />
-          </View> : null
+              <ActionButton title={btntitle} onPress={() => syncbtn()} />
+            </View> : null
           }
-          
-          
+
+
         </View>
       </View>
 

@@ -233,7 +233,7 @@ const RequestDetails = (props: any) => {
 
     return (
         <SafeAreaView style={ComStyles.CONTAINER}>
-            <Header title="Request Details" isBtn={true} btnOnPress={() => navigation.navigate(screenName)} />
+            <Header title="Request Details" isBtn={true} btnOnPress={() => navigation.navigate({screenName})} />
             <View style={ComStyles.CONTENT}>
                 <View style={{ padding: 10 }} />
                 <ServiceCustomerDetails

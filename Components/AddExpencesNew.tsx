@@ -154,7 +154,7 @@ const AddExpencesNew = (props: any) => {
             tab: 'Expences',
           });
         } else {
-          Alert.alert('Failed...!', 'Service Call Save Failed.', [
+          Alert.alert('Failed...!', 'Expences Save Failed.', [
             {
               text: 'OK',
               onPress: () => { },
