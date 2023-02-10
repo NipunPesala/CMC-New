@@ -32,7 +32,7 @@ import { getAllTypes } from "../SQLiteDatabaseAction/DBControllers/ServiceTypeCo
 import { Dropdown } from 'react-native-element-dropdown';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import { getAllPriority } from "../SQLiteDatabaseAction/DBControllers/PriorityController";
-import { getAllItems } from "../SQLiteDatabaseAction/DBControllers/ItemController";
+import { getAllCustomerVsItems, getAllItems } from "../SQLiteDatabaseAction/DBControllers/ItemController";
 import { getAllCustomers } from "../SQLiteDatabaseAction/DBControllers/CustomerController";
 import { getLastServiceId, getServiceById, saveServiceData, updateService, updateSycnServiceCAll } from "../SQLiteDatabaseAction/DBControllers/ServiceController";
 import { getAllUserTypes } from "../SQLiteDatabaseAction/DBControllers/Users_TypesController";
@@ -144,7 +144,7 @@ const NewServiceCall = (props: any) => {
 
         const sendData = [
             {
-                serviceId: serviceId,
+                ServiceCallId: serviceId,
                 item_code: selectItemCode,
                 item_description: itemDescription,
                 customer_address: cusAddress,
@@ -155,7 +155,7 @@ const NewServiceCall = (props: any) => {
                 salesAssistance: selectAssistance,
                 startDate: startDate,
                 endDate: endDate,
-                priority: selectPriority,
+                Priority: selectPriority,
                 type: selectServiceType,
                 secretary: selectSecretary,
                 attend_status: '0',
@@ -444,11 +444,13 @@ const NewServiceCall = (props: any) => {
       }
     
 
-    const getItem = () => {
+    const getItem = (cusCode:any) => {
 
 
-        getAllItems((result: any) => {
+        getAllCustomerVsItems(cusCode,(result: any) => {
             setItemCode(result);
+
+            console.log(" item count .........  ",result.length)
         });
 
     }
@@ -495,6 +497,8 @@ const NewServiceCall = (props: any) => {
 
     const onChange = (event:any, selectedDate:any) => {
         const currentDate = selectedDate;
+
+        console.log(currentDate);
         setShow(Platform.OS === 'ios');
         if (dateType == "fromDate") {
 
@@ -623,7 +627,7 @@ const NewServiceCall = (props: any) => {
     useEffect(() => {
 
         getServiceCallTypes();
-        getItem();
+        // getItem();
         getCustomers();
         getAllUserTypesData();
         // getContactPerson();
@@ -670,7 +674,7 @@ const NewServiceCall = (props: any) => {
             // })
 
             getServiceCallTypes();
-            getItem();
+            // getItem();
             getCustomers();
             getAllUserTypesData();
             // getContactPerson();
@@ -840,11 +844,11 @@ const NewServiceCall = (props: any) => {
         <SafeAreaView style={comStyles.CONTAINER} >
             {/* <TouchableOpacity style={style.dashStyle} onPress={() => { closeModal(false) }} /> */}
             {/* <TouchableOpacity style={style.dashStyle} onPress={() => navigation.navigate('ServiceCall')} /> */}
-            <Header title="" isBtn={true} btnOnPress={() => navigation.goBack()} />
+            <Header title={formHeading} isBtn={true} btnOnPress={() => navigation.goBack()}  />
             <View style={{ padding: 5 }} />
-            <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", }}>
+            {/* <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", }}>
                 <Text style={style.maintxt}>{formHeading}</Text>
-            </View>
+            </View> */}
             <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", marginBottom: 20, padding: 10, }}>
                 {/* <ActionButton title="Cancel" style={style.loginBtn} textStyle={style.txtStyle} onPress={() => { closeModal(false) }} /> */}
                 <ActionButton title="Cancel" style={style.loginBtn} textStyle={style.txtStyle} onPress={cancelAndGoBack} />
@@ -886,6 +890,8 @@ const NewServiceCall = (props: any) => {
                                 setSelectCustomer(item.CusName);
                                 // changeCusAddress(item.Address);
                                 setcustomerID(item.CusID);
+
+                                getItem(item.CusID);
 
                                 setIsFocus(false);
                             }}
@@ -1030,8 +1036,8 @@ const NewServiceCall = (props: any) => {
                             data={itemCode}
                             search
                             maxHeight={300}
-                            labelField="itemCode"
-                            valueField="itemCode"
+                            labelField="ItemCode"
+                            valueField="ItemCode"
                             placeholder={!isFocus ? 'Select Item Code ' : '...'}
                             searchPlaceholder="Search Item Code"
                             value={selectItemCode}
@@ -1040,11 +1046,11 @@ const NewServiceCall = (props: any) => {
                             onChange={item => {
 
                                 // setValue(item.description);
-                                setSelectItemCode(item.itemCode);
+                                setSelectItemCode(item.ItemCode);
                                 setitemID(item.itemID);
 
-                                changeItemName(item.description);
-                                ItemDesc = item.description;
+                                changeItemName(item.ItemName);
+                                ItemDesc = item.ItemName;
                                 console.log(ItemDesc + "  .................... ");
 
 
@@ -1128,7 +1134,7 @@ const NewServiceCall = (props: any) => {
                     /> */}
                     {/* <View style={{ padding: 5 }} /> */}
 
-                    <View style={{ zIndex: 50 }}>
+                    {/* <View style={{ zIndex: 50 }}>
 
                         <Dropdown
 
@@ -1162,7 +1168,7 @@ const NewServiceCall = (props: any) => {
                             )}
                         />
 
-                    </View>
+                    </View> */}
 
 
                     {/* <DropDownPicker
@@ -1193,6 +1199,18 @@ const NewServiceCall = (props: any) => {
 
                     /> */}
                     {/* <View style={{ padding: 10 }} /> */}
+
+
+                    <InputText
+                        placeholder="Contact Person"
+                        placeholderColor={comStyles.COLORS.HEADER_BLACK}
+                        style={comStyles.serviceTicketInput}
+                        stateValue={String(contactPerson)}
+                        max={10}
+                        setState={setContactPerson}
+                    />
+
+
                     <InputText
                         placeholder="Contact No"
                         placeholderColor={comStyles.COLORS.HEADER_BLACK}

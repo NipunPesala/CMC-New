@@ -90,7 +90,7 @@ export const getAllItems = (callBack:any) =>{
     DB.searchData(
         'SELECT itemCode,description,itemID FROM ITEM WHERE status=sns_Active',
         [],
-        (resp, err) => {
+        (resp:any, err:any) => {
             callBack(resp, err);
         },
     );
@@ -99,8 +99,8 @@ export const getAllItems = (callBack:any) =>{
 export const getAllCustomerVsItems = (cusID:any,callBack:any) =>{
 
     DB.searchData(
-        'SELECT itemCode,description,itemID FROM ITEM WHERE status=sns_Active',
-        [],
+        'SELECT itemCode,ItemName,itemID FROM Customer_Items WHERE CustomerCode=?',
+        [cusID],
         (resp:any, err:any) => {
             callBack(resp, err);
         },
