@@ -192,12 +192,13 @@ const NewServiceTicket = (props: any) => {
             console.log(error);
         }
     }
-    const onChange = (event, selectedDate) => {
+    const onChange = (event:any, selectedDate:any) => {
         const currentDate = selectedDate;
+        console.log(currentDate , "  ,,,,,,,,,,,,,,,,,,  ", endDate);
         setShow(Platform.OS === 'ios');
 
 
-        if (selectServiceCallID != "" || selectServiceCallID != null) {
+        if (selectServiceCallID != null) {
 
             if (dateType == "fromDate") {
 
@@ -206,7 +207,7 @@ const NewServiceTicket = (props: any) => {
                     if (endDate != 'Invalid date') {
 
 
-                        if (moment(new Date(currentDate)).format('YYYY-MM-DD') < moment(new Date(endDate)).format('YYYY-MM-DD')) {
+                        if (moment(new Date(currentDate)).format('YYYY-MM-DD') <= moment(new Date(endDate)).format('YYYY-MM-DD')) {
 
                             setStartDate(moment(new Date(currentDate)).format('YYYY-MM-DD'))
 
@@ -236,7 +237,7 @@ const NewServiceTicket = (props: any) => {
 
                         console.log(" .................   ", startDate, moment(new Date(currentDate)).format('YYYY-MM-DD'));
 
-                        if (moment(new Date(currentDate)).format('YYYY-MM-DD') > moment(new Date(startDate)).format('YYYY-MM-DD')) {
+                        if (moment(new Date(currentDate)).format('YYYY-MM-DD') >= moment(new Date(startDate)).format('YYYY-MM-DD')) {
 
                             setEndDate(moment(new Date(currentDate)).format('YYYY-MM-DD'))
 
@@ -585,11 +586,11 @@ const NewServiceTicket = (props: any) => {
 
         <SafeAreaView style={comStyles.CONTAINER}>
             {/* <TouchableOpacity style={style.dashStyle} /> */}
-            <Header title="" isBtn={true} btnOnPress={() => navigation.goBack()} />
+            <Header title={TextHeader} isBtn={true} btnOnPress={() => navigation.goBack()} />
             <View style={{ padding: 5 }} />
-            <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", }}>
+            {/* <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", }}>
                 <Text style={style.maintxt} onPress={backPress}>{TextHeader}</Text>
-            </View>
+            </View> */}
             <View style={style.buttonView} >
                 <ActionButton title="Cancel" style={style.loginBtn} textStyle={style.txtStyle} onPress={cancelAndGoBack} />
                 <ActionButton title={ButtonTitle} style={{ flex: 0.5 }} onPress={() => sendData()} />

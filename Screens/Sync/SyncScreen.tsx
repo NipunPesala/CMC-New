@@ -1,4 +1,4 @@
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
 import {
   View,
@@ -47,6 +47,8 @@ const SyncScreen = () => {
   const [Token_Key, setToken_Key] = useState("");
   const [onRefresh, setOnRefresh] = useState(false);
   const [syncText, setsyncText] = useState('');
+
+  const route=useRoute();
 
   const syncbtn = () => {
 
@@ -792,13 +794,15 @@ const SyncScreen = () => {
 
 
   const cancelAndGoBack = () => {
+
+    
     Alert.alert('Cancle', 'Are you sure ? ', [
       {
         text: 'Cancel',
         onPress: () => console.log('Cancel Pressed'),
         style: 'cancel',
       },
-      { text: 'OK', onPress: () => navigation.goBack(), }
+      { text: 'OK', onPress: () =>  navigation.navigate('BottomNavi'), }
     ]);
   }
 
@@ -863,7 +867,7 @@ const SyncScreen = () => {
             <ActionButton title="Sync" onPress={() => syncbtn()} />
           </View>
           <View style={{ flex: 1, padding: 3 }}>
-            <ActionButton title="Cancel"
+            <ActionButton title="Close"
               onPress={() => cancelAndGoBack()}
             />
           </View>

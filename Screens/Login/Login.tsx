@@ -518,6 +518,8 @@ const Login = () => {
 
                         if (result === "success") {
 
+                            slideOutModal();
+
                             navigation.navigate("SyncScreen");
 
                         } else {

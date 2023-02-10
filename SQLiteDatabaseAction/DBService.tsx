@@ -446,6 +446,58 @@ export const tableIndexKey = () => {
     },
   );
 
+
+  // ------------------------------------------------ User IDX -----------------------------------------------------
+
+  db.transaction(
+    (tx:any) => {
+      const query_idx_User = `CREATE UNIQUE INDEX IF NOT EXISTS idx_User ON User(user_id)`;
+
+      tx.executeSql(
+        query_idx_User,
+        [],
+        (tx: any, response: any) => {
+          console.log(`create table index success User: `, response);
+        },
+        (tx: any, error: any) => {
+          console.log(`create table index key error User: `, error);
+        },
+      );
+    },
+    (error:any) => {
+      console.log('table create query transaction failed User: ', error);
+    },
+    (success:any) => {
+      console.log('table create query transaction:', 'success');
+    },
+  );
+
+  // ----------------------------------- User_Type IDX --------------------------------------
+
+
+  db.transaction(
+    (tx:any) => {
+      const query_idx_UserType = `CREATE UNIQUE INDEX IF NOT EXISTS idx_UserType ON User_Type(type_id)`;
+
+      tx.executeSql(
+        query_idx_UserType,
+        [],
+        (tx: any, response: any) => {
+          console.log(`create table index success User: `, response);
+        },
+        (tx: any, error: any) => {
+          console.log(`create table index key error User: `, error);
+        },
+      );
+    },
+    (error:any) => {
+      console.log('table create query transaction failed User: ', error);
+    },
+    (success:any) => {
+      console.log('table create query transaction:', 'success');
+    },
+  );
+
   return null;
 
 } catch (error) {
