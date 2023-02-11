@@ -56,6 +56,7 @@ import queryString from 'query-string';
 import axios from 'axios';
 import ComponentsStyles from "../../Constant/Components.styles";
 import PushNotification from "react-native-push-notification";
+import { userLogin } from "../../Services/Api/UserAuthService";
 //import {Permission,PERMISSION_TYPE}from '../../Constant/AppPermission';
 let height = Dimensions.get("screen").height;
 requestPermission();
@@ -275,139 +276,51 @@ const Login = () => {
     }
 
     const Get_Login_API_Data = () => {
-        // const params = {
 
-
-        //     // 'username': uName,
-        //     // 'password': pword
-        //     // JSON.stringify({ name: 'John Doe' });
-        // }
-        let data = JSON.stringify({
+        let data = {
             password: pword,
             username: uName
-        })
-        try {
+        }
 
-            axios.post("http://124.43.13.162:4500/api/auth/login", data, {
-
-                "headers": {
-
-                    "content-type": "application/json",
-
-                },
-
-            })
-                .then(function (response) {
-                    console.log(response.status);
-                    if (response.status == 200) {
-                        if (response.data.ResponseDescription == "Login Successful") {
-                            AsyncStorage.setItem(AsyncStorageConstants.ASYNC_STORAGE_LOGIN_NAME, response.data.Username);
-                            AsyncStorage.setItem(AsyncStorageConstants.ASYNC_TOCKEN, response.data.Data[0].Token);
-                            // AsyncStorage.setItem(AsyncStorageConstants.ASYNC_LOGIN_USERID, response.data.Data[0].UserId);
-                            // AsyncStorage.setItem(AsyncStorageConstants.ASYNC_TOCKEN, response.data.token);
-                            AsyncStorage.setItem(AsyncStorageConstants.ASYNC_LOGIN_USERID, "1");
-                            if (readingType == "OUT" || readingType == "") {
-                                // last record has day end .so need to add day statrt
-                                setLoginHeading("LOGIN TO START THE DATE");
-                                setShowQuckAcess(false);
-                                slideInModal();
-                                // firstTimeLogingsync();
-                            } else {
-                                // insertServiceData();
-                                setLoginHeading("LOGIN");
-                                setShowQuckAcess(true);
-                                navigation.navigate("BottomNavi");
-
-
-                            }
-                            // navigation.navigate("BottomNavi");
-                        } else {
-
-                            Alert.alert(
-                                "Invalid Details!",
-                                response.data.ResponseDescription,
-                                [
-                                    { text: "OK", onPress: () => console.log(response.data.ResponseDescription) }
-                                ]
-                            );
-                        }
-
+        userLogin(data)
+            .then(async(response: any) => {
+                console.log(response.data);
+                if (response.data.ResponseDescription == "Login Successful") {
+                    await AsyncStorage.setItem(AsyncStorageConstants.ASYNC_STORAGE_LOGIN_NAME, response.data.Username);
+                    await AsyncStorage.setItem(AsyncStorageConstants.ASYNC_TOCKEN, response.data.Data[0].Token);
+                    // AsyncStorage.setItem(AsyncStorageConstants.ASYNC_LOGIN_USERID, response.data.Data[0].UserId);
+                    // AsyncStorage.setItem(AsyncStorageConstants.ASYNC_TOCKEN, response.data.token);
+                    await AsyncStorage.setItem(AsyncStorageConstants.ASYNC_LOGIN_USERID, "1");
+                    if (readingType == "OUT" || readingType == "") {
+                        // last record has day end .so need to add day statrt
+                        setLoginHeading("LOGIN TO START THE DATE");
+                        setShowQuckAcess(false);
+                        slideInModal();
+                        // firstTimeLogingsync();
                     } else {
-                        Alert.alert(
-                            "Invalid Details!",
-                            response.data.message.ErrorDescription,
-                            [
-                                { text: "OK", onPress: () => console.log(response.data.message.ErrorDescription) }
-                            ]
-                        );
+                        // insertServiceData();
+                        setLoginHeading("LOGIN");
+                        setShowQuckAcess(true);
+                        navigation.navigate("BottomNavi");
+
+
                     }
-
-
-
-                })
-
-                .catch(function (error) {
-                    console.log("-------------", error);
+                    // navigation.navigate("BottomNavi");
+                } else {
 
                     Alert.alert(
-                        "Login Failed!",
-                        error,
+                        "Invalid Details!",
+                        response.data.ResponseDescription,
                         [
-                            { text: "OK", onPress: () => console.log(error) }
+                            { text: "OK", onPress: () => console.log(response.data.ResponseDescription) }
                         ]
                     );
+                }
+            })
+            .catch((err: any) => {
+                console.log("....................", err);
+            });
 
-                });
-
-
-
-            // axios.post("http://124.43.13.162:4500/api/auth/login", queryString.stringify({
-            //     //UAT
-            //     // axios.post("http://202.124.175.187:8012/token", queryString.stringify({
-            //     // username: 'manager',
-            //     // password: 'Pyra@1982$'
-            //     username: uName,
-            //     password: pword
-            // }), {
-            //     headers: {
-            //         "Content-Type": "application/json",
-            //     }
-            // }).then(response => {
-            //     if (response.status === 200) {
-
-            //         if (response.data.access_token !== "") {
-            //             AsyncStorageConstants.ASYNC_STORAGE_LOGIN_ACCESS_TOKEN = response.data.access_token;
-            //             // AsyncStorageConstants.ASYNC_STORAGE_Login_User=userName;
-            //             // AsyncStorage.setItem(AsyncStorageConstants.ASYNC_STORAGE_Login_User, userName)
-            //             console.log("okkkkkkkkkkkkkkkkkkkkkkkkkkkkk");
-
-
-
-
-
-
-            //         } else {
-            //             Alert.alert("login failed ");
-            //             // setloandingspinner(false);
-            //         }
-            //     } else {
-            //         Alert.alert(response.status + "login failed ");
-            //         // setloandingspinner(false);
-            //     }
-
-
-            // }).catch((error) => {
-            //     console.log("api Erorr: ", error.response);
-            //     // setloandingspinner(false);
-            //     Alert.alert(error.response);
-
-            // });
-
-
-        } catch (error) {
-            console.log(">>>>>>>>>>>>", error);
-
-        }
     }
     const slideInModal = () => {
 
