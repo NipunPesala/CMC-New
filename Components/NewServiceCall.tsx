@@ -140,6 +140,38 @@ const NewServiceCall = (props: any) => {
     var TOCKEN_KEY: any;
     var USERID: any;
     
+    const testSaveServiceCall=()=>{
+        const sendData = [
+            {
+                ServiceCallId: "Ser_2023-02-01",
+                item_code: "I_123",
+                item_description: "discriptiuon1",
+                customer_address: "Address1",
+                contact_name: "name conntact",
+                contact_no: "1234567891",
+                Subject: "Subject",
+                HandledBy: "kamal",
+                SalesAssistant: "Nimal",
+                PlanedStartDateTime: moment().utcOffset('+05:30').format('YYYY-MM-DD'),
+                PlanedEndDateTime: moment().utcOffset('+05:30').format('YYYY-MM-DD'),
+                Priority: "Low",
+                type: "Type1",
+                Secretary: "Secretary1",
+                attend_status: '0',
+                Status: '0',
+                customer: "customer11",
+                CreatedBy: "1",
+                approve_status: '0',
+                createAt:moment().utcOffset('+05:30').format('YYYY-MM-DD kk:mm:ss'),
+                syncstatus:'0',
+                itemID:"Id123",
+                customerID:"Cusid",
+
+            }
+        ]
+        save_serviceCall(sendData);
+
+    }
     const saveServiceCall = () => {
 
         const sendData = [

@@ -57,6 +57,7 @@ import * as DB_Customer from '../../../SQLiteDatabaseAction/DBControllers/Custom
 import ComponentsStyles from '../../../Constant/Components.styles';
 import {getLoginUserName} from '../../../Constant/AsynStorageFuntion';
 import PushNotification from "react-native-push-notification";
+import {  saveServiceData} from "../../../SQLiteDatabaseAction/DBControllers/ServiceController";
 
 var test: any;
 const SyncArray1: any[] = [];
@@ -91,6 +92,55 @@ const Home = () => {
 
   const navigation = useNavigation();
   const isVisible = useIsFocused();
+
+///////////////////////////////////////////////
+const testSaveServiceCall=()=>{
+  const sendData = [
+      {
+          ServiceCallId: "SC_2023-02-11_5",
+          item_code: "I_123",
+          item_description: "discriptiuon1",
+          customer_address: "Address1",
+          contact_name: "name conntact",
+          contact_no: "1234567891",
+          Subject: "Subject",
+          HandledBy: "kamal",
+          SalesAssistant: "Nimal",
+          PlanedStartDateTime:"2023-02-11",
+          PlanedEndDateTime: "2023-02-20",
+          Priority: "Low",
+          type: "Type1",
+          Secretary: "Secretary1",
+          attend_status: '0',
+          Status: '0',
+          customer: "customer11",
+          CreatedBy: "1",
+          approve_status: '0',
+          createAt:moment().utcOffset('+05:30').format('YYYY-MM-DD kk:mm:ss'),
+          syncstatus:'0',
+          itemID:"Id123",
+          customerID:"Cusid",
+
+      }
+  ]
+  save_serviceCall(sendData);
+
+}
+
+
+const save_serviceCall = (data: any) => {
+  console.log("**************", data);
+  console.log("**************", JSON.stringify(data));
+  try {
+      saveServiceData(data, (result: any) => {
+          console.log(result, "NEWSERVICE_CALL_SAVE");
+
+      });
+  } catch (error) {
+      console.log(error);
+  }
+}
+//////////////////////////////////////////////
 
   const handleslideInModal = () => {
     console.log(SyncArray, '>>>>>>>>>>>>>1');
@@ -426,6 +476,7 @@ const Home = () => {
 
 
   useEffect(() => {
+   //testSaveServiceCall();
     const focusHandler = navigation.addListener('focus', () => {
       setloandingspinner(true);
       getWellcomeNote();
