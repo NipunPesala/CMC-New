@@ -1,7 +1,7 @@
 /**
  * @author Gagana Lakruwan
  */
-import React, {useEffect, useState, useRef} from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import {
   View,
   Text,
@@ -33,31 +33,31 @@ import {
   serviceTicket,
 } from '../../../Constant/DummyData';
 import ListBox from '../../../Components/ListBox';
-import {useIsFocused, useNavigation} from '@react-navigation/native';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
 import ActionButton from '../../../Components/ActionButton';
-import {Menu} from 'react-native-paper';
+import { Menu } from 'react-native-paper';
 import moment from 'moment';
-import {openCamera} from 'react-native-image-crop-picker';
-import {saveMeterReading} from '../../../SQLiteDatabaseAction/DBControllers/MeterReadingController';
+import { openCamera } from 'react-native-image-crop-picker';
+import { saveMeterReading } from '../../../SQLiteDatabaseAction/DBControllers/MeterReadingController';
 import {
   getServiceById,
   getServiceCalls,
 } from '../../../SQLiteDatabaseAction/DBControllers/ServiceController';
 import AsyncStorage from '@react-native-community/async-storage';
 import AsyncStorageConstants from '../../../Constant/AsyncStorageConstants';
-import {getServiceIndoByServiceId} from '../../../SQLiteDatabaseAction/DBControllers/ServiceInfoController';
+import { getServiceIndoByServiceId } from '../../../SQLiteDatabaseAction/DBControllers/ServiceInfoController';
 import {
   getServiceTicket,
   getTicketsForInprogress,
   getTicketsForReport,
 } from '../../../SQLiteDatabaseAction/DBControllers/TicketController';
-import {BackPressHandler} from '../../../Constant/CommonFunctions';
+import { BackPressHandler } from '../../../Constant/CommonFunctions';
 import axios from 'axios';
 import * as DB_Customer from '../../../SQLiteDatabaseAction/DBControllers/CustomerController';
 import ComponentsStyles from '../../../Constant/Components.styles';
-import {getLoginUserName} from '../../../Constant/AsynStorageFuntion';
+import { getLoginUserName } from '../../../Constant/AsynStorageFuntion';
 import PushNotification from "react-native-push-notification";
-import {  saveServiceData} from "../../../SQLiteDatabaseAction/DBControllers/ServiceController";
+import { saveServiceData } from "../../../SQLiteDatabaseAction/DBControllers/ServiceController";
 
 var test: any;
 const SyncArray1: any[] = [];
@@ -93,54 +93,54 @@ const Home = () => {
   const navigation = useNavigation();
   const isVisible = useIsFocused();
 
-///////////////////////////////////////////////
-const testSaveServiceCall=()=>{
-  const sendData = [
+  ///////////////////////////////////////////////
+  const testSaveServiceCall = () => {
+    const sendData = [
       {
-          ServiceCallId: "SC_2023-02-11_5",
-          item_code: "I_123",
-          item_description: "discriptiuon1",
-          customer_address: "Address1",
-          contact_name: "name conntact",
-          contact_no: "1234567891",
-          Subject: "Subject",
-          HandledBy: "kamal",
-          SalesAssistant: "Nimal",
-          PlanedStartDateTime:"2023-02-11",
-          PlanedEndDateTime: "2023-02-20",
-          Priority: "Low",
-          type: "Type1",
-          Secretary: "Secretary1",
-          attend_status: '0',
-          Status: '0',
-          customer: "customer11",
-          CreatedBy: "1",
-          approve_status: '0',
-          createAt:moment().utcOffset('+05:30').format('YYYY-MM-DD kk:mm:ss'),
-          syncstatus:'0',
-          itemID:"Id123",
-          customerID:"Cusid",
+        ServiceCallId: "SC_2023-02-11_5",
+        item_code: "I_123",
+        item_description: "discriptiuon1",
+        customer_address: "Address1",
+        contact_name: "name conntact",
+        contact_no: "1234567891",
+        Subject: "Subject",
+        HandledBy: "kamal",
+        SalesAssistant: "Nimal",
+        PlanedStartDateTime: "2023-02-11",
+        PlanedEndDateTime: "2023-02-20",
+        Priority: "Low",
+        type: "Type1",
+        Secretary: "Secretary1",
+        attend_status: '0',
+        Status: '0',
+        customer: "customer11",
+        CreatedBy: "1",
+        approve_status: '0',
+        createAt: moment().utcOffset('+05:30').format('YYYY-MM-DD kk:mm:ss'),
+        syncstatus: '0',
+        itemID: "Id123",
+        customerID: "Cusid",
 
       }
-  ]
-  save_serviceCall(sendData);
+    ]
+    save_serviceCall(sendData);
 
-}
+  }
 
 
-const save_serviceCall = (data: any) => {
-  console.log("**************", data);
-  console.log("**************", JSON.stringify(data));
-  try {
+  const save_serviceCall = (data: any) => {
+    console.log("**************", data);
+    console.log("**************", JSON.stringify(data));
+    try {
       saveServiceData(data, (result: any) => {
-          console.log(result, "NEWSERVICE_CALL_SAVE");
+        console.log(result, "NEWSERVICE_CALL_SAVE");
 
       });
-  } catch (error) {
+    } catch (error) {
       console.log(error);
+    }
   }
-}
-//////////////////////////////////////////////
+  //////////////////////////////////////////////
 
   const handleslideInModal = () => {
     console.log(SyncArray, '>>>>>>>>>>>>>1');
@@ -157,7 +157,7 @@ const save_serviceCall = (data: any) => {
         onPress: () => console.log('Cancel Pressed'),
         style: 'cancel',
       },
-      {text: 'OK', onPress: () => logout()},
+      { text: 'OK', onPress: () => logout() },
     ]);
   };
   const logout = () => {
@@ -197,12 +197,12 @@ const save_serviceCall = (data: any) => {
   };
 
   //handle notifications
-  const handleNotification=()=>{
+  const handleNotification = () => {
     PushNotification.localNotification({
       channelId: "test_channel", // (required)
-      title:"Notification title",
-      message:"Hiii this is a test notification",
-  });
+      title: "Notification title",
+      message: "Hiii this is a test notification",
+    });
   }
   //get current time for welcome note
 
@@ -268,7 +268,7 @@ const save_serviceCall = (data: any) => {
   const getTickets = () => {
     getTicketsForReport((result: any) => {
       setServiceTicketList(result);
-      console.log('ticket for Repaort--' +result);
+      console.log('ticket for Repaort--' + result);
     });
   };
 
@@ -316,7 +316,7 @@ const save_serviceCall = (data: any) => {
     // }
   };
 
-  const getAllServiceCall = () => {};
+  const getAllServiceCall = () => { };
 
   const getConfirmedServiceCall = (status: any) => {
     getServiceCalls(status, (result: any) => {
@@ -345,7 +345,7 @@ const save_serviceCall = (data: any) => {
       // navigation.navigate('RequestDetails')
     });
   };
-  
+
   // const getServiceTickets = () => {
 
   //     getServiceTicket(result: any) => {
@@ -388,7 +388,7 @@ const save_serviceCall = (data: any) => {
         Alert.alert('Not Approved', ' Please Approve the Service Call!', [
           {
             text: 'OK',
-            onPress: () => {},
+            onPress: () => { },
           },
         ]);
       } else {
@@ -450,33 +450,33 @@ const save_serviceCall = (data: any) => {
         .catch(error => {
           // alert(error);
           console.log(error);
-          SyncArray1.push({name: error, id: arrayindex});
+          SyncArray1.push({ name: error, id: arrayindex });
           setSyncArray(SyncArray1);
         });
     } catch (error) {
       console.log(error);
-      SyncArray1.push({name: error, id: arrayindex});
+      SyncArray1.push({ name: error, id: arrayindex });
       setSyncArray(SyncArray1);
     }
   };
 
 
-  
-  const navigatoTicket = async (ticketID: any) => {
 
-    console.log(ticketID , "     >>>>>>>>>>>>>>>>>>>>>>>>>>    ");
-    
-    
+  const navigatoTicket = async (ticketID: any,CallID:any) => {
+
+    console.log(ticketID, "     >>>>>>>>>>>>>>>>>>>>>>>>>>    ", CallID);
+
+    await AsyncStorage.setItem(AsyncStorageConstants.ASYNC_CURRENT_SERVICE_CALL_ID, CallID);
+
     navigation.navigate('TicketDetails', {
-        ticketID: ticketID,
+      ticketID: ticketID,
     });
-   
 
-}
 
+  }
 
   useEffect(() => {
-   //testSaveServiceCall();
+    //testSaveServiceCall();
     const focusHandler = navigation.addListener('focus', () => {
       setloandingspinner(true);
       getWellcomeNote();
@@ -532,15 +532,15 @@ const save_serviceCall = (data: any) => {
           }),
         }}>
         <View style={style.modalCont}>
-          <View style={{height: 300, marginBottom: 5}}>
+          <View style={{ height: 300, marginBottom: 5 }}>
             <FlatList
               showsHorizontalScrollIndicator={false}
               // data={Arrays.SelectPackage.Wash.filter(ob => ob.extras == true)}
               data={SyncArray}
-              style={{marginTop: 10}}
-              renderItem={({item}) => {
+              style={{ marginTop: 10 }}
+              renderItem={({ item }) => {
                 return (
-                  <View style={{height: 25, flexDirection: 'row'}}>
+                  <View style={{ height: 25, flexDirection: 'row' }}>
                     <Text
                       style={{
                         marginLeft: 10,
@@ -555,11 +555,11 @@ const save_serviceCall = (data: any) => {
               keyExtractor={item => `${item.id}`}
             />
           </View>
-          <View style={{flexDirection: 'row'}}>
-            <View style={{flex: 1, padding: 3}}>
+          <View style={{ flexDirection: 'row' }}>
+            <View style={{ flex: 1, padding: 3 }}>
               <ActionButton title="Sync" onPress={Handlesyncprogress} />
             </View>
-            <View style={{flex: 1, padding: 3}}>
+            <View style={{ flex: 1, padding: 3 }}>
               <ActionButton title="Cancel" onPress={slideOutModal} />
             </View>
           </View>
@@ -573,10 +573,10 @@ const save_serviceCall = (data: any) => {
       <ScrollView
         style={comStyles.CONTENT}
         showsVerticalScrollIndicator={false}>
-        <View style={{flexDirection: 'row', marginTop: 5}}>
+        <View style={{ flexDirection: 'row', marginTop: 5 }}>
           <Text style={style.callText}>Confirmed Service Calls</Text>
-          <View style={{flex: 1}} />
-          <TouchableOpacity onPress={() => navigation.navigate('ServiceCall',{filterId:1})}>
+          <View style={{ flex: 1 }} />
+          <TouchableOpacity onPress={() => navigation.navigate('ServiceCall', { filterId: 1 })}>
             <Text style={style.seeAllText}>
               See All{' '}
               <IconA
@@ -592,11 +592,11 @@ const save_serviceCall = (data: any) => {
           showsHorizontalScrollIndicator={false}
           // data={Arrays.SelectPackage.Wash.filter(ob => ob.extras == true)}
           data={confirmedserviceCallList}
-          style={{marginTop: 10}}
+          style={{ marginTop: 10 }}
           horizontal={true}
-          renderItem={({item}) => {
+          renderItem={({ item }) => {
             return (
-              <View style={{width: width - 70, padding: 5}}>
+              <View style={{ width: width - 70, padding: 5 }}>
                 <ListBox
                   ticketNo={item.serviceId}
                   headerType="Request No : "
@@ -615,10 +615,10 @@ const save_serviceCall = (data: any) => {
           keyExtractor={item => `${item._Id}`}
         />
 
-        <View style={{flexDirection: 'row', marginTop: 5}}>
+        <View style={{ flexDirection: 'row', marginTop: 5 }}>
           <Text style={style.callText}>Recieved Service Calls</Text>
-          <View style={{flex: 1}} />
-          <TouchableOpacity onPress={() => navigation.navigate('ServiceCall',{filterId:2})}>
+          <View style={{ flex: 1 }} />
+          <TouchableOpacity onPress={() => navigation.navigate('ServiceCall', { filterId: 2 })}>
             <Text style={style.seeAllText}>
               See All{' '}
               <IconA
@@ -634,11 +634,11 @@ const save_serviceCall = (data: any) => {
           showsHorizontalScrollIndicator={false}
           // data={Arrays.SelectPackage.Wash.filter(ob => ob.extras == true)}
           data={RecievedserviceCallList}
-          style={{marginTop: 10}}
+          style={{ marginTop: 10 }}
           horizontal={true}
-          renderItem={({item}) => {
+          renderItem={({ item }) => {
             return (
-              <View style={{width: width - 70, padding: 5}}>
+              <View style={{ width: width - 70, padding: 5 }}>
                 <ListBox
                   ticketNo={item.serviceId}
                   headerType="Request No : "
@@ -655,9 +655,9 @@ const save_serviceCall = (data: any) => {
           keyExtractor={item => `${item._Id}`}
         />
 
-        <View style={{flexDirection: 'row', marginTop: 5}}>
+        <View style={{ flexDirection: 'row', marginTop: 5 }}>
           <Text style={style.callText}>Service Tickets</Text>
-          <View style={{flex: 1}} />
+          <View style={{ flex: 1 }} />
           <TouchableOpacity onPress={() => navigation.navigate('ServiceTicketList')}>
             <Text style={style.seeAllText}>
               See All{' '}
@@ -674,11 +674,11 @@ const save_serviceCall = (data: any) => {
           showsHorizontalScrollIndicator={false}
           // data={Arrays.SelectPackage.Wash.filter(ob => ob.extras == true)}
           data={serviceTicketList}
-          style={{marginTop: 10}}
+          style={{ marginTop: 10 }}
           horizontal={true}
-          renderItem={({item}) => {
+          renderItem={({ item }) => {
             return (
-              <View style={{width: width - 70, padding: 5}}>
+              <View style={{ width: width - 70, padding: 5 }}>
                 <ListBox
                   ticketNo={item.ticketId}
                   headerType="Ticket No : "
@@ -686,7 +686,7 @@ const save_serviceCall = (data: any) => {
                   name={item.assignTo}
                   status={item.priority}
                   isIcon={true}
-                  // onPressIcon={() => navigation.navigate('RequestDetails')}
+                  onPressIcon={() => navigatoTicket(item.ticketId,item.serviceId)}
                 />
               </View>
             );
@@ -694,9 +694,9 @@ const save_serviceCall = (data: any) => {
           keyExtractor={item => `${item.ticketId}`}
         />
 
-        <View style={{flexDirection: 'row', marginTop: 5}}>
+        <View style={{ flexDirection: 'row', marginTop: 5 }}>
           <Text style={style.callText}>Tasks In Progress</Text>
-          <View style={{flex: 1}} />
+          <View style={{ flex: 1 }} />
           <TouchableOpacity
             onPress={() => navigation.navigate('InprogressTask')}>
             <Text style={style.seeAllText}>
@@ -720,11 +720,11 @@ const save_serviceCall = (data: any) => {
           // "priority":"High","assignTo":"Ashen","serviceId":"SC_2022-11-10_1","content":"car"}
 
           data={inprogresticketList}
-          style={{marginTop: 10}}
+          style={{ marginTop: 10 }}
           horizontal={true}
-          renderItem={({item}) => {
+          renderItem={({ item }) => {
             return (
-              <View style={{width: width - 70, padding: 5}}>
+              <View style={{ width: width - 70, padding: 5 }}>
                 <ListBox
                   ticketNo={item.ticketId.toString()}
                   headerType="Ticket No : "
@@ -808,10 +808,10 @@ const save_serviceCall = (data: any) => {
             is_icon={true}
             icon_name="sync"
             iconColor={comStyles.COLORS.ICON_BLUE}
-            onPress={() =>      navigation.navigate('SyncScreen', { LoginStatus: "SECOND",})}
+            onPress={() => navigation.navigate('SyncScreen', { LoginStatus: "SECOND", })}
           />
         </View>
-        <View style={{padding: 30}} />
+        <View style={{ padding: 30 }} />
       </ScrollView>
       <RBSheet
         ref={refRBSheet}

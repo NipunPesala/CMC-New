@@ -30,7 +30,9 @@ const MoreInfo = () => {
     useEffect(() => {
         getCurrentServiceCallID().then(res => {
             serviceID = res;
-            getServiceData(serviceID);
+            getServiceData(res);
+
+            console.log(" more info  ........  " , serviceID);
 
         })
 
@@ -50,7 +52,7 @@ const MoreInfo = () => {
                 //    "item_description": "EGO ASSEMBLE (FOR SCD-400U CLAIM)",
                 //     "priority": "Medium", "secretary": "1", "serviceId": "SC_2022-11-14_1",
                 //      "service_type": "1", "start_date": "14-11-2022", "status": "0", "subject": "car"}]
-                //  console.log(serviceID , "   ------------------------  ");
+                 console.log(result , "   ------------------------  ");
 
                 setcontent(result[0].subject);
                 setStartDate(result[0].start_date);

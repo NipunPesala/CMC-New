@@ -5,6 +5,7 @@ import {
     StyleSheet,
     TouchableOpacity,
     SafeAreaView,
+    Alert,
 } from "react-native";
 import ActionButton from "./ActionButton";
 import comStyles from "../Constant/Components.styles";
@@ -31,7 +32,7 @@ var id: any;
 const RequestBottomSheet = () => {
     const navigation = useNavigation();
 
-  
+
     const [AddInventorySpareParts, setAddInventorySpareParts] = useState(false);
     const [AddAdditionalSpareParts, setAddAdditionalSpareParts] = useState(false);
     const [sparepartsList, setsparepartsList] = useState([]);
@@ -45,21 +46,172 @@ const RequestBottomSheet = () => {
 
 
     const handle_AddInventorySpareParts = () => {
-        setAddInventorySpareParts(true);
-        setAddAdditionalSpareParts(false);
-        setInvenrty("1");
-        getALlDatainventy(TicketID);
+
+        console.log(" ,,,,,,,,,,,,,,,,,,,,, " , isSelectTicket);
+
+        if(isSelectTicket == true){
+
+           
+
+            if (ticketList.length > 0) {
+
+                setAddInventorySpareParts(true);
+                setAddAdditionalSpareParts(false);
+                setInvenrty("1");
+                getALlDatainventy(TicketID);
+    
+            } else {
+    
+                Alert.alert(
+                    "Failed...!",
+                    "No Available Service Tickets.",
+                    [
+                        {
+                            text: "OK", onPress: () => {
+    
+                            }
+                        }
+                    ]
+                );
+    
+            }
+    
+
+        }else{
+
+            setAddInventorySpareParts(true);
+            setAddAdditionalSpareParts(false);
+            setInvenrty("1");
+            getALlDatainventy(TicketID);
+
+
+        }
+
+      
+
     };
     const handale_AddAdditionalSpareParts = () => {
-        setAddInventorySpareParts(false);
-        setAddAdditionalSpareParts(true);
-        setInvenrty("2");
-        getALlDatAdditional(TicketID);
-        // getLastReadervalue();
-        // getAllAttendanceDetails();
+        console.log(" ,,,,,,,,,,,,,,,,,,,,, " , isSelectTicket);
+
+        if(isSelectTicket == true){
+
+           
+            if (ticketList.length > 0) {
+
+                setAddInventorySpareParts(false);
+                setAddAdditionalSpareParts(true);
+                setInvenrty("2");
+                getALlDatAdditional(TicketID);
+                // getLastReadervalue();
+                // getAllAttendanceDetails();
+    
+            } else {
+    
+                Alert.alert(
+                    "Failed...!",
+                    "No Available Service Tickets.",
+                    [
+                        {
+                            text: "OK", onPress: () => {
+    
+                            }
+                        }
+                    ]
+                );
+    
+            }
+
+
+        }else{
+
+            setAddInventorySpareParts(false);
+            setAddAdditionalSpareParts(true);
+            setInvenrty("2");
+            getALlDatAdditional(TicketID);
+
+        }
+
+       
+
+
 
 
     };
+
+
+    const AddInventory = () =>{
+
+        if(isSelectTicket == true){
+
+            if (ticketList.length > 0) {
+
+                navigation.navigate("AddSparePartsComponent");
+
+            }else{
+
+                Alert.alert(
+                    "Failed...!",
+                    "No Available Service Tickets.",
+                    [
+                        {
+                            text: "OK", onPress: () => {
+    
+                            }
+                        }
+                    ]
+                );
+    
+
+
+            }
+
+
+        }else{
+
+            navigation.navigate("AddSparePartsComponent");
+
+        }
+
+
+    }
+
+
+    const AddAdditional = () => {
+
+
+        if(isSelectTicket == true){
+
+            if (ticketList.length > 0) {
+
+                navigation.navigate("AddAdditionalSpareParts")
+
+            }else{
+
+                Alert.alert(
+                    "Failed...!",
+                    "No Available Service Tickets.",
+                    [
+                        {
+                            text: "OK", onPress: () => {
+    
+                            }
+                        }
+                    ]
+                );
+    
+
+
+            }
+
+
+        }else{
+
+            navigation.navigate("AddAdditionalSpareParts")
+
+        }
+
+
+    }
 
     const generateRequestID = () => {
 
@@ -85,14 +237,14 @@ const RequestBottomSheet = () => {
 
     };
 
-    const getTicketList = () =>{
+    const getTicketList = () => {
 
-        
+
         getTicketsForInprogress((result: any) => {
             setTicketList(result);
-      
+
             //console.log("^^==================^",JSON.stringify(result));
-          });
+        });
 
     };
 
@@ -117,23 +269,23 @@ const RequestBottomSheet = () => {
 
             getASYNC_SELECT_TICKET().then(res => {
 
-                if(res == 'true'){
+                if (res == 'true') {
                     setIsSelectTicket(true);
                     getTicketList();
 
-                }else{
+                } else {
                     setIsSelectTicket(false);
 
                     getASYNC_CURRENT_TICKET_ID().then(res => {
                         console.log(res);
                         id = res;
-        
+
                         setTicketID(id);
                         getALlDatainventy(res);
                     });
                 }
-                
-               
+
+
             });
 
             generateRequestID();
@@ -284,7 +436,7 @@ const RequestBottomSheet = () => {
                             title="Add Inventory Spare Parts"
                             is_icon={true}
                             icon_name="diff-added"
-                            onPress={() => navigation.navigate("AddSparePartsComponent")}
+                            onPress={() => AddInventory()}
                             iconColor={comStyles.COLORS.ICON_BLUE}
                             style={style.partsBtn}
                             textStyle={{ color: comStyles.COLORS.ICON_BLUE, }}
@@ -303,7 +455,7 @@ const RequestBottomSheet = () => {
                             title="Add Additional Spare Parts"
                             is_icon={true}
                             icon_name="diff-added"
-                            onPress={() => navigation.navigate("AddAdditionalSpareParts")}
+                            onPress={() => AddAdditional()}
                             iconColor={comStyles.COLORS.ICON_BLUE}
                             style={style.partsBtn}
                             textStyle={{ color: comStyles.COLORS.ICON_BLUE, }}

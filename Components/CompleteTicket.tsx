@@ -150,21 +150,24 @@ const CompleteTicket = () => {
                     (result: any) => {
                       if (result === 'success') {
 
+                        updateActualendDate(id, currentendDate, (result: any) => {
+                          console.log('Hii this is update actual end date'+result);
+                         
+                      });
+
                         AsyncStorage.setItem(AsyncStorageConstants.ASYNC_CURRENT_TICKET_ID, '');
                         ToastAndroid.show(
                           'Complete success ',
                           ToastAndroid.SHORT,
                         );
 
-                        AsyncStorage.setItem(AsyncStorageConstants.ASYNC_CURRENT_SERVICE_CALL_ID, id);
-                        navigation.navigate('RequestDetails', {
-                            callID: id,
-                        });
+                     
 
-                        updateActualendDate(id, currentendDate, (result: any) => {
-                          console.log('Hii this is update actual end date'+result);
-                         
+                      AsyncStorage.setItem(AsyncStorageConstants.ASYNC_CURRENT_SERVICE_CALL_ID, serviceID);
+                      navigation.navigate('RequestDetails', {
+                          callID: serviceID,
                       });
+
                         // navigation.navigate('ServiceCall');
                       } else {
                         Alert.alert('Failed...!', ' Save Failed.', [

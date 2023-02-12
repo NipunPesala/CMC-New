@@ -217,10 +217,15 @@ const RequestDetails = (props: any) => {
     }
 
     useEffect(() => {
+
+       
+        
         // SelectnavigationScreen();
         getCurrentServiceCallID().then(res => {
             callID = res;
             getServiceData(res);
+
+            console.log(" not navigation ........  " , callID);
         })
 
         BackPressHandler((callback: any) => {
@@ -234,6 +239,8 @@ const RequestDetails = (props: any) => {
             getCurrentServiceCallID().then(res => {
                 callID = res;
                 getServiceData(res);
+
+                console.log(" navigation ........  " , callID);
             })
             BackPressHandler((callback: any) => {
 
