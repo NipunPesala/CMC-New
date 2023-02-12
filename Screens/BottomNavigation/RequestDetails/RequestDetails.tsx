@@ -48,26 +48,25 @@ const RequestDetails = (props: any) => {
         if (routeRequest.params.navigateId == 1) {
 
             setScreenName('ServiceCall');
-           // console.log('Sacrren name'+screenName);
-        }else if(routeRequest.params.navigateId==2){
-            setScreenName('RouteScreen');
-           // console.log(screenName);
-        }else{
-        console.log('navigation id missing');
+
+            navigation.navigate("ServiceCall");
+            // console.log('Sacrren name'+screenName);
+
+        } else if (routeRequest.params.navigateId == 2) {
+
+            setScreenName("RouteScreen");
+            // console.log(screenName);
+
+            navigation.navigate("RouteScreen");
+
+        } else {
+
+            console.log('navigation id missing');
+            setScreenName("Home");
+
+            navigation.navigate("Home");
         }
         //console.log('Navigate id -'+routeRequest.params.navigateId);
-    }
-
-    const GoRelaventScreen=()=>{
-            if(screenName=="ServiceCall"){
-                navigation.navigate("ServiceCall");
-            }else if(screenName=="RouteScreen"){
-
-                navigation.navigate("RouteScreen");
-            }else{
-                navigation.navigate("Home");
-            }
-
     }
 
     const selection = (screen: string) => {
@@ -247,7 +246,7 @@ const RequestDetails = (props: any) => {
 
     return (
         <SafeAreaView style={ComStyles.CONTAINER}>
-            <Header title="Request Details" isBtn={true} btnOnPress={() => navigation.navigate({screenName})} />
+            <Header title="Request Details" isBtn={true} btnOnPress={() =>SelectnavigationScreen()} />
             <View style={ComStyles.CONTENT}>
                 <View style={{ padding: 10 }} />
                 <ServiceCustomerDetails
