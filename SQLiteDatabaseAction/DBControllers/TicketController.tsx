@@ -154,7 +154,7 @@ export const getTicketsForReport = (callBack:any) => {
         [],
         (resp, err) => {
             callBack(resp, err);
-            console.log(" ************** service getTicketsForReport ************  " + resp);
+            console.log(" ************** service getTicketsForReport ************  " ,resp);
             
         },
     );
