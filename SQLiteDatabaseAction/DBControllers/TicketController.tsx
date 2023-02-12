@@ -433,7 +433,7 @@ export const CompleteTicket_Update = (engRemark:any,cusNic:any,cusRemark:any,sig
     DB.updateData(
       'UPDATE TICKET SET engRemark=?,cusNic=?,cusRemark=?,signatureStatus=?,attend_status=? WHERE ticketId=?',
       [engRemark,cusNic,cusRemark,signatureStatus,attend_status,ticketId],
-      (resp, err) => {
+      (resp:any, err:any) => {
         callBack(resp, err);
       },
     );

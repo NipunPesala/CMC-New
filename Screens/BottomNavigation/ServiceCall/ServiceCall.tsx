@@ -208,8 +208,11 @@ const ServiceCall = () => {
     const handleclicked = (callID:any) => {
 
         AsyncStorage.setItem(AsyncStorageConstants.ASYNC_CURRENT_SERVICE_CALL_ID,callID);
-        navigation.navigate('RequestDetails',{navigateId:1});
+        console.log("call details check");
         
+        // navigation.navigate('RequestDetails',{navigateId:1});
+        
+        navigation.navigate('RequestDetails',{navigateId:1})
     };
 
     const getServiceID = (ID: any) => {

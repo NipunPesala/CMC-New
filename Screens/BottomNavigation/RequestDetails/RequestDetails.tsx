@@ -2,7 +2,7 @@
 * @author Gagana Lakruwan
 */
 import AsyncStorage from "@react-native-community/async-storage";
-import { useNavigation ,useRoute} from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
 import {
     View,
@@ -41,17 +41,30 @@ const RequestDetails = (props: any) => {
     const [ticketList, setTicketList] = useState([]);
     const [screenName, setScreenName] = useState('null');
     var callID: any;
-    const routeRequest=useRoute();
+    const routeRequest = useRoute();
     // const navigation = useNavigation();
-    const SelectnavigationScreen=()=>{
-        if(routeRequest.params.navigateId==1){
+    const SelectnavigationScreen = () => {
+
+        if (routeRequest.params.navigateId == 1) {
+
             setScreenName('ServiceCall');
-           // console.log('Sacrren name'+screenName);
-        }else if(routeRequest.params.navigateId==2){
-            setScreenName('RouteScreen');
-           // console.log(screenName);
-        }else{
-        console.log('navigation id missing');
+
+            navigation.navigate("ServiceCall");
+            // console.log('Sacrren name'+screenName);
+
+        } else if (routeRequest.params.navigateId == 2) {
+
+            setScreenName("RouteScreen");
+            // console.log(screenName);
+
+            navigation.navigate("RouteScreen");
+
+        } else {
+
+            console.log('navigation id missing');
+            setScreenName("Home");
+
+            navigation.navigate("Home");
         }
         //console.log('Navigate id -'+routeRequest.params.navigateId);
     }
@@ -70,41 +83,41 @@ const RequestDetails = (props: any) => {
 
     const enableService = (sid: any) => {
 
-        
 
-        if(ticketList.length > 0){
-            
 
-            console.log("  tickets available ......  " , ticketList.length);
+        if (ticketList.length > 0) {
+
+
+            console.log("  tickets available ......  ", ticketList.length);
 
             enableServiceCall(sid, 1, (result: any) => {
 
                 if (result === "success") {
-    
+
                     ToastAndroid.show("Service enable success ", ToastAndroid.SHORT);
-    
-                    
-    
+
+
+
                 } else {
-    
+
                     Alert.alert(
                         "Failed...!",
                         "Service enable Failed.",
                         [
                             {
                                 text: "OK", onPress: () => {
-    
+
                                 }
                             }
                         ]
                     );
-    
-                }
-    
-            });
-            
 
-        }else{
+                }
+
+            });
+
+
+        } else {
             console.log("  tickets not available ......  ");
 
             Alert.alert(
@@ -118,11 +131,11 @@ const RequestDetails = (props: any) => {
                     }
                 ]
             );
-            
+
         }
 
 
-       
+
         getServiceData(sid);
         console.log(isServiceActive);
 
@@ -167,7 +180,7 @@ const RequestDetails = (props: any) => {
 
                     }
 
-                    console.log(result[i].Attend_status, " +++++++++++++++++",result[i].status);
+                    console.log(result[i].Attend_status, " +++++++++++++++++", result[i].status);
 
                     if (result[i].Attend_status === "0") {
 
@@ -204,7 +217,7 @@ const RequestDetails = (props: any) => {
     }
 
     useEffect(() => {
-        SelectnavigationScreen();
+        // SelectnavigationScreen();
         getCurrentServiceCallID().then(res => {
             callID = res;
             getServiceData(res);
@@ -233,7 +246,7 @@ const RequestDetails = (props: any) => {
 
     return (
         <SafeAreaView style={ComStyles.CONTAINER}>
-            <Header title="Request Details" isBtn={true} btnOnPress={() => navigation.navigate({screenName})} />
+            <Header title="Request Details" isBtn={true} btnOnPress={() =>SelectnavigationScreen()} />
             <View style={ComStyles.CONTENT}>
                 <View style={{ padding: 10 }} />
                 <ServiceCustomerDetails
@@ -275,11 +288,11 @@ const RequestDetails = (props: any) => {
                     {
                         loadScreen == "ticket" ?
 
-                            <Tickets 
-                            btnEnable={isServiceActive}
-                            // enableStatusUpdate={!isServiceActive}
-                            enableStatusUpdate={false}
-                             />
+                            <Tickets
+                                btnEnable={isServiceActive}
+                                // enableStatusUpdate={!isServiceActive}
+                                enableStatusUpdate={isServiceActive}
+                            />
                             :
                             loadScreen == "location" ?
                                 <Locations />

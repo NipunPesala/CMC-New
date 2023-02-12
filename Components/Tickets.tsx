@@ -137,7 +137,7 @@ const Tickets = ({ btnEnable,enableStatusUpdate }: ParamTypes) => {
                                 status={item.priority}
                                 isbtn={item.status == "1" ? false : true}
                                 isIcon={item.status == "0" ? false : true}
-                                isUpdate={item.status == "1" ? false : true}
+                                // isUpdate={item.status == "1" ? false : true}
                                 nameAddress={true}
                                 enableStatus={btnEnable}
                                 onPressIcon={() => HandleIcon(item.id)}

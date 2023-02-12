@@ -395,10 +395,14 @@ const TicketDetails = (props: any) => {
 
                                 :
                                 loadScreen == "serviceH" ?
-                                    <TicketsHistory />
+
+                                <></>
+                                    // <TicketsHistory />
                                     :
                                     <Expences 
                                     isActive={isServiceActive}/>
+
+                                 
 
                     }
 

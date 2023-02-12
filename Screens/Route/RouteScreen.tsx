@@ -9,7 +9,8 @@ import {
     SafeAreaView,
     TouchableOpacity,
     FlatList,
-    Dimensions
+    Dimensions,
+    AsyncStorage
 } from "react-native";
 import Header from "../../Components/Header";
 import comStyles from "../../Constant/Components.styles";
@@ -21,6 +22,7 @@ import { Calendar, CalendarList, Agenda } from 'react-native-calendars';
 import CalendarStrip from "react-native-calendar-strip";
 import moment from "moment";
 import { RequestBydateRoute } from "../../SQLiteDatabaseAction/DBControllers/ServiceController";
+import AsyncStorageConstants from "../../Constant/AsyncStorageConstants";
 
 
 const RouteScreen = ({ navigation }) => {
@@ -63,6 +65,13 @@ const RouteScreen = ({ navigation }) => {
 
 
         });
+
+    }
+
+    const viewCallDetails = (callID:any) =>{
+
+        AsyncStorage.setItem(AsyncStorageConstants.ASYNC_CURRENT_SERVICE_CALL_ID,callID);
+        navigation.navigate('RequestDetails',{navigateId:2})
 
     }
 
@@ -142,7 +151,7 @@ const RouteScreen = ({ navigation }) => {
                                     address={item.customer_address}
                                     status={item.priority}
                                     isIcon={true}
-                                    onPressIcon={() => navigation.navigate('RequestDetails',{navigateId:2})}
+                                    onPressIcon={() => viewCallDetails(item.serviceId)}
                                 />
                             </View>
                         );

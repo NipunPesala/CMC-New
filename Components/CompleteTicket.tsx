@@ -156,6 +156,7 @@ const CompleteTicket = () => {
                           ToastAndroid.SHORT,
                         );
 
+                        AsyncStorage.setItem(AsyncStorageConstants.ASYNC_CURRENT_SERVICE_CALL_ID, id);
                         navigation.navigate('RequestDetails', {
                             callID: id,
                         });
