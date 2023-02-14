@@ -1,7 +1,7 @@
 /**
 * @author Madushika Sewwandi
 */
-import { useNavigation } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import React, { useState, useEffect } from "react";
 import {
     View,
@@ -41,60 +41,27 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import ComponentsStyles from "../Constant/Components.styles";
 import { get_ASYNC_TOCKEN, get_ASYNC_USERID } from "../Constant/AsynStorageFuntion";
 import axios from "axios";
-import { BASE_URL_GET,  } from "../Constant/Commen_API_Url";
+import { BASE_URL_GET, } from "../Constant/Commen_API_Url";
 import { getUserByTypes } from "../SQLiteDatabaseAction/DBControllers/UserController";
 import NetInfo from '@react-native-community/netinfo';
 
 let ItemDesc = "";
-var Mode: any;
 let serviceid = "";
-
 
 // const NewServiceCall = ({ onClose }: ParamTypes) => {
 const NewServiceCall = (props: any) => {
 
-    //const navigation = useNavigation();
     const { navigation, route } = props;
-    // const closeModal = onClose.bind(this);
-    const priorityListInitial = [
-        { label: 'High', value: 'High' },
-        { label: 'Medium', value: 'Medium' },
-        { label: 'Low', value: 'Low' }
-    ];
-    // const contactPersonListInitial = [
-    //     { label: 'Kamal', value: '1' },
-    //     { label: 'Sunil', value: '2' },
-    //     { label: 'Janith', value: '3' }
-    // ];
-    const technicianList = [
-        { label: 'Ashen', value: '1' },
-        { label: 'Kavindu', value: '2' },
-        { label: 'Gayan', value: '3' },
-        { label: 'Kelum', value: '4' },
-        { label: 'Ruwan', value: '5' }
-    ];
-    const secretaryItemList = [
-        { label: 'Nimal', value: '1' },
-        { label: 'Rashen', value: '2' },
-        { label: 'Maduka', value: '3' }
-    ];
 
     // const [loandingspinner, setloandingspinner] = useState(true);
 
-    const [value1, setValue1] = useState(null);
     const [isFocus, setIsFocus] = useState(false);
 
-
-    const [openPriority, setOpenPriority] = useState(false);
-    const [openServiceType, setOpenServiceType] = useState(false);
-    const [openContactPerson, setOpenContactPerson] = useState(false);
-    const [openSecretary, setOpenSecretary] = useState(false);
-    const [value, setValue] = useState(null);
     const [priorityList, setPriorityList] = useState([]);
     const [contactPersonList, setContactPersonList] = useState([]);
     const [serviceType, setServiceType] = useState([]);
     const [secretaryItem, setSecretaryItem] = useState([]);
-    const [handleBy, setHandleBy] = useState();
+    const [handleBy, setHandleBy] = useState([]);
     const [salesAssistance, setSalesAssistance] = useState([]);
 
 
@@ -103,7 +70,6 @@ const NewServiceCall = (props: any) => {
     const [itemDescription, setItemDescription] = useState();
     const [customerList, setCustomerList] = useState([]);
 
-    const [customerList2, setCustomerList2] = useState([]);
     const [cusAddress, setCusAddress] = useState('');
     const [contactPerson, setContactPerson] = useState('');
     const [contactNumber, setContactNumber] = useState('');
@@ -122,56 +88,30 @@ const NewServiceCall = (props: any) => {
     const [dateType, setDateType] = useState('');
     const [lastServiceID, setLastServiceID] = useState([]);
 
-    const [formHeading, setformHeading] = useState('');
-    const [savebutton, setsavebutton] = useState('');
-    const [CurrentDateTime, setCurrentDateTime] = useState('');
-
-
-    const [created_by, setcreated_by] = useState(null);
+    const [formHeading, setformHeading] = useState(route?.params?.mode == 1 ? " Update Service Call" : "Add New Service Call");
+    const [savebutton, setsavebutton] = useState(route?.params?.mode == 1 ? "Update" : "Add");
 
     const [itemID, setitemID] = useState(null);
     const [customerID, setcustomerID] = useState(null);
-    const [userID, setuserID] = useState([]);
-    
-  
-   
-  
-    const [SyncServiceList, setSyncServiceList] = useState([]);
     var TOCKEN_KEY: any;
-    var USERID: any;
-    
-    const testSaveServiceCall=()=>{
-        const sendData = [
-            {
-                ServiceCallId: "Ser_2023-02-01",
-                item_code: "I_123",
-                item_description: "discriptiuon1",
-                customer_address: "Address1",
-                contact_name: "name conntact",
-                contact_no: "1234567891",
-                Subject: "Subject",
-                HandledBy: "kamal",
-                SalesAssistant: "Nimal",
-                PlanedStartDateTime: moment().utcOffset('+05:30').format('YYYY-MM-DD'),
-                PlanedEndDateTime: moment().utcOffset('+05:30').format('YYYY-MM-DD'),
-                Priority: "Low",
-                type: "Type1",
-                Secretary: "Secretary1",
-                attend_status: '0',
-                Status: '0',
-                customer: "customer11",
-                CreatedBy: "1",
-                approve_status: '0',
-                createAt:moment().utcOffset('+05:30').format('YYYY-MM-DD kk:mm:ss'),
-                syncstatus:'0',
-                itemID:"Id123",
-                customerID:"Cusid",
+    const mode = route.params.mode;
 
+    useFocusEffect(
+        React.useCallback(() => {
+            getServiceCallTypes();
+            getCustomers();
+            getAllUserTypesData();
+
+            if (route.params.cusList?.length > 0) {
+                SetPreviousAddedData(route.params.serviceID);
+            } 
+            if (mode != 1) {
+                generateCallID();
             }
-        ]
-        save_serviceCall(sendData);
 
-    }
+        }, []),
+    );
+
     const saveServiceCall = () => {
 
         const sendData = [
@@ -195,15 +135,15 @@ const NewServiceCall = (props: any) => {
                 customer: selectCustomer,
                 CreatedBy: "1",
                 approve_status: '0',
-                createAt:moment().utcOffset('+05:30').format('YYYY-MM-DD kk:mm:ss'),
-                syncstatus:'0',
-                itemID:selectItemCode,
-                customerID:customerID,
+                createAt: moment().utcOffset('+05:30').format('YYYY-MM-DD kk:mm:ss'),
+                syncstatus: '0',
+                itemID: selectItemCode,
+                customerID: customerID,
 
             }
         ]
 
-            //console.log(USERID, '----', USERID);
+        //console.log(USERID, '----', USERID);
 
         try {
 
@@ -227,19 +167,12 @@ const NewServiceCall = (props: any) => {
 
                                                                         if (contactNumber.length == 10) {
 
-                                                                            if (Mode == 1) {
-                                                                                console.log("update", Mode);
-
-                                                                                //update
+                                                                            if (mode == 1) {
                                                                                 Update_serviceCall(sendData);
                                                                             } else {
-                                                                                console.log("save", Mode);
-
                                                                                 save_serviceCall(sendData);
                                                                             }
                                                                         } else {
-                                                                            console.log("............  " , contactNumber);
-                                                                            
                                                                             ToastAndroid.show("Invalid Mobile Number..!  ", ToastAndroid.SHORT);
                                                                         }
 
@@ -339,27 +272,27 @@ const NewServiceCall = (props: any) => {
                 if (result === "success") {
                     NetInfo.fetch().then(state => {
                         if (!state.isConnected) {
-                          console.log('No internet connection');
-                          ToastAndroid.show("Please check your internet connection", ToastAndroid.SHORT);
+                            console.log('No internet connection');
+                            ToastAndroid.show("Please check your internet connection", ToastAndroid.SHORT);
                         } else {
-                          console.log('Connected to the internet');
-                          UploadServiceCall();
+                            console.log('Connected to the internet');
+                            UploadServiceCall();
 
-                          if (Mode == 1) {
-                              console.log("**************", "NEWSERVICE_CALL_UPDATE");
-                              ToastAndroid.show("New Service Call Update Success ", ToastAndroid.SHORT);
-      
-                          } else {
-                              generateCallID();
-                              ToastAndroid.show("New Service Call Create Success ", ToastAndroid.SHORT);
-                          }
-      
-                          navigation.navigate('Home');
-      
+                            if (mode == 1) {
+                                console.log("**************", "NEWSERVICE_CALL_UPDATE");
+                                ToastAndroid.show("New Service Call Update Success ", ToastAndroid.SHORT);
+
+                            } else {
+                                generateCallID();
+                                ToastAndroid.show("New Service Call Create Success ", ToastAndroid.SHORT);
+                            }
+
+                            navigation.navigate('Home');
+
                         }
-                      });
+                    });
                     //need check internet connection true false
-                  
+
                 } else {
 
                     Alert.alert(
@@ -391,98 +324,98 @@ const NewServiceCall = (props: any) => {
 
     const UploadServiceCall = () => {
         try {
-    
-          get_ASYNC_TOCKEN().then(res => {
-            TOCKEN_KEY = res;
-            const AuthStr = 'Bearer '.concat(TOCKEN_KEY);
-           
-         // console.log( 'AuthStr####3%%%%%%%%%%%%%',AuthStr);
-    
-        const prams= {
-          "UserName": "",
-          "objServiceCallList": [
-            {
-              "UserID": 1,  //need to code
-              "serviceId": serviceId,
-              "priority": selectPriority,
-              "service_type": selectServiceType,
-              "item_code":selectItemCode,
-              "itemID":itemID,
-              "customerID":customerID,
-              "customer":selectCustomer,
-              "customer_address":cusAddress,
-              "contact_name": contactPerson,
-             "contact_no":contactNumber,
-              "handle_by": selectTechnician,
-             "secretary": selectSecretary,
-              "sales_assistance":selectAssistance,
-              "start_date":startDate,
-              "end_date":endDate,
-              "created_by":1, //need to code
-              "active_status":1,
-              "Approve_status":0,
-              "Attend_status":0,
-              "createAt":moment().utcOffset('+05:30').format('YYYY-MM-DD kk:mm:ss'),
-              }
-          ]
-        }
-         
-         console.log('--NEW SERVICE CALL UPLOAD JSON--', prams);
-    
-          const headers = {
-            'Authorization': AuthStr
-          }
-          const URL = BASE_URL_GET+"service-call";
-          axios.post(URL, prams, {
-            headers: headers
-          })
-            .then((response) => {
-                console.log("[s][t][a][t][u][s][]",response.status);
-                if (response.status == 200) {
 
-               console.log('<------ NEW SERVICE CALL UPLOAD Method --->', response.data)
-               console.log(response.data.UniqueNo);
-               
-               if(response.data.ErrorId=0){
-                // this use fro update sync flag as 1 
-                updateSycnServiceCAll(response.data.UniqueNo, (result: any) => {
+            get_ASYNC_TOCKEN().then(res => {
+                TOCKEN_KEY = res;
+                const AuthStr = 'Bearer '.concat(TOCKEN_KEY);
 
-                });
-                ToastAndroid.show(response.data.ErrorDescription, ToastAndroid.LONG);
-               }
-               
-            }else{
-                Alert.alert(
-                    "Invalid Details!",
-                    "Bad Request",
-                    [
-                        { text: "OK", onPress: () => console.log("OK Pressed") }
+                // console.log( 'AuthStr####3%%%%%%%%%%%%%',AuthStr);
+
+                const prams = {
+                    "UserName": "",
+                    "objServiceCallList": [
+                        {
+                            "UserID": 1,  //need to code
+                            "serviceId": serviceId,
+                            "priority": selectPriority,
+                            "service_type": selectServiceType,
+                            "item_code": selectItemCode,
+                            "itemID": itemID,
+                            "customerID": customerID,
+                            "customer": selectCustomer,
+                            "customer_address": cusAddress,
+                            "contact_name": contactPerson,
+                            "contact_no": contactNumber,
+                            "handle_by": selectTechnician,
+                            "secretary": selectSecretary,
+                            "sales_assistance": selectAssistance,
+                            "start_date": startDate,
+                            "end_date": endDate,
+                            "created_by": 1, //need to code
+                            "active_status": 1,
+                            "Approve_status": 0,
+                            "Attend_status": 0,
+                            "createAt": moment().utcOffset('+05:30').format('YYYY-MM-DD kk:mm:ss'),
+                        }
                     ]
-                );
-
                 }
-    
+
+                console.log('--NEW SERVICE CALL UPLOAD JSON--', prams);
+
+                const headers = {
+                    'Authorization': AuthStr
+                }
+                const URL = BASE_URL_GET + "service-call";
+                axios.post(URL, prams, {
+                    headers: headers
+                })
+                    .then((response) => {
+                        console.log("[s][t][a][t][u][s][]", response.status);
+                        if (response.status == 200) {
+
+                            console.log('<------ NEW SERVICE CALL UPLOAD Method --->', response.data)
+                            console.log(response.data.UniqueNo);
+
+                            if (response.data.ErrorId = 0) {
+                                // this use fro update sync flag as 1 
+                                updateSycnServiceCAll(response.data.UniqueNo, (result: any) => {
+
+                                });
+                                ToastAndroid.show(response.data.ErrorDescription, ToastAndroid.LONG);
+                            }
+
+                        } else {
+                            Alert.alert(
+                                "Invalid Details!",
+                                "Bad Request",
+                                [
+                                    { text: "OK", onPress: () => console.log("OK Pressed") }
+                                ]
+                            );
+
+                        }
+
+                    })
+                    .catch((error) => {
+                        Alert.alert('error', error.response)
+
+                    })
+
             })
-            .catch((error) => {
-              Alert.alert('error', error.response)
-    
-            })
-    
-       })
         } catch (error) {
-          console.log(">>>>>>>>>>>>", error);
-    
+            console.log(">>>>>>>>>>>>", error);
+
         }
-      }
-    
-
-    const getItem = (cusCode:any) => {
+    }
 
 
-        getAllCustomerVsItems(cusCode,(result: any) => {
+    const getItem = (cusCode: any) => {
+
+
+        getAllCustomerVsItems(cusCode, (result: any) => {
             setItemCode(result);
 
-            console.log(" item count .........  ",result.length)
+            console.log(" item count .........  ", result.length)
         });
 
     }
@@ -500,7 +433,7 @@ const NewServiceCall = (props: any) => {
     }
 
 
-    const onChangePicker = (event:any, type:any) => {
+    const onChangePicker = (event: any, type: any) => {
 
         console.log(type, ">>>>>>>>>>>>>>>>>>>");
 
@@ -527,7 +460,7 @@ const NewServiceCall = (props: any) => {
         }
     }
 
-    const onChange = (event:any, selectedDate:any) => {
+    const onChange = (event: any, selectedDate: any) => {
         const currentDate = selectedDate;
 
         console.log(currentDate);
@@ -656,92 +589,6 @@ const NewServiceCall = (props: any) => {
     }
 
 
-    useEffect(() => {
-
-        getServiceCallTypes();
-        // getItem();
-        getCustomers();
-        getAllUserTypesData();
-        // getContactPerson();
-
-        Mode = route.params.mode;
-
-        // console.log(Mode, "Update mode------------- ", loandingspinner);
-        if (Mode == 1) {
-            console.log('this is mode =1');
-            setformHeading("Update Service Call");
-            setsavebutton("Update");
-            console.log('list service call cus---'+route.params.cusList.length);
-            // setloandingspinner(true);
-            console.log('length is ---'+route.params.cusList?.length);
-            if (route.params.cusList?.length > 0) {
-                SetPreviousAddedData(route.params.serviceID);
-            } else {
-
-            }
-
-
-        } else {
-            setformHeading("Add New Service Call");
-            setsavebutton("Add");
-            generateCallID();
-
-        }
-
-
-
-
-    }, []);
-
-
-    useEffect(() => {
-        const focusHandler = navigation.addListener('focus', () => {
-
-
-            // get_ASYNC_USERID().then(res => {
-            //     USERID=res;
-            //     setuserID(USERID);
-
-            //     console.log(userID, "<><><><><> ");
-            // })
-
-            getServiceCallTypes();
-            // getItem();
-            getCustomers();
-            getAllUserTypesData();
-            // getContactPerson();
-            Mode = route.params.mode;
-
-            console.log(Mode, "Update mode------------ ");
-            if (Mode == 1) {
-                setformHeading("Update Service Call");
-                setsavebutton("Update");
-                // setloandingspinner(true);
-
-
-                if (route.params.cusList?.length > 0) {
-                    SetPreviousAddedData(route.params.serviceID);
-                } else {
-
-                }
-
-
-            } else {
-                setformHeading("Add New Service Call");
-                setsavebutton("Add");
-                generateCallID();
-
-            }
-
-        });
-        return focusHandler;
-    }, [navigation]);
-
-    //  useEffect(() => {
-    //      changeCusAddress(selectCustomer?.Address);
-    //  }, [selectCustomer]);
-
-
 
     const getContactPerson = () => {
 
@@ -860,29 +707,26 @@ const NewServiceCall = (props: any) => {
         }
     }
 
-    const cancelAndGoBack=()=>{
+    const cancelAndGoBack = () => {
         Alert.alert('Cancle', 'Are you sure ?', [
             {
-              text: 'Cancel',
-              onPress: () => console.log('Cancel Pressed'),
-              style: 'cancel',
+                text: 'Cancel',
+                onPress: () => console.log('Cancel Pressed'),
+                style: 'cancel',
             },
-                {text: 'OK', onPress: () =>  navigation.goBack(),}
-          ]);
+            { text: 'OK', onPress: () => navigation.goBack(), }
+        ]);
     }
 
     return (
 
         <SafeAreaView style={comStyles.CONTAINER} >
-            {/* <TouchableOpacity style={style.dashStyle} onPress={() => { closeModal(false) }} /> */}
-            {/* <TouchableOpacity style={style.dashStyle} onPress={() => navigation.navigate('ServiceCall')} /> */}
-            <Header title={formHeading} isBtn={true} btnOnPress={() => navigation.goBack()}  />
+
+            <Header title={formHeading} isBtn={true} btnOnPress={() => navigation.goBack()} />
             <View style={{ padding: 5 }} />
-            {/* <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", }}>
-                <Text style={style.maintxt}>{formHeading}</Text>
-            </View> */}
+
             <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", marginBottom: 20, padding: 10, }}>
-                {/* <ActionButton title="Cancel" style={style.loginBtn} textStyle={style.txtStyle} onPress={() => { closeModal(false) }} /> */}
+
                 <ActionButton title="Cancel" style={style.loginBtn} textStyle={style.txtStyle} onPress={cancelAndGoBack} />
                 <ActionButton title={savebutton} style={{ flex: 0.5 }} onPress={() => saveServiceCall()} />
             </View>
@@ -953,35 +797,7 @@ const NewServiceCall = (props: any) => {
 
 
                     <View style={{ zIndex: 100 }}>
-                        {/* <DropDownPicker
-                            open={openPriority}
-                            items={priorityList}
-                            placeholder="Service Call Priority"
-                            placeholderStyle={{
-                                fontFamily: comStyles.FONT_FAMILY.SEMI_BOLD,
-                                fontSize: 12,
-                            }}
-                            // onChangeItem={item => console.log(item.label, item.value)}
-                            style={comStyles.dropdownBox}
-                            setOpen={setOpenPriority}
-                            containerStyle={{ height: 40 }}
-                            dropDownStyle={{ backgroundColor: 'white' }}
-                            dropDownMaxHeight={'100%'}
-                            labelStyle={{ fontSize: 14 }}
-                            itemStyle={{
-                                justifyContent: 'flex-start'
-                            }}
-                            dropDownContainerStyle={{ backgroundColor: 'white', elevation: 1000, borderColor: comStyles.COLORS.BORDER_COLOR }}
-                            listMode="SCROLLVIEW"
-                            scrollViewProps={{
-                                nestedScrollEnabled: true,
-                            }}
 
-                            // onChangeValue={(e)=>onChangePicker(e,"priority")}
-                            value={selectPriority}
-
-                            setValue={(e) => onChangePicker(e, "priority")}
-                        /> */}
                         <Dropdown
                             style={[style.dropdown, isFocus && { borderColor: comStyles.COLORS.BORDER_COLOR }]}
                             placeholderStyle={style.placeholderStyle}
@@ -1113,126 +929,6 @@ const NewServiceCall = (props: any) => {
 
                     />
 
-                    {/* <View style={{ zIndex: 50 }}>
-
-                        <Dropdown
-                            style={[style.dropdown, isFocus && { borderColor: comStyles.COLORS.BORDER_COLOR }]}
-                            placeholderStyle={style.placeholderStyle}
-                            selectedTextStyle={style.selectedTextStyle}
-                            inputSearchStyle={style.inputSearchStyle}
-                            iconStyle={style.iconStyle}
-                            data={customerName}
-                            search
-                            maxHeight={300}
-                            labelField="CusName"
-                            valueField="Address"
-                            placeholder={!isFocus ? 'Select Customer ' : '...'}
-                            searchPlaceholder="Search Customer "
-                            value={customerName}
-                            onFocus={() => setIsFocus(true)}
-                            onBlur={() => setIsFocus(false)}
-                            onChange={item => {
-
-                                // setValue(item.description);
-                                setSelectCustomer(item.CusName);
-
-                                changeCusAddress(item.Address);
-                                // ItemDesc = item.description;
-                                console.log(item.Address + " --------------- ");
-
-
-                                setIsFocus(false);
-                            }}
-                            renderLeftIcon={() => (
-                                <AntDesign
-                                    style={style.icon}
-                                    color={isFocus ? comStyles.COLORS.HEADER_BLACK : comStyles.COLORS.HEADER_BLACK}
-                                    name="Safety"
-                                    size={15}
-                                />
-                            )}
-                        />
-
-                    </View>
-
-                    <View style={{ padding: 5 }} />
-
-                    <InputText
-                        placeholder="Customer Address"
-                        placeholderColor={comStyles.COLORS.HEADER_BLACK}
-                        style={comStyles.serviceTicketInput}
-                        stateValue={cusAddress}
-                        setState={setCusAddress}
-                    /> */}
-                    {/* <View style={{ padding: 5 }} /> */}
-
-                    {/* <View style={{ zIndex: 50 }}>
-
-                        <Dropdown
-
-                            style={[style.dropdown, isFocus && { borderColor: comStyles.COLORS.BORDER_COLOR }]}
-                            placeholderStyle={style.placeholderStyle}
-                            selectedTextStyle={style.selectedTextStyle}
-                            inputSearchStyle={style.inputSearchStyle}
-                            iconStyle={style.iconStyle}
-                            data={contactPersonList}
-                            search
-                            maxHeight={300}
-                            labelField="name"
-                            valueField="name"
-                            placeholder={!isFocus ? 'Contact Person ' : '...'}
-                            searchPlaceholder="Search Contact Person "
-                            value={contactPerson}
-                            onFocus={() => setIsFocus(true)}
-                            onBlur={() => setIsFocus(false)}
-                            onChange={item => {
-                                console.log('%%%%-----', item.name);
-                                setContactPerson(item.name);
-                                setIsFocus(false);
-                            }}
-                            renderLeftIcon={() => (
-                                <AntDesign
-                                    style={style.icon}
-                                    color={isFocus ? comStyles.COLORS.HEADER_BLACK : comStyles.COLORS.HEADER_BLACK}
-                                    name="Safety"
-                                    size={15}
-                                />
-                            )}
-                        />
-
-                    </View> */}
-
-
-                    {/* <DropDownPicker
-                        placeholder="Contact Person"
-                        open={openContactPerson}
-                        items={contactPersonList}
-                        placeholderStyle={{
-                            fontFamily: comStyles.FONT_FAMILY.SEMI_BOLD,
-                            fontSize: 12,
-                        }}
-                        // onChangeItem={item => console.log(item.label, item.value)}
-                        style={comStyles.dropdownBox}
-                        setOpen={setOpenContactPerson}
-                        containerStyle={{ height: 40 }}
-                        dropDownStyle={{ backgroundColor: 'white' }}
-                        dropDownMaxHeight={'100%'}
-                        labelStyle={{ fontSize: 14 }}
-                        itemStyle={{
-                            justifyContent: 'flex-start'
-                        }}
-                        dropDownContainerStyle={{ backgroundColor: 'white', elevation: 1000, borderColor: comStyles.COLORS.BORDER_COLOR }}
-                        listMode="SCROLLVIEW"
-                        scrollViewProps={{
-                            nestedScrollEnabled: true,
-                        }}
-                        value={selectContactPerson}
-                        setValue={(e) => onChangePicker(e, "contactPerson")}
-
-                    /> */}
-                    {/* <View style={{ padding: 10 }} /> */}
-
-
                     <InputText
                         placeholder="Contact Person"
                         placeholderColor={comStyles.COLORS.HEADER_BLACK}
@@ -1252,7 +948,7 @@ const NewServiceCall = (props: any) => {
                         setState={setContactNumber}
                     />
 
-                    {/* <View style={{ padding: 10 }} /> */}
+
 
                     <InputText
                         placeholder="Subject"
@@ -1262,20 +958,8 @@ const NewServiceCall = (props: any) => {
                         setState={setSubject}
                     />
 
-                    {/* <View style={{ padding: 10 }} /> */}
-
-                    {/* <InputText
-                        placeholder="Handled By"
-                        placeholderColor={comStyles.COLORS.HEADER_BLACK}
-                        style={comStyles.serviceTicketInput}
-                        stateValue={handleBy}
-                        setState={setHandleBy}
-                    /> */}
-
-                    {/* <View style={{ padding: 5 }} /> */}
-
                     <View style={{ zIndex: 50 }}>
-
+                        {/* error */}
                         <Dropdown
                             style={[style.dropdown, isFocus && { borderColor: comStyles.COLORS.BORDER_COLOR }]}
                             placeholderStyle={style.placeholderStyle}
@@ -1333,12 +1017,8 @@ const NewServiceCall = (props: any) => {
                             onBlur={() => setIsFocus(false)}
                             onChange={item => {
 
-                                // setValue(item.description);
-                                setSelectSecretary(item.name);
 
-                                // changeCusAddress(item.Address);
-                                // ItemDesc = item.description;
-                                // console.log(item.label + " --------------- ");
+                                setSelectSecretary(item.name);
 
 
                                 setIsFocus(false);
@@ -1356,13 +1036,7 @@ const NewServiceCall = (props: any) => {
                     </View>
 
                     <View style={{ padding: 10 }} />
-                    {/* <InputText
-                        placeholder="Sales Assistance"
-                        placeholderColor={comStyles.COLORS.HEADER_BLACK}
-                        style={comStyles.serviceTicketInput}
-                        stateValue={salesAssistance}
-                        setState={setSalesAssistance}
-                    /> */}
+                
 
                     <View style={{ zIndex: 50 }}>
 
@@ -1384,12 +1058,10 @@ const NewServiceCall = (props: any) => {
                             onBlur={() => setIsFocus(false)}
                             onChange={item => {
 
-                                // setValue(item.description);
+                               
                                 setSelectAssistance(item.name);
 
-                                // changeCusAddress(item.Address);
-                                // ItemDesc = item.description;
-                                //  console.log(item.value + " --------------- ");
+                            
 
 
                                 setIsFocus(false);

@@ -7,8 +7,6 @@ import {
   Text,
   StyleSheet,
   SafeAreaView,
-  ImageBackground,
-  Image,
   TouchableOpacity,
   FlatList,
   Dimensions,
@@ -20,38 +18,24 @@ import {
   BackHandler,
 } from 'react-native';
 import Header from '../../../Components/Header';
-import InputText from '../../../Components/InputText';
 import comStyles from '../../../Constant/Components.styles';
 import IconA from 'react-native-vector-icons/FontAwesome';
 import RBSheet from 'react-native-raw-bottom-sheet';
 import Spinner from 'react-native-loading-spinner-overlay';
 import style from './style';
-import styles from '../Home/style';
-import {
-  cofirmService,
-  receivedService,
-  serviceTicket,
-} from '../../../Constant/DummyData';
 import ListBox from '../../../Components/ListBox';
 import { useIsFocused, useNavigation } from '@react-navigation/native';
 import ActionButton from '../../../Components/ActionButton';
-import { Menu } from 'react-native-paper';
-import moment from 'moment';
-import { openCamera } from 'react-native-image-crop-picker';
-import { saveMeterReading } from '../../../SQLiteDatabaseAction/DBControllers/MeterReadingController';
 import {
   getServiceById,
   getServiceCalls,
 } from '../../../SQLiteDatabaseAction/DBControllers/ServiceController';
 import AsyncStorage from '@react-native-community/async-storage';
 import AsyncStorageConstants from '../../../Constant/AsyncStorageConstants';
-import { getServiceIndoByServiceId } from '../../../SQLiteDatabaseAction/DBControllers/ServiceInfoController';
 import {
-  getServiceTicket,
   getTicketsForInprogress,
   getTicketsForReport,
 } from '../../../SQLiteDatabaseAction/DBControllers/TicketController';
-import { BackPressHandler } from '../../../Constant/CommonFunctions';
 import axios from 'axios';
 import * as DB_Customer from '../../../SQLiteDatabaseAction/DBControllers/CustomerController';
 import ComponentsStyles from '../../../Constant/Components.styles';
@@ -92,42 +76,6 @@ const Home = () => {
 
   const navigation = useNavigation();
   const isVisible = useIsFocused();
-
-  ///////////////////////////////////////////////
-  const testSaveServiceCall = () => {
-    const sendData = [
-      {
-        ServiceCallId: "SC_2023-02-13_3",
-        item_code: "JS/PGM",
-        item_description: " Powder Grinding Machine",
-        customer_address: "fgf",
-        contact_name: "fbfb",
-        contact_no: "5767568658",
-        Subject: "dfhfhfh",
-        HandledBy: "gayan",
-        SalesAssistant: "Akila",
-        PlanedStartDateTime: "2023-02-14",
-        PlanedEndDateTime: "2023-02-26",
-        Priority: "Low",
-        type: "Mechanical",
-        Secretary: "Saman",
-        attend_status: '0',
-        Status: '0',
-        customer: " PURECINNAMON EXPORT (PVT) LTD",
-        CreatedBy: "1",
-        approve_status: '0',
-        createAt: moment().utcOffset('+05:30').format('YYYY-MM-DD kk:mm:ss'),
-        syncstatus: '0',
-        itemID: " JS/PGM",
-        customerID: " PURECINNAMON",
-
-      }
-    ]
-    save_serviceCall(sendData);
-
-  }
-
-
   const save_serviceCall = (data: any) => {
     console.log("**************", data);
     console.log("**************", JSON.stringify(data));
@@ -462,7 +410,7 @@ const Home = () => {
 
 
 
-  const navigatoTicket = async (ticketID: any,CallID:any) => {
+  const navigatoTicket = async (ticketID: any, CallID: any) => {
 
     console.log(ticketID, "     >>>>>>>>>>>>>>>>>>>>>>>>>>    ", CallID);
 
@@ -476,7 +424,6 @@ const Home = () => {
   }
 
   useEffect(() => {
-   // testSaveServiceCall();
     const focusHandler = navigation.addListener('focus', () => {
       setloandingspinner(true);
       getWellcomeNote();
@@ -686,7 +633,7 @@ const Home = () => {
                   name={item.assignTo}
                   status={item.priority}
                   isIcon={true}
-                  onPressIcon={() => navigatoTicket(item.ticketId,item.serviceId)}
+                  onPressIcon={() => navigatoTicket(item.ticketId, item.serviceId)}
                 />
               </View>
             );

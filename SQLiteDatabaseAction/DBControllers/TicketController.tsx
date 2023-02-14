@@ -601,7 +601,7 @@ export const getAllTickets = (callBack:any) =>{
         export const getCompliteTicketCount2 = (month:any,callBack:any) => {
       
             DB.searchData(
-                "SELECT COUNT(*) FROM TICKET WHERE (strftime('%m', startDate) = ?) AND status = 0",
+                "SELECT COUNT(*) FROM TICKET WHERE (strftime('%m', startDate) = ?) AND attend_status = 3",
                 [month],
                 (resp, err) => {
                     callBack(resp, err);
@@ -621,4 +621,16 @@ export const getAllTickets = (callBack:any) =>{
                 },
             );
         }
+
+        export const getAllTicketCountNew = (month:any,callBack:any) => {
+      
+            DB.searchData(
+                "SELECT COUNT(*SELECT COUNT(*) FROM TICKET WHERE (strftime('%m', startDate) = ?)",
+                [month],
+                (resp, err) => {
+                    callBack(resp, err);
+                    
+                },
+            );
+          };
 

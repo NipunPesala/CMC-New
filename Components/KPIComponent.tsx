@@ -4,11 +4,11 @@ import {Text, Dimensions, View, StyleSheet, ScrollView} from 'react-native';
 import comStyles from '../Constant/Components.styles';
 import moment from 'moment';
 import {
-  getCompliteTicketCount,
-  getServiceTicket,
   getCompliteTicketCount2,
   getServiceTicketList,
   getAllTicketCount,
+  getAllTicketCountNew
+
 } from '../SQLiteDatabaseAction/DBControllers/TicketController';
 
 const KPIComponent = () => {
@@ -91,6 +91,19 @@ const  calculateEfect=(startD:any,endD:any)=>{
    
   };
 
+  const getAllTiketInMonth= (currentMonth: any) => {
+    getAllTicketCountNew(currentMonth, (result: any) => {
+      console.log("-----check new ----------",result);
+      //console.log('--close ticket count get to variable--'+result.rows(0)["COUNT(*)"]);
+      const{"COUNT(*)":countAlll}=result[0];
+      const Performance=(closeTicketNum/countAlll)*100
+      setMonthlyProf(Performance);
+      console.log('--close ticket only number--', countAlll);
+      
+    });
+   
+  };
+
   const getAllTiket = () => {
     getAllTicketCount((result:any) =>{
 
@@ -105,7 +118,7 @@ const  calculateEfect=(startD:any,endD:any)=>{
   if(closeTicketNum===0){
     
   }else{
-    getAllTiket();
+    getAllTiketInMonth(convertMonth);
   }
   return (
     <View>
