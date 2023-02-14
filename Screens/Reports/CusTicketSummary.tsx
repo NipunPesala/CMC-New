@@ -189,7 +189,8 @@ const ServiceTicketSummaryReportScreen = () => {
                 leftarrow="leftcircle"
                 rightarrow="rightcircle" />
 
-            <AttendanceTableHeaderComponent
+
+              <AttendanceTableHeaderComponent
                 customstyle={style.customStyletableHeader}
                 isHeadertitle1={true}
                 Headertitle1="Service Ticket ID"
@@ -201,8 +202,11 @@ const ServiceTicketSummaryReportScreen = () => {
                 Headertitle4="Contact No"
                 isHeadertitle5={true}
                 Headertitle5="Customer"
+                isHeadertitle6={false}
+                Headertitle6=""
+
             />
-            <FlatList
+            {/* <FlatList
                 showsHorizontalScrollIndicator={false}
                 // data={Arrays.SelectPackage.Wash.filter(ob => ob.extras == true)}
                 data={ticketList}
@@ -224,12 +228,45 @@ const ServiceTicketSummaryReportScreen = () => {
                             Headertitle4={item.outtime}
                             isHeadertitle5={true}
                             Headertitle5={item.customer}
+                            isHeadertitle6={false}
+                            Headertitle6={""}
                         />
 
                     );
                 }}
                 keyExtractor={item => `${item.ticketId}`}
-            />
+            /> */}
+
+<FlatList
+                        showsHorizontalScrollIndicator={false}
+                        // data={Arrays.SelectPackage.Wash.filter(ob => ob.extras == true)}
+                        data={ticketList}
+                        style={{ marginTop: 10, marginBottom: 60, }}
+                        horizontal={false}
+                        renderItem={({ item }) => {
+                            return (
+
+                                <AttendanceTableDetailsComponent
+                                    isHeadertitle1={true}
+                                    Headertitle1={item.ticketId}
+                                    isHeadertitle2={true}
+                                    Headertitle2={item.content}
+                                    isHeadertitle3={true}
+                                    batchLabelStyle={item.attend_status==0?style.openstyle:item.attend_status==1?style.pendingstyle:item.attend_status==2?style.holdstyle:style.Completestyle}
+                                    Headertitle3={item.attend_status==0?"Open":item.attend_status==1?"Pending":item.attend_status==2?"Hold":"Completed"}
+                                    isHeadertitle4={true}
+                                    Headertitle4={item.outtime}
+                                    isHeadertitle5={true}
+                                    Headertitle5={item.customer}
+                                    isHeadertitle6={false}
+                                    Headertitle6={''}
+                            
+                                />
+
+                            );
+                        }}
+                        keyExtractor={item => `${item._Id}`}
+                    />
         </SafeAreaView>
     );
 }

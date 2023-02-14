@@ -97,29 +97,29 @@ const Home = () => {
   const testSaveServiceCall = () => {
     const sendData = [
       {
-        ServiceCallId: "SC_2023-02-11_5",
-        item_code: "I_123",
-        item_description: "discriptiuon1",
-        customer_address: "Address1",
-        contact_name: "name conntact",
-        contact_no: "1234567891",
-        Subject: "Subject",
-        HandledBy: "kamal",
-        SalesAssistant: "Nimal",
-        PlanedStartDateTime: "2023-02-11",
-        PlanedEndDateTime: "2023-02-20",
+        ServiceCallId: "SC_2023-02-13_3",
+        item_code: "JS/PGM",
+        item_description: " Powder Grinding Machine",
+        customer_address: "fgf",
+        contact_name: "fbfb",
+        contact_no: "5767568658",
+        Subject: "dfhfhfh",
+        HandledBy: "gayan",
+        SalesAssistant: "Akila",
+        PlanedStartDateTime: "2023-02-14",
+        PlanedEndDateTime: "2023-02-26",
         Priority: "Low",
-        type: "Type1",
-        Secretary: "Secretary1",
+        type: "Mechanical",
+        Secretary: "Saman",
         attend_status: '0',
         Status: '0',
-        customer: "customer11",
+        customer: " PURECINNAMON EXPORT (PVT) LTD",
         CreatedBy: "1",
         approve_status: '0',
         createAt: moment().utcOffset('+05:30').format('YYYY-MM-DD kk:mm:ss'),
         syncstatus: '0',
-        itemID: "Id123",
-        customerID: "Cusid",
+        itemID: " JS/PGM",
+        customerID: " PURECINNAMON",
 
       }
     ]
@@ -476,7 +476,7 @@ const Home = () => {
   }
 
   useEffect(() => {
-    //testSaveServiceCall();
+   // testSaveServiceCall();
     const focusHandler = navigation.addListener('focus', () => {
       setloandingspinner(true);
       getWellcomeNote();

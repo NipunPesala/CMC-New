@@ -56,6 +56,8 @@ const SparePartsRequest = () => {
         }else{
 
             ToastAndroid.show("Invalide selected date  ", ToastAndroid.SHORT); 
+            setStartDate('');
+            setEndDate('');
         }
       //  const start = startDate ? moment(startDate).format("MM/DD/YYYY") : "Not Selected";
      
@@ -129,7 +131,7 @@ const SparePartsRequest = () => {
 
                 <TouchableOpacity
                     onPress={() => setShowCalendar(!showCalendar)}
-                    style={{ justifyContent: 'center', marginTop: 10, height: 60 }}>
+                    style={{ justifyContent: 'center', marginTop: 10, height: 75 }}>
                     <ActionButton
                         title="Custom Date Range"
                         onPress={btnCloseOnpress}

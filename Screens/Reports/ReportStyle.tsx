@@ -15,20 +15,22 @@ export default StyleSheet.create({
     selectedbutton: {
         backgroundColor: comStyles.COLORS.ICON_BLUE,
         flex: 0.5,
-        height: 50,
+        height:50,
         justifyContent: 'center',
         borderRadius: 5,
     },
     selectedbutton1: {
         backgroundColor: comStyles.COLORS.ICON_BLUE,
         flex: 0.5,
-        height: 65,
+        height: 50,
         justifyContent: 'center',
         borderRadius: 5,
         fontSize:0.5,
     },
     selectedBUTTON_TEXT: {
         color: comStyles.COLORS.WHITE,
+        fontSize:13,
+        padding:5,
     },
     defaultbutton: {
         backgroundColor: comStyles.COLORS.WHITE,
@@ -37,7 +39,7 @@ export default StyleSheet.create({
         justifyContent: 'center',
         borderRadius: 5,
         flex: 0.5,
-        height: 55,
+        height: 50,
     },
     defaultbutton1: {
         backgroundColor: comStyles.COLORS.WHITE,
@@ -46,10 +48,12 @@ export default StyleSheet.create({
         justifyContent: 'center',
         borderRadius: 5,
         flex: 0.5,
-        height: 65,
+        height: 50,
     },
     defaultBUTTON_TEXT: {
         color: comStyles.COLORS.REQUEST_DETAILS_ASH,
+        fontSize:13,
+        padding:5,
 
     },
     ServiceTicketDetailsScreenIcon: {
@@ -65,11 +69,19 @@ export default StyleSheet.create({
     openstyle: {
         backgroundColor: '#7DCEA0',
         borderRadius: 10,
+        width:85,
+        justifyContent:"center",
+        textAlign: 'center',
+        paddingLeft:25,
+
     },
     Completestyle: {
         backgroundColor: '#1E8449',
         borderRadius: 10,
-        justifyContent:"center"
+        justifyContent:"center",
+        paddingLeft:8,
+        paddingRight:8,
+    
     },
     pendingstyle: {
         backgroundColor: '#e2a25d',

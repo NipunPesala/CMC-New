@@ -121,6 +121,8 @@ const ServiceTicketSummaryReportScreen = () => {
         }else{
 
             ToastAndroid.show("Invalide selected date  ", ToastAndroid.SHORT); 
+            setStartDate('');
+            setEndDate('');
         }
       //  const start = startDate ? moment(startDate).format("MM/DD/YYYY") : "Not Selected";
       }

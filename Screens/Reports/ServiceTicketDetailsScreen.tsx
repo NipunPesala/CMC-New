@@ -59,6 +59,8 @@ const ServiceTicketDetailsScreen = () => {
           
         }else{
             ToastAndroid.show("Invalide selected date  ", ToastAndroid.SHORT); 
+            setStartDate('');
+            setEndDate('');
         }
       //  const start = startDate ? moment(startDate).format("MM/DD/YYYY") : "Not Selected";
            
@@ -189,7 +191,7 @@ const btnCloseOnpress=()=>{
                 Headertitle2="Assing to"
                 isHeadertitle3={true}
                 Headertitle3="Service Call Id"
-                isHeadertitle4={false}
+                isHeadertitle4={true}
                 Headertitle4="Ticket Content"
                 isHeadertitle5={true}
                 Headertitle5=" Ticket Content"
@@ -198,7 +200,7 @@ const btnCloseOnpress=()=>{
 
             />
              <FlatList
-                        showsHorizontalScrollIndicator={false}
+                        showsHorizontalScrollIndicator={true}
                         // data={Arrays.SelectPackage.Wash.filter(ob => ob.extras == true)}
                         data={serviceTicketDetail}
                         style={{ marginTop: 10, marginBottom: 60, }}
@@ -213,11 +215,13 @@ const btnCloseOnpress=()=>{
                                     Headertitle2={item.assignTo}
                                     isHeadertitle3={true}
                                     batchLabelStyle={item.attend_status==0?style.openstyle:item.attend_status==1?style.pendingstyle:item.attend_status==2?style.holdstyle:style.Completestyle}
-                                    Headertitle6={item.attend_status==0?"Open":item.attend_status==1?"Pending":item.attend_status==2?"Hold":"Completed"}
+                                    Headertitle3={item.attend_status==0?"Open":item.attend_status==1?"Pending":item.attend_status==2?"Hold":"Completed"}
                                     isHeadertitle4={true}
                                     Headertitle4={item.content}
-                                    isHeadertitle6={true}
-                                    Headertitle3={item.serviceId}
+                                    isHeadertitle5={true}
+                                    Headertitle5={item.serviceId}
+                                    isHeadertitle6={false}
+                                    Headertitle6={""}
                             
                                 />
 
