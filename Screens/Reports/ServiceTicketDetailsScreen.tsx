@@ -190,13 +190,13 @@ const btnCloseOnpress=()=>{
                 isHeadertitle2={true}
                 Headertitle2="Assing to"
                 isHeadertitle3={true}
-                Headertitle3="Service Call Id"
+                Headertitle3="Service status"
                 isHeadertitle4={true}
                 Headertitle4="Ticket Content"
                 isHeadertitle5={true}
                 Headertitle5=" Ticket Content"
                 isHeadertitle6={true}
-                Headertitle6="Ticket Status"
+                Headertitle6="Service call ID"
 
             />
              <FlatList

@@ -201,9 +201,9 @@ const ServiceTicketSummaryReportScreen = () => {
                 isHeadertitle4={true}
                 Headertitle4="Contact No"
                 isHeadertitle5={true}
-                Headertitle5="Customer"
-                isHeadertitle6={false}
-                Headertitle6=""
+                Headertitle5="Contact No"
+                isHeadertitle6={true}
+                Headertitle6="Customer"
 
             />
             {/* <FlatList
@@ -252,10 +252,10 @@ const ServiceTicketSummaryReportScreen = () => {
                                     isHeadertitle2={true}
                                     Headertitle2={item.content}
                                     isHeadertitle3={true}
-                                    batchLabelStyle={item.attend_status==0?style.openstyle:item.attend_status==1?style.pendingstyle:item.attend_status==2?style.holdstyle:style.Completestyle}
-                                    Headertitle3={item.attend_status==0?"Open":item.attend_status==1?"Pending":item.attend_status==2?"Hold":"Completed"}
+                                    batchLabelStyle={item.Attend_status==0?style.openstyle:item.Attend_status==1?style.pendingstyle:item.Attend_status==2?style.holdstyle:style.Completestyle}
+                                    Headertitle3={item.Attend_status==0?"Open":item.Attend_status==1?"Pending":item.Attend_status==2?"Hold":"Completed"}
                                     isHeadertitle4={true}
-                                    Headertitle4={item.outtime}
+                                    Headertitle4={item.contact_no}
                                     isHeadertitle5={true}
                                     Headertitle5={item.customer}
                                     isHeadertitle6={false}
