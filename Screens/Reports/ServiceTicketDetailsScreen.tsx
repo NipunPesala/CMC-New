@@ -15,6 +15,7 @@ import {getServiceTicketForReport,getSearchServiceTicket,SearchTicketUsingDateRa
 import { Calendar } from "react-native-calendars";
 import CalendarPicker from 'react-native-calendar-picker';
 import moment from "moment";
+
 const ServiceTicketDetailsScreen = () => {
     const navigation = useNavigation();
     const [tiketNo, settiketNo] = useState(false);

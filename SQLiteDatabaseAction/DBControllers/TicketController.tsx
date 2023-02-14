@@ -622,10 +622,11 @@ export const getAllTickets = (callBack:any) =>{
             );
         }
 
+
         export const getAllTicketCountNew = (month:any,callBack:any) => {
       
             DB.searchData(
-                "SELECT COUNT(*SELECT COUNT(*) FROM TICKET WHERE (strftime('%m', startDate) = ?)",
+                "SELECT COUNT(*) FROM TICKET WHERE (strftime('%m', startDate) = ?) AND attend_status = 3 OR attend_status = 2 OR attend_status = 1",
                 [month],
                 (resp, err) => {
                     callBack(resp, err);
@@ -633,4 +634,3 @@ export const getAllTickets = (callBack:any) =>{
                 },
             );
           };
-
