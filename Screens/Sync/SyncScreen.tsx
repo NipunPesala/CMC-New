@@ -963,7 +963,7 @@ const SyncScreen = (props: any) => {
 
         </View>
 
-        <View style={{ flexDirection: 'row', flex: 0.25 }}>
+        <View style={{ flexDirection: 'row', flex: 0.25 ,marginBottom:35}}>
 
           {
             disablebtn === true ? <View style={{ flex: 1, padding: 3 }}>
