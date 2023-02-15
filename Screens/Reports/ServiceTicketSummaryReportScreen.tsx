@@ -152,6 +152,14 @@ const ServiceTicketSummaryReportScreen = () => {
         setShowCalendar(!showCalendar);
         setStartDate('');
         setEndDate('');
+
+        settiketNo(true);
+        setcustem(false);
+            
+            if(!showCalendar){
+                settiketNo(false);
+                setcustem(true);
+            }
     }
     
     

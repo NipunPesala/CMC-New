@@ -67,16 +67,16 @@ export default StyleSheet.create({
     },
 
     openstyle: {
-        backgroundColor: '#FFFFFF',
+        backgroundColor: '#7DCEA0',
         borderRadius: 10,
         width:85,
         justifyContent:"center",
         textAlign: 'center',
-        paddingLeft:25,
+        paddingLeft:0,
 
     },
     Completestyle: {
-        backgroundColor: '#FFFFFF',
+        backgroundColor: '#1E8449',
         borderRadius: 10,
         justifyContent:"center",
         paddingLeft:8,
@@ -84,15 +84,15 @@ export default StyleSheet.create({
     
     },
     pendingstyle: {
-        backgroundColor: '#FFFFFF',
+        backgroundColor: '#e2a25d',
         borderRadius: 10,
     },
      holdstyle: {
-        backgroundColor: '#FFFFFF',
+        backgroundColor: '#5DADE2',
         borderRadius: 10,
     },
     textStyle:{
-        color:'#B4B4B4',
+        color:'#FFFF',
         fontFamily:ComponentsStyles.FONT_FAMILY.BOLD
     }
 });

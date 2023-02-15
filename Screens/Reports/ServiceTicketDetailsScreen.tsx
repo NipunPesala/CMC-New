@@ -122,6 +122,14 @@ const btnCloseOnpress=()=>{
     setShowCalendar(!showCalendar);
     setStartDate('');
     setEndDate('');
+
+    settiketNo(true);
+    setcustome(false);
+        
+        if(!showCalendar){
+            settiketNo(false);
+            setcustome(true);
+        }
 }
 
 
@@ -137,7 +145,7 @@ const btnCloseOnpress=()=>{
             <Header isBtn={true} title= "Service Ticket Details" btnOnPress={() => navigation.goBack()} />
             <View style={style.container}>
                     <ActionButton
-                        title="Service Ticket No1"
+                        title="Service Ticket No"
                         onPress={handleTicket}
                         style={tiketNo === true ? style.selectedbutton : style.defaultbutton}
                         textStyle={tiketNo === true ? style.selectedBUTTON_TEXT : style.defaultBUTTON_TEXT}
@@ -215,8 +223,8 @@ const btnCloseOnpress=()=>{
                                     isHeadertitle2={true}
                                     Headertitle2={item.assignTo}
                                     isHeadertitle3={true}
-                                    batchLabelStyle={item.attend_status==0?style.openstyle:item.attend_status==1?style.pendingstyle:item.attend_status==2?style.holdstyle:style.Completestyle}
-                                    Headertitle3={item.attend_status==0?"Open":item.attend_status==1?"Pending":item.attend_status==2?"Hold":"Completed"}
+                                    batchStyle={item.status==0?style.openstyle:item.status==1?style.pendingstyle:item.status==2?style.holdstyle:style.Completestyle}
+                                    Headertitle3={item.status==0?"Open":item.status==1?"Pending":item.status==2?"Hold":"Completed"}
                                     isHeadertitle4={true}
                                     Headertitle4={item.content}
                                     isHeadertitle5={true}

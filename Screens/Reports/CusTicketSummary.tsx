@@ -80,6 +80,14 @@ const ServiceTicketSummaryReportScreen = () => {
         setShowCalendar(!showCalendar);
         setStartDate('');
         setEndDate('');
+    
+        setcustomer(true);
+        setcustem(false);
+        
+        if(!showCalendar){
+            setcustem(true);
+            setcustomer(false);
+        }
     }
     
     
@@ -254,8 +262,8 @@ const ServiceTicketSummaryReportScreen = () => {
                                     isHeadertitle2={true}
                                     Headertitle2={item.content}
                                     isHeadertitle3={true}
-                                    batchLabelStyle={item.Attend_status==0?style.openstyle:item.Attend_status==1?style.pendingstyle:item.Attend_status==2?style.holdstyle:style.Completestyle}
-                                    Headertitle3={item.Attend_status==0?"Open":item.Attend_status==1?"Pending":item.Attend_status==2?"Hold":"Completed"}
+                                    batchStyle={item.attend_status==0?style.openstyle:item.attend_status==1?style.pendingstyle:item.attend_status==2?style.holdstyle:style.Completestyle}
+                                    Headertitle3={item.attend_status==0?"Open":item.attend_status==1?"Pending":item.attend_status==2?"Hold":"Completed"}
                                     isHeadertitle4={true}
                                     Headertitle4={item.contact_no}
                                     isHeadertitle5={true}
