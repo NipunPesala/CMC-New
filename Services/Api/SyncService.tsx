@@ -1,9 +1,9 @@
 import { baseUrl } from '../../Constant/ApiConstants';
 import httpService from './httpService';
 
-export function getCustomers(Token:any) {
+export function getCustomers() {
     const endPoint = baseUrl + 'customers';
-    return httpService.get(endPoint, Token);
+    return httpService.get(endPoint);
     
 }
 

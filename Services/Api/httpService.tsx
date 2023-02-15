@@ -1,11 +1,20 @@
+import AsyncStorage from "@react-native-community/async-storage";
 import axios from "axios";
+import AsyncStorageConstants from "../../Constant/AsyncStorageConstants";
 //import { serverUrl } from '../config.json';
 
 const UNAUTHORIZED = 401;
 const axiosInstance = axios;
 
+const getAuthToken=async()=>{
+
+    let token=await AsyncStorage.getItem(AsyncStorageConstants.ASYNC_TOCKEN);
+    return token
+}
+
 axiosInstance.defaults.headers.common = {
-    "Access-Control-Allow-Origin": "*"
+    "Access-Control-Allow-Origin": "*",
+    "Authorization":`Bearer ${getAuthToken()}`
 };
 
 axiosInstance.defaults.withCredentials = true;

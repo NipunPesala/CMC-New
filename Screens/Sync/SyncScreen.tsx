@@ -36,13 +36,15 @@ import * as DB_Tool from '../../SQLiteDatabaseAction/DBControllers/ToolControlle
 import { ExpencesType, priorityListInitial, Service_types } from "../../Constant/DummyData";
 import { logProfileData } from 'react-native-calendars/src/Profiler';
 import { getASYNC_LOGIN_STATUS } from "../../Constant/AsynStorageFuntion"
+import { getCustomers } from '../../Services/Api/SyncService';
+
 let SyncArray1: any[] = [];
 let arrayindex = 0;
 var TOCKEN_KEY: any;
 var LoginType: any;
 var GET_URL = "http://124.43.13.162:4500/api/";
 
-var ButtonTitle:any;
+var ButtonTitle: any;
 const SyncScreen = (props: any) => {
 
   const { navigation, route } = props;
@@ -61,8 +63,8 @@ const SyncScreen = (props: any) => {
 
   const syncbtn = () => {
 
-    console.log(ButtonTitle,"111111111111111111111111",btntitle);
-    
+    console.log(ButtonTitle, "111111111111111111111111", btntitle);
+
     if (ButtonTitle == "Sync") {
       console.log("2222222222222222222222222");
       SyncArray1 = [];
@@ -70,7 +72,7 @@ const SyncScreen = (props: any) => {
       get_ASYNC_TOCKEN().then(res => {
         TOCKEN_KEY = res;
         Sync_Customer(TOCKEN_KEY);
-
+        // SyncCustomer();
 
         setOnRefresh(false);
         setdisablebtn(false)
@@ -99,16 +101,28 @@ const SyncScreen = (props: any) => {
     console.log(LoginType, '-----111111111111111111111111111111111111111-----');
     if (LoginType == "FIRST") {
       setbtntitle('Sync')
-      ButtonTitle="Sync";
+      ButtonTitle = "Sync";
       setdisablebtn(false)
       syncbtn();
     } else {
       setbtntitle('Sync')
-      ButtonTitle="Sync";
+      ButtonTitle = "Sync";
     }
 
   }, [])
 
+
+  // const SyncCustomer = () => {
+
+  //   getCustomers()
+  //     .then((res) => {
+  //       console.log(res, " customer sync ....................... ");
+  //     })
+  //     .catch((err) => {
+  //       console.log(err);
+  //     })
+
+  // }
 
   //----------------------------------  user download ----------------------------------------------
   const Sync_User = (Key: any) => {
@@ -1007,7 +1021,7 @@ const SyncScreen = (props: any) => {
         setSyncArray(SyncArray1);
         setdisablebtn(true);
         setbtntitle('Close')
-        ButtonTitle="Close";
+        ButtonTitle = "Close";
         setOnRefresh(true);
         setOnRefresh(false);
 
@@ -1034,7 +1048,7 @@ const SyncScreen = (props: any) => {
         setOnRefresh(true);
         setOnRefresh(false);
         setbtntitle('Close')
-        ButtonTitle="Close";
+        ButtonTitle = "Close";
 
       }
 
@@ -1122,7 +1136,7 @@ const SyncScreen = (props: any) => {
 
         </View>
 
-        <View style={{ flexDirection: 'row', flex: 0.25 ,marginBottom:35}}>
+        <View style={{ flexDirection: 'row', flex: 0.25, marginBottom: 35 }}>
 
           {
             disablebtn === true ? <View style={{ flex: 1, padding: 3 }}>

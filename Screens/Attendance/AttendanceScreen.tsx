@@ -941,7 +941,7 @@ const AttendanceScreen = () => {
                 />
               );
             }}
-            keyExtractor={item => `${item.empID}`}
+            keyExtractor={item => `${item.mrId}`}
           />
         ) : (
           <FlatList
@@ -968,7 +968,7 @@ const AttendanceScreen = () => {
                 />
               );
             }}
-            keyExtractor={item => `${item.empID}`}
+            keyExtractor={item => `${item.mrId}`}
           />
         )}
         {/* </ScrollView> */}

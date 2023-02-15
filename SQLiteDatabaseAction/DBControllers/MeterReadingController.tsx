@@ -82,7 +82,7 @@ export const deleteAllMeterReading = (callBack) => {
 export const getALLReadingDetails = (callBack:any) => {
     DB.searchData(
           //   'SELECT * FROM tblUser WHERE Name LIKE ?",[`%${Angel}%`]'
-              "select ifnull(readingType,'') as shift,value,strftime('%Y-%m-%d', date) as date,date as intime,'' as overtime,'' as twhour,'' as outremark,remark as inremark  from METER_READING order by  mrId asc",
+              "select ifnull(readingType,'') as shift,value,strftime('%Y-%m-%d', date) as date,date as intime,'' as overtime,'' as twhour,'' as outremark,remark as inremark , mrId from METER_READING order by  mrId asc",
         [],
         (resp, err) => {
             callBack(resp, err);
@@ -95,7 +95,7 @@ export const getALLReadingDetails = (callBack:any) => {
 export const getALLReadingDetailsbyDates = (date:any,callBack:any) => {
     DB.searchData(
           //   'SELECT * FROM tblUser WHERE Name LIKE ?",[`%${Angel}%`]'
-              "select ifnull(readingType,'') as shift,value,strftime('%Y-%m-%d', date) as date,date as intime,'' as overtime,'' as twhour,'' as outremark,remark as inremark  from METER_READING where date >= ? order by  mrId asc",
+              "select ifnull(readingType,'') as shift,value,strftime('%Y-%m-%d', date) as date,date as intime,'' as overtime,'' as twhour,'' as outremark,remark as inremark , mrId from METER_READING where date >= ? order by  mrId asc",
         [date],
         (resp, err) => {
             callBack(resp, err);
@@ -108,7 +108,7 @@ export const getALLReadingDetailsbyDates = (date:any,callBack:any) => {
 export const getALLReadingDetailsbyDateRange = (dateS:any,dateE:any,callBack:any) => {
     DB.searchData(
 
-              "select ifnull(readingType,'') as shift,value,strftime('%Y-%m-%d', date) as date,date as intime,'' as overtime,'' as twhour,'' as outremark,remark as inremark  from METER_READING where date >= ? AND date <= ? order by  mrId asc",
+              "select ifnull(readingType,'') as shift,value,strftime('%Y-%m-%d', date) as date,date as intime,'' as overtime,'' as twhour,'' as outremark, remark as inremark , mrId   from METER_READING where date >= ? AND date <= ? order by  mrId asc",
         [dateS,dateE],
         (resp, err) => {
             callBack(resp, err);
@@ -121,7 +121,7 @@ export const getALLReadingDetailsbyDateRange = (dateS:any,dateE:any,callBack:any
 export const getALLReadingDetailsbyCustome = (date:any,callBack:any) => {
     DB.searchData(
           //   'SELECT * FROM tblUser WHERE Name LIKE ?",[`%${Angel}%`]'
-              "select ifnull(readingType,'') as shift,value,strftime('%Y-%m-%d', date) as date,date as intime,'' as overtime,'' as twhour,'' as outremark,remark as inremark  from METER_READING where date = ? order by  mrId asc",
+              "select ifnull(readingType,'') as shift,value,strftime('%Y-%m-%d', date) as date,date as intime,'' as overtime,'' as twhour,'' as outremark,remark as inremark , mrId from METER_READING where date = ? order by  mrId asc",
         [date],
         (resp, err) => {
             callBack(resp, err);
@@ -133,7 +133,7 @@ export const getALLReadingDetailsbyCustome = (date:any,callBack:any) => {
 
 export const getLastMeterReadingValueType = (callBack:any) => {
     DB.searchData(
-       "select ifnull(readingType,'')as readingType,value,date from METER_READING order by  mrId desc LIMIT 1",
+       "select ifnull(readingType,'')as readingType,value,date, mrId from METER_READING order by  mrId desc LIMIT 1",
         [],
         (resp, err) => {
             callBack(resp, err);
