@@ -13,5 +13,11 @@ export function getCustomers(Token:any) {
     
 }
 
+export function getSpareParts() {
+    const endPoint = baseUrl + 'spare-parts';
+    return httpService.get(endPoint);
+    
+}
+
 
 

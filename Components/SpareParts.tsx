@@ -42,12 +42,12 @@ const SpareParts = (sparePartList: any, isActive: boolean,ticketID:any) => {
 
         getALLTicketById(callDetailList.ticketID, (result:any)  => {
 
-            console.log("db result " ,  result[0].attend_status);
+            // console.log("db result " ,  result[0].attend_status);
             
          
             if( result[0].attend_status == '1'){
 
-                console.log("awaaaaaaaaaaa");
+                // console.log("awaaaaaaaaaaa");
                 
 
                 AsyncStorage.setItem(AsyncStorageConstants.SELECT_TICKET, 'false');
@@ -74,17 +74,6 @@ const SpareParts = (sparePartList: any, isActive: boolean,ticketID:any) => {
 
     }
 
-
-    useEffect(() => {
-
-        console.log("======>>>>>=====", callDetailList);
-        for (let i = 0; i < callDetailList.length; ++i) {
-            console.log(i);
-
-        }
-        
-
-    }, [])
 
     const checkActive = () => {
 
@@ -119,7 +108,7 @@ const SpareParts = (sparePartList: any, isActive: boolean,ticketID:any) => {
             <View style={{ flexDirection: 'row', backgroundColor: ComStyles.COLORS.TICKET_HEADER_ASH, justifyContent: 'center', alignItems: 'center', padding: 5, marginTop: 5, }}>
                 <Text style={{ flex: 1 }}>ID</Text>
                 <Text style={{ flex: 2 }}>Description</Text>
-                <Text style={{ flex: 1 }}>Requested Qty</Text>
+                <Text style={{ flex: 1 }}>Qty</Text>
             </View>
 
             <FlatList
@@ -137,7 +126,7 @@ const SpareParts = (sparePartList: any, isActive: boolean,ticketID:any) => {
                         />
                     );
                 }}
-                keyExtractor={item => `${item._Id}`}
+                keyExtractor={item => `${item.spId}`}
             />
 
             <View style={{ position: 'absolute', width: '100%', bottom: 70, }}>

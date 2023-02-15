@@ -25,7 +25,11 @@ export const saveSpareParts = (data: any, callBack: any) => {
             ],
             (res: any, err: any) => {
 
+                // console.log("spare parts error controller  .......... ",res);
+
                 if (res === 'success') {
+
+                   
                     if (i + 1 == data.length) {
                         response = 3;
 

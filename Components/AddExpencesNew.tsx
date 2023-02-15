@@ -5,7 +5,7 @@ import { Text } from 'react-native-paper';
 import SafeAreaView from 'react-native-safe-area-view';
 import ComponentsStyles from '../Constant/Components.styles';
 import ActionButton from './ActionButton';
-import { useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import InputText from './InputText';
 import moment from 'moment';
 import {
@@ -17,6 +17,7 @@ import {
   getExpenceById,
   updateExpences,
   updateSycnExpences,
+  getLastExpRequestId,
 } from '../SQLiteDatabaseAction/DBControllers/ExpencesController';
 import { Dropdown } from 'react-native-element-dropdown';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -26,6 +27,8 @@ import Header from './Header';
 import { get_ASYNC_TOCKEN, get_ASYNC_USERID } from "../Constant/AsynStorageFuntion";
 import { BASE_URL_GET } from "../Constant/Commen_API_Url";
 import axios from "axios";
+import AsyncStorage from '@react-native-community/async-storage';
+import AsyncStorageConstants from '../Constant/AsyncStorageConstants';
 var id: any;
 var loginUser: any;
 var type: any;
@@ -46,9 +49,10 @@ const AddExpencesNew = (props: any) => {
   const [dateType, setDateType] = useState('');
   const [title, settitle] = useState('');
   const [btntitle, setbtntitle] = useState('');
+  const [ExpID, setExpenseID] = useState('');
   var TOCKEN_KEY: any;
   
-  const onChange = (event, selectedDate) => {
+  const onChange = (event:any, selectedDate:any) => {
     const currentDate = selectedDate;
     setShow(Platform.OS === 'ios');
     if (dateType == 'fromDate') {
@@ -71,6 +75,7 @@ const AddExpencesNew = (props: any) => {
   const saveExpencesData = () => {
     const sendData = [
       {
+        ExpenseRequestID: ExpID,
         ServiceCall_ID: TicketID,
         ExpenseTypeID: expencesTypeId,
         Amount: amount,
@@ -136,7 +141,7 @@ const AddExpencesNew = (props: any) => {
       '0',
       exid,
       (result: any) => {
-        console.log(result, '!!!!!!!!!!!!!!!!!!!!');
+        // console.log(result, '!!!!!!!!!!!!!!!!!!!!');
         ToastAndroid.show('Expences Save Success ', ToastAndroid.SHORT);
         navigation.goBack();
       },
@@ -178,51 +183,103 @@ const AddExpencesNew = (props: any) => {
     ]);
   };
 
-  useEffect(() => {
-    type = route.params.type;
+  // useEffect(() => {
+  //   type = route.params.type;
 
-    if (type == '1') {
-      settitle('Update Expences');
-      setbtntitle('Update');
-      exid = route.params.exid;
+  //   if (type == '1') {
+  //     settitle('Update Expences');
+  //     setbtntitle('Update');
+  //     exid = route.params.exid;
 
-      load_UpdateOldData(exid);
-    } else if (type === '0') {
-      settitle('Add New Expences');
-      setbtntitle('Add');
-    }
+  //     load_UpdateOldData(exid);
+  //   } else if (type === '0') {
+  //     settitle('Add New Expences');
+  //     setbtntitle('Add');
+  //   }
 
-    console.log('------------------------', type);
+  //   console.log('------------------------', type);
 
-    getAllExpencesType((result: any) => {
-      // setServiceCallList(result);
-      console.log(result);
-      setExTypeList(result);
-    });
+  //   getAllExpencesType((result: any) => {
+  //     // setServiceCallList(result);
+  //     console.log(result);
+  //     setExTypeList(result);
+  //   });
 
-    getASYNC_CURRENT_TICKET_ID().then(res => {
-      console.log(res);
-      id = res;
-      setTicketID(id);
-      console.log(
-        res,
-        '+++++++++++++++++++++33333333333333+++++++++++++++++++++++++++',
-      );
-    });
-    getLoginUserName().then(res => {
-      console.log(res, '++++++++++++++++++++++++++++++++++++++++++++++++');
-      loginUser = res;
-      setloginUser1(loginUser);
-      // setTicketID(id);
+  //   getASYNC_CURRENT_TICKET_ID().then(res => {
+  //     console.log(res);
+  //     id = res;
+  //     setTicketID(id);
+  //     console.log(
+  //       res,
+  //       '+++++++++++++++++++++33333333333333+++++++++++++++++++++++++++',
+  //     );
+  //   });
+  //   getLoginUserName().then(res => {
+  //     console.log(res, '++++++++++++++++++++++++++++++++++++++++++++++++');
+  //     loginUser = res;
+  //     setloginUser1(loginUser);
+  //     // setTicketID(id);
 
-      console.log(
-        loginUser,
-        '^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^',
-        loginUser1,
-      );
-    });
-    setCreateDate(moment().utcOffset('+05:30').format('YYYY-MM-DD kk:mm:ss'));
-  }, []);
+  //     console.log(
+  //       loginUser,
+  //       '^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^',
+  //       loginUser1,
+  //     );
+  //   });
+  //   setCreateDate(moment().utcOffset('+05:30').format('YYYY-MM-DD kk:mm:ss'));
+  // }, []);
+
+  useFocusEffect(
+
+    React.useCallback(() => {
+
+      type = route.params.type;
+
+      if (type == '1') {
+        settitle('Update Expences');
+        setbtntitle('Update');
+        exid = route.params.exid;
+  
+        load_UpdateOldData(exid);
+      } else if (type === '0') {
+        settitle('Add New Expences');
+        setbtntitle('Add');
+      }
+  
+      console.log('------------------------', type);
+  
+      getAllExpencesType((result: any) => {
+        // setServiceCallList(result);
+        console.log(result);
+        setExTypeList(result);
+      });
+  
+      getASYNC_CURRENT_TICKET_ID().then(res => {
+        console.log(res);
+        id = res;
+        setTicketID(id);
+        console.log(
+          res,
+          '+++++++++++++++++++++33333333333333+++++++++++++++++++++++++++',
+        );
+      });
+      getLoginUserName().then(res => {
+        console.log(res, '++++++++++++++++++++++++++++++++++++++++++++++++');
+        loginUser = res;
+        setloginUser1(loginUser);
+        // setTicketID(id);
+  
+        console.log(
+          loginUser,
+          '^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^',
+          loginUser1,
+        );
+      });
+      setCreateDate(moment().utcOffset('+05:30').format('YYYY-MM-DD kk:mm:ss'));
+      generateRequestID();
+
+    }, []),
+    );
 
   const load_UpdateOldData = (id: any) => {
     getExpenceById(id, (result: any) => {
@@ -319,22 +376,51 @@ const AddExpencesNew = (props: any) => {
       console.log(">>>>>>>>>>>>", error);
 
     }
-  }
+  };
+
+  const generateRequestID = () => {
+
+    // console.log(route.params.status);
+
+    getLastExpRequestId((result: any) => {
+
+
+        if (result.length == 0) {
+            GetLastID(0);
+        } else {
+
+            for (let i = 0; i < result.length; ++i) {
+
+                GetLastID(result[i].spId);
+
+            }
+
+        }
+
+
+    })
+
+};
+
+  const GetLastID = (id: any) => {
+
+    var requestID = parseInt(id) + 1;
+    console.log(requestID, "  ///////////////////////////////////////   ");
+
+    const rid = "EXP_" + moment().utcOffset('+05:30').format('YYYY-MM-DD') + "_" + requestID;
+
+    setExpenseID(rid);
+    AsyncStorage.setItem(AsyncStorageConstants.ASYNC_CURRENT_EXP_REQUEST_ID, rid);
+};
+
 
 
   return (
     <SafeAreaView style={ComponentsStyles.CONTAINER}>
       {/* <TouchableOpacity style={style.dashStyle} onPress={() => navigation.goBack()} /> */}
-      <Header title="" isBtn={true} btnOnPress={() => navigation.goBack()} />
+      <Header title={title} isBtn={true} btnOnPress={() => navigation.goBack()} />
       <View style={{ padding: 5 }} />
-      <View
-        style={{
-          flexDirection: 'row',
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}>
-        <Text style={style.maintxt}>{title}</Text>
-      </View>
+   
       <View
         style={{
           flexDirection: 'row',
@@ -361,8 +447,8 @@ const AddExpencesNew = (props: any) => {
         <View>
           <InputText
             placeholderColor={ComponentsStyles.COLORS.HEADER_BLACK}
-            placeholder="Create Date"
-            stateValue={craeteDate}
+            placeholder="Expense Request ID"
+            stateValue={ExpID}
             editable={false}
             style={ComponentsStyles.serviceTicketInput}
           />

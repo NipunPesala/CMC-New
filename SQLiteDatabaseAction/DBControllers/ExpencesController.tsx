@@ -1,14 +1,15 @@
 import * as DB from '../DBService';
 
-export const saveExpences = (data, callBack) => {
+export const saveExpences = (data:any, callBack:any) => {
     for (let i = 0; i < data.length; ++i) {
         DB.indateData(
             [
                 {
                     table: 'EXPENCES',
-                    columns: `ServiceCall_ID,ExpenseTypeID,Amount,Remark,CreatedBy,CreateDate,RelaventDate,status,isSync`,
-                    values: '?,?,?,?,?,?,?,?,?',
+                    columns: `ExpenseRequestID,ServiceCall_ID,ExpenseTypeID,Amount,Remark,CreatedBy,CreateDate,RelaventDate,status,isSync`,
+                    values: '?,?,?,?,?,?,?,?,?,?',
                     params: [
+                        data[i].ExpenseRequestID,
                         data[i].ServiceCall_ID,
                         data[i].ExpenseTypeID,
                         data[i].Amount,
@@ -26,14 +27,14 @@ export const saveExpences = (data, callBack) => {
                     status = EXCLUDED.status`,
                 },
             ],
-            (res, err) => {
+            (res:any, err:any) => {
                 callBack(res, err);
             },
         );
     }
 };
 
-export const deleteAllExpences = (callBack) => {
+export const deleteAllExpences = (callBack:any) => {
 
     DB.deleteData(
         [
@@ -43,13 +44,13 @@ export const deleteAllExpences = (callBack) => {
                 params: [],
             },
         ],
-        (resp, err) => {
+        (resp:any, err:any) => {
             callBack(resp, err);
         },
     );
 
 };
-export const DeleteExpences = ( expId,callBack) => {
+export const DeleteExpences = ( expId:any,callBack:any) => {
 
     DB.deleteData(
         [
@@ -59,7 +60,7 @@ export const DeleteExpences = ( expId,callBack) => {
                 params: [expId],
             },
         ],
-        (resp, err) => {
+        (resp:any, err:any) => {
             console.log(resp,">>>>>>",err);
             
             callBack(resp, err);
@@ -77,13 +78,23 @@ export const getExpenceById = (expId:any, callBack:any) => {
     );
 }
 
+export const getLastExpRequestId = (callBack:any) => {
+    DB.searchData(
+         'SELECT ExpenseRequestID FROM EXPENCES ORDER BY _Id DESC LIMIT 1',
+        [],
+        (resp:any, err:any) => {
+            callBack(resp, err);
+        },
+    );
+}
+
 
 
 export const getAllExpences = (data:any,callBack:any) => {
     DB.searchData(
       'SELECT EXPENCES_TYPE.name as ExpencesType,EXPENCES.Amount as Amount,EXPENCES._Id as ExId,EXPENCES.CreateDate as CreateDate FROM EXPENCES INNER JOIN EXPENCES_TYPE ON EXPENCES.ExpenseTypeID=EXPENCES_TYPE.name WHERE ServiceCall_ID=?',
       [data],
-      (resp, err) => {
+      (resp:any, err:any) => {
         callBack(resp, err);
       },
     );
@@ -94,7 +105,7 @@ export const updateExpences = (ticketID:any,ExpenseTypeID:any,Amount:any,Remark:
     DB.updateData(
       'UPDATE EXPENCES SET ServiceCall_ID=?,ExpenseTypeID=?,Amount=?,Remark=?,CreatedBy=?,CreateDate=?,RelaventDate=?,status=? WHERE _Id=?',
       [ticketID,ExpenseTypeID,Amount,Remark,CreatedBy,CreateDate,RelaventDate,status,id],
-      (resp, err) => {
+      (resp:any, err:any) => {
         callBack(resp, err);
       },
     );

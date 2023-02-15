@@ -1,6 +1,6 @@
 import * as DB from '../DBService';
 
-export const saveTicket = (data, callBack) => {
+export const saveTicket = (data:any, callBack:any) => {
     for (let i = 0; i < data.length; ++i) {
         DB.indateData(
             [
@@ -31,7 +31,7 @@ export const saveTicket = (data, callBack) => {
                    
                 },
             ],
-            (res, err) => {
+            (res:any, err:any) => {
                 console.log(err , " ___________________ " , res);
                 
                 callBack(res, err);
@@ -40,7 +40,7 @@ export const saveTicket = (data, callBack) => {
     }
 };
 
-export const deleteAllTicket = (callBack) => {
+export const deleteAllTicket = (callBack:any) => {
 
     DB.deleteData(
         [
@@ -50,7 +50,7 @@ export const deleteAllTicket = (callBack) => {
                 params: [],
             },
         ],
-        (resp, err) => {
+        (resp:any, err:any) => {
             callBack(resp, err);
         },
     );
@@ -61,7 +61,7 @@ export const getTicketById = (ticketId:any, callBack:any) => {
     DB.searchData(
         'SELECT TICKET.ticketId,TICKET.serviceId,TICKET.status,SERVICE.customer,TICKET.assignTo,SERVICE.customer_address,SERVICE.contact_name,SERVICE.contact_no,TICKET.attend_status FROM TICKET INNER JOIN SERVICE ON SERVICE.serviceId = TICKET.serviceId WHERE ticketId=?',
         [ticketId],
-        (resp, err) => {
+        (resp:any, err:any) => {
             callBack(resp, err);
             
         },
@@ -71,7 +71,7 @@ export const getALLTicketById = (ticketId:any, callBack:any) => {
     DB.searchData(
         'SELECT * FROM TICKET WHERE ticketId=?',
         [ticketId],
-        (resp, err) => {
+        (resp:any, err:any) => {
             callBack(resp, err);
             
         },
@@ -91,7 +91,7 @@ export const getServiceTicket = (callBack:any) => {
     DB.searchData(
         'SELECT * FROM TICKET',
         [],
-        (resp, err) => {
+        (resp:any, err:any) => {
             callBack(resp, err);
         },
     );
@@ -103,7 +103,7 @@ export const getServiceTicketID = (callBack:any) => {
     DB.searchData(
         'SELECT _Id,ticketId FROM TICKET WHERE attend_status != 3',
         [],
-        (resp, err) => {
+        (resp:any, err:any) => {
             callBack(resp, err);
         },
     );
@@ -114,17 +114,17 @@ export const getLastTicketId = (callBack:any) => {
     DB.searchData(
       'SELECT _Id FROM TICKET ORDER BY _Id DESC LIMIT 1',
       [],
-      (resp, err) => {
+      (resp:any, err:any) => {
         callBack(resp, err);
       },
     );
   };
 
-export const getTicketByServiceId = (serviceId, callBack:any) => {
+export const getTicketByServiceId = (serviceId:any, callBack:any) => {
     DB.searchData(
         "SELECT *,CASE WHEN IFNUll(attend_status,'0')=='2' THEN  'Hold'  ELSE 'Pending' END attend_statusStr FROM TICKET WHERE serviceId=? AND attend_status !=3",
         [serviceId],
-        (resp, err) => {
+        (resp:any, err:any) => {
             callBack(resp, err);
         },
     );
@@ -138,11 +138,11 @@ export const getTicketByServiceId = (serviceId, callBack:any) => {
 //         },
 //     );
 // }
-export const getCompelteTicketByServiceId = (serviceId, callBack:any) => {
+export const getCompelteTicketByServiceId = (serviceId:any, callBack:any) => {
     DB.searchData(
         "SELECT * FROM TICKET WHERE serviceId=? AND attend_status =3",
         [serviceId],
-        (resp, err) => {
+        (resp:any, err:any) => {
             callBack(resp, err);
         },
     );
@@ -154,7 +154,7 @@ export const getTicketsForReport = (callBack:any) => {
         [],
         (resp:any, err:any) => {
             callBack(resp, err);
-            console.log(" ************** service getTicketsForReport ************  " ,resp);
+            // console.log(" ************** service getTicketsForReport ************  " ,resp);
             
         },
     );
@@ -165,9 +165,9 @@ export const getTicketsForCustomerReport = (callBack:any) => {
     DB.searchData(
         'SELECT * FROM TICKET INNER JOIN SERVICE ON SERVICE.serviceId = TICKET.serviceId  WHERE (SERVICE.Approve_status != 0 OR SERVICE.Approve_status != 2 ) AND TICKET.attend_status != 3',
         [],
-        (resp, err) => {
+        (resp:any, err:any) => {
             callBack(resp, err);
-            console.log(" ************** service ticket with customer details ************  " + resp);
+            // console.log(" ************** service ticket with customer details ************  " + resp);
         },
     );
 }
@@ -177,7 +177,7 @@ export const getTicketDates = (id:any,callBack:any) => {
     DB.searchData(
         'SELECT startDate,endDate FROM TICKET WHERE ticketId=?',
         [id],
-        (resp, err) => {
+        (resp:any, err:any) => {
             callBack(resp, err);
         },
     );
@@ -187,9 +187,9 @@ export const getServiceTicketForReport = (callBack:any) => {
     DB.searchData(
         'SELECT * FROM TICKET',
         [],
-        (resp, err) => {
+        (resp:any, err:any) => {
             callBack(resp, err);
-            console.log(" getServiceTicket_For_report ...............   " , resp);
+            // console.log(" getServiceTicket_For_report ...............   " , resp);
             
         },
     );
@@ -200,9 +200,9 @@ export const getServiceTicketFor7Days = (ctrrentD:any,callBack:any) => {
     DB.searchData(
         'SELECT * FROM TICKET where actualendtDate >= ?',
         [ctrrentD],
-        (resp, err) => {
+        (resp:any, err:any) => {
             callBack(resp, err);
-            console.log(" getServiceTicket_For_report ...............   " , resp);
+            // console.log(" getServiceTicket_For_report ...............   " , resp);
             
         },
     );
@@ -214,9 +214,9 @@ export const getServiceTicketFor30Days = (ctrrentD:any,callBack:any) => {
     DB.searchData(
         'SELECT * FROM TICKET where actualendtDate >= ?',
         [ctrrentD],
-        (resp, err) => {
+        (resp:any, err:any) => {
             callBack(resp, err);
-            console.log(" getServiceTicket_For_report ...............   " , resp);
+            // console.log(" getServiceTicket_For_report ...............   " , resp);
             
         },
     );
@@ -225,9 +225,9 @@ export const getTicketsForInprogress = (callBack:any) => {
     DB.searchData(
         'SELECT * FROM TICKET where attend_status = 1  ',
         [],
-        (resp, err) => {
+        (resp:any, err:any) => {
             callBack(resp, err);
-            console.log(" ticket inprogress ...............   " , resp);
+            // console.log(" ticket inprogress ...............   " , resp);
             
         },
     );
@@ -238,7 +238,7 @@ export const updateTicketStatus = (ticketID:any,status:any,callBack:any) => {
     DB.updateData(
       'UPDATE TICKET SET status=? WHERE ticketId=?',
       [status,ticketID],
-      (resp, err) => {
+      (resp:any, err:any) => {
         callBack(resp, err);
       },
     );
@@ -250,9 +250,9 @@ export const updateTicketStatus = (ticketID:any,status:any,callBack:any) => {
     DB.searchData(
         'SELECT * FROM TICKET where (startDate <= ? AND endDate >= ?) OR (startDate <= ? AND endDate >= ?)  ',
         [date1,date1,date2,date2],
-        (resp, err) => {
+        (resp:any, err:any) => {
             callBack(resp, err);
-            console.log(" filter data using date range-  " , resp);
+            // console.log(" filter data using date range-  " , resp);
             
         },
     );
@@ -263,7 +263,7 @@ export const updateTicketAttendStatus = (ticketID:any,status:any,callBack:any) =
     DB.updateData(
       'UPDATE TICKET SET attend_status=? WHERE ticketId=?',
       [status,ticketID],
-      (resp, err) => {
+      (resp:any, err:any) => {
         callBack(resp, err);
       },
     );
@@ -274,7 +274,7 @@ export const updateTicketAttendStatus = (ticketID:any,status:any,callBack:any) =
     DB.updateData(
       'UPDATE TICKET SET actualstartDate=? WHERE ticketId=?',
       [Sdate,ticketID],
-      (resp, err) => {
+      (resp:any, err:any) => {
         callBack(resp, err);
       },
     );
@@ -285,7 +285,7 @@ export const updateActualendDate = (ticketID:any,Sdate:any,callBack:any) => {
     DB.updateData(
       'UPDATE TICKET SET actualendtDate=? WHERE ticketId=?',
       [Sdate,ticketID],
-      (resp, err) => {
+      (resp:any, err:any) => {
         callBack(resp, err);
       },
     );
@@ -324,7 +324,7 @@ export const updateActualendDate = (ticketID:any,Sdate:any,callBack:any) => {
     );
   };
 //======================================================================================================
-export const saveTicketSpareparts = (data, callBack) => {
+export const saveTicketSpareparts = (data:any, callBack:any) => {
    
     //console.log("^^^^",JSON.stringify(data));
     for (let i = 0; i < data.length; ++i) {
@@ -357,9 +357,9 @@ export const saveTicketSpareparts = (data, callBack) => {
                     `,
                 },
             ],
-            (res, err) => {
+            (res:any, err:any) => {
                 callBack(res, err);
-                console.log("^^saveTicketSpareparts^^",res );
+                // console.log("^^saveTicketSpareparts^^",res );
             },
         );
     }
@@ -370,7 +370,7 @@ export const getALLAdditionalSpareTiketdetasils = (data:any,callBack:any) => {
     DB.searchData(
               "select * from TICKET_SPARE_PARTS  where spType_ID='2' and ticketId = ? order by  spId asc",
         [data],
-        (resp, err) => {
+        (resp:any, err:any) => {
             callBack(resp, err);
             
         },
@@ -380,11 +380,11 @@ export const getALLAdditionalSpareTiketdetasils = (data:any,callBack:any) => {
 
 
 
-export const getALLAInventrySpareTiketdetasils = (data,callBack:any) => {
+export const getALLAInventrySpareTiketdetasils = (data:any,callBack:any) => {
     DB.searchData(
               "select * from TICKET_SPARE_PARTS  where spType_ID='1' AND ticketId=? order by  spId asc",
         [data],
-        (resp, err) => {
+        (resp:any, err:any) => {
             callBack(resp, err);
             
         },
@@ -396,7 +396,7 @@ export const getAll_Data = (callBack:any) => {
     DB.searchData(
               "select * from TICKET_SPARE_PARTS order by  spId asc",
         [],
-        (resp, err) => {
+        (resp:any, err:any) => {
             callBack(resp, err);
             
         },
@@ -410,7 +410,7 @@ export const getSearchSparePart = (txt:String, callBack:any) => {
         [`%${txt}%`],
         (resp:any, err:any) => {
             callBack(resp, err);
-            console.log(" service ticket search result---- " , resp);
+            // console.log(" service ticket search result---- " , resp);
         },
     );
 }
@@ -420,7 +420,7 @@ export const getLastRequestId = (callBack:any) => {
     DB.searchData(
       'SELECT spId FROM TICKET_SPARE_PARTS ORDER BY spId DESC LIMIT 1',
       [],
-      (resp, err) => {
+      (resp:any, err:any) => {
         callBack(resp, err);
       },
     );
@@ -439,7 +439,7 @@ export const CompleteTicket_Update = (engRemark:any,cusNic:any,cusRemark:any,sig
     );
   };
 
-export const deleteAllSparePartsReleventTickets = (id, callBack) => {
+export const deleteAllSparePartsReleventTickets = (id:any, callBack:any) => {
 
     DB.deleteData(
         [
@@ -449,7 +449,7 @@ export const deleteAllSparePartsReleventTickets = (id, callBack) => {
                 params: [id],
             },
         ],
-        (resp, err) => {
+        (resp:any, err:any) => {
             callBack(resp, err);
         },
     );
@@ -461,9 +461,9 @@ export const getServiceTicketList = (callBack:any) => {
     DB.searchData(
         'SELECT * FROM TICKET',
         [],
-        (resp, err) => {
+        (resp:any, err:any) => {
             callBack(resp, err);
-            console.log(" service ticket list select all ...............   " , resp);
+            // console.log(" service ticket list select all ...............   " , resp);
         },
     );
 }
@@ -473,10 +473,10 @@ export const getAllTickets = (callBack:any) =>{
     DB.searchData(
         'SELECT * FROM TICKET WHERE status=1',
         [],
-        (resp, err) => {
+        (resp:any, err:any) => {
           
             callBack(resp, err);
-            console.log(" ************** service ticket ************  " + resp);
+            // console.log(" ************** service ticket ************  " + resp);
         },
     );
     };
@@ -485,9 +485,9 @@ export const getAllTickets = (callBack:any) =>{
         DB.searchData(
             'SELECT * FROM TICKET WHERE ticketId=?',
             [id],
-            (resp, err) => {
+            (resp:any, err:any) => {
                 callBack(resp, err);
-                console.log(" service ticket using id...............   " , resp);
+                // console.log(" service ticket using id...............   " , resp);
             },
         );
     }
@@ -499,7 +499,7 @@ export const getAllTickets = (callBack:any) =>{
             [`%${txt}%`],
             (resp:any, err:any) => {
                 callBack(resp, err);
-                console.log(" service ticket search result---- " , resp);
+                // console.log(" service ticket search result---- " , resp);
             },
         );
     }
@@ -510,7 +510,7 @@ export const getAllTickets = (callBack:any) =>{
             [`%${txt}%`],
             (resp:any, err:any) => {
                 callBack(resp, err);
-                console.log(" service ticket search result---- " , resp);
+                // console.log(" service ticket search result---- " , resp);
             },
         );
     }
@@ -521,9 +521,9 @@ export const getAllTickets = (callBack:any) =>{
         DB.searchData(
             'SELECT TICKET._Id,TICKET.ticketId,TICKET.assignTo,TICKET.priority,TICKET.startDate,TICKET.endDate FROM TICKET INNER JOIN SERVICE ON SERVICE.serviceId = TICKET.serviceId  WHERE(TICKET.startDate <= ? AND TICKET.endDate >= ?) OR (TICKET.startDate <= ? AND TICKET.endDate >= ?)',
             [date1,date1,date2,date2],
-            (resp, err) => {
+            (resp:any, err:any) => {
                 callBack(resp, err);
-                console.log(" filter data using date range-  " , resp);
+                // console.log(" filter data using date range-  " , resp);
                 
             },
         );
@@ -535,9 +535,9 @@ export const getAllTickets = (callBack:any) =>{
         DB.searchData(
             'SELECT * FROM TICKET INNER JOIN SERVICE ON SERVICE.serviceId = TICKET.serviceId  WHERE(TICKET.startDate <= ? AND TICKET.endDate >= ?) OR (TICKET.startDate <= ? AND TICKET.endDate >= ?)',
             [date1,date1,date2,date2],
-            (resp, err) => {
+            (resp:any, err:any) => {
                 callBack(resp, err);
-                console.log(" filter data using date range-  " , resp);
+                // console.log(" filter data using date range-  " , resp);
                 
             },
         );
@@ -549,9 +549,9 @@ export const getAllTickets = (callBack:any) =>{
         DB.searchData(
             'SELECT * FROM TICKET_SPARE_PARTS WHERE creationdate >= ? AND creationdate <= ?',
             [date1,date2],
-            (resp, err) => {
+            (resp:any, err:any) => {
                 callBack(resp, err);
-                console.log(" filter data using date range-  " , resp);
+                // console.log(" filter data using date range-  " , resp);
                 
             },
         );
@@ -563,9 +563,9 @@ export const getAllTickets = (callBack:any) =>{
         DB.searchData(
             'SELECT * FROM TICKET_SPARE_PARTS WHERE creationdate => ? AND creationdate <= ?',
             [date1,date2],
-            (resp, err) => {
+            (resp:any, err:any) => {
                 callBack(resp, err);
-                console.log(" filter data using date range-  " , resp);
+                // console.log(" filter data using date range-  " , resp);
                 
             },
         );
@@ -578,10 +578,10 @@ export const getAllTickets = (callBack:any) =>{
         DB.searchData(
             'SELECT * FROM TICKET WHERE status=1',
             [],
-            (resp, err) => {
+            (resp:any, err:any) => {
               
                 callBack(resp, err);
-                console.log(" ************** service ticket ************  " + resp);
+                // console.log(" ************** service ticket ************  " + resp);
             },
         );
         };
@@ -603,7 +603,7 @@ export const getAllTickets = (callBack:any) =>{
             DB.searchData(
                 "SELECT COUNT(*) FROM TICKET WHERE (strftime('%m', startDate) = ?) AND attend_status = 3",
                 [month],
-                (resp, err) => {
+                (resp:any, err:any) => {
                     callBack(resp, err);
                     
                 },
@@ -616,7 +616,7 @@ export const getAllTickets = (callBack:any) =>{
             DB.searchData(
                 "SELECT COUNT(*) FROM TICKET",
                 [],
-                (resp, err) => {
+                (resp:any, err:any) => {
                     callBack(resp, err);
                 },
             );
@@ -628,7 +628,7 @@ export const getAllTickets = (callBack:any) =>{
             DB.searchData(
                 "SELECT COUNT(*) FROM TICKET WHERE (strftime('%m', startDate) = ?) AND attend_status = 3 OR attend_status = 2 OR attend_status = 1",
                 [month],
-                (resp, err) => {
+                (resp:any, err:any) => {
                     callBack(resp, err);
                     
                 },

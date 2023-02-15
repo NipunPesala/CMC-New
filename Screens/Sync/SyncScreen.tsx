@@ -37,6 +37,8 @@ import { ExpencesType, priorityListInitial, Service_types } from "../../Constant
 import { logProfileData } from 'react-native-calendars/src/Profiler';
 import { getASYNC_LOGIN_STATUS } from "../../Constant/AsynStorageFuntion"
 import { getCustomers } from '../../Services/Api/SyncService';
+import { getSpareParts } from '../../Services/Api/UserAuthService';
+import { err } from 'react-native-svg/lib/typescript/xml';
 
 let SyncArray1: any[] = [];
 let arrayindex = 0;
@@ -114,13 +116,13 @@ const SyncScreen = (props: any) => {
 
   // const SyncCustomer = () => {
 
-  //   getCustomers()
-  //     .then((res) => {
-  //       console.log(res, " customer sync ....................... ");
-  //     })
-  //     .catch((err) => {
-  //       console.log(err);
-  //     })
+    // getCustomers()
+    //   .then((res) => {
+    //     console.log(res, " customer sync ....................... ");
+    //   })
+    //   .catch((err) => {
+    //     console.log(err);
+    //   })
 
   // }
 
@@ -695,6 +697,18 @@ const SyncScreen = (props: any) => {
 
   // ------------------ Download Spare parts -------------------
   const Sync_SpareParts = (Key: any) => {
+
+    // getSpareParts()
+    //   .then((res) => {
+    //     console.log(res, " spare part sync ....................... ");
+    //     Sync_Vehicle(TOCKEN_KEY);
+    //   })
+    //   .catch((err) => {
+    //     console.log("SP error ",err);
+    //   })
+
+
+
     const AuthStr = 'Bearer '.concat(Key);
     const URL = GET_URL + "spare-parts";
     axios.get(URL, { headers: { Authorization: AuthStr } })
@@ -741,7 +755,7 @@ const SyncScreen = (props: any) => {
             }
           });
         } else {
-          console.log('fails');
+          // console.log(response.status);
 
           setOnRefresh(false);
 
@@ -758,6 +772,9 @@ const SyncScreen = (props: any) => {
       })
       .catch((error) => {
 
+        // console.log(" SP error " , error);
+        
+
         setOnRefresh(false);
 
         arrayindex++;
@@ -766,7 +783,6 @@ const SyncScreen = (props: any) => {
           id: arrayindex,
         });
         setSyncArray(SyncArray1);
-        console.log('errorrrrr ' + error);
         setOnRefresh(true);
         Sync_Vehicle(TOCKEN_KEY);
       });

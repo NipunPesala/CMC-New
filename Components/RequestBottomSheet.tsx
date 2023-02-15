@@ -16,7 +16,7 @@ import { FlatList } from "react-native-gesture-handler";
 import SparepartsItem from "../SubComponents/SparepartsItem";
 import { spareparts, additionalSpareParts } from "../Constant/DummyData";
 import AdditionalSparepartsItem from "../SubComponents/AdditionalSparePartItem";
-import { useNavigation, useRoute } from "@react-navigation/native";
+import { useFocusEffect, useNavigation, useRoute } from "@react-navigation/native";
 import LeftRightArrowbarComponent from "./LeftRightArrowbarComponent";
 import Header from "./Header";
 import { getALLAInventrySpareTiketdetasils, getALLAdditionalSpareTiketdetasils, getLastRequestId, getTicketsForInprogress } from "../SQLiteDatabaseAction/DBControllers/TicketController";
@@ -47,11 +47,9 @@ const RequestBottomSheet = () => {
 
     const handle_AddInventorySpareParts = () => {
 
-        console.log(" ,,,,,,,,,,,,,,,,,,,,, " , isSelectTicket);
+        console.log(" request bottom sheet  ,,,,,,,,,,,,,,,,,,,,, " , isSelectTicket);
 
         if(isSelectTicket == true){
-
-           
 
             if (ticketList.length > 0) {
 
@@ -62,17 +60,17 @@ const RequestBottomSheet = () => {
     
             } else {
     
-                Alert.alert(
-                    "Failed...!",
-                    "No Available Service Tickets.",
-                    [
-                        {
-                            text: "OK", onPress: () => {
+                // Alert.alert(
+                //     "Failed...!",
+                //     "No Available Service Tickets.",
+                //     [
+                //         {
+                //             text: "OK", onPress: () => {
     
-                            }
-                        }
-                    ]
-                );
+                //             }
+                //         }
+                //     ]
+                // );
     
             }
     
@@ -259,9 +257,10 @@ const RequestBottomSheet = () => {
         AsyncStorage.setItem(AsyncStorageConstants.ASYNC_CURRENT_SP_REQUEST_ID, rid);
     };
 
-    useEffect(() => {
-        
-        const focusHandler = navigation.addListener('focus', () => {
+    useFocusEffect(
+        React.useCallback(() => {
+
+
             setAddInventorySpareParts(true);
             setAddAdditionalSpareParts(false);
             setInvenrty("1");
@@ -291,32 +290,68 @@ const RequestBottomSheet = () => {
             generateRequestID();
             handle_AddInventorySpareParts();
 
-        });
-
-        return focusHandler;
-    }, [navigation]);
-
-    useEffect(() => {
+        }, []),
+    );
 
 
-        setAddInventorySpareParts(true);
-        setAddAdditionalSpareParts(false);
-        setInvenrty("1");
+    // useEffect(() => {
+        
+    //     const focusHandler = navigation.addListener('focus', () => {
+    //         setAddInventorySpareParts(true);
+    //         setAddAdditionalSpareParts(false);
+    //         setInvenrty("1");
+
+
+    //         getASYNC_SELECT_TICKET().then(res => {
+
+    //             if (res == 'true') {
+    //                 setIsSelectTicket(true);
+    //                 getTicketList();
+
+    //             } else {
+    //                 setIsSelectTicket(false);
+
+    //                 getASYNC_CURRENT_TICKET_ID().then(res => {
+    //                     console.log(res);
+    //                     id = res;
+
+    //                     setTicketID(id);
+    //                     getALlDatainventy(res);
+    //                 });
+    //             }
+
+
+    //         });
+
+    //         generateRequestID();
+    //         handle_AddInventorySpareParts();
+
+    //     });
+
+    //     return focusHandler;
+    // }, [navigation]);
+
+    // useEffect(() => {
+
+
+    //     setAddInventorySpareParts(true);
+    //     setAddAdditionalSpareParts(false);
+    //     setInvenrty("1");
      
 
 
-        getASYNC_CURRENT_TICKET_ID().then(res => {
-            console.log(res);
-            id = res;
+    //     getASYNC_CURRENT_TICKET_ID().then(res => {
+    //         console.log(res);
+    //         id = res;
 
-            setTicketID(id);
-            getALlDatainventy(res);
-        });
+    //         setTicketID(id);
+    //         getALlDatainventy(res);
+    //     });
 
 
-        generateRequestID();
+    //     generateRequestID();
        
-    }, []);
+    // }, []);
 
     const getALlDatainventy = (data: any) => {
         getALLAInventrySpareTiketdetasils(data, (result: any) => {

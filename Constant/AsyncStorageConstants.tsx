@@ -46,4 +46,6 @@ export default class AsyncStorageConstants {
     static ASYNC_LOGIN_USERID = 'LoginUserID';
     static ASYNC_LOGIN_STATUS = 'Login_Status';
 
+    // Expense
+    static ASYNC_CURRENT_EXP_REQUEST_ID = 'EXP_REQUEST_ID';
 }

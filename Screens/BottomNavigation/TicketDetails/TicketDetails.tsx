@@ -2,7 +2,7 @@
 * @author Gagana Lakruwan
 */
 import AsyncStorage from "@react-native-community/async-storage";
-import { useNavigation } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
 import {
     View,
@@ -39,11 +39,11 @@ import { getCurrentServiceCallID } from "../../../Constant/AsynStorageFuntion";
 import ComStyles from "../../../Constant/Components.styles";
 import { getServiceById } from "../../../SQLiteDatabaseAction/DBControllers/ServiceController";
 import { getSparePartsAllData } from "../../../SQLiteDatabaseAction/DBControllers/SparePartsController";
-import { getTicketById, updateTicketAttendStatus, updateTicketStatus ,getServiceTicketForReport,updateActualStartDate} from "../../../SQLiteDatabaseAction/DBControllers/TicketController";
+import { getTicketById, updateTicketAttendStatus, updateTicketStatus, getServiceTicketForReport, updateActualStartDate, getALLAInventrySpareTiketdetasils } from "../../../SQLiteDatabaseAction/DBControllers/TicketController";
 import style from "./style";
 import moment from 'moment';
-const currentstsartDate=moment().format('YYYY-MM-DD HH:mm:ss');
-console.log('this is a currnt start date====='+currentstsartDate);
+const currentstsartDate = moment().format('YYYY-MM-DD HH:mm:ss');
+console.log('this is a currnt start date=====' + currentstsartDate);
 let height = Dimensions.get("screen").height;
 
 const TicketDetails = (props: any) => {
@@ -68,8 +68,8 @@ const TicketDetails = (props: any) => {
     const [serviceCall_ID, setServiceCall_ID] = useState('');
     const [callDetailList, setCallDetailList]: any[] = useState([]);
     const [SparePartList, setSparePartList]: any[] = useState([]);
-    const currentstsartDate=moment().format('YYYY-MM-DD HH:mm:ss');
-    console.log('this is a currnt start date====='+currentstsartDate);
+    const currentstsartDate = moment().format('YYYY-MM-DD HH:mm:ss');
+    // console.log('this is a currnt start date=====' + currentstsartDate);
 
     const selection = (screen: string) => {
         if (screen == "ticket") {
@@ -85,14 +85,14 @@ const TicketDetails = (props: any) => {
 
     const getServiceCallDetails = (SID: any) => {
 
-        console.log("service id of ticket id ....... ********** ", SID);
+        // console.log("service id of ticket id ....... ********** ", SID);
 
         getServiceById(SID, (result: any) => {
 
             setCallDetailList(result);
 
-            console.log(result,"   call details ..........   " , callDetailList);
-            
+            // console.log(result, "   call details ..........   ", callDetailList);
+
 
         });
 
@@ -100,26 +100,33 @@ const TicketDetails = (props: any) => {
     }
 
     const getSpareParts = () => {
+
+        // getALLAInventrySpareTiketdetasils(ticketID,(response:any) => {
+
+        //     setSparePartList(response);
+        // });
+
+
         getSparePartsAllData((result: any) => {
             setSparePartList(result);
 
-          
+
 
             // console.log(" Spare Parts  ................  " , result );
-            
+
         });
     }
     //checck table update
 
-    const checktable=()=>{
-       
-            getServiceTicketForReport((result:any) =>{
-    
-                console.log("/////////////////***"+result);
-               
-              
-            });
-    
+    const checktable = () => {
+
+        getServiceTicketForReport((result: any) => {
+
+            // console.log("/////////////////***" + result);
+
+
+        });
+
 
     }
 
@@ -130,39 +137,62 @@ const TicketDetails = (props: any) => {
             navigation.navigate("CompleteTicket")
 
         } else {
-            
-            setIsServiceActive(!isServiceActive);
-            console.log(isServiceActive);
-            updateActualStartDate(ticket_id, currentstsartDate, (result: any) => {
-                console.log('Hii this is update actual start date'+result);
-               
-            });
 
-            updateTicketAttendStatus(ticket_id, 1, (result: any) => {
 
-                if (result === "success") {
 
-                    AsyncStorage.setItem(AsyncStorageConstants.ASYNC_CURRENT_TICKET_ID, ticket_id);
+            getServiceById(serviceCall_ID, async (result: any) => {
 
-                    ToastAndroid.show("Ticket Started ", ToastAndroid.SHORT);
+                const sts = result[0].Approve_status;
+
+                if (sts != '1') {
+
+                    Alert.alert('Service Call Not Approved', ' Please Approve the Service Call First!', [
+                        {
+                            text: 'OK',
+                            onPress: () => { },
+                        },
+                    ]);
 
                 } else {
 
-                    Alert.alert(
-                        "Failed...!",
-                        "Ticket Start Failed.",
-                        [
-                            {
-                                text: "OK", onPress: () => {
+                    setIsServiceActive(!isServiceActive);
+                    // console.log(isServiceActive);
+                    updateActualStartDate(ticket_id, currentstsartDate, (result: any) => {
+                        // console.log('Hii this is update actual start date' + result);
 
-                                }
-                            }
-                        ]
-                    );
+                    });
+
+                    updateTicketAttendStatus(ticket_id, 1, (result: any) => {
+
+                        if (result === "success") {
+
+                            AsyncStorage.setItem(AsyncStorageConstants.ASYNC_CURRENT_TICKET_ID, ticket_id);
+
+                            ToastAndroid.show("Ticket Started ", ToastAndroid.SHORT);
+
+                        } else {
+
+                            Alert.alert(
+                                "Failed...!",
+                                "Ticket Start Failed.",
+                                [
+                                    {
+                                        text: "OK", onPress: () => {
+
+                                        }
+                                    }
+                                ]
+                            );
+
+                        }
+
+                    });
+
 
                 }
-
             });
+
+
         }
 
 
@@ -180,7 +210,7 @@ const TicketDetails = (props: any) => {
 
             for (let i = 0; i < result.length; ++i) {
 
-                console.log(result[i].attend_status);
+                // console.log(result[i].attend_status);
                 setCustomer(result[i].customer);
                 setTechnician(result[i].assignTo);
                 setLocation(result[i].customer_address);
@@ -224,68 +254,68 @@ const TicketDetails = (props: any) => {
         // })
     }
 
-    const slideInModal = () => {
-        setIsShowSweep(false);
-        console.log('sampleIn');
-        Animated.timing(modalStyle, {
-            toValue: height / 8,
-            duration: 500,
-            useNativeDriver: false,
-        }).start();
-    };
-    //#endregion
 
-    //#region SlideOutModal
+    const setectSparePart = () => {
+        selection("spareparts");
+        getSpareParts();
+    }
 
-    const slideOutModal = () => {
+    useFocusEffect(
 
-        console.log('out');
-        setIsShowSweep(true);
-        Keyboard.dismiss();
-        Animated.timing(modalStyle, {
-            toValue: height,
-            duration: 500,
-            useNativeDriver: false,
-        }).start();
-    };
+        React.useCallback(() => {
 
-    useEffect(() => {
-        checktable();
-             if( route.params.tab == 'Expences'){
+            checktable();
+            if (route.params.tab == 'Expences') {
 
                 selection("documents");
 
-             }
+            }
             setTicketID(route.params.ticketID);
             AsyncStorage.setItem(AsyncStorageConstants.ASYNC_CURRENT_TICKET_ID, route.params.ticketID);
             getTicketDetails(route.params.ticketID);
-            getSpareParts();
+           
 
-    }, [])
+        }, []),
+    );
 
 
-    useEffect(() => {
-        const focusHandler = navigation.addListener('focus', () => {
-        
-             if( route.params.tab == 'Expences'){
+    // useEffect(() => {
+    //     checktable();
+    //     if (route.params.tab == 'Expences') {
 
-                selection("documents");
+    //         selection("documents");
 
-             }
-            setTicketID(route.params.ticketID);
-            AsyncStorage.setItem(AsyncStorageConstants.ASYNC_CURRENT_TICKET_ID, route.params.ticketID);
-            getTicketDetails(route.params.ticketID);
-            getSpareParts();
+    //     }
+    //     setTicketID(route.params.ticketID);
+    //     AsyncStorage.setItem(AsyncStorageConstants.ASYNC_CURRENT_TICKET_ID, route.params.ticketID);
+    //     getTicketDetails(route.params.ticketID);
+    //     getSpareParts();
 
-        });
-        return focusHandler;
-    }, [navigation])
+    // }, [])
+
+
+    // useEffect(() => {
+    //     const focusHandler = navigation.addListener('focus', () => {
+
+    //         if (route.params.tab == 'Expences') {
+
+    //             selection("documents");
+
+    //         }
+    //         setTicketID(route.params.ticketID);
+    //         AsyncStorage.setItem(AsyncStorageConstants.ASYNC_CURRENT_TICKET_ID, route.params.ticketID);
+    //         getTicketDetails(route.params.ticketID);
+    //         getSpareParts();
+
+    //     });
+    //     return focusHandler;
+    // }, [navigation])
 
 
     return (
         <SafeAreaView style={ComStyles.CONTAINER}>
 
-            <Animated.View
+            {/* <Animated.View
                 style={{
                     ...StyleSheet.absoluteFillObject,
                     top: modalStyle,
@@ -302,9 +332,9 @@ const TicketDetails = (props: any) => {
                         }
                     })
                 }}>
-                <View style={style.modalCont}>
+                <View style={style.modalCont}> */}
 
-                    {isSparepart ?
+                    {/* {isSparepart ?
                         <RequestBottomSheet
                             onpressicon={() => slideOutModal()}
                             addAdditional={() => setIsAdditional(false)}
@@ -317,7 +347,7 @@ const TicketDetails = (props: any) => {
                         />
 
 
-                    }
+                    } */}
 
                     {/* <CompleteTicket
                         onpressicon={() => slideOutModal()}
@@ -338,8 +368,8 @@ const TicketDetails = (props: any) => {
                         />
                     } */}
 
-                </View>
-            </Animated.View>
+                {/* </View>
+            </Animated.View> */}
 
 
             <Header title="Tickets Details" isBtn={true} btnOnPress={() => navigation.goBack()} />
@@ -367,7 +397,7 @@ const TicketDetails = (props: any) => {
                     <ActionButton title="Spare Parts"
                         style={loadScreen == "spareparts" ? style.activeBtn : style.deActiveBtn}
                         textStyle={loadScreen == "spareparts" ? style.activeText : style.deActiveText}
-                        onPress={() => selection("spareparts")} />
+                        onPress={() => setectSparePart()} />
 
                     <ActionButton title="Service History"
                         style={loadScreen == "serviceH" ? style.activeBtn : style.deActiveBtn}
@@ -383,27 +413,27 @@ const TicketDetails = (props: any) => {
                 <View style={{ flex: 1 }}>
                     {
                         loadScreen == "moreInfo" ?
-                        <MoreInfo />
+                            <MoreInfo />
                             // <TicketMoreInfo serviceCallDEtails={callDetailList} />
                             :
                             loadScreen == "spareparts" ?
                                 <SpareParts
-                                sparePartList={SparePartList}
-                                isActive={isServiceActive}
-                                ticketID={ticketID}
+                                    sparePartList={SparePartList}
+                                    isActive={isServiceActive}
+                                    ticketID={ticketID}
 
                                 />
 
                                 :
                                 loadScreen == "serviceH" ?
 
-                                <></>
+                                    <></>
                                     // <TicketsHistory />
                                     :
-                                    <Expences 
-                                    isActive={isServiceActive}/>
+                                    <Expences
+                                        isActive={isServiceActive} />
 
-                                 
+
 
                     }
 

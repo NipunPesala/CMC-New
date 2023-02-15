@@ -688,8 +688,15 @@ export const tableData = [
         shouldNotAllowNull: false,
       },
       {
+        name: 'ExpenseRequestID',
+        dataType: 'TEXT',
+        isPrimaryKey: false,
+        autoIncrement: false,
+        shouldNotAllowNull: false,
+      },
+      {
         name: 'ServiceCall_ID',
-        dataType: 'INTEGER',
+        dataType: 'TEXT',
         isPrimaryKey: false,
         autoIncrement: false,
         shouldNotAllowNull: false,

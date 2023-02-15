@@ -14,7 +14,7 @@ import {
 } from 'react-native';
 import Header from '../../Components/Header';
 import ComStyles from '../../Constant/Components.styles';
-import { useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import InputText from '../../Components/InputText';
 import ActionButton from '../../Components/ActionButton';
 import SparepartsItem from '../../SubComponents/SparepartsItem';
@@ -65,6 +65,9 @@ const SparePartsScreen = () => {
     };
 
     const getSpareParts = () => {
+
+
+
         getSparePartsAllData((result: any) => {
 
 
@@ -72,26 +75,26 @@ const SparePartsScreen = () => {
 
 
 
-            console.log(" Spare Parts11111111111  ................  ", result);
-            console.log(" Spare Parts List  ................  ", SparePartList.length);
+            // console.log(" Spare Parts11111111111  ................  ", result);
+            // console.log(" Spare Parts List  ................  ", SparePartList.length);
 
 
         });
     };
 
-    const searchSpareParts = (text:any) => {
+    const searchSpareParts = (text: any) => {
 
-        console.log(" txt .............  " , text);
-        
+        console.log(" txt .............  ", text);
+
 
         setSearchText(text);
 
-        getSearchSpareParts(text , (result:any) => {
+        getSearchSpareParts(text, (result: any) => {
 
             setSparePartList(result);
-            
+
         });
-        
+
 
 
     }
@@ -99,28 +102,33 @@ const SparePartsScreen = () => {
     const checkInprogressTicket = () => {
 
         AsyncStorage.setItem(AsyncStorageConstants.SELECT_TICKET, 'true');
-                navigation.navigate("RequestBottomSheet");
+        navigation.navigate("RequestBottomSheet");
 
     }
 
-    useEffect(() => {
-       
+    useFocusEffect(
+        React.useCallback(() => {
             getSpareParts();
 
-    }, [])
+        }, []),
+    );
 
-    useEffect(() => {
-        const focusHandler = navigation.addListener('focus', () => {
+    // useEffect(() => {
+    //     getSpareParts();
+    // });
 
-            getSpareParts();
+    // useEffect(() => {
 
-        });
-        return focusHandler;
-    }, [navigation])
+    //     const focusHandler = navigation.addListener('focus', () => {
+    //         getSpareParts();
+    //     });
+    //     return focusHandler;
+    // }, [navigation]);
+
 
     return (
         <SafeAreaView style={ComStyles.CONTAINER}>
-            <Animated.View
+            {/* <Animated.View
                 style={{
                     ...StyleSheet.absoluteFillObject,
                     top: modalStyle,
@@ -137,9 +145,9 @@ const SparePartsScreen = () => {
                         },
                     }),
                 }}>
-                <View style={style.modalCont}>
+                <View style={style.modalCont}> */}
 
-                    {/* if (isSparepart) {
+            {/* if (isSparepart) {
 
                         <AddSparePartsComponent
                             onpressicon={() => slideOutModal()}
@@ -165,7 +173,7 @@ const SparePartsScreen = () => {
                     } */}
 
 
-                    {isSparepart ?
+            {/* {isSparepart ?
                         <RequestBottomSheet
                             onpressicon={() => slideOutModal()}
                             addAdditional={() => setIsAdditional(false)}
@@ -177,12 +185,12 @@ const SparePartsScreen = () => {
                             onpress={() => setIsSparepart(true)}
                         />
 
-                    }
+                    } */}
 
 
 
-                </View>
-            </Animated.View>
+            {/* </View>
+            </Animated.View> */}
 
             <Header
                 isBtn={true}
@@ -205,7 +213,7 @@ const SparePartsScreen = () => {
                         left: 20,
                     }}
                     stateValue={searchText}
-                    setState={(newText:any) => searchSpareParts(newText)}
+                    setState={(newText: any) => searchSpareParts(newText)}
                 />
 
                 <View

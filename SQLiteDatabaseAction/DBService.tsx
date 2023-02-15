@@ -248,7 +248,7 @@ export const tableIndexKey = () => {
 
   db.transaction(
     (tx:any) => {
-      const query_idx_Expences = `CREATE UNIQUE INDEX IF NOT EXISTS idx_expences ON  EXPENCES(_Id) `;
+      const query_idx_Expences = `CREATE UNIQUE INDEX IF NOT EXISTS idx_expences ON  EXPENCES(ExpenseRequestID) `;
 
       tx.executeSql(
         query_idx_Expences,
