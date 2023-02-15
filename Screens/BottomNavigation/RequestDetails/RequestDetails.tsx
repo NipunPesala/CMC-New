@@ -10,7 +10,9 @@ import {
     StyleSheet,
     SafeAreaView,
     ToastAndroid,
-    Alert
+    Alert,
+    Platform,
+    Linking
 } from "react-native";
 import ActionButton from "../../../Components/ActionButton";
 import Header from "../../../Components/Header";
@@ -27,6 +29,8 @@ import style from "./style";
 import { getCurrentServiceCallID } from "../../../Constant/AsynStorageFuntion";
 import { getTicketByServiceId } from "../../../SQLiteDatabaseAction/DBControllers/TicketController";
 
+let changetitle = 0;
+
 const RequestDetails = (props: any) => {
     const { navigation, route } = props;
     const [loadScreen, setLoadScreen] = useState('ticket');
@@ -40,6 +44,12 @@ const RequestDetails = (props: any) => {
     const [btnEnable, setButtonEnable] = useState(true);
     const [ticketList, setTicketList] = useState([]);
     const [screenName, setScreenName] = useState('null');
+
+    //Location 
+    const[btnTitle,setBtnTitle] = useState('');
+
+
+
     var callID: any;
     const routeRequest = useRoute();
     // const navigation = useNavigation();
@@ -216,6 +226,29 @@ const RequestDetails = (props: any) => {
 
     }
 
+    const LoadMap =  () => {
+
+        selection("location")
+
+        const latitude = 6.8734353; // latitude of your desire location
+        const longitude = 79.8798461; // longitude of your desire location
+        // const longitude = 73.35574341458842; // longitude of your desire location
+        const scheme = Platform.select({
+            ios: "maps:0,0?q=",  // if device is ios 
+            android: "geo:0,0?q=", // if device is android 
+        });
+        const latLng = `${latitude},${longitude}`;
+        const label = "Pristine Solution";
+        const url = Platform.select({
+            ios: `${scheme}${label}@${latLng}`,
+            android: `${scheme}${latLng}(${label})`,
+        });
+
+        Linking.openURL(url);
+
+
+    }
+
     useEffect(() => {
 
        
@@ -302,7 +335,10 @@ const RequestDetails = (props: any) => {
                             />
                             :
                             loadScreen == "location" ?
-                                <Locations />
+                                <Locations
+                                btnTitle="Start Journey"
+                                pressbtn={() => LoadMap()}
+                                 />
                                 :
                                 loadScreen == "serviceH" ?
                                     <ServiceHistory />

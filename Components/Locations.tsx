@@ -2,23 +2,42 @@
 * @author Gagana Lakruwan
 */
 import React from "react";
-import { 
+import {
     View,
     Text,
     StyleSheet
 } from "react-native";
+import ActionButton from "./ActionButton";
+
+type ParamTypes = {
+
+    btnTitle: string;
+    isIcon?: boolean;
+    isBtn?: boolean;
+    btnStyle?: any;
+    txtStyle?: any;
+
+    pressbtn?: Function;
+}
 
 
-const Locations = () => {
-        return (
-            <View style={styles.container}>
-                <Text>Locations</Text>
-            </View>
-        );
+const Locations = ({ pressbtn, btnTitle, btnStyle, txtStyle }: ParamTypes) => {
+    return (
+
+        <View style={styles.container}>
+            <ActionButton title={btnTitle}
+                style={btnStyle}
+                textStyle={txtStyle}
+                onPress={pressbtn} />
+        </View>
+    );
 }
 export default Locations;
 
 
 const styles = StyleSheet.create({
-    container: {}
+    container: {
+      padding:30
+        
+    }
 });
