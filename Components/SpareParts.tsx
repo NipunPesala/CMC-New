@@ -82,7 +82,7 @@ const SpareParts = (sparePartList: any, isActive: boolean,ticketID:any) => {
             console.log(i);
 
         }
-
+        
 
     }, [])
 

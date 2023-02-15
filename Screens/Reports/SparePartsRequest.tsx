@@ -153,7 +153,7 @@ const SparePartsRequest = () => {
                 </View>
 
                 <InputText
-                    placeholder="Search by spare part"
+                    placeholder="Search by spare part ID"
                     is_clr_icon={true}
                     icon_name1="search1"
                     iconClr='rgba(60, 60, 67, 0.6)'

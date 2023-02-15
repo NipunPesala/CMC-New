@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Alert,
   Animated,
@@ -15,14 +15,14 @@ import {
 } from 'react-native';
 import Header from '../../Components/Header';
 import ComponentsStyles from '../../Constant/Components.styles';
-import {useNavigation} from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import ActionButton from '../../Components/ActionButton';
 import style from './Style';
-import {format} from 'date-fns';
+import { format } from 'date-fns';
 import moment from 'moment';
 import CalendarPicker from 'react-native-calendar-picker';
-import {TouchableOpacity} from 'react-native-gesture-handler';
-import {AttendanceDetails} from '../../Constant/DummyData';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import { AttendanceDetails } from '../../Constant/DummyData';
 import AttendanceTableHeaderComponent from '../../Components/AttendanceTableHeaderComponent';
 import AttendanceTableDetailsComponent from '../../Components/AttendanceTableDetailsComponent';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -39,7 +39,7 @@ import {
   saveMeterReading,
   getALLReadingDetailsbyDateRange,
 } from '../../SQLiteDatabaseAction/DBControllers/MeterReadingController';
-import {getServiceTicketForReport,getServiceTicketFor7Days,getServiceTicketFor30Days} from '../../SQLiteDatabaseAction/DBControllers/TicketController';
+import { getServiceTicketForReport, getServiceTicketFor7Days, getServiceTicketFor30Days } from '../../SQLiteDatabaseAction/DBControllers/TicketController';
 
 let height = Dimensions.get('screen').height;
 const AttendanceScreen = () => {
@@ -85,28 +85,29 @@ const AttendanceScreen = () => {
   const [endDate, setEndDate] = useState('');
   const [showCalendar, setShowCalendar] = useState(false);
   const start = moment(startDate).format("YYYY-MM-DD");
-  console.log('new start'+start);
+  console.log('new start' + start);
   const end = moment(endDate).format("YYYY-MM-DD");
-  console.log('new end'+end);
-//
+  console.log('new end' + end);
+  //
   const [totalTimeDifference, setTotalTimeDifference] = useState(0);
   const [overtimeSum, setOvertimeSum] = useState(0);
 
   const testresult = [
-    {"date": "2023-01-20", "inremark": "Hhh", "intime": " ", "outtime": "2023-01-28 22:46:09", "overtime": "20", "shift": "IN", "twhour": "", "value": 158},
-    {"date": "2023-01-20", "inremark": "Ryu", "intime": "2023-01-25 20:46:09", "outtime": "2023-01-28 20:46:09", "overtime": "30", "shift": "OUT", "twhour": "", "value": 128},
+    { "date": "2023-01-20", "inremark": "Hhh", "intime": " ", "outtime": "2023-01-28 22:46:09", "overtime": "20", "shift": "IN", "twhour": "", "value": 158 },
+    { "date": "2023-01-20", "inremark": "Ryu", "intime": "2023-01-25 20:46:09", "outtime": "2023-01-28 20:46:09", "overtime": "30", "shift": "OUT", "twhour": "", "value": 128 },
   ];
   // const route=useRoute();
 
-// const startDate1 = '2022-10-01 08:00:00';
-// const endDate2 = '2022-10-02 18:00:00';
+  // const startDate1 = '2022-10-01 08:00:00';
+  // const endDate2 = '2022-10-02 18:00:00';
 
 
 
   useEffect(() => {
+    handale7days();
     getallTicketLast7Days();
     //getTotalWorkingHours();
-   // getTotalOverTime();
+    // getTotalOverTime();
     console.log('use66');
     if (typeof filterText == 'string') {
       let regex = new RegExp(`(${filterText})`);
@@ -124,69 +125,69 @@ const AttendanceScreen = () => {
   //   setFilterText(datec);
   // };
   const getallTicketLast7Days = () => {
-    let currentDate7 = moment().subtract(7,'days').format('YYYY-MM-DD HH:mm:ss');
-    getServiceTicketFor7Days(currentDate7,(result:any) =>{
+    let currentDate7 = moment().subtract(7, 'days').format('YYYY-MM-DD HH:mm:ss');
+    getServiceTicketFor7Days(currentDate7, (result: any) => {
 
-        console.log("////////All ticket/////////",result);
-        let startEndDates = [];
-        for (let i = 0; i < result.length; i++) {
-          startEndDates.push({ startDate: result[i].actualstartDate, endDate: result[i].actualendtDate });
-        }
-        console.log('this is arry only start date and end date-------',startEndDates);
+      console.log("////////All ticket/////////", result);
+      let startEndDates = [];
+      for (let i = 0; i < result.length; i++) {
+        startEndDates.push({ startDate: result[i].actualstartDate, endDate: result[i].actualendtDate });
+      }
+      console.log('this is arry only start date and end date-------', startEndDates);
 
-        let totalDuration = 0;
-        for (let i = 0; i < startEndDates.length; i++) {
-          if(!startEndDates[i].startDate || !startEndDates[i].endDate) continue;
-          const start = moment(startEndDates[i].startDate);
-          const end = moment(startEndDates[i].endDate);
-          const duration = moment.duration(end.diff(start));
-          console.log('duration=='+duration.asHours());
-          totalDuration += duration.asHours();
-          
-        }
-        console.log('totalDuration======'+totalDuration);
-        let roundnum=totalDuration.toFixed(2);
-          //let roundnum=57;
-        setTotalTimeDifference(roundnum);
-        if(roundnum<=56){
-          setOvertimeSum(0);
-        }else if(roundnum>=56){
-            let otTime=roundnum-56;
-            setOvertimeSum(otTime);
-        }
+      let totalDuration = 0;
+      for (let i = 0; i < startEndDates.length; i++) {
+        if (!startEndDates[i].startDate || !startEndDates[i].endDate) continue;
+        const start = moment(startEndDates[i].startDate);
+        const end = moment(startEndDates[i].endDate);
+        const duration = moment.duration(end.diff(start));
+        console.log('duration==' + duration.asHours());
+        totalDuration += duration.asHours();
+
+      }
+      console.log('totalDuration======' + totalDuration);
+      let roundnum = totalDuration.toFixed(2);
+      //let roundnum=57;
+      setTotalTimeDifference(roundnum);
+      if (roundnum <= 56) {
+        setOvertimeSum(0);
+      } else if (roundnum >= 56) {
+        let otTime = roundnum - 56;
+        setOvertimeSum(otTime);
+      }
     });
   };
 
 
   const getallTicketLast30Days = () => {
-    let currentDatefor30 = moment().subtract(30,'days').format('YYYY-MM-DD HH:mm:ss');
-    getServiceTicketFor30Days(currentDatefor30,(result:any) =>{
+    let currentDatefor30 = moment().subtract(30, 'days').format('YYYY-MM-DD HH:mm:ss');
+    getServiceTicketFor30Days(currentDatefor30, (result: any) => {
 
-        console.log("////////All ticket/////////",result);
-        let startEndDates = [];
-        for (let i = 0; i < result.length; i++) {
-          startEndDates.push({ startDate: result[i].actualstartDate, endDate: result[i].actualendtDate });
-        }
-        console.log('this is arry only start date and end date-------',startEndDates);
+      console.log("////////All ticket/////////", result);
+      let startEndDates = [];
+      for (let i = 0; i < result.length; i++) {
+        startEndDates.push({ startDate: result[i].actualstartDate, endDate: result[i].actualendtDate });
+      }
+      console.log('this is arry only start date and end date-------', startEndDates);
 
-        let totalDuration = 0;
-        for (let i = 0; i < startEndDates.length; i++) {
-          if(!startEndDates[i].startDate || !startEndDates[i].endDate) continue;
-          const start = moment(startEndDates[i].startDate);
-          const end = moment(startEndDates[i].endDate);
-          const duration = moment.duration(end.diff(start));
-          console.log('duration=='+duration.asHours());
-          totalDuration += duration.asHours();
-          
-        }
-        let roundnum=totalDuration.toFixed(2);
-        //let roundnum=57;
+      let totalDuration = 0;
+      for (let i = 0; i < startEndDates.length; i++) {
+        if (!startEndDates[i].startDate || !startEndDates[i].endDate) continue;
+        const start = moment(startEndDates[i].startDate);
+        const end = moment(startEndDates[i].endDate);
+        const duration = moment.duration(end.diff(start));
+        console.log('duration==' + duration.asHours());
+        totalDuration += duration.asHours();
+
+      }
+      let roundnum = totalDuration.toFixed(2);
+      //let roundnum=57;
       setTotalTimeDifference(roundnum);
-      if(roundnum<=240){
+      if (roundnum <= 240) {
         setOvertimeSum(0);
-      }else if(roundnum>=240){
-          let otTime=roundnum-240;
-          setOvertimeSum(otTime);
+      } else if (roundnum >= 240) {
+        let otTime = roundnum - 240;
+        setOvertimeSum(otTime);
       }
     });
   };
@@ -260,33 +261,33 @@ const AttendanceScreen = () => {
 
   const newValidateDayendvalue = () => {
     if (meterValue != '') {
-      if (/^[0-9]+$/.test(meterValue)){
+      if (/^[0-9]+$/.test(meterValue)) {
         if (remark != '') {
           if (parseInt(meterValue) >= parseInt(lastMeterReadervalue)) {
             insertMeterReading();
-          }else{
+          } else {
             ToastAndroid.show('Meter Reading Save Failed.Invalid Meter Value in Day End ', ToastAndroid.SHORT);
             insertMeterReading();
           }
         } else {
           ToastAndroid.show('pleas enter  remark ', ToastAndroid.SHORT);
         }
-      }else{
+      } else {
         ToastAndroid.show('Please Enter only numeric characters.', ToastAndroid.SHORT);
       }
-    
+
     } else {
       ToastAndroid.show('pleas enter meter valuve ', ToastAndroid.SHORT);
       console.log('Enter meater valuve');
     }
   };
 
-  const openCamera=()=>{
+  const openCamera = () => {
 
-    
+
   }
   const slideInModal = () => {
-  
+
     setIsShowSweep(false);
     //console.log('sampleIn',+height);
 
@@ -322,7 +323,7 @@ const AttendanceScreen = () => {
             [
               {
                 text: 'OK',
-                onPress: () => {},
+                onPress: () => { },
               },
             ],
           );
@@ -368,13 +369,14 @@ const AttendanceScreen = () => {
   };
 
   const getAllAttendanceDetailsbyDates = (date: any) => {
+    console.log("-----check getAllAttendanceDetailsbyDates-------");
     try {
       getALLReadingDetailsbyDates(date, (result: any) => {
         setlistdata(result);
-        for(const key in result){
+        for (const key in result) {
           console.log(result[key]);
-      }
-        console.log('this is 7 days' , result);
+        }
+        console.log('this is 7 days', result);
       });
     } catch (error) {
       console.log('ATTENDANCE GET ALL date wise ' + error);
@@ -394,14 +396,14 @@ const AttendanceScreen = () => {
     }
   };
 
-  const getDateRangeResult=(DateOne:any,DateTwo:any)=>{
-    getALLReadingDetailsbyDateRange(DateOne, DateTwo, (result:any) => {
+  const getDateRangeResult = (DateOne: any, DateTwo: any) => {
+    getALLReadingDetailsbyDateRange(DateOne, DateTwo, (result: any) => {
 
       setlistdata(result);
-        
+
     });
-    
-}
+
+  }
 
   const getAllAttendanceDetails = () => {
     try {
@@ -461,7 +463,7 @@ const AttendanceScreen = () => {
               Alert.alert('Failed...!', 'Meter Reading Save Failed.', [
                 {
                   text: 'OK',
-                  onPress: () => {},
+                  onPress: () => { },
                 },
               ]);
             }
@@ -502,7 +504,7 @@ const AttendanceScreen = () => {
               Alert.alert('Failed...!', 'Meter Reading Save Failed.', [
                 {
                   text: 'OK',
-                  onPress: () => {},
+                  onPress: () => { },
                 },
               ]);
             }
@@ -518,7 +520,7 @@ const AttendanceScreen = () => {
         [
           {
             text: 'OK',
-            onPress: () => {},
+            onPress: () => { },
           },
         ],
       );
@@ -529,45 +531,45 @@ const AttendanceScreen = () => {
   const handleDateChange = (date) => {
     if (!startDate) {
       setStartDate(date);
-      console.log('start date-'+date );
+      console.log('start date-' + date);
 
-    }else if(date>startDate) {
-        setEndDate(date);
-        console.log('End date-'+date);
-       // getDateRangeResult(start,end);
-        getDateRangeResult(start,end);
-        setShowCalendar(false);
-      
-    }else{
-        ToastAndroid.show("Invalide selected date  ", ToastAndroid.SHORT); 
-         setStartDate('');
-          setEndDate('');
+    } else if (date > startDate) {
+      setEndDate(date);
+      console.log('End date-' + date);
+      // getDateRangeResult(start,end);
+      getDateRangeResult(start, end);
+      setShowCalendar(false);
+
+    } else {
+      ToastAndroid.show("Invalide selected date  ", ToastAndroid.SHORT);
+      setStartDate('');
+      setEndDate('');
     }
-  //  const start = startDate ? moment(startDate).format("MM/DD/YYYY") : "Not Selected";
-       
+    //  const start = startDate ? moment(startDate).format("MM/DD/YYYY") : "Not Selected";
+
   }
 
-  const btnCloseOnpress=()=>{
+  const btnCloseOnpress = () => {
     setShowCalendar(!showCalendar);
     setStartDate('');
     setEndDate('');
-}
+  }
 
-const arrorPressRight=()=>{
+  const arrorPressRight = () => {
 
-  console.log('this is a arrow press Right');
-  console.log(attendanceDetails1);
-  setAttendanceDetails(false);
-  setRemarks(true);
-}
+    console.log('this is a arrow press Right');
+    console.log(attendanceDetails1);
+    setAttendanceDetails(false);
+    setRemarks(true);
+  }
 
-const arrorPressLeft=()=>{
+  const arrorPressLeft = () => {
 
-  console.log('this is a arrow press Left');
-  setAttendanceDetails(true);
-  setbottomview(true);
-  setRemarks(false);
-}
+    console.log('this is a arrow press Left');
+    setAttendanceDetails(true);
+    setbottomview(true);
+    setRemarks(false);
+  }
 
   ////////////////////////end==============================
 
@@ -632,96 +634,105 @@ const arrorPressLeft=()=>{
             </View>
 
             <ScrollView style={style.scrollStyle} nestedScrollEnabled={true}>
-            <InputText
-              style={styles.inputTextStyle}
-              placeholder="125KM"
-              //onKeyPress={keyPress => console.log(keyPress)}
-              onFocus={() => validateDayendvalue()}
-              stateValue={meterValue}
-              keyType="numeric"
-              max={4}
-              setState={meterValue => setMeterValue(meterValue)}
-            />
-            <InputText
-              style={styles.inputTextStyle}
-              placeholder="Enter Remark"
-              stateValue={remark}
-              max={5}
-              setState={remark => setremark(remark)}
-            />
+              <InputText
+                style={styles.inputTextStyle}
+                placeholder="125KM"
+                //onKeyPress={keyPress => console.log(keyPress)}
+                onFocus={() => validateDayendvalue()}
+                stateValue={meterValue}
+                keyType="numeric"
+                max={4}
+                setState={meterValue => setMeterValue(meterValue)}
+              />
+              <InputText
+                style={styles.inputTextStyle}
+                placeholder="Enter Remark"
+                stateValue={remark}
+                max={5}
+                setState={remark => setremark(remark)}
+              />
+              
+              <View
+                style={{
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  flexDirection: 'column',
+                }}>
+              <Text style={styles.subtxtAtten}>OR</Text>
+              </View>
 
-            <Text style={styles.subtxt}>OR</Text>
+              
 
-            <View
-              style={{
-                justifyContent: 'center',
-                alignItems: 'center',
-                flexDirection: 'column',
-              }}>
-              <Text style={styles.modalTitle}>
-                Update the photo of the meter
-              </Text>
-              <Text style={styles.modalTitle}>time you are </Text>
-            </View>
+              <View
+                style={{
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  flexDirection: 'column',
+                }}>
+                <Text style={styles.modalTitle}>
+                  Update the photo of the meter
+                </Text>
+                <Text style={styles.modalTitle}>time you are </Text>
+              </View>
 
-            <View style={styles.txtUpload}>
-              {image ? (
-                <View style={{flexDirection: 'row'}}>
-                  <Text
+              <View style={styles.txtUpload}>
+                {image ? (
+                  <View style={{ flexDirection: 'row' }}>
+                    <Text
+                      style={{
+                        fontFamily: comStyles.FONT_FAMILY.BOLD,
+                        color: comStyles.COLORS.ORANGE,
+                        fontSize: 18,
+                        marginRight: 5,
+                      }}>
+                      Image Uploaded
+                    </Text>
+                    <IconA
+                      name="ios-checkmark-circle"
+                      size={20}
+                      color={comStyles.COLORS.LOW_BUTTON_GREEN}
+                      style={{ marginRight: 5 }}
+                    />
+                  </View>
+                ) : (
+                  <TouchableOpacity
                     style={{
-                      fontFamily: comStyles.FONT_FAMILY.BOLD,
-                      color: comStyles.COLORS.ORANGE,
-                      fontSize: 18,
-                      marginRight: 5,
-                    }}>
-                    Image Uploaded
-                  </Text>
-                  <IconA
-                    name="ios-checkmark-circle"
-                    size={20}
-                    color={comStyles.COLORS.LOW_BUTTON_GREEN}
-                    style={{marginRight: 5}}
-                  />
-                </View>
-              ) : (
-                <TouchableOpacity
-                  style={{
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    flexDirection: 'row',
-                  }}
-                  onPress={() => openCamera()}>
-                  <IconA
-                    name="cloud-upload"
-                    size={20}
-                    color={comStyles.COLORS.ICON_BLUE}
-                    style={{marginRight: 5}}
-                  />
-                  <Text
-                    style={{
-                      fontFamily: comStyles.FONT_FAMILY.BOLD,
-                      color: comStyles.COLORS.ICON_BLUE,
-                      fontSize: 18,
-                      marginRight: 5,
-                    }}>
-                    Photo of Meter*
-                  </Text>
-                </TouchableOpacity>
-              )}
-            </View>
-            <ActionButton
-              title={attendance_savebutton}
-              style={styles.ActionButton}
-              // onPress={() => validateDayendvalue()}
-              onPress={() => newValidateDayendvalue()}
-            />
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      flexDirection: 'row',
+                    }}
+                    onPress={() => openCamera()}>
+                    <IconA
+                      name="cloud-upload"
+                      size={20}
+                      color={comStyles.COLORS.ICON_BLUE}
+                      style={{ marginRight: 5 }}
+                    />
+                    <Text
+                      style={{
+                        fontFamily: comStyles.FONT_FAMILY.BOLD,
+                        color: comStyles.COLORS.ICON_BLUE,
+                        fontSize: 18,
+                        marginRight: 5,
+                      }}>
+                      Photo of Meter*
+                    </Text>
+                  </TouchableOpacity>
+                )}
+              </View>
+              <ActionButton
+                title={attendance_savebutton}
+                style={styles.ActionButton}
+                // onPress={() => validateDayendvalue()}
+                onPress={() => newValidateDayendvalue()}
+              />
 
-            <ActionButton
-              title="Cancel"
-              style={styles.ActionButton}
-              onPress={() => slideOutModal()}
-            />
-          </ScrollView>
+              <ActionButton
+                title="Cancel"
+                style={styles.ActionButton}
+                onPress={() => slideOutModal()}
+              />
+            </ScrollView>
           </View>
 
           {/* ........................................ meter reading modal end.......................................... */}
@@ -775,15 +786,15 @@ const arrorPressLeft=()=>{
           />
         </View>
         {showCalendar && (
-               <View style={{alignContent:'center', justifyContent: 'center',alignItems:'center'}}>
-              
-                   <CalendarPicker
-                   onDateChange={handleDateChange}
-                   selectedStartDate={startDate}
-                   selectedEndDate={endDate}
-                   />
-               </View>
-               )}
+          <View style={{ alignContent: 'center', justifyContent: 'center', alignItems: 'center' }}>
+
+            <CalendarPicker
+              onDateChange={handleDateChange}
+              selectedStartDate={startDate}
+              selectedEndDate={endDate}
+            />
+          </View>
+        )}
         <View style={style.detaislContainer}>
           <View style={style.detaislsubContainer}>
             <Text style={style.detaisSubText}>Total Working Hours</Text>
@@ -797,7 +808,7 @@ const arrorPressLeft=()=>{
 
         <View style={style.detaislContainer1}>
           <View
-            style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+            style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
             <TouchableOpacity onPress={HandleAttendanceDetails}>
               <Text
                 style={
@@ -817,7 +828,7 @@ const arrorPressLeft=()=>{
             />
           </View>
           <View
-            style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+            style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
             <TouchableOpacity onPress={handleRemak}>
               <Text
                 style={
@@ -846,7 +857,7 @@ const arrorPressLeft=()=>{
         />
 
         {/* <ScrollView directionalLockEnabled={false} horizontal={true}> */}
-        <View style={{height: 35}}>
+        <View style={{ height: 35 }}>
           {attendanceDetails1 ? (
             <AttendanceTableHeaderComponent
               isHeadertitle1={true}
@@ -903,16 +914,16 @@ const arrorPressLeft=()=>{
                         )
                     }
 
-                </ScrollView> */}
-        {/* {attendanceDetails1 ? (
+                </ScrollView>  */}
+        {attendanceDetails1 ? (
           <FlatList
             showsHorizontalScrollIndicator={false}
             // data={Arrays.SelectPackage.Wash.filter(ob => ob.extras == true)}
             // data={AttendanceDetails}
             data={listdata}
-            style={{marginTop: 10, marginBottom: 60}}
+            style={{ marginTop: 10, marginBottom: 60 }}
             horizontal={false}
-            renderItem={({item}) => {
+            renderItem={({ item }) => {
               return (
                 <AttendanceTableDetailsComponent
                   isHeadertitle1={true}
@@ -930,16 +941,16 @@ const arrorPressLeft=()=>{
                 />
               );
             }}
-            keyExtractor={item => `${item.id}`}
+            keyExtractor={item => `${item.empID}`}
           />
         ) : (
           <FlatList
             showsHorizontalScrollIndicator={false}
             // data={Arrays.SelectPackage.Wash.filter(ob => ob.extras == true)}
             data={listdata}
-            style={{marginTop: 10, marginBottom: 60}}
+            style={{ marginTop: 10, marginBottom: 60 }}
             horizontal={false}
-            renderItem={({item}) => {
+            renderItem={({ item }) => {
               return (
                 <AttendanceTableDetailsComponent
                   isHeadertitle1={true}
@@ -957,14 +968,14 @@ const arrorPressLeft=()=>{
                 />
               );
             }}
-            keyExtractor={item => `${item.id}`}
+            keyExtractor={item => `${item.empID}`}
           />
-        )} */}
+        )}
         {/* </ScrollView> */}
 
         <ActionButton
           title={actionButonHeading}
-          style={{marginBottom: 70}}
+          style={{ marginBottom: 70 }}
           is_icon={true}
           icon_name="diff-added"
           onPress={() => slideInModal()}
@@ -1017,6 +1028,14 @@ const styles = StyleSheet.create({
     fontFamily: comStyles.FONT_FAMILY.SEMI_BOLD,
     marginBottom: 10,
   },
+  subtxtAtten: {
+    color: comStyles.COLORS.BLACK,
+    fontSize: 13,
+    fontFamily: comStyles.FONT_FAMILY.SEMI_BOLD,
+    marginBottom: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   ActionButton: {
     marginTop: 20,
     marginBottom: 5,
@@ -1041,5 +1060,5 @@ const styles = StyleSheet.create({
     marginBottom: 0,
     marginLeft: 13,
     marginRight: 13,
-},
+  },
 });

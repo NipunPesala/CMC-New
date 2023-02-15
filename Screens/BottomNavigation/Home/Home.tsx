@@ -43,12 +43,9 @@ import { getLoginUserName } from '../../../Constant/AsynStorageFuntion';
 import PushNotification from "react-native-push-notification";
 import { saveServiceData } from "../../../SQLiteDatabaseAction/DBControllers/ServiceController";
 
-var test: any;
 const SyncArray1: any[] = [];
 let arrayindex = 0;
 var loginUser: any;
-
-
 
 const Home = () => {
   const [loandingspinner, setloandingspinner] = useState(false);
@@ -114,12 +111,7 @@ const Home = () => {
   const logoutsheet = () => {
     refRBSheet.current.open();
   };
-  const MenuFunctions = () => {
-    const [visible, setVisible] = useState(false);
 
-    const closeMenu = () => setVisible(false);
-    const openMenu = () => setVisible(true);
-  };
   const slideInModal = () => {
     setIsShowSweep(false);
     console.log('sampleIn');
@@ -152,21 +144,7 @@ const Home = () => {
       message: "Hiii this is a test notification",
     });
   }
-  //get current time for welcome note
-
-  //     var hours = new Date().getHours();
-  //     //var min = new Date().getMinutes();
-  //     var currentTimeCom = hours;
-
-  //     if (currentTimeState === 0) {
-  //       setCurrentTime(currentTimeCom);
-  //       //console.log('Current time', currentTimeCom);
-  //       return currentTimeCom;
-  //     } else {
-  //       return currentTimeCom;
-  //     }
-  //   };
-  // get welocmme note title acording to the time
+ 
   const getWellcomeNote = () => {
     var hourTime = new Date().getHours();
     var minutes = new Date().getMinutes();
@@ -223,8 +201,6 @@ const Home = () => {
   const getInprogressTicket = () => {
     getTicketsForInprogress((result: any) => {
       setInprogresticketList(result);
-
-      //console.log("^^==================^",JSON.stringify(result));
     });
   };
 

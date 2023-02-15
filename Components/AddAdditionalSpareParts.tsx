@@ -12,6 +12,7 @@ import {
     Alert,
     ToastAndroid,
     Image,
+    ScrollView,
 } from "react-native";
 import ActionButton from "./ActionButton";
 import comStyles from "../Constant/Components.styles";
@@ -346,8 +347,9 @@ var id:any;
                         }
                     })
                 }}>
+             <ScrollView style={style.scrollStyle} nestedScrollEnabled={true}>
                 <View style={styles.modalCont}>
-
+                
 
 
                     <View style={styles.modalMainContainer}>
@@ -362,7 +364,7 @@ var id:any;
                         <InputText
                             style={styles.inputTextStyle}
                             placeholder="Enter Description"
-                            max={20}
+                            max={30}
                             stateValue={descriptionvalue}
                             setState={
                                 (descriptionvalue) => setdescriptionvalue(descriptionvalue)
@@ -373,7 +375,7 @@ var id:any;
                             placeholder="Enter Qty"
                             stateValue={enterQty}
                             keyType='numeric'
-                            max={5}
+                            max={8}
                             setState={
                                 (enterQty) => setenterQty(enterQty)}
                         />
@@ -408,7 +410,8 @@ var id:any;
                                 style={{ flex: 0.5 }} />
 
                         </View>
-
+                        <View style={{ padding:30 }} />
+                        
 
 
                     </View>
@@ -416,8 +419,10 @@ var id:any;
 
                     {/* ........................................ add new prodcut  modal end.......................................... */}
 
-
+              
                 </View>
+
+                </ScrollView>
             </Animated.View>
 
             <View style={{ padding:30 }} />

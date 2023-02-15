@@ -260,7 +260,7 @@ const RequestBottomSheet = () => {
     };
 
     useEffect(() => {
-
+        
         const focusHandler = navigation.addListener('focus', () => {
             setAddInventorySpareParts(true);
             setAddAdditionalSpareParts(false);
@@ -289,9 +289,10 @@ const RequestBottomSheet = () => {
             });
 
             generateRequestID();
-
+            handle_AddInventorySpareParts();
 
         });
+
         return focusHandler;
     }, [navigation]);
 
@@ -301,7 +302,7 @@ const RequestBottomSheet = () => {
         setAddInventorySpareParts(true);
         setAddAdditionalSpareParts(false);
         setInvenrty("1");
-
+     
 
 
         getASYNC_CURRENT_TICKET_ID().then(res => {
@@ -314,7 +315,7 @@ const RequestBottomSheet = () => {
 
 
         generateRequestID();
-
+       
     }, []);
 
     const getALlDatainventy = (data: any) => {

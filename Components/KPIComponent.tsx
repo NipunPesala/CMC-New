@@ -73,12 +73,6 @@ const  calculateEfect=(startD:any,endD:any)=>{
   console.log('effective time '+timePeriod); 
 }
 
-
-  const getTestAllTiket = () => {
-    getServiceTicketList((result: any) => {
-      console.log('///////////////', result);
-    });
-  };
   const getAllCloseTiket = (currentMonth: any) => {
     getCompliteTicketCount2(currentMonth, (result: any) => {
       console.log('--close ticket count--', result);
