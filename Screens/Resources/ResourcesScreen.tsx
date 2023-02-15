@@ -6,11 +6,12 @@ import { useNavigation } from "@react-navigation/native";
 import InputText from "../../Components/InputText";
 import ActionButton from "../../Components/ActionButton";
 import ResourcesStyle from "./ResourcesStyle";
-import { Tool, Vehicle } from "../../Constant/DummyData";
 import SparepartsItem from "../../SubComponents/SparepartsItem";
 import { getTypeviseResouces, getTypeviseResoucesSearch } from "../../SQLiteDatabaseAction/DBControllers/ResourcesController";
 import AsyncStorage from "@react-native-community/async-storage";
 import AsyncStorageConstants from "../../Constant/AsyncStorageConstants";
+import { getAllVehicle, searchVehicle } from "../../SQLiteDatabaseAction/DBControllers/VehicleController";
+import { getAllTools, searchTool } from "../../SQLiteDatabaseAction/DBControllers/ToolController";
 
 const ResourcesScreen = () => {
 
@@ -19,48 +20,49 @@ const ResourcesScreen = () => {
     const [tool, setTool] = useState(false);
     const [vehicle, setVehicle] = useState(false);
     const [listdata, setlistdata] = useState([]);
-    const [ResourceList, setResourceList] = useState();
+    const [ResourceList, setResourceList] = useState([]);
     const [searchText, setSearchText] = useState();
 
     const ToolPressed = () => {
+
+        setResourceList([]);
         setTool(true);
         setVehicle(false);
-        setlistdata(Tool);
-        getResources("Tool");
+        getTool();
     }
     const VehiclePressed = () => {
+        setResourceList([]);
         setTool(false);
         setVehicle(true);
-        setlistdata(Vehicle);
-        getResources("Vehicle");
+        getVehicle();
     }
 
     useEffect(() => {
         setVehicle(false);
         setTool(true);
-        setlistdata(Tool);
     }, [])
 
-    const viewCalendar = (data:any) => {
+    const viewCalendar = (data: any) => {
 
-        console.log(data,"------------------------------");
-        
-        AsyncStorage.setItem(AsyncStorageConstants.ASYNC_RESOURCE_ID,data);
-       
+        console.log(data, "------------------------------");
+
+        AsyncStorage.setItem(AsyncStorageConstants.ASYNC_RESOURCE_ID, data);
+
         if (tool === true) {
-            AsyncStorage.setItem(AsyncStorageConstants.ASYNC_RESOURCE_Type,"Tool");
+            AsyncStorage.setItem(AsyncStorageConstants.ASYNC_RESOURCE_Type, "Tool");
             navigation.navigate('ToolCalendar');
 
         } else if (vehicle === true) {
-            AsyncStorage.setItem(AsyncStorageConstants.ASYNC_RESOURCE_Type,"Vehicle");
+            AsyncStorage.setItem(AsyncStorageConstants.ASYNC_RESOURCE_Type, "Vehicle");
             navigation.navigate('VehicleCalendar');
         }
 
     }
 
-    const getResources = (type: String) => {
+    const getVehicle = () => {
 
-        getTypeviseResouces(type, (result: any) => {
+        getAllVehicle((result: any) => {
+
             setResourceList(result);
 
         });
@@ -68,21 +70,30 @@ const ResourcesScreen = () => {
 
     }
 
-    const searchResources = (text:any) => {
+
+    const getTool = () => {
+
+        getAllTools((result: any) => {
+
+            setResourceList(result);
+
+        });
+
+    }
+
+    const searchResources = (text: any) => {
 
         setSearchText(text);
-        if(tool){
 
-            getTypeviseResoucesSearch('Tool' , text,(result:any) => {
+        if (tool) {
+
+            searchTool(text, (result: any) => {
                 setResourceList(result);
             });
-          
 
+        } else {
 
-        }else{
-
-       
-            getTypeviseResoucesSearch('Vehicle' , text,(result:any) => {
+            searchVehicle(text, (result: any) => {
                 setResourceList(result);
             });
 
@@ -91,7 +102,8 @@ const ResourcesScreen = () => {
     }
 
     useEffect(() => {
-        getResources("Tool");
+        // getResources("Tool");
+        getTool();
 
     }, [])
 
@@ -134,7 +146,7 @@ const ResourcesScreen = () => {
                         left: 20,
                     }}
                     stateValue={searchText}
-                    setState={(newText:any) => searchResources(newText)}
+                    setState={(newText: any) => searchResources(newText)}
                 />
 
                 {tool ?
@@ -163,18 +175,18 @@ const ResourcesScreen = () => {
                     renderItem={({ item }) => {
                         return (
 
-                            <TouchableOpacity onPress={() => viewCalendar(item.ResourcesID)}>
+                            <TouchableOpacity onPress={() => viewCalendar(tool === true ? item.ItemCode : item.VehicleID)}>
                                 <SparepartsItem
                                     is_additional={true}
-                                    id={item.ResourcesID}
-                                    description={item.Decription}
-                                    quantity={item.Type}
+                                    id={tool === true ? item.ItemCode : item.VehicleID}
+                                    description={tool === true ? item.ItemName : item.Decription}
+                                    quantity={tool === true ? item.ItemType : item.VehicleType}
                                 />
 
                             </TouchableOpacity>
                         );
                     }}
-                    keyExtractor={item => `${item.ResourcesID}`}
+                    keyExtractor={item => `${tool === true ? item.ItemCode : item.VehicleID}`}
                 />
 
 

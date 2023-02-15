@@ -25,7 +25,7 @@ import Header from "./Header";
 import ActionButton from "./ActionButton";
 import InputText from "./InputText";
 import DropDownPicker from 'react-native-dropdown-picker';
-import { addNewService } from "../Services/Api/TicketService";
+import { addNewService } from "../Services/Api/SyncService";
 import moment from "moment";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { getAllTypes } from "../SQLiteDatabaseAction/DBControllers/ServiceTypeController";
@@ -956,6 +956,7 @@ const NewServiceCall = (props: any) => {
                         style={comStyles.serviceTicketInput}
                         stateValue={subject}
                         setState={setSubject}
+                        max={50}
                     />
 
                     <View style={{ zIndex: 50 }}>

@@ -167,7 +167,7 @@ export const getLastServiceId = (callBack:any) => {
 
 export const getServiceId = (callBack:any) => {
   DB.searchData(
-    'SELECT serviceId,_Id FROM SERVICE',
+    'SELECT serviceId,_Id FROM SERVICE WHERE Approve_status != 2',
     [],
     (resp:any, err:any) => {
       callBack(resp, err);

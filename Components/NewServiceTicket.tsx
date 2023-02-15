@@ -26,7 +26,7 @@ import Header from "./Header";
 import ActionButton from "./ActionButton";
 import InputText from "./InputText";
 import DropDownPicker from 'react-native-dropdown-picker';
-import { addNewTicket } from "../Services/Api/TicketService";
+import { addNewTicket } from "../Services/Api/SyncService";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import moment from "moment";
 import { getCallDates, getServiceCallCustomer, getServiceId } from "../SQLiteDatabaseAction/DBControllers/ServiceController";

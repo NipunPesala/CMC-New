@@ -251,8 +251,6 @@ const RequestDetails = (props: any) => {
 
     useEffect(() => {
 
-       
-        
         // SelectnavigationScreen();
         getCurrentServiceCallID().then(res => {
             callID = res;

@@ -101,7 +101,7 @@ const RouteScreen = ({ navigation }) => {
 
                     <Text style={style.callText}>{selectedDate}</Text>
                     <View style={{ flex: 1 }} />
-                    <TouchableOpacity onPress={() => navigation.navigate('ServiceCall')}>
+                    <TouchableOpacity>
                         <IconA name='calendar' size={20} color={comStyles.COLORS.BLACK} />
                     </TouchableOpacity>
 

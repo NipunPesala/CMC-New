@@ -48,6 +48,7 @@ const ResourcesRequestComponent = (props: any) => {
     const [serviceId, setServiceId] = useState('');
     const [Header, setHeader] = useState('');
     const [btnHeader, setbtnHeader] = useState('');
+    const [resouceType, setResouceType] = useState('');
 
     const AddVehicle = () => {
         console.log(selectServiceCallID);
@@ -70,6 +71,9 @@ const ResourcesRequestComponent = (props: any) => {
     const SaveDatabase = () => {
         console.log(remark);
 
+
+        // isAddedTickets();
+
         var datec = moment().format('YYYY-MM-DD');
         const jsonData = [
             {
@@ -77,6 +81,7 @@ const ResourcesRequestComponent = (props: any) => {
                 RequestDate: startDate,
                 HandoverDate: endDate,
                 ServiceCall_id: selectServiceCallID,
+                ResourceType: Type,
                 Remark: remark,
                 RequestID: serviceId,
                 ResourceID: ResourceID,
@@ -90,7 +95,7 @@ const ResourcesRequestComponent = (props: any) => {
 
 
         saveResourceRequest(jsonData, (result: any) => {
-            console.log(result, "NEWSERVICE_CALL_SAVE");
+            console.log(result, "request save");
             GelAllResource();
 
         });
@@ -101,6 +106,8 @@ const ResourcesRequestComponent = (props: any) => {
 
     const UploadResourcesRequest = () => {
         try {
+
+            var datec = moment().format('YYYY-MM-DD');
     
           get_ASYNC_TOCKEN().then(res => {
             TOCKEN_KEY = res;
@@ -114,6 +121,7 @@ const ResourcesRequestComponent = (props: any) => {
               "ResorceRequestID": ResourceID,  //need to code
               "ticketId": selectServiceCallID,
               "resourceID": serviceId,
+              "ResourceType": Type,
               "request_Date": startDate,
               "handover_Date":endDate,
               "Remark":remark,
@@ -272,7 +280,7 @@ const ResourcesRequestComponent = (props: any) => {
     }, [])
 
 
-    const onChange = (event, selectedDate) => {
+    const onChange = (event:any, selectedDate:any) => {
         const currentDate = selectedDate;
 
         setShow(Platform.OS === 'ios');
@@ -471,16 +479,12 @@ const ResourcesRequestComponent = (props: any) => {
     }
     return (
     <SafeAreaView style={comStyles.CONTAINER} >
-        <Headernav title="" isBtn={true} btnOnPress={() => navigation.goBack()} />
+        <Headernav title={Header} isBtn={true} btnOnPress={() => navigation.goBack()} />
         <View style={comStyles.CONTENT}>
             <FlatList
                 ListHeaderComponent={
                     <View>
                    
-                        {/* <TouchableOpacity style={style.dashStyle} onPress={backFuntion} /> */}
-
-                        <Text style={style.maintxt}>{Header}</Text>
-
                         <ActionButton
                             title={serviceId}
                             disabled={true}
@@ -576,7 +580,7 @@ const ResourcesRequestComponent = (props: any) => {
                             icon_name="diff-added"
                         />
                         <View style={{ alignContent: "flex-start" }}>
-                            <Text style={style.textStyle}>Add Service Calls</Text>
+                            <Text style={style.textStyle}>Added Service Tickets</Text>
                         </View>
 
                         <View style={{ flexDirection: 'row', backgroundColor: comStyles.COLORS.TICKET_HEADER_ASH, justifyContent: 'center', alignItems: 'center', padding: 5, marginTop: 5, }}>

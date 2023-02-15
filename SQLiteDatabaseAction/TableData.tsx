@@ -1028,7 +1028,7 @@ export const tableData = [
     ]
   },
   {
-    name: 'Resources',
+    name: 'Vehicle',
     columns: [
       {
         name: '_Id',
@@ -1038,7 +1038,7 @@ export const tableData = [
         shouldNotAllowNull: false,
       },
       {
-        name: 'ResourcesID',
+        name: 'VehicleID',
         dataType: 'TEXT',
         isPrimaryKey: false,
         autoIncrement: false,
@@ -1052,14 +1052,14 @@ export const tableData = [
         shouldNotAllowNull: false,
       },
       {
-        name: 'R_Type',
+        name: 'VehicleType',
         dataType: 'TEXT',
         isPrimaryKey: false,
         autoIncrement: false,
         shouldNotAllowNull: false,
       },
       {
-        name: 'Type',
+        name: 'VehicleCapacity',
         dataType: 'TEXT',
         isPrimaryKey: false,
         autoIncrement: false,
@@ -1074,7 +1074,46 @@ export const tableData = [
       },
     ]
   },
-
+  {
+    name: 'Tool',
+    columns: [
+      {
+        name: '_Id',
+        dataType: 'INTEGER',
+        isPrimaryKey: true,
+        autoIncrement: true,
+        shouldNotAllowNull: false,
+      },
+      {
+        name: 'ItemCode',
+        dataType: 'TEXT',
+        isPrimaryKey: false,
+        autoIncrement: false,
+        shouldNotAllowNull: false,
+      },
+      {
+        name: 'ItemName',
+        dataType: 'TEXT',
+        isPrimaryKey: false,
+        autoIncrement: false,
+        shouldNotAllowNull: false,
+      },
+      {
+        name: 'ItemType',
+        dataType: 'TEXT',
+        isPrimaryKey: false,
+        autoIncrement: false,
+        shouldNotAllowNull: false,
+      },
+      {
+        name: 'status',
+        dataType: 'INTEGER',
+        isPrimaryKey: false,
+        autoIncrement: false,
+        shouldNotAllowNull: false,
+      },
+    ]
+  },
   {
     name: 'RESOURCE_REQUEST',
     columns: [
@@ -1101,6 +1140,13 @@ export const tableData = [
       },
       {
         name: 'ServiceCall_id',
+        dataType: 'TEXT',
+        isPrimaryKey: false,
+        autoIncrement: false,
+        shouldNotAllowNull: false,
+      },
+      {
+        name: 'ResourceType',
         dataType: 'TEXT',
         isPrimaryKey: false,
         autoIncrement: false,

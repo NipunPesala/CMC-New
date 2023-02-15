@@ -10,12 +10,13 @@ export const saveResourceRequest = (data:any, callBack:any) => {
             [
                 {
                     table: 'RESOURCE_REQUEST',
-                    columns: `RequestID,ResourceID,ServiceCall_id,RequestDate,HandoverDate,CreatedDate,Remark,status,isSync`,
-                    values: '?,?,?,?,?,?,?,?,?',
+                    columns: `RequestID,ResourceID,ServiceCall_id,ResourceType,RequestDate,HandoverDate,CreatedDate,Remark,status,isSync`,
+                    values: '?,?,?,?,?,?,?,?,?,?',
                     params: [
                         data[i].RequestID,
                         data[i].ResourceID,
                         data[i].ServiceCall_id,
+                        data[i].ResourceType,
                         data[i].RequestDate,
                         data[i].HandoverDate,
                         data[i].CreatedDate,
@@ -138,4 +139,19 @@ export const updateSyncResourceRequest= (RID:any,callBack:any) => {
         callBack(resp, err);
       },
     );
+  };
+
+
+  export const isAddedTickets = () => {
+
+    DB.searchData(
+        'SELECT COUNT FROM RESOURCE_REQUEST  WHERE  RequestDate <= ? AND HandoverDate >= ? AND  ResourceID = ? ',
+        [date,date,resourceID],
+        (resp:any, err:any) => {
+            console.log(resp,">>>>>>",err);
+            
+            callback(resp, err);
+        },
+      );
+
   };

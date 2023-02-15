@@ -498,6 +498,59 @@ export const tableIndexKey = () => {
     },
   );
 
+
+   // ----------------------------------- Vehicle IDX --------------------------------------
+
+
+   db.transaction(
+    (tx:any) => {
+      const query_idx_Vehicle = `CREATE UNIQUE INDEX IF NOT EXISTS idx_Vehicle ON Vehicle(VehicleID)`;
+
+      tx.executeSql(
+        query_idx_Vehicle,
+        [],
+        (tx: any, response: any) => {
+          console.log(`create table index success Vehicle: `, response);
+        },
+        (tx: any, error: any) => {
+          console.log(`create table index key error Vehicle: `, error);
+        },
+      );
+    },
+    (error:any) => {
+      console.log('table create query transaction failed Vehicle: ', error);
+    },
+    (success:any) => {
+      console.log('table create query transaction:', 'success');
+    },
+  );
+
+  // ----------------------------------- Tool IDX --------------------------------------
+
+
+  db.transaction(
+    (tx:any) => {
+      const query_idx_Tool = `CREATE UNIQUE INDEX IF NOT EXISTS idx_Tool ON Tool(ItemCode)`;
+
+      tx.executeSql(
+        query_idx_Tool,
+        [],
+        (tx: any, response: any) => {
+          console.log(`create table index success Tool: `, response);
+        },
+        (tx: any, error: any) => {
+          console.log(`create table index key error Tool: `, error);
+        },
+      );
+    },
+    (error:any) => {
+      console.log('table create query transaction failed Tool: ', error);
+    },
+    (success:any) => {
+      console.log('table create query transaction:', 'success');
+    },
+  );
+
   return null;
 
 } catch (error) {

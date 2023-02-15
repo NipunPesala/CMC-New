@@ -31,6 +31,8 @@ import * as DB_ItemSerialNo from '../../SQLiteDatabaseAction/DBControllers/ItemS
 import * as DB_Priority from '../../SQLiteDatabaseAction/DBControllers/PriorityController';
 import * as DB_SpareParts from '../../SQLiteDatabaseAction/DBControllers/SparePartsController';
 import * as DB_ExpenseType from '../../SQLiteDatabaseAction/DBControllers/ExpencesTypeController';
+import * as DB_Vehicle from '../../SQLiteDatabaseAction/DBControllers/VehicleController';
+import * as DB_Tool from '../../SQLiteDatabaseAction/DBControllers/ToolController';
 import { ExpencesType, priorityListInitial, Service_types } from "../../Constant/DummyData";
 import { logProfileData } from 'react-native-calendars/src/Profiler';
 import { getASYNC_LOGIN_STATUS } from "../../Constant/AsynStorageFuntion"
@@ -434,7 +436,6 @@ const SyncScreen = (props: any) => {
       });
   }
 
-
   //----------------------------------  customer download ----------------------------------------------
   const Sync_Customer = (Key: any) => {
 
@@ -519,7 +520,6 @@ const SyncScreen = (props: any) => {
   }
 
   //----------------------------- Download Customer Items -------------------------------
-
   const Sync_CustomerItems = (Key: any) => {
 
     const AuthStr = 'Bearer '.concat(Key);
@@ -711,7 +711,7 @@ const SyncScreen = (props: any) => {
               });
               setSyncArray(SyncArray1);
               setOnRefresh(true);
-              Sync_ExpenseType();
+              Sync_Vehicle(TOCKEN_KEY);
 
             } else if (res == 3) {
 
@@ -723,7 +723,7 @@ const SyncScreen = (props: any) => {
               });
               setSyncArray(SyncArray1);
               setOnRefresh(true);
-              Sync_ExpenseType();
+              Sync_Vehicle(TOCKEN_KEY);
             }
           });
         } else {
@@ -739,7 +739,7 @@ const SyncScreen = (props: any) => {
           });
           setSyncArray(SyncArray1);
           setOnRefresh(true);
-          Sync_ExpenseType();
+          Sync_Vehicle(TOCKEN_KEY);
         }
       })
       .catch((error) => {
@@ -754,13 +754,173 @@ const SyncScreen = (props: any) => {
         setSyncArray(SyncArray1);
         console.log('errorrrrr ' + error);
         setOnRefresh(true);
+        Sync_Vehicle(TOCKEN_KEY);
+      });
+
+  }
+
+  // ------------------ Download Vehicle -------------------
+  const Sync_Vehicle = (Key: any) => {
+    const AuthStr = 'Bearer '.concat(Key);
+    const URL = GET_URL + "vehicle";
+    axios.get(URL, { headers: { Authorization: AuthStr } })
+      .then(response => {
+        if (response.status === 200) {
+          DB_Vehicle.saveVehicle(response.data, (res: any) => {
+
+            setOnRefresh(false);
+
+            if (res == 1) {
+              arrayindex++;
+
+              SyncArray1.push({
+                name: 'Vehicle Downloading...',
+                id: arrayindex,
+              });
+              setSyncArray(SyncArray1);
+              setOnRefresh(true);
+              // Sync_Priority();
+
+            } else if (res == 2) {
+
+              arrayindex++;
+
+              SyncArray1.push({
+                name: 'Vehicle Download Failed...',
+                id: arrayindex,
+              });
+              setSyncArray(SyncArray1);
+              setOnRefresh(true);
+              Sync_Tool(TOCKEN_KEY);
+
+            } else if (res == 3) {
+
+              arrayindex++;
+
+              SyncArray1.push({
+                name: 'Vehicle Download Sucsessfully...',
+                id: arrayindex,
+              });
+              setSyncArray(SyncArray1);
+              setOnRefresh(true);
+              Sync_Tool(TOCKEN_KEY);
+            }
+          });
+        } else {
+          console.log('fails');
+
+          setOnRefresh(false);
+
+          arrayindex++;
+
+          SyncArray1.push({
+            name: 'Vehicle Download Failed...',
+            id: arrayindex,
+          });
+          setSyncArray(SyncArray1);
+          setOnRefresh(true);
+          Sync_Tool(TOCKEN_KEY);
+        }
+      })
+      .catch((error) => {
+
+        setOnRefresh(false);
+
+        arrayindex++;
+        SyncArray1.push({
+          name: 'Vehicle Download Failed...',
+          id: arrayindex,
+        });
+        setSyncArray(SyncArray1);
+        console.log('errorrrrr ' + error);
+        setOnRefresh(true);
+        Sync_Tool(TOCKEN_KEY);
+      });
+
+  }
+
+
+  // ------------------ Download Tool -------------------
+  const Sync_Tool = (Key: any) => {
+    const AuthStr = 'Bearer '.concat(Key);
+    const URL = GET_URL + "items/assets";
+    axios.get(URL, { headers: { Authorization: AuthStr } })
+      .then(response => {
+        if (response.status === 200) {
+          DB_Tool.saveTool(response.data, (res: any) => {
+
+            setOnRefresh(false);
+
+            if (res == 1) {
+              arrayindex++;
+
+              SyncArray1.push({
+                name: 'Tool Downloading...',
+                id: arrayindex,
+              });
+              setSyncArray(SyncArray1);
+              setOnRefresh(true);
+              // Sync_Priority();
+
+            } else if (res == 2) {
+
+              arrayindex++;
+
+              SyncArray1.push({
+                name: 'Tool Download Failed...',
+                id: arrayindex,
+              });
+              setSyncArray(SyncArray1);
+              setOnRefresh(true);
+              Sync_ExpenseType();
+
+            } else if (res == 3) {
+
+              arrayindex++;
+
+              SyncArray1.push({
+                name: 'Tool Download Sucsessfully...',
+                id: arrayindex,
+              });
+              setSyncArray(SyncArray1);
+              setOnRefresh(true);
+              Sync_ExpenseType();
+            }
+          });
+        } else {
+          console.log('fails');
+
+          setOnRefresh(false);
+
+          arrayindex++;
+
+          SyncArray1.push({
+            name: 'Tool Download Failed...',
+            id: arrayindex,
+          });
+          setSyncArray(SyncArray1);
+          setOnRefresh(true);
+          Sync_ExpenseType();
+        }
+      })
+      .catch((error) => {
+
+        setOnRefresh(false);
+
+        arrayindex++;
+        SyncArray1.push({
+          name: 'Tool Download Failed...',
+          id: arrayindex,
+        });
+        setSyncArray(SyncArray1);
+        console.log('errorrrrr ' + error);
+        setOnRefresh(true);
         Sync_ExpenseType();
       });
 
   }
 
   //-------------------------------- Download Expense Type -----------------------------
-
   const Sync_ExpenseType = () => {
 
     DB_ExpenseType.saveExpencesType(ExpencesType, (res: any, error: any) => {
@@ -809,7 +969,6 @@ const SyncScreen = (props: any) => {
   }
 
   //-------------------------------- Download Priority -----------------------------
-
   const Sync_Priority = () => {
 
     DB_Priority.savePriority(priorityListInitial, (res: any, error: any) => {

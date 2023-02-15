@@ -123,11 +123,12 @@ const TicketDetails = (props: any) => {
 
     }
 
-    const enableService = (ticket_id: any) => {
+    const enableServiceTicket = (ticket_id: any) => {
 
         if (!isServiceActive) {
             // ToastAndroid.show("Ticket Completed ", ToastAndroid.SHORT);
             navigation.navigate("CompleteTicket")
+
         } else {
             
             setIsServiceActive(!isServiceActive);
@@ -353,7 +354,7 @@ const TicketDetails = (props: any) => {
                     location={location}
                     status={status}
                     btnTite={isServiceActive ? "Start Ticket" : "Complete Tickets"}
-                    onPress={() => { enableService(ticketID) }}
+                    onPress={() => { enableServiceTicket(ticketID) }}
                     typeNo="Ticket No"
                     btnStyle={!isServiceActive ? { backgroundColor: ComStyles.COLORS.LOW_BUTTON_GREEN } : ""} />
 

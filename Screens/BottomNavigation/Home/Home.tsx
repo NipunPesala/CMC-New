@@ -144,7 +144,7 @@ const Home = () => {
       message: "Hiii this is a test notification",
     });
   }
- 
+
   const getWellcomeNote = () => {
     var hourTime = new Date().getHours();
     var minutes = new Date().getMinutes();
@@ -390,10 +390,29 @@ const Home = () => {
 
     console.log(ticketID, "     >>>>>>>>>>>>>>>>>>>>>>>>>>    ", CallID);
 
-    await AsyncStorage.setItem(AsyncStorageConstants.ASYNC_CURRENT_SERVICE_CALL_ID, CallID);
 
-    navigation.navigate('TicketDetails', {
-      ticketID: ticketID,
+
+    getServiceById(CallID, async (result: any) => {
+
+      const sts = result[0].Approve_status;
+
+      if (sts != '1') {
+        Alert.alert('Not Approved', ' Please Approve the Service Call!', [
+          {
+            text: 'OK',
+            onPress: () => { },
+          },
+        ]);
+
+      } else {
+
+        await AsyncStorage.setItem(AsyncStorageConstants.ASYNC_CURRENT_SERVICE_CALL_ID, CallID);
+
+        navigation.navigate('TicketDetails', {
+          ticketID: ticketID,
+        });
+
+      }
     });
 
 
@@ -489,7 +508,7 @@ const Home = () => {
         </View>
       </Animated.View>
       <Header
-        isIcon={true}
+        isIcon={false}
         title={wellComeTitle}
         IconUserOnPress={logoutsheet}
       />
