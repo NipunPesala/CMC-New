@@ -56,6 +56,7 @@ export default StyleSheet.create({
         padding:5,
 
     },
+    
     ServiceTicketDetailsScreenIcon: {
         width: 50,
         height: 70,

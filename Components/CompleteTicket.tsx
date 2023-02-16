@@ -82,10 +82,11 @@ const CompleteTicket = () => {
 
     getDataForEmail(serviceID, (result: any) => {
 
-        console.log("result ***************  ", result);
+        console.log("result *************** email  ",result);
 
         setEmailDetails(result);
-        console.log('save state details'+emailDetails);
+        console.log('save state details',emailDetails);
+        console.log('save state priority',emailDetails[0].priority);
         
     });
 
@@ -97,7 +98,7 @@ const CompleteTicket = () => {
       recipients: ['support@example.com'],
       ccRecipients: ['supportCC@example.com'],
       bccRecipients: ['supportBCC@example.com'],
-      body: 'Service ticket ID- '+serviceID+'<br/>Customer -'+emailDetails[0]+'<br/>Item name- <br/>Item code- <br/> Serial number-<br/> Engineer-<br/> Ticket status-<br/> Start time-<br/> End time-<br/> Spare parts-<br/> Expenses-</br>',
+      body: 'Service ticket ID- '+serviceID+'<br/>Customer -'+emailDetails[0].customer+'<br/>Item code-'+emailDetails[0].itemID+'<br/>Handle by-'+emailDetails[0].handle_by+'<br/>Ticket status -Completed '+'<br/>Start Date-'+emailDetails[0].start_date+'<br/>End Date-'+emailDetails[0].start_date+'<br/>Subject-'+emailDetails[0].subject+'',
       customChooserTitle: 'This is my new title', // Android only (defaults to "Send Mail")
       isHTML: true,
     }, (error, event) => {
@@ -168,6 +169,7 @@ const CompleteTicket = () => {
                           callID: serviceID,
                       });
 
+                     // handleEmail1();
                         // navigation.navigate('ServiceCall');
                       } else {
                         Alert.alert('Failed...!', ' Save Failed.', [
@@ -242,9 +244,12 @@ const CompleteTicket = () => {
        console.log(serviceID, "============serviceID=========================");
 
       // setTicketID(id);
+      getCompleteTicketDetails(serviceID);
     });
 
-    getCompleteTicketDetails(serviceID);
+    
+
+  
   }, []);
 
   const handlePendingChange = () => {
