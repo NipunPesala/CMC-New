@@ -18,11 +18,13 @@ const KPIComponent = () => {
   const [allTicketCount, setAllTicketCount] = useState(0);
 
   var convertMonth = "0";
+ 
   const startDate = '2022-01-01T12:00:00';
   const endDate = '2022-01-02T12:00:00';
   const[efectTime,setEfectTime]=useState(0);
-
-
+  var allclose=0;
+  var allCount=0;
+  var calpofor=0;
 
   //convert current month to sql readable format
   const convertCurrentMoth = (Month: any) => {
@@ -53,13 +55,15 @@ const KPIComponent = () => {
     }else if (Month === 12) {
         convertMonth="12";
     }
+    calculatePreformance(convertMonth);
   };
 
   console.log('current month - ' + currentMonth);
   useEffect(() => {
     convertCurrentMoth(currentMonth);
-    getAllCloseTiket(convertMonth);
-    
+    //getAllCloseTiket(convertMonth);
+  // getAllTiketInMonth(convertMonth);
+ 
     calculateEfect(startDate,endDate);
     //getAllTiketInMonth(convertMonth);
    
@@ -72,40 +76,41 @@ const  calculateEfect=(startD:any,endD:any)=>{
   setEfectTime(timePeriod);
   console.log('effective time '+timePeriod); 
 }
+const getAllTiketInMonth= (currentMonthAll: any) => {
+  console.log('+++all close ticket  number Out ++++', allclose);
+  getAllTicketCountNew(currentMonthAll, (result: any) => {
+    console.log("-----check all ticket ----------",result);
+    const{"COUNT(*)":countAll}=result[0];
+      allCount=countAll;
+    setAllTicketCount(countAll);
+   
 
-  const getAllCloseTiket = (currentMonth: any) => {
-    getCompliteTicketCount2(currentMonth, (result: any) => {
+   
+    
+  });
+ 
+};
+  const getAllCloseTiket = (currentMonthClose: any) => {
+    getCompliteTicketCount2(currentMonthClose, (result: any) => {
       console.log('--close ticket count--', result);
       //console.log('--close ticket count get to variable--'+result.rows(0)["COUNT(*)"]);
       const{"COUNT(*)":countx}=result[0];
+       allclose=countx;
       setCloseTicketNum(countx);
-      console.log('--all close ticket  number--', closeTicketNum);
-      
+      calpofor=allclose/allCount*100;
+      setMonthlyProf(calpofor);
     });
    
   };
 
-  const getAllTiketInMonth= (currentMonth: any) => {
-    getAllTicketCountNew(currentMonth, (result: any) => {
-      console.log("-----check all ticket ----------",result);
-      const{"COUNT(*)":countAll}=result[0];
-      setAllTicketCount(countAll);
-      console.log('--all ticket in month222--', countAll);
-      console.log('--all ticket in month--', allTicketCount);
 
-      const Performance=(closeTicketNum/allTicketCount)*100
-      setMonthlyProf(Performance);
-      console.log('--close ticket only number--');
-      
-    });
+
+  const calculatePreformance=(currentMon: any)=>{
+    getAllTiketInMonth(currentMon);
+    getAllCloseTiket(currentMon);
    
-  };
-
-  if(closeTicketNum===0){
-    
-  }else{
-    getAllTiketInMonth(convertMonth);
   }
+
 
   return (
     <View>

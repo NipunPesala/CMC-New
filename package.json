@@ -39,6 +39,7 @@
     "react-native-image-crop-picker": "^0.37.2",
     "react-native-imei": "^0.2.0",
     "react-native-loading-spinner-overlay": "^0.1.6",
+    "react-native-mail": "^6.1.1",
     "react-native-modal": "^13.0.0",
     "react-native-paper": "^4.12.4",
     "react-native-permissions": "^3.6.1",
