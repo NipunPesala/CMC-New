@@ -260,7 +260,7 @@ export const saveServiceHistoryData = (data:any, serviceId:any, callBack:any) =>
 export const getDataForEmail =(id:any,callBack:any) => {
 
   DB.searchData(
-    'SELECT customer FROM SERVICE WHERE serviceId=?',
+    'SELECT * FROM SERVICE WHERE serviceId=?',
     [id],
     (resp:any, err:any) => {
       callBack(resp, err);

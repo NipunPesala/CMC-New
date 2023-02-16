@@ -134,9 +134,13 @@ const ServiceTicketSummaryReportScreen = () => {
         getSearchTicket(text , (result:any) => {
 
             setTicketList(result);
+            console.log(" serch size .....................  " , result.length);
+            
             
         });
     }
+
+    
 
    
   
