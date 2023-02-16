@@ -686,7 +686,7 @@ const Home = () => {
         <View style={style.container}>
           <ActionButton
             homeStyle={style.homebuttonStyle}
-            title="Resources"
+            title="Reservation"
             style={style.defaultbutton}
             textStyle={style.defaultBUTTON_TEXT}
             is_icon={true}

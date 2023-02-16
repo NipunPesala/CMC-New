@@ -39,7 +39,7 @@ import { getCurrentServiceCallID } from "../../../Constant/AsynStorageFuntion";
 import ComStyles from "../../../Constant/Components.styles";
 import { getServiceById } from "../../../SQLiteDatabaseAction/DBControllers/ServiceController";
 import { getSparePartsAllData } from "../../../SQLiteDatabaseAction/DBControllers/SparePartsController";
-import { getTicketById, updateTicketAttendStatus, updateTicketStatus, getServiceTicketForReport, updateActualStartDate, getALLAInventrySpareTiketdetasils } from "../../../SQLiteDatabaseAction/DBControllers/TicketController";
+import { getTicketById, updateTicketAttendStatus, updateTicketStatus, getServiceTicketForReport, updateActualStartDate, getALLAInventrySpareTiketdetasils, getALLTicketById } from "../../../SQLiteDatabaseAction/DBControllers/TicketController";
 import style from "./style";
 import moment from 'moment';
 const currentstsartDate = moment().format('YYYY-MM-DD HH:mm:ss');
@@ -256,8 +256,43 @@ const TicketDetails = (props: any) => {
 
 
     const setectSparePart = () => {
-        selection("spareparts");
-        getSpareParts();
+        // selection("spareparts");
+        // getSpareParts();
+
+        // console.log("Ticket id ........ " , ticketID);
+
+
+        getALLTicketById(ticketID, (result: any) => {
+
+            // console.log("db result " ,  result[0].attend_status);
+
+
+            if (result[0].attend_status == '1') {
+
+                // console.log("awaaaaaaaaaaa");
+
+
+                AsyncStorage.setItem(AsyncStorageConstants.SELECT_TICKET, 'false');
+                navigation.navigate("RequestBottomSheet");
+
+            } else {
+
+                Alert.alert(
+                    "Failed...!",
+                    "Please start ticket..",
+                    [
+                        {
+                            text: "OK", onPress: () => {
+
+                            }
+                        }
+                    ]
+                );
+
+
+            }
+
+        });
     }
 
     useFocusEffect(
@@ -273,7 +308,7 @@ const TicketDetails = (props: any) => {
             setTicketID(route.params.ticketID);
             AsyncStorage.setItem(AsyncStorageConstants.ASYNC_CURRENT_TICKET_ID, route.params.ticketID);
             getTicketDetails(route.params.ticketID);
-           
+
 
         }, []),
     );
@@ -334,7 +369,7 @@ const TicketDetails = (props: any) => {
                 }}>
                 <View style={style.modalCont}> */}
 
-                    {/* {isSparepart ?
+            {/* {isSparepart ?
                         <RequestBottomSheet
                             onpressicon={() => slideOutModal()}
                             addAdditional={() => setIsAdditional(false)}
@@ -349,11 +384,11 @@ const TicketDetails = (props: any) => {
 
                     } */}
 
-                    {/* <CompleteTicket
+            {/* <CompleteTicket
                         onpressicon={() => slideOutModal()}
                     /> */}
 
-                    {/* {isAdditional ?
+            {/* {isAdditional ?
 
                         <RequestBottomSheet
                             onpressicon={() => slideOutModal()}
@@ -368,7 +403,7 @@ const TicketDetails = (props: any) => {
                         />
                     } */}
 
-                {/* </View>
+            {/* </View>
             </Animated.View> */}
 
 

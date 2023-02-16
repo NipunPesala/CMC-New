@@ -1,7 +1,7 @@
 /**
 * @author Madushika Sewwandi
 */
-import { useNavigation ,useRoute} from "@react-navigation/native";
+import { useFocusEffect, useNavigation, useRoute } from "@react-navigation/native";
 import React, { useState, useEffect } from "react";
 
 import {
@@ -172,8 +172,8 @@ const NewServiceTicket = (props: any) => {
             saveTicket(data, (result: any) => {
                 if (result === "success") {
 
-                 //need check internet connection true false
-                //  UploadServiceTicket();
+                    //need check internet connection true false
+                    //  UploadServiceTicket();
 
                     ToastAndroid.show("New Service Ticket Create Success ", ToastAndroid.SHORT);
                     navigation.navigate('Home');
@@ -195,9 +195,9 @@ const NewServiceTicket = (props: any) => {
             console.log(error);
         }
     }
-    const onChange = (event:any, selectedDate:any) => {
+    const onChange = (event: any, selectedDate: any) => {
         const currentDate = selectedDate;
-        console.log(currentDate , "  ,,,,,,,,,,,,,,,,,,  ", endDate);
+        console.log(currentDate, "  ,,,,,,,,,,,,,,,,,,  ", endDate);
         setShow(Platform.OS === 'ios');
 
 
@@ -306,7 +306,7 @@ const NewServiceTicket = (props: any) => {
                 const data = result?.filter((a: any) => a.name == prority)[0];
                 setSelectPriority(data.name);
             });
-           
+
             getUserByTypes(3, (result: any) => {
                 setAssignPersonList(result);
                 const data = result?.filter((a: any) => a.name == Assistance)[0];
@@ -355,16 +355,16 @@ const NewServiceTicket = (props: any) => {
         }
     }
 
-    
-    const cancelAndGoBack=()=>{
+
+    const cancelAndGoBack = () => {
         Alert.alert('Cancle', 'Are you sure ?', [
             {
-              text: 'Cancel',
-              onPress: () => console.log('Cancel Pressed'),
-              style: 'cancel',
+                text: 'Cancel',
+                onPress: () => console.log('Cancel Pressed'),
+                style: 'cancel',
             },
-                {text: 'OK', onPress: () =>  navigation.goBack(),}
-          ]);
+            { text: 'OK', onPress: () => navigation.goBack(), }
+        ]);
     }
     const getAllPriorityList = () => {
         getAllPriority((result: any) => {
@@ -379,111 +379,123 @@ const NewServiceTicket = (props: any) => {
 
     const UploadServiceTicket = () => {
         try {
-    
-          get_ASYNC_TOCKEN().then(res => {
-            TOCKEN_KEY = res;
-            const AuthStr = 'Bearer '.concat(TOCKEN_KEY);
-           
-         // console.log( 'AuthStr####3%%%%%%%%%%%%%',AuthStr);
-    
-        const prams= {
-          "UserName": "",
-          "objServiceCallList": [
-            {
-              "UserID": 1,  //need to code
-              "ticketId": TicketID,
-              "serviceId": selectServiceCallID,
-              "startDate": startDate,
-              "itemDescription":"",
-              "endDate":endDate,
-              "content":content,
-              "assignTo":selectAssignPerson,
-              "attend_status":0,
-              "priority": selectPriority,
-              "createAt":moment().utcOffset('+05:30').format('YYYY-MM-DD kk:mm:ss'),
-              }
-          ]
-        }
-         
-         console.log('--NEW SERVICE TICKET UPLOAD JSON--', prams);
-    
-          const headers = {
-            'Authorization': AuthStr
-          }
-          const URL = BASE_URL_GET+"service-ticket";
-          axios.post(URL, prams, {
-            headers: headers
-          })
-            .then((response) => {
-                console.log("[s][t][a][t][u][s][]",response.status);
-                if (response.status == 200) {
 
-               console.log('<------ NEW SERVICE TICKET UPLOAD Method --->', response.data)
-               console.log(response.data.UniqueNo);
-               
-               if(response.data.ErrorId=0){
-                // this use fro update sync flag as 1 
-                updateSyncServiceTicket(response.data.UniqueNo, (result: any) => {
+            get_ASYNC_TOCKEN().then(res => {
+                TOCKEN_KEY = res;
+                const AuthStr = 'Bearer '.concat(TOCKEN_KEY);
 
-                });
-                ToastAndroid.show(response.data.ErrorDescription, ToastAndroid.LONG);
-               }
-               
-            }else{
-                Alert.alert(
-                    "Invalid Details!",
-                    "Bad Request",
-                    [
-                        { text: "OK", onPress: () => console.log("OK Pressed") }
+                // console.log( 'AuthStr####3%%%%%%%%%%%%%',AuthStr);
+
+                const prams = {
+                    "UserName": "",
+                    "objServiceCallList": [
+                        {
+                            "UserID": 1,  //need to code
+                            "ticketId": TicketID,
+                            "serviceId": selectServiceCallID,
+                            "startDate": startDate,
+                            "itemDescription": "",
+                            "endDate": endDate,
+                            "content": content,
+                            "assignTo": selectAssignPerson,
+                            "attend_status": 0,
+                            "priority": selectPriority,
+                            "createAt": moment().utcOffset('+05:30').format('YYYY-MM-DD kk:mm:ss'),
+                        }
                     ]
-                );
-
                 }
-    
+
+                console.log('--NEW SERVICE TICKET UPLOAD JSON--', prams);
+
+                const headers = {
+                    'Authorization': AuthStr
+                }
+                const URL = BASE_URL_GET + "service-ticket";
+                axios.post(URL, prams, {
+                    headers: headers
+                })
+                    .then((response) => {
+                        console.log("[s][t][a][t][u][s][]", response.status);
+                        if (response.status == 200) {
+
+                            console.log('<------ NEW SERVICE TICKET UPLOAD Method --->', response.data)
+                            console.log(response.data.UniqueNo);
+
+                            if (response.data.ErrorId = 0) {
+                                // this use fro update sync flag as 1 
+                                updateSyncServiceTicket(response.data.UniqueNo, (result: any) => {
+
+                                });
+                                ToastAndroid.show(response.data.ErrorDescription, ToastAndroid.LONG);
+                            }
+
+                        } else {
+                            Alert.alert(
+                                "Invalid Details!",
+                                "Bad Request",
+                                [
+                                    { text: "OK", onPress: () => console.log("OK Pressed") }
+                                ]
+                            );
+
+                        }
+
+                    })
+                    .catch((error) => {
+                        Alert.alert('error', error.response)
+
+                    })
+
             })
-            .catch((error) => {
-              Alert.alert('error', error.response)
-    
-            })
-    
-       })
         } catch (error) {
-          console.log(">>>>>>>>>>>>", error);
-    
+            console.log(">>>>>>>>>>>>", error);
+
         }
-      }
-    
+    }
+
 
     const GetLastID = (id: any) => {
         var ticketID = parseInt(id) + 1;
         setTicketID("SCT_" + moment().utcOffset('+05:30').format('YYYY-MM-DD') + "_" + ticketID);
     }
-    useEffect(() => {
-        selectMode = route.params.mode;
-        TiketID = route.params.ID;
-        let date = moment().utcOffset('+05:30').format('YYYY-MM-DD')
-        if (route.params.mode == 0) {
-            setTextHeader('Add New Service Ticket')
-            setButtonTitle('Add')
-            getServiceCallID();
-            generateCallID();
-            getAllPriorityList();
-            setCallStartDate(date);
-            setCallEndDate(date);
-        } else {
-            setTextHeader('Update Service Ticket')
-            setButtonTitle('Update')
-            getServiceCallIDUpdate();
-        }
+    // useEffect(() => {
+    //     selectMode = route.params.mode;
+    //     TiketID = route.params.ID;
+    //     let date = moment().utcOffset('+05:30').format('YYYY-MM-DD')
+    //     if (route.params.mode == 0) {
+    //         setTextHeader('Add New Service Ticket')
+    //         setButtonTitle('Add')
+    //         getServiceCallID();
+    //         generateCallID();
+    //         getAllPriorityList();
+    //         setCallStartDate(date);
+    //         setCallEndDate(date);
+    //     } else {
+    //         setTextHeader('Update Service Ticket')
+    //         setButtonTitle('Update')
+    //         getServiceCallIDUpdate();
+    //     }
 
 
-    }, [])
-    useEffect(() => {
-        const focusHandler = navigation.addListener('focus', () => {
+    // }, [])
+    // useEffect(() => {
+    //     const focusHandler = navigation.addListener('focus', () => {
+
+
+    //     });
+    //     return focusHandler;
+    // }, [navigation]);
+
+
+    useFocusEffect(
+        React.useCallback(() => {
+
             selectMode == route.params.mode;
             TiketID = route.params.ID;
             let date = moment().utcOffset('+05:30').format('YYYY-MM-DD')
+
             if (route.params.mode == 0) {
+
                 setTextHeader('Add New Service Ticket')
                 setButtonTitle('Add')
                 getServiceCallID();
@@ -491,36 +503,37 @@ const NewServiceTicket = (props: any) => {
                 getAllPriorityList();
                 setCallStartDate(date);
                 setCallEndDate(date);
+
             } else {
+
                 getServiceCallIDUpdate();
                 setTextHeader('Update Service Ticket')
                 setButtonTitle('Update')
                 // console.log('-----service ticeket check-------');
                 // console.log('-----Ticket id is -------'+routeNav.params.ticketID);
-               // console.log('-----Ticket list length-------'+routeNav.params.tickList[0]);
+                // console.log('-----Ticket list length-------'+routeNav.params.tickList[0]);
                 if (route.params.tickList?.length > 0) {
                     console.log('-----service length check-----');
                     SetPreviousAddedData(routeNav.params.ticketID);
                 } else {
-    
+
                 }
             }
 
-        });
-        return focusHandler;
-    }, [navigation]);
+        }, []),
+    );
 
 
     const SetPreviousAddedData2 = (id: any) => {
-            
+
         setTicketID(id);
-    //      const data = routeNav.params.tickList?.filter()[0];
-    //   console.log('check filter data --'+data);
+        //      const data = routeNav.params.tickList?.filter()[0];
+        //   console.log('check filter data --'+data);
 
     }
 
     const SetPreviousAddedData = (id: any) => {
-    
+
         setTicketID(id);
         try {
             getTicketDetailsFromID(id, (result: any) => {
@@ -543,7 +556,7 @@ const NewServiceTicket = (props: any) => {
                 // console.log('*******',customerList?.filter(a => a.CusName == result[0].customer),);
                 //setSelectCustomer(customerList?.filter((a)=> a.CusName == result[0].customer)[0]);
 
-                const data =  result[0];
+                const data = result[0];
                 console.log('<<<<<<<<<<<<<<< show data --', data.assignTo);
                 setselectServiceCallID(data.serviceId);
                 setSelectPriority(data.priority);
@@ -558,10 +571,10 @@ const NewServiceTicket = (props: any) => {
                 // setCusAddress(result[0].customer_address);
 
                 // setItemDescription(result[0].item_description);
-              
+
                 // let number = "0" + result[0].contact_no;
                 // console.log(number.length, '>>>>>>>>>>>>>>>>>>>>>');
-    
+
                 // setContactNumber(number);
                 // setSubject(result[0].subject);
                 // setStartDate(result[0].start_date);
@@ -569,18 +582,18 @@ const NewServiceTicket = (props: any) => {
                 // setSelectPriority(result[0].priority);
 
 
-            
-                
 
-                
 
-             
+
+
+
+
 
             });
-           
+
         } catch (error) {
             console.log("NEW SERVICECALL/setPreviousAddedData", error);
-           
+
         }
     }
 

@@ -212,6 +212,22 @@ export const RequestBydateRoute = (date:any,callback:any) => {
 
 };
 
+export const RequestBydateRangeRoute = (startdate:any,endDate:any,callback:any) => {
+
+  DB.searchData(
+      'SELECT * FROM SERVICE WHERE( (start_date <= ? AND end_date >= ?) OR  (start_date <= ? AND end_date >= ?) ) AND Attend_status != 3 AND Approve_status != 2 ',
+      [startdate,startdate,endDate,endDate],
+      (resp:any, err:any) => {
+
+
+          console.log(resp,">>>>>>",err);
+          
+          callback(resp, err);
+      },
+    );
+
+};
+
 export const saveServiceHistoryData = (data:any, serviceId:any, callBack:any) => {
   DB.indateData(
     [

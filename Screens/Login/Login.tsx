@@ -364,14 +364,6 @@ const Login = () => {
             Alert.alert(error + "");
         }
 
-
-        setIsShowSweep(true);
-        Keyboard.dismiss();
-        Animated.timing(modalStyle, {
-            toValue: height,
-            duration: 500,
-            useNativeDriver: false,
-        }).start();
     };
 
     const insertMeterReading = () => {

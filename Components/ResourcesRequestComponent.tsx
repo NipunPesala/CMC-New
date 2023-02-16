@@ -19,14 +19,14 @@ import moment from "moment";
 import { Dropdown } from "react-native-element-dropdown";
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import { getServiceId } from "../SQLiteDatabaseAction/DBControllers/ServiceController";
-import { getLastServiceId, saveResourceRequest, getAllResource, DeleteResource, DeleteBackResource, RequestBydate, UpdateSavedToSubmitResource } from "../SQLiteDatabaseAction/DBControllers/ResourceRequestController";
+import { getLastServiceId, saveResourceRequest, getAllResource, DeleteResource, DeleteBackResource, RequestBydate, UpdateSavedToSubmitResource, isAddedTickets } from "../SQLiteDatabaseAction/DBControllers/ResourceRequestController";
 import { getRESOURCE_ID, getRESOURCE_Type } from "../Constant/AsynStorageFuntion";
 import { getServiceTicketID } from "../SQLiteDatabaseAction/DBControllers/TicketController";
 import Headernav from "./Header";
 import { getCustomerIDAsyncStorage, get_ASYNC_TOCKEN } from "../Constant/AsynStorageFuntion";
 import { BASE_URL_GET } from "../Constant/Commen_API_Url";
 import axios from "axios";
-import { updateSyncResourceRequest} from '../SQLiteDatabaseAction/DBControllers/ResourceRequestController';
+import { updateSyncResourceRequest } from '../SQLiteDatabaseAction/DBControllers/ResourceRequestController';
 var resourceID: any;
 var Type: any;
 var TOCKEN_KEY: any;
@@ -91,14 +91,38 @@ const ResourcesRequestComponent = (props: any) => {
             }
         ]
 
-        console.log(jsonData, "????????????????????????????????????");
+        // console.log(jsonData, "????????????????????????????????????");
 
 
-        saveResourceRequest(jsonData, (result: any) => {
-            console.log(result, "request save");
-            GelAllResource();
+        isAddedTickets(serviceId, ResourceID, selectServiceCallID, (result: any) => {
 
+            // console.log(" count ..........  " , result);
+
+            if (result[0].count > 0) {
+
+                Alert.alert(
+                    "Already Reserved !",
+                    "This Resource is already reserved for selected ticket.",
+                    [
+                        {
+                            text: "OK", onPress: () => {
+
+                            }
+                        }
+                    ]);
+
+            } else {
+
+                saveResourceRequest(jsonData, (result: any) => {
+                    console.log(result, "request save");
+                    GelAllResource();
+
+                });
+            }
         });
+
+
+
 
     }
 
@@ -108,77 +132,77 @@ const ResourcesRequestComponent = (props: any) => {
         try {
 
             var datec = moment().format('YYYY-MM-DD');
-    
-          get_ASYNC_TOCKEN().then(res => {
-            TOCKEN_KEY = res;
-            const AuthStr = 'Bearer '.concat(TOCKEN_KEY);
-           
-         // console.log( 'AuthStr####3%%%%%%%%%%%%%',AuthStr);
-    
-        const prams= {
-          "objSparePartList": [
-            {
-              "ResorceRequestID": ResourceID,  //need to code
-              "ticketId": selectServiceCallID,
-              "resourceID": serviceId,
-              "ResourceType": Type,
-              "request_Date": startDate,
-              "handover_Date":endDate,
-              "Remark":remark,
-              "created_At":datec,
+
+            get_ASYNC_TOCKEN().then(res => {
+                TOCKEN_KEY = res;
+                const AuthStr = 'Bearer '.concat(TOCKEN_KEY);
+
+                // console.log( 'AuthStr####3%%%%%%%%%%%%%',AuthStr);
+
+                const prams = {
+                    "objSparePartList": [
+                        {
+                            "ResorceRequestID": ResourceID,  //need to code
+                            "ticketId": selectServiceCallID,
+                            "resourceID": serviceId,
+                            "ResourceType": Type,
+                            "request_Date": startDate,
+                            "handover_Date": endDate,
+                            "Remark": remark,
+                            "created_At": datec,
 
 
-              }
-          ]
-        }
-         
-         console.log('--NEW resources  UPLOAD JSON--', prams);
-    
-          const headers = {
-            'Authorization': AuthStr
-          }
-          const URL = BASE_URL_GET+"resource";
-          axios.post(URL, prams, {
-            headers: headers
-          })
-            .then((response) => {
-                console.log("[s][t][a][t][u][s][]",response.status);
-                if (response.status == 200) {
-
-               console.log('<------ SpareParts UPLOAD Method --->', response.data)
-               console.log(response.data.UniqueNo);
-               
-               if(response.data.ErrorId=0){
-                // this use fro update sync flag as 1 
-                updateSyncResourceRequest(response.data.UniqueNo, (result: any) => {
-
-                });
-                ToastAndroid.show(response.data.ErrorDescription, ToastAndroid.LONG);
-               }
-               
-            }else{
-                Alert.alert(
-                    "Invalid Details!",
-                    "Bad Request",
-                    [
-                        { text: "OK", onPress: () => console.log("OK Pressed") }
+                        }
                     ]
-                );
-
                 }
-    
+
+                console.log('--NEW resources  UPLOAD JSON--', prams);
+
+                const headers = {
+                    'Authorization': AuthStr
+                }
+                const URL = BASE_URL_GET + "resource";
+                axios.post(URL, prams, {
+                    headers: headers
+                })
+                    .then((response) => {
+                        console.log("[s][t][a][t][u][s][]", response.status);
+                        if (response.status == 200) {
+
+                            console.log('<------ SpareParts UPLOAD Method --->', response.data)
+                            console.log(response.data.UniqueNo);
+
+                            if (response.data.ErrorId = 0) {
+                                // this use fro update sync flag as 1 
+                                updateSyncResourceRequest(response.data.UniqueNo, (result: any) => {
+
+                                });
+                                ToastAndroid.show(response.data.ErrorDescription, ToastAndroid.LONG);
+                            }
+
+                        } else {
+                            Alert.alert(
+                                "Invalid Details!",
+                                "Bad Request",
+                                [
+                                    { text: "OK", onPress: () => console.log("OK Pressed") }
+                                ]
+                            );
+
+                        }
+
+                    })
+                    .catch((error) => {
+                        Alert.alert('error', error.response)
+
+                    })
+
             })
-            .catch((error) => {
-              Alert.alert('error', error.response)
-    
-            })
-    
-       })
         } catch (error) {
-          console.log(">>>>>>>>>>>>", error);
-    
+            console.log(">>>>>>>>>>>>", error);
+
         }
-      }
+    }
     const generateCallID = () => {
 
         //console.log(" generate ********************");
@@ -280,7 +304,7 @@ const ResourcesRequestComponent = (props: any) => {
     }, [])
 
 
-    const onChange = (event:any, selectedDate:any) => {
+    const onChange = (event: any, selectedDate: any) => {
         const currentDate = selectedDate;
 
         setShow(Platform.OS === 'ios');
@@ -472,145 +496,145 @@ const ResourcesRequestComponent = (props: any) => {
 
         getServiceTicketID((result: any) => {
             setserviceCallIdList(result);
-            
+
         });
 
 
     }
     return (
-    <SafeAreaView style={comStyles.CONTAINER} >
-        <Headernav title={Header} isBtn={true} btnOnPress={() => navigation.goBack()} />
-        <View style={comStyles.CONTENT}>
-            <FlatList
-                ListHeaderComponent={
-                    <View>
-                   
-                        <ActionButton
-                            title={serviceId}
-                            disabled={true}
-                            style={style.subTitle}
-                            textStyle={style.textStyle}
-                        />
+        <SafeAreaView style={comStyles.CONTAINER} >
+            <Headernav title={Header} isBtn={true} btnOnPress={() => navigation.goBack()} />
+            <View style={comStyles.CONTENT}>
+                <FlatList
+                    ListHeaderComponent={
+                        <View>
 
-                        <ActionButton
-                            title={ResourceID}
-                            disabled={true}
-                            style={style.subTitle}
-                            textStyle={style.textStyle}
-                        />
+                            <ActionButton
+                                title={serviceId}
+                                disabled={true}
+                                style={style.subTitle}
+                                textStyle={style.textStyle}
+                            />
 
-                        <TouchableOpacity onPress={() => showDatePicker("fromDate")}>
+                            <ActionButton
+                                title={ResourceID}
+                                disabled={true}
+                                style={style.subTitle}
+                                textStyle={style.textStyle}
+                            />
+
+                            <TouchableOpacity onPress={() => showDatePicker("fromDate")}>
+                                <InputText
+                                    placeholder="Request Date *"
+                                    placeholderColor={comStyles.COLORS.HEADER_BLACK}
+                                    is_back_icon={true}
+                                    back_icon_name="calendar"
+                                    editable={false}
+                                    backiconClr={comStyles.COLORS.WHITE}
+                                    style={comStyles.serviceTicketInput}
+                                    stateValue={startDate}
+                                    setState={setStartDate}
+                                />
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={() => showDatePicker("toDate")}>
+                                <InputText
+                                    placeholder="Handover Date *"
+                                    placeholderColor={comStyles.COLORS.HEADER_BLACK}
+                                    is_back_icon={true}
+                                    back_icon_name="calendar"
+                                    editable={false}
+                                    backiconClr={comStyles.COLORS.WHITE}
+                                    style={comStyles.serviceTicketInput}
+                                    stateValue={endDate}
+                                    setState={setEndDate}
+                                />
+                            </TouchableOpacity>
+
                             <InputText
-                                placeholder="Request Date *"
+                                placeholder="Remarks"
                                 placeholderColor={comStyles.COLORS.HEADER_BLACK}
-                                is_back_icon={true}
-                                back_icon_name="calendar"
-                                editable={false}
-                                backiconClr={comStyles.COLORS.WHITE}
                                 style={comStyles.serviceTicketInput}
-                                stateValue={startDate}
-                                setState={setStartDate}
+                                stateValue={remark}
+                                setState={setRemark}
+                                max={150}
                             />
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={() => showDatePicker("toDate")}>
-                            <InputText
-                                placeholder="Handover Date *"
-                                placeholderColor={comStyles.COLORS.HEADER_BLACK}
-                                is_back_icon={true}
-                                back_icon_name="calendar"
-                                editable={false}
-                                backiconClr={comStyles.COLORS.WHITE}
-                                style={comStyles.serviceTicketInput}
-                                stateValue={endDate}
-                                setState={setEndDate}
+                            <View style={{ zIndex: 50 }}>
+
+                                <Dropdown
+                                    style={[style.dropdown, isFocus && { borderColor: comStyles.COLORS.BORDER_COLOR }]}
+                                    placeholderStyle={style.placeholderStyle}
+                                    selectedTextStyle={style.selectedTextStyle}
+                                    inputSearchStyle={style.inputSearchStyle}
+                                    iconStyle={style.iconStyle}
+                                    data={serviceCallIdList}
+                                    search
+                                    maxHeight={300}
+                                    labelField="ticketId"
+                                    valueField="_Id"
+                                    placeholder={!isFocus ? 'Select Service Ticket ID' : '...'}
+                                    searchPlaceholder="Search Service Ticket ID "
+                                    value={serviceCallIdList}
+                                    onFocus={() => setIsFocus(true)}
+                                    onBlur={() => setIsFocus(false)}
+                                    onChange={item => {
+                                        // console.log(item.serviceId);
+
+                                        setselectServiceCallID(item.ticketId);
+                                        setIsFocus(false);
+                                    }}
+                                    renderLeftIcon={() => (
+                                        <AntDesign
+                                            style={style.icon}
+                                            color={isFocus ? 'blue' : 'black'}
+                                            name="Safety"
+                                            size={15}
+                                        />
+                                    )}
+                                />
+
+
+                            </View>
+                            <ActionButton
+                                title="Add"
+                                style={style.partsBtn}
+                                textStyle={{ color: comStyles.COLORS.ICON_BLUE, }}
+                                is_icon={true}
+                                onPress={AddVehicle}
+                                iconColor={comStyles.COLORS.ICON_BLUE}
+                                icon_name="diff-added"
                             />
-                        </TouchableOpacity>
+                            <View style={{ alignContent: "flex-start" }}>
+                                <Text style={style.textStyle}>Added Service Tickets</Text>
+                            </View>
 
-                        <InputText
-                            placeholder="Remarks"
-                            placeholderColor={comStyles.COLORS.HEADER_BLACK}
-                            style={comStyles.serviceTicketInput}
-                            stateValue={remark}
-                            setState={setRemark}
-                            max={150}
-                        />
-                        <View style={{ zIndex: 50 }}>
-
-                            <Dropdown
-                                style={[style.dropdown, isFocus && { borderColor: comStyles.COLORS.BORDER_COLOR }]}
-                                placeholderStyle={style.placeholderStyle}
-                                selectedTextStyle={style.selectedTextStyle}
-                                inputSearchStyle={style.inputSearchStyle}
-                                iconStyle={style.iconStyle}
-                                data={serviceCallIdList}
-                                search
-                                maxHeight={300}
-                                labelField="ticketId"
-                                valueField="_Id"
-                                placeholder={!isFocus ? 'Select Service Ticket ID' : '...'}
-                                searchPlaceholder="Search Service Ticket ID "
-                                value={serviceCallIdList}
-                                onFocus={() => setIsFocus(true)}
-                                onBlur={() => setIsFocus(false)}
-                                onChange={item => {
-                                    // console.log(item.serviceId);
-
-                                    setselectServiceCallID(item.ticketId);
-                                    setIsFocus(false);
-                                }}
-                                renderLeftIcon={() => (
-                                    <AntDesign
-                                        style={style.icon}
-                                        color={isFocus ? 'blue' : 'black'}
-                                        name="Safety"
-                                        size={15}
-                                    />
-                                )}
-                            />
-
+                            <View style={{ flexDirection: 'row', backgroundColor: comStyles.COLORS.TICKET_HEADER_ASH, justifyContent: 'center', alignItems: 'center', padding: 5, marginTop: 5, }}>
+                                <Text style={{ flex: 1, textAlign: "left" }}>Service Ticket ID</Text>
+                                <Text style={{ flex: 2, textAlign: "left" }}>Content</Text>
+                                <Text style={{ flex: 0, textAlign: "right" }}></Text>
+                            </View>
 
                         </View>
-                        <ActionButton
-                            title="Add"
-                            style={style.partsBtn}
-                            textStyle={{ color: comStyles.COLORS.ICON_BLUE, }}
-                            is_icon={true}
-                            onPress={AddVehicle}
-                            iconColor={comStyles.COLORS.ICON_BLUE}
-                            icon_name="diff-added"
-                        />
-                        <View style={{ alignContent: "flex-start" }}>
-                            <Text style={style.textStyle}>Added Service Tickets</Text>
-                        </View>
+                    }
+                    showsHorizontalScrollIndicator={false}
+                    // data={Arrays.SelectPackage.Wash.filter(ob => ob.extras == true)}
+                    ListEmptyComponent={<View style={{ alignItems: 'center', justifyContent: 'center' }}><Text style={{ fontWeight: '700', color: 'red' }}>No data Available</Text></View>}
+                    data={ListResourceData}
+                    style={{ marginTop: 5, marginBottom: 5, flex: 2 }}
+                    renderItem={({ item }) => {
+                        return (
 
-                        <View style={{ flexDirection: 'row', backgroundColor: comStyles.COLORS.TICKET_HEADER_ASH, justifyContent: 'center', alignItems: 'center', padding: 5, marginTop: 5, }}>
-                            <Text style={{ flex: 1, textAlign: "left" }}>Service Ticket ID</Text>
-                            <Text style={{ flex: 2, textAlign: "left" }}>Content</Text>
-                            <Text style={{ flex: 0, textAlign: "right" }}></Text>
-                        </View>
+                            <ServiceCallItem
+                                id={item._Id}
+                                iconPress={() => HandleDelete(item._Id)}
+                                description={item.ServiceCall_id}
+                                quantity={item.content}
+                                is_icon={true} />
+                        );
+                    }}
+                    keyExtractor={item => `${item._Id}`}
+                />
 
-                    </View>
-                }
-                showsHorizontalScrollIndicator={false}
-                // data={Arrays.SelectPackage.Wash.filter(ob => ob.extras == true)}
-                ListEmptyComponent={<View style={{ alignItems: 'center', justifyContent: 'center' }}><Text style={{ fontWeight: '700', color: 'red' }}>No data Available</Text></View>}
-                data={ListResourceData}
-                style={{ marginTop: 5, marginBottom: 5, flex: 2 }}
-                renderItem={({ item }) => {
-                    return (
-
-                        <ServiceCallItem
-                            id={item._Id}
-                            iconPress={() => HandleDelete(item._Id)}
-                            description={item.ServiceCall_id}
-                            quantity={item.content}
-                            is_icon={true} />
-                    );
-                }}
-                keyExtractor={item => `${item._Id}`}
-            />
-
-            {/* <ActionButton
+                {/* <ActionButton
                 title="Add Another Service Call"
                 style={style.partsBtn}
                 textStyle={{ color: comStyles.COLORS.ICON_BLUE, }}
@@ -619,25 +643,25 @@ const ResourcesRequestComponent = (props: any) => {
                 icon_name="diff-added"
             /> */}
 
-            <ActionButton
-                title={btnHeader}
-                style={{ marginBottom: 70 }}
-                onPress={submitRequest}
-            />
-
-            {show && (
-                <DateTimePicker
-                    testID="dateTimePicker"
-                    value={new Date()}
-                    mode={"date"}
-                    is24Hour={true}
-                    display="default"
-                    onChange={onChange}
-                // minimumDate={new Date(2022, 11, 20)}
+                <ActionButton
+                    title={btnHeader}
+                    style={{ marginBottom: 70 }}
+                    onPress={submitRequest}
                 />
-            )}
 
-        </View>
+                {show && (
+                    <DateTimePicker
+                        testID="dateTimePicker"
+                        value={new Date()}
+                        mode={"date"}
+                        is24Hour={true}
+                        display="default"
+                        onChange={onChange}
+                    // minimumDate={new Date(2022, 11, 20)}
+                    />
+                )}
+
+            </View>
 
         </SafeAreaView >
     );

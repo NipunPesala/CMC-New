@@ -139,31 +139,35 @@ const Expences = (isActive:any) => {
                         return (
                             <View style={{ flexDirection: 'row', backgroundColor: ComponentsStyles.COLORS.WHITE, margin: 5, elevation: 10, borderRadius: 8 }}>
                                 <View style={{ flex: 4, margin: 3 }}>
+                                <View style={{ flexDirection: 'row' }}>
+                                        <Text style={{ fontWeight: "bold" }}>Expense ID :</Text>
+                                        <Text style={{ marginLeft: 10,fontWeight: "bold" }}>{item.ExpenseRequestID}</Text>
+                                    </View>
                                     <View style={{ flexDirection: 'row' }}>
-                                        <Text style={{ fontWeight: "bold" }}>Create Date</Text>
+                                        <Text style={{ fontWeight: "bold" }}>Create Date :</Text>
                                         <Text style={{ marginLeft: 10 }}>{item.CreateDate}</Text>
                                     </View>
                                     <View style={{ flexDirection: 'row' }}>
-                                        <Text style={{ fontWeight: "bold" }}>Expense Type</Text>
+                                        <Text style={{ fontWeight: "bold" }}>Expense Type :</Text>
                                         <Text style={{ marginLeft: 10 }}>{item.ExpencesType}</Text>
                                     </View>
                                     <View style={{ flexDirection: 'row' }}>
-                                        <Text style={{ fontWeight: "bold" }}>Amount</Text>
-                                        <Text style={{ marginLeft: 10 }}>{item.Amount}</Text>
+                                        <Text style={{ fontWeight: "bold" }}>Amount : </Text>
+                                        <Text style={{ marginLeft: 10,color:'blue' }}>{item.Amount}</Text>
                                     </View>
 
                                 </View>
                                 <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                                     <View style={{ flexDirection: 'column', margin: 5 }}>
                                         <AntDesign name="delete"
-                                            size={15}
+                                            size={20}
                                             onPress={() => DeleteEx(item.ExId)}
                                             color={ComponentsStyles.COLORS.RED_COLOR} />
 
                                     </View>
                                     <View style={{ flexDirection: 'column' }}>
                                         <AntDesign name="edit"
-                                            size={15}
+                                            size={20}
                                             onPress={() => EditEx(item.ExId)}
                                             color={ComponentsStyles.COLORS.ICON_BLUE} />
 

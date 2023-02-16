@@ -658,7 +658,7 @@ export const updateData = (query:any, params:any, callBack:any) => {
       },
     );
   } catch (error) {
-    console.log('update data error: ', data);
+    console.log('update data error: ', error);
     callBack(null, error); //notify caller
   }
 };

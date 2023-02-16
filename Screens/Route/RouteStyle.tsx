@@ -1,8 +1,11 @@
 /**
 * @author Madushika Sewwandi
 */
-import { StyleSheet } from "react-native";
+import { Dimensions, StyleSheet } from "react-native";
 import comStyles from "../../Constant/Components.styles";
+
+let width = Dimensions.get("screen").width;
+
 
 export default StyleSheet.create({
 
@@ -41,7 +44,13 @@ export default StyleSheet.create({
         marginBottom: 10
 
     },
+    modalCont: {
+        flex: 1,
+        flexGrow: 1,
+        width: width,
+        paddingHorizontal: 10,
 
+    },
 
 
 

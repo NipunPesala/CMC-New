@@ -29,6 +29,7 @@ import { BASE_URL_GET } from "../Constant/Commen_API_Url";
 import axios from "axios";
 import AsyncStorage from '@react-native-community/async-storage';
 import AsyncStorageConstants from '../Constant/AsyncStorageConstants';
+import { getTicketDates } from '../SQLiteDatabaseAction/DBControllers/TicketController';
 var id: any;
 var loginUser: any;
 var type: any;
@@ -50,9 +51,11 @@ const AddExpencesNew = (props: any) => {
   const [title, settitle] = useState('');
   const [btntitle, setbtntitle] = useState('');
   const [ExpID, setExpenseID] = useState('');
+  const [ticketStartDate, setTicketStartDate] = useState('');
+  const [ticketEndDate, setTicketEndDate] = useState('');
   var TOCKEN_KEY: any;
-  
-  const onChange = (event:any, selectedDate:any) => {
+
+  const onChange = (event: any, selectedDate: any) => {
     const currentDate = selectedDate;
     setShow(Platform.OS === 'ios');
     if (dateType == 'fromDate') {
@@ -62,15 +65,12 @@ const AddExpencesNew = (props: any) => {
   };
 
   const showDatePicker = (currentMode: any) => {
-    console.log('awaaaaaaaaaaaaaaaa..................');
+    // console.log('awaaaaaaaaaaaaaaaa..................');
 
     setShow(true);
     setDateType(currentMode);
   };
 
-  const test = () => {
-    console.log(' okkkkkkkk................... ');
-  };
 
   const saveExpencesData = () => {
     const sendData = [
@@ -84,7 +84,7 @@ const AddExpencesNew = (props: any) => {
         CreateDate: craeteDate,
         RelaventDate: startDate,
         status: 0,
-        isSync:false,
+        isSync: false,
       },
     ];
     // if(!/^[0-9]+$/.test(amount)){
@@ -147,10 +147,11 @@ const AddExpencesNew = (props: any) => {
       },
     );
   };
+
   const SaveData = (data: any) => {
     try {
       saveExpences(data, (result: any) => {
-        console.log(result, 'saveExpences');
+        // console.log(result, 'saveExpences');
 
         if (result === 'success') {
           ToastAndroid.show('Expences Save Success ', ToastAndroid.SHORT);
@@ -182,6 +183,20 @@ const AddExpencesNew = (props: any) => {
       { text: 'OK', onPress: () => navigation.goBack() },
     ]);
   };
+
+  const getStartEndDate = (ticketID: any) => {
+
+    getTicketDates(ticketID, (result: any) => {
+
+      // console.log(" ticket dates ......  " , result);
+
+      setTicketStartDate(result[0].startDate);
+      setTicketEndDate(result[0].endDate);
+
+
+    });
+
+  }
 
   // useEffect(() => {
   //   type = route.params.type;
@@ -236,50 +251,55 @@ const AddExpencesNew = (props: any) => {
       type = route.params.type;
 
       if (type == '1') {
+
         settitle('Update Expences');
         setbtntitle('Update');
+
         exid = route.params.exid;
-  
+
         load_UpdateOldData(exid);
+
       } else if (type === '0') {
+
         settitle('Add New Expences');
         setbtntitle('Add');
       }
-  
-      console.log('------------------------', type);
-  
+
+      // console.log('------------------------', type);
+
       getAllExpencesType((result: any) => {
         // setServiceCallList(result);
-        console.log(result);
+        // console.log(result);
         setExTypeList(result);
       });
-  
+
       getASYNC_CURRENT_TICKET_ID().then(res => {
-        console.log(res);
+        // console.log(res);
         id = res;
         setTicketID(id);
-        console.log(
-          res,
-          '+++++++++++++++++++++33333333333333+++++++++++++++++++++++++++',
-        );
+        getStartEndDate(res);
+        // console.log(
+        //   res,
+        //   '+++++++++++++++++++++33333333333333+++++++++++++++++++++++++++',
+        // );
       });
       getLoginUserName().then(res => {
-        console.log(res, '++++++++++++++++++++++++++++++++++++++++++++++++');
+        // console.log(res, '++++++++++++++++++++++++++++++++++++++++++++++++');
         loginUser = res;
         setloginUser1(loginUser);
         // setTicketID(id);
-  
-        console.log(
-          loginUser,
-          '^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^',
-          loginUser1,
-        );
+
+        // console.log(
+        //   loginUser,
+        //   '^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^',
+        //   loginUser1,
+        // );
       });
       setCreateDate(moment().utcOffset('+05:30').format('YYYY-MM-DD kk:mm:ss'));
       generateRequestID();
 
     }, []),
-    );
+  );
 
   const load_UpdateOldData = (id: any) => {
     getExpenceById(id, (result: any) => {
@@ -310,68 +330,68 @@ const AddExpencesNew = (props: any) => {
       get_ASYNC_TOCKEN().then(res => {
         TOCKEN_KEY = res;
         const AuthStr = 'Bearer '.concat(TOCKEN_KEY);
-       
-     // console.log( 'AuthStr####3%%%%%%%%%%%%%',AuthStr);
 
-    const prams= {
+        // console.log( 'AuthStr####3%%%%%%%%%%%%%',AuthStr);
 
-      "objServiceCallList": [
-        {
-          "ServiceCall_ID": TicketID,  //need to code
-          "ExpenseTypeID": expencesTypeId,
-          "Amount": amount,
-          "Remark": remark,
-          "CreatedBy":loginUser,
-          "CreateDate":craeteDate,
-          "RelaventDate":startDate,
-          "status":0,
+        const prams = {
 
-          }
-      ]
-    }
-     
-     console.log('--Expences Uplod json--', prams);
+          "objServiceCallList": [
+            {
+              "ServiceCall_ID": TicketID,  //need to code
+              "ExpenseTypeID": expencesTypeId,
+              "Amount": amount,
+              "Remark": remark,
+              "CreatedBy": loginUser,
+              "CreateDate": craeteDate,
+              "RelaventDate": startDate,
+              "status": 0,
 
-      const headers = {
-        'Authorization': AuthStr
-      }
-      const URL = BASE_URL_GET+"expence";
-      axios.post(URL, prams, {
-        headers: headers
-      })
-        .then((response) => {
-            console.log("[s][t][a][t][u][s][]",response.status);
+            }
+          ]
+        }
+
+        console.log('--Expences Uplod json--', prams);
+
+        const headers = {
+          'Authorization': AuthStr
+        }
+        const URL = BASE_URL_GET + "expence";
+        axios.post(URL, prams, {
+          headers: headers
+        })
+          .then((response) => {
+            console.log("[s][t][a][t][u][s][]", response.status);
             if (response.status == 200) {
 
-           console.log('<------ NEW SERVICE CALL UPLOAD Method --->', response.data)
-           console.log(response.data.UniqueNo);
-           
-           if(response.data.ErrorId=0){
-            // this use fro update sync flag as 1 
-            updateSycnExpences(response.data.UniqueNo, (result: any) => {
+              console.log('<------ NEW SERVICE CALL UPLOAD Method --->', response.data)
+              console.log(response.data.UniqueNo);
 
-            });
-            ToastAndroid.show(response.data.ErrorDescription, ToastAndroid.LONG);
-           }
-           
-        }else{
-            Alert.alert(
+              if (response.data.ErrorId = 0) {
+                // this use fro update sync flag as 1 
+                updateSycnExpences(response.data.UniqueNo, (result: any) => {
+
+                });
+                ToastAndroid.show(response.data.ErrorDescription, ToastAndroid.LONG);
+              }
+
+            } else {
+              Alert.alert(
                 "Invalid Details!",
                 "Bad Request",
                 [
-                    { text: "OK", onPress: () => console.log("OK Pressed") }
+                  { text: "OK", onPress: () => console.log("OK Pressed") }
                 ]
-            );
+              );
 
             }
 
-        })
-        .catch((error) => {
-          Alert.alert('error', error.response)
+          })
+          .catch((error) => {
+            Alert.alert('error', error.response)
 
-        })
+          })
 
-   })
+      })
     } catch (error) {
       console.log(">>>>>>>>>>>>", error);
 
@@ -385,22 +405,22 @@ const AddExpencesNew = (props: any) => {
     getLastExpRequestId((result: any) => {
 
 
-        if (result.length == 0) {
-            GetLastID(0);
-        } else {
+      if (result.length == 0) {
+        GetLastID(0);
+      } else {
 
-            for (let i = 0; i < result.length; ++i) {
+        for (let i = 0; i < result.length; ++i) {
 
-                GetLastID(result[i].spId);
-
-            }
+          GetLastID(result[i]._Id);
 
         }
+
+      }
 
 
     })
 
-};
+  };
 
   const GetLastID = (id: any) => {
 
@@ -411,7 +431,7 @@ const AddExpencesNew = (props: any) => {
 
     setExpenseID(rid);
     AsyncStorage.setItem(AsyncStorageConstants.ASYNC_CURRENT_EXP_REQUEST_ID, rid);
-};
+  };
 
 
 
@@ -420,7 +440,7 @@ const AddExpencesNew = (props: any) => {
       {/* <TouchableOpacity style={style.dashStyle} onPress={() => navigation.goBack()} /> */}
       <Header title={title} isBtn={true} btnOnPress={() => navigation.goBack()} />
       <View style={{ padding: 5 }} />
-   
+
       <View
         style={{
           flexDirection: 'row',
@@ -560,6 +580,8 @@ const AddExpencesNew = (props: any) => {
           mode={'date'}
           is24Hour={true}
           display="default"
+          minimumDate={new Date(ticketStartDate)}
+          maximumDate={new Date(ticketEndDate)}
           onChange={onChange}
         />
       )}

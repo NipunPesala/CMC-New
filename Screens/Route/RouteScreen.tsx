@@ -1,7 +1,7 @@
 /**
 * @author Madushika Sewwandi
 */
-import React,{ useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
     View,
     Text,
@@ -10,7 +10,11 @@ import {
     TouchableOpacity,
     FlatList,
     Dimensions,
-    AsyncStorage
+    AsyncStorage,
+    Animated,
+    Alert,
+    Keyboard,
+    Platform
 } from "react-native";
 import Header from "../../Components/Header";
 import comStyles from "../../Constant/Components.styles";
@@ -21,40 +25,58 @@ import ListBox from "../../Components/ListBox";
 import { Calendar, CalendarList, Agenda } from 'react-native-calendars';
 import CalendarStrip from "react-native-calendar-strip";
 import moment from "moment";
-import { RequestBydateRoute } from "../../SQLiteDatabaseAction/DBControllers/ServiceController";
+import { RequestBydateRangeRoute, RequestBydateRoute } from "../../SQLiteDatabaseAction/DBControllers/ServiceController";
 import AsyncStorageConstants from "../../Constant/AsyncStorageConstants";
+import DateRangePicker from "rn-select-date-range";
 
+let height = Dimensions.get("screen").height;
 
 const RouteScreen = ({ navigation }) => {
     const [selectedDate, setSelectedDate] = useState('');
     const [RouteId, setRouteId] = useState('');
     const [requestRouteList, setRequestRouteList] = useState([]);
-
+    const [isShow, setIsShow] = useState(false);
+    const [selectedRange, setRange] = useState({});
+    const [selectedStartDate, setselectedStartDate] = useState('');
+    const [selectedEndDate, setselectedEndDate] = useState('');
+    const [modalStyle, setModalStyle] = useState(new Animated.Value(height));
 
     const datesBlacklistFunc = (date) => {
         return date.isoWeekday() === 6; // disable Saturdays
     }
-    const getSelectedDate = (date:any) => {
+    const getSelectedDate = (date: any) => {
 
         setSelectedDate(date);
-       
+
 
         // let dates = date.format('DD MM YYYY');
 
         let momentObj = moment(date, 'MMMM Do YYYY')
         let showDate = moment(momentObj).format('YYYY-MM-DD')
 
-        console.log("reformat ........  ",showDate);
+        console.log("reformat ........  ", showDate);
 
-       getRequestByDate(showDate);
+        getRequestByDate(showDate);
+
+
+    }
+
+    const changeRange = (range: any) => {
+
+        setRange(range);
+
+        setselectedStartDate(range.firstDate);
+        setselectedEndDate(range.secondDate);
+
+        console.log(selectedEndDate, " ............ ", selectedStartDate);
 
 
     }
 
     const getRequestByDate = (datec: any) => {
 
-       
-        console.log(datec,' iddddddddddddddddddddddddddd............');
+
+        console.log(datec, ' iddddddddddddddddddddddddddd............');
 
 
         RequestBydateRoute(datec, (result: any) => {
@@ -68,12 +90,68 @@ const RouteScreen = ({ navigation }) => {
 
     }
 
-    const viewCallDetails = (callID:any) =>{
+    const viewCallDetails = (callID: any) => {
 
-        AsyncStorage.setItem(AsyncStorageConstants.ASYNC_CURRENT_SERVICE_CALL_ID,callID);
-        navigation.navigate('RequestDetails',{navigateId:2})
+        AsyncStorage.setItem(AsyncStorageConstants.ASYNC_CURRENT_SERVICE_CALL_ID, callID);
+        navigation.navigate('RequestDetails', { navigateId: 2 })
 
     }
+
+
+
+    const selectDateRange = () => {
+
+        slideInModal();
+
+
+    }
+
+    const slideInModal = () => {
+
+        try {
+
+            Animated.timing(modalStyle, {
+                toValue: height / 3.2,
+                duration: 500,
+                useNativeDriver: false,
+            }).start();
+
+        } catch (error) {
+            Alert.alert(error + "");
+        }
+
+
+    };
+
+    const slideOutModal = () => {
+
+
+        try {
+
+            Keyboard.dismiss();
+            Animated.timing(modalStyle, {
+                toValue: height,
+                duration: 500,
+                useNativeDriver: false,
+            }).start();
+
+
+        } catch (error) {
+            Alert.alert(error + "");
+        }
+
+    };
+
+    const getRangeData = () => {
+
+        slideOutModal();
+
+        RequestBydateRangeRoute(selectedStartDate,selectedEndDate,(result:any) => {
+            setRequestRouteList(result);
+        });
+
+    }
+
 
     useEffect(() => {
 
@@ -93,6 +171,49 @@ const RouteScreen = ({ navigation }) => {
     return (
 
         <SafeAreaView style={comStyles.CONTAINER}>
+
+
+            <Animated.View
+                style={{
+                    ...StyleSheet.absoluteFillObject,
+                    top: modalStyle,
+                    backgroundColor: '#fff',
+                    zIndex: 20,
+                    borderRadius: 10,
+                    elevation: 20,
+                    paddingTop: 10,
+                    paddingBottom: 10,
+                    marginLeft: 0,
+                    ...Platform.select({
+                        ios: {
+                            paddingTop: 10
+                        }
+                    })
+                }}>
+
+
+
+                <View style={style.modalCont}>
+
+                    <DateRangePicker
+                        onSelectDateRange={(range) => {
+                            // setRange(range);
+                            changeRange(range);
+                        }}
+                        blockSingleDateSelection={true}
+                        responseFormat="YYYY-MM-DD"
+                        onConfirm={() => getRangeData()}
+                        onClear={slideOutModal}
+                    // maxDate={moment()}
+                    // minDate={moment().subtract(100, "days")}
+                    />
+
+                </View>
+
+
+            </Animated.View>
+
+
             <Header isBtn={true} btnOnPress={() => navigation.navigate('Home')} title={"Planned Routes"} />
 
             <View style={comStyles.CONTENT}>
@@ -101,15 +222,11 @@ const RouteScreen = ({ navigation }) => {
 
                     <Text style={style.callText}>{selectedDate}</Text>
                     <View style={{ flex: 1 }} />
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={() => selectDateRange()}>
                         <IconA name='calendar' size={20} color={comStyles.COLORS.BLACK} />
                     </TouchableOpacity>
 
                 </View>
-                {/* 
-                <Calendar
-
-                /> */}
 
                 <CalendarStrip
                     scrollable={true}

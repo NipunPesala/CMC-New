@@ -142,13 +142,13 @@ export const updateSyncResourceRequest= (RID:any,callBack:any) => {
   };
 
 
-  export const isAddedTickets = () => {
+  export const isAddedTickets = (ReqID:any,ResID:any,TicketID:any,callback:any) => {
 
     DB.searchData(
-        'SELECT COUNT FROM RESOURCE_REQUEST  WHERE  RequestDate <= ? AND HandoverDate >= ? AND  ResourceID = ? ',
-        [date,date,resourceID],
+        'SELECT COUNT(*) as count FROM RESOURCE_REQUEST  WHERE RequestID = ?  AND  ResourceID = ? AND ServiceCall_id=? ',
+        [ReqID,ResID,TicketID],
         (resp:any, err:any) => {
-            console.log(resp,">>>>>>",err);
+            // console.log(resp,">>>>>>",err);
             
             callback(resp, err);
         },

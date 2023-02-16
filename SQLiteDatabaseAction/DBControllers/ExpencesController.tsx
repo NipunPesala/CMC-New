@@ -80,7 +80,7 @@ export const getExpenceById = (expId:any, callBack:any) => {
 
 export const getLastExpRequestId = (callBack:any) => {
     DB.searchData(
-         'SELECT ExpenseRequestID FROM EXPENCES ORDER BY _Id DESC LIMIT 1',
+         'SELECT _Id FROM EXPENCES ORDER BY _Id DESC LIMIT 1',
         [],
         (resp:any, err:any) => {
             callBack(resp, err);
@@ -92,7 +92,7 @@ export const getLastExpRequestId = (callBack:any) => {
 
 export const getAllExpences = (data:any,callBack:any) => {
     DB.searchData(
-      'SELECT EXPENCES_TYPE.name as ExpencesType,EXPENCES.Amount as Amount,EXPENCES._Id as ExId,EXPENCES.CreateDate as CreateDate FROM EXPENCES INNER JOIN EXPENCES_TYPE ON EXPENCES.ExpenseTypeID=EXPENCES_TYPE.name WHERE ServiceCall_ID=?',
+      'SELECT EXPENCES_TYPE.name as ExpencesType,EXPENCES.Amount as Amount,EXPENCES._Id as ExId,EXPENCES.CreateDate as CreateDate,EXPENCES.ExpenseRequestID  FROM EXPENCES INNER JOIN EXPENCES_TYPE ON EXPENCES.ExpenseTypeID=EXPENCES_TYPE.name WHERE ServiceCall_ID=?',
       [data],
       (resp:any, err:any) => {
         callBack(resp, err);
