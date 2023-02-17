@@ -215,7 +215,7 @@ export const RequestBydateRoute = (date:any,callback:any) => {
 export const RequestBydateRangeRoute = (startdate:any,endDate:any,callback:any) => {
 
   DB.searchData(
-      'SELECT * FROM SERVICE WHERE( (start_date <= ? AND end_date >= ?) OR  (start_date <= ? AND end_date >= ?) ) AND Attend_status != 3 AND Approve_status != 2 ',
+      'SELECT * FROM SERVICE WHERE (start_date >= ? AND start_date <= ?) OR (end_date >= ? AND end_date <= ?)  AND Attend_status != 3 AND Approve_status != 2 ',
       [startdate,startdate,endDate,endDate],
       (resp:any, err:any) => {
 
