@@ -458,37 +458,28 @@ const NewServiceTicket = (props: any) => {
         var ticketID = parseInt(id) + 1;
         setTicketID("SCT_" + moment().utcOffset('+05:30').format('YYYY-MM-DD') + "_" + ticketID);
     }
-    // useEffect(() => {
-    //     selectMode = route.params.mode;
-    //     TiketID = route.params.ID;
-    //     let date = moment().utcOffset('+05:30').format('YYYY-MM-DD')
-    //     if (route.params.mode == 0) {
-    //         setTextHeader('Add New Service Ticket')
-    //         setButtonTitle('Add')
-    //         getServiceCallID();
-    //         generateCallID();
-    //         getAllPriorityList();
-    //         setCallStartDate(date);
-    //         setCallEndDate(date);
-    //     } else {
-    //         setTextHeader('Update Service Ticket')
-    //         setButtonTitle('Update')
-    //         getServiceCallIDUpdate();
-    //     }
+    useEffect(() => {
+        selectMode = route.params.mode;
+        TiketID = route.params.ID;
+        let date = moment().utcOffset('+05:30').format('YYYY-MM-DD')
+        if (route.params.mode == 0) {
+            setTextHeader('Add New Service Ticket')
+            setButtonTitle('Add')
+            getServiceCallID();
+            generateCallID();
+            getAllPriorityList();
+            setCallStartDate(date);
+            setCallEndDate(date);
+        } else {
+            setTextHeader('Update Service Ticket')
+            setButtonTitle('Update')
+            getServiceCallIDUpdate();
+        }
 
 
-    // }, [])
-    // useEffect(() => {
-    //     const focusHandler = navigation.addListener('focus', () => {
-
-
-    //     });
-    //     return focusHandler;
-    // }, [navigation]);
-
-
-    useFocusEffect(
-        React.useCallback(() => {
+    }, [])
+    useEffect(() => {
+        const focusHandler = navigation.addListener('focus', () => {
 
             selectMode == route.params.mode;
             TiketID = route.params.ID;
@@ -520,8 +511,46 @@ const NewServiceTicket = (props: any) => {
                 }
             }
 
-        }, []),
-    );
+        });
+        return focusHandler;
+    }, [navigation]);
+
+
+    // useFocusEffect(
+    //     React.useCallback(() => {
+
+    //         selectMode == route.params.mode;
+    //         TiketID = route.params.ID;
+    //         let date = moment().utcOffset('+05:30').format('YYYY-MM-DD')
+
+    //         if (route.params.mode == 0) {
+
+    //             setTextHeader('Add New Service Ticket')
+    //             setButtonTitle('Add')
+    //             getServiceCallID();
+    //             generateCallID();
+    //             getAllPriorityList();
+    //             setCallStartDate(date);
+    //             setCallEndDate(date);
+
+    //         } else {
+
+    //             getServiceCallIDUpdate();
+    //             setTextHeader('Update Service Ticket')
+    //             setButtonTitle('Update')
+    //             // console.log('-----service ticeket check-------');
+    //             // console.log('-----Ticket id is -------'+routeNav.params.ticketID);
+    //             // console.log('-----Ticket list length-------'+routeNav.params.tickList[0]);
+    //             if (route.params.tickList?.length > 0) {
+    //                 console.log('-----service length check-----');
+    //                 SetPreviousAddedData(routeNav.params.ticketID);
+    //             } else {
+
+    //             }
+    //         }
+
+    //     }, []),
+    // );
 
 
     const SetPreviousAddedData2 = (id: any) => {

@@ -2,7 +2,7 @@
 * @author Gagana Lakruwan
 */
 import AsyncStorage from "@react-native-community/async-storage";
-import { useNavigation } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
 import {
     View,
@@ -100,21 +100,37 @@ const Tickets = ({ btnEnable,enableStatusUpdate }: ParamTypes) => {
 
     }
 
-    useEffect(() => {
+    useFocusEffect(
+        React.useCallback(() => {
+           
+            getCurrentServiceCallID().then(res => {
 
-        console.log(" async data ........... ", btnEnable);
 
-        getCurrentServiceCallID().then(res => {
+                serviceID = res;
+                getTicketList(serviceID);
+    
+                // console.log(" async data ........... ",btnEnable);
+    
+            })
+
+        }, []),
+    );
+
+    // useEffect(() => {
+
+    //     console.log(" async data ........... ", btnEnable);
+
+    //     getCurrentServiceCallID().then(res => {
 
 
-            serviceID = res;
-            getTicketList(serviceID);
+    //         serviceID = res;
+    //         getTicketList(serviceID);
 
-            // console.log(" async data ........... ",btnEnable);
+    //         // console.log(" async data ........... ",btnEnable);
 
-        })
+    //     })
 
-    }, [])
+    // }, [])
 
 
     return (

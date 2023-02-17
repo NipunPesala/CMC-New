@@ -204,6 +204,8 @@ const RouteScreen = ({ navigation }) => {
                         responseFormat="YYYY-MM-DD"
                         onConfirm={() => getRangeData()}
                         onClear={slideOutModal}
+                        font={comStyles.FONT_FAMILY.SEMI_BOLD}
+                        confirmBtnTitle="Search"
                     // maxDate={moment()}
                     // minDate={moment().subtract(100, "days")}
                     />

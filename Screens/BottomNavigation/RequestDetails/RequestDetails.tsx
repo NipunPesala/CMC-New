@@ -2,7 +2,7 @@
 * @author Gagana Lakruwan
 */
 import AsyncStorage from "@react-native-community/async-storage";
-import { useNavigation, useRoute } from "@react-navigation/native";
+import { useFocusEffect, useNavigation, useRoute } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
 import {
     View,
@@ -249,38 +249,51 @@ const RequestDetails = (props: any) => {
 
     }
 
-    useEffect(() => {
+    // useEffect(() => {
 
-        // SelectnavigationScreen();
-        getCurrentServiceCallID().then(res => {
-            callID = res;
-            getServiceData(res);
+    //     // SelectnavigationScreen();
+    //     getCurrentServiceCallID().then(res => {
+    //         callID = res;
+    //         getServiceData(res);
 
-            console.log(" not navigation ........  " , callID);
-        })
+    //         console.log(" not navigation ........  " , callID);
+    //     })
 
-        BackPressHandler((callback: any) => {
+    //     BackPressHandler((callback: any) => {
 
-        });
+    //     });
 
-    }, [])
+    // }, [])
 
-    useEffect(() => {
-        const focusHandler = navigation.addListener('focus', () => {
+    // useEffect(() => {
+    //     const focusHandler = navigation.addListener('focus', () => {
+    //         getCurrentServiceCallID().then(res => {
+    //             callID = res;
+    //             getServiceData(res);
+
+    //             console.log(" navigation ........  " , callID);
+    //         })
+    //         BackPressHandler((callback: any) => {
+
+    //         });
+    //     });
+    //     return focusHandler;
+
+    // }, [navigation]);
+
+
+    
+    useFocusEffect(
+        React.useCallback(() => {
             getCurrentServiceCallID().then(res => {
                 callID = res;
                 getServiceData(res);
 
-                console.log(" navigation ........  " , callID);
+                // console.log(" navigation ........  " , callID);
             })
-            BackPressHandler((callback: any) => {
 
-            });
-        });
-        return focusHandler;
-
-    }, [navigation]);
-
+        }, []),
+    );
 
     return (
         <SafeAreaView style={ComStyles.CONTAINER}>
@@ -333,10 +346,12 @@ const RequestDetails = (props: any) => {
                             />
                             :
                             loadScreen == "location" ?
-                                <Locations
-                                btnTitle="Start Journey"
-                                pressbtn={() => LoadMap()}
-                                 />
+                                // <Locations
+                                // btnTitle="Start Journey"
+                                // pressbtn={() => LoadMap()}
+                                //  />
+
+                                <></>
                                 :
                                 loadScreen == "serviceH" ?
                                     <ServiceHistory />
