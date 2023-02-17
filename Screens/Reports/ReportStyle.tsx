@@ -95,5 +95,12 @@ export default StyleSheet.create({
     textStyle:{
         color:'#FFFF',
         fontFamily:ComponentsStyles.FONT_FAMILY.BOLD
-    }
+    },
+    modalCont: {
+        flex: 1,
+        flexGrow: 1,
+        width: width,
+        paddingHorizontal: 10,
+
+    },
 });

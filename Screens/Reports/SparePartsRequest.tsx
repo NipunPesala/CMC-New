@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, SafeAreaView, FlatList, Platform, TouchableOpacity,ToastAndroid } from "react-native";
+import { View, Text, SafeAreaView, FlatList, Platform, TouchableOpacity, ToastAndroid, Animated, Dimensions, Keyboard, StyleSheet, Alert } from "react-native";
 import ActionButton from "../../Components/ActionButton";
 import Header from "../../Components/Header";
 import comStyles from "../../Constant/Components.styles";
@@ -13,8 +13,11 @@ import { AttendanceDetails } from '../../Constant/DummyData';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import moment from "moment";
 import { getSparePartsAllData } from "../../SQLiteDatabaseAction/DBControllers/SparePartsController";
-import { getAll_Data ,getSearchSparePart,SearchSpairePartByDateRange} from "../../SQLiteDatabaseAction/DBControllers/TicketController";
+import { getAll_Data, getSearchSparePart, SearchSpairePartByDateRange } from "../../SQLiteDatabaseAction/DBControllers/TicketController";
 import CalendarPicker from 'react-native-calendar-picker';
+import DateRangePicker from "rn-select-date-range";
+
+let height = Dimensions.get("screen").height;
 const SparePartsRequest = () => {
 
     const navigation = useNavigation();
@@ -23,74 +26,122 @@ const SparePartsRequest = () => {
     const [endDate, setEndDate] = useState('');
     const [show, setShow] = useState(false);
     const [dateType, setDateType] = useState('');
-    const [sparepartsList, setsparepartsList]:any[] = useState([]);
+    const [sparepartsList, setsparepartsList]: any[] = useState([]);
     const [searchText, setSearchText] = useState();
     const [showCalendar, setShowCalendar] = useState(false);
-    const start = moment(startDate).format("YYYY-MM-DD");
-        console.log('new start'+start);
-    const end = moment(endDate).format("YYYY-MM-DD");
-        console.log('new end'+end);
+    const [selectedStartDate, setselectedStartDate] = useState('');
+    const [selectedEndDate, setselectedEndDate] = useState('');
+    const [modalStyle, setModalStyle] = useState(new Animated.Value(height));
+    const [selectedRange, setRange] = useState({});
 
+    const getRequestedSpareParts = () => {
 
-    const getRequestedSpareParts = () =>{
-
-        getAll_Data((result:any) =>{
+        getAll_Data((result: any) => {
 
             setsparepartsList(result);
-            
+
         })
 
 
     }
 
-    const handleDateChange = (date) => {
-        if (!startDate) {
-          setStartDate(date);
-          console.log('start date-'+date );
-        }else if(date>startDate) {
-          setEndDate(date);
-          console.log('End date-'+date);
-          getDateRangeResult(start,end);
-          setShowCalendar(false);
-    
-        }else{
-
-            ToastAndroid.show("Invalide selected date  ", ToastAndroid.SHORT); 
-            setStartDate('');
-            setEndDate('');
-        }
-      //  const start = startDate ? moment(startDate).format("MM/DD/YYYY") : "Not Selected";
-     
-      }
 
 
-      const btnCloseOnpress=()=>{
+
+    const btnCloseOnpress = () => {
         setShowCalendar(!showCalendar);
         setStartDate('');
         setEndDate('');
     }
 
-    const searchSpareParts = (text:any) => {
+    const searchSpareParts = (text: any) => {
 
         setSearchText(text);
 
-        getSearchSparePart(text , (result:any) => {
+        getSearchSparePart(text, (result: any) => {
 
             setsparepartsList(result);
-            
+
         });
-        
+
 
 
     }
 
-    const getDateRangeResult=(DateOne:any,DateTwo:any)=>{
-        SearchSpairePartByDateRange(DateOne, DateTwo, (result:any) => {
-    
+    const selectDateRange = () => {
+
+        slideInModal();
+
+
+    }
+    const slideInModal = () => {
+
+        try {
+
+            Animated.timing(modalStyle, {
+                toValue: height / 4,
+                duration: 500,
+                useNativeDriver: false,
+            }).start();
+
+        } catch (error) {
+            Alert.alert(error + "");
+        }
+
+
+    };
+    const slideOutModal = () => {
+
+
+        try {
+
+            Keyboard.dismiss();
+            Animated.timing(modalStyle, {
+                toValue: height,
+                duration: 500,
+                useNativeDriver: false,
+            }).start();
+
+
+        } catch (error) {
+            Alert.alert(error + "");
+        }
+
+    };
+
+    const getRangeData = () => {
+
+        slideOutModal();
+
+        SearchSpairePartByDateRange(selectedStartDate, selectedEndDate, (result: any) => {
             setsparepartsList(result);
-            
         });
-        
+
+    }
+
+    const changeRange = (range: any) => {
+
+        setRange(range);
+
+        setselectedStartDate(range.firstDate);
+        setselectedEndDate(range.secondDate);
+
+        console.log(selectedEndDate, " ............ ", selectedStartDate);
+
+
+    }
+
+
+
+
+
+    const getDateRangeResult = (DateOne: any, DateTwo: any) => {
+        SearchSpairePartByDateRange(DateOne, DateTwo, (result: any) => {
+
+            setsparepartsList(result);
+
+        });
+
     }
 
     const onChange = (event, selectedDate) => {
@@ -116,13 +167,58 @@ const SparePartsRequest = () => {
     }
 
     useEffect(() => {
-        
+
         getRequestedSpareParts();
     }, [])
 
     return (
 
         <SafeAreaView style={comStyles.CONTAINER}>
+
+
+
+            <Animated.View
+                style={{
+                    ...StyleSheet.absoluteFillObject,
+                    top: modalStyle,
+                    backgroundColor: '#fff',
+                    zIndex: 20,
+                    borderRadius: 10,
+                    elevation: 20,
+                    paddingTop: 10,
+                    paddingBottom: 10,
+                    marginLeft: 0,
+                    ...Platform.select({
+                        ios: {
+                            paddingTop: 10
+                        }
+                    })
+                }}>
+
+
+
+                <View style={style.modalCont}>
+
+                    <DateRangePicker
+                        onSelectDateRange={(range) => {
+                            // setRange(range);
+                            changeRange(range);
+                        }}
+                        blockSingleDateSelection={true}
+                        responseFormat="YYYY-MM-DD"
+                        onConfirm={() => getRangeData()}
+                        onClear={slideOutModal}
+                        confirmBtnTitle="Search"
+                        clearBtnTitle="Clear"
+                        font={comStyles.FONT_FAMILY.BOLD}
+                    // maxDate={moment()}
+                    // minDate={moment().subtract(100, "days")}
+                    />
+
+                </View>
+
+
+            </Animated.View>
 
             <Header isBtn={true} title="Spare Parts Request" btnOnPress={() => navigation.goBack()} />
 
@@ -134,23 +230,13 @@ const SparePartsRequest = () => {
                     style={{ justifyContent: 'center', marginTop: 10, height: 75 }}>
                     <ActionButton
                         title="Custom Date Range"
-                        onPress={btnCloseOnpress}
+                        onPress={selectDateRange}
                         style={date === true ? style.selectedbutton : style.defaultbutton}
                         textStyle={date === true ? style.selectedBUTTON_TEXT : style.defaultBUTTON_TEXT}
                     />
                 </TouchableOpacity>
-                <View style={{alignContent:'center', justifyContent: 'center',alignItems:'center'}}>
-                {showCalendar && (
-                    <CalendarPicker
-                    onDateChange={handleDateChange}
-                    selectedStartDate={startDate}
-                    selectedEndDate={endDate}
-                    />
-                   
-                )}
 
-               
-                </View>
+        
 
                 <InputText
                     placeholder="Search by spare part ID"
@@ -169,7 +255,7 @@ const SparePartsRequest = () => {
                     }}
 
                     stateValue={searchText}
-                    setState={(newText:any) => searchSpareParts(newText)}
+                    setState={(newText: any) => searchSpareParts(newText)}
                 />
 
 
@@ -217,6 +303,29 @@ const SparePartsRequest = () => {
                     keyExtractor={item => `${item.spId}`}
                 />
 
+
+
+        
+
+                {/* <InputText
+                    placeholder="Search by spare part ID"
+                    is_clr_icon={true}
+                    icon_name1="search1"
+                    iconClr='rgba(60, 60, 67, 0.6)'
+                    style={{
+                        marginTop: 5,
+                        paddingLeft: 50,
+
+
+                    }}
+                    imgStyle={{
+                        paddingTop: 10,
+                        left: 20,
+                    }}
+
+                    stateValue={searchText}
+                    setState={(newText: any) => searchSpareParts(newText)}
+                /> */}
 
             </View>
 

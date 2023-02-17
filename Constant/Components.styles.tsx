@@ -72,6 +72,11 @@ export default ({
         marginRight: 13,
         flex: 1,
     },
+    CONTENT2: {
+        marginLeft: 13,
+        marginRight: 13,
+   
+    },
     CONTENTLOG: {
         marginBottom: 0,
         marginLeft: 0,

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { FlatList, SafeAreaView, Text, View,Modal,Alert,ToastAndroid } from "react-native";
+import { FlatList, SafeAreaView, Text, View,Modal,Alert,ToastAndroid,Animated,Dimensions,Keyboard,StyleSheet,Platform } from "react-native";
 import Header from "../../Components/Header";
 import ComponentsStyles from "../../Constant/Components.styles";
 import { useNavigation } from "@react-navigation/native";
@@ -13,11 +13,9 @@ import AttendanceTableDetailsComponent from "../../Components/AttendanceTableDet
 import ActionButton from "../../Components/ActionButton";
 import { getTicketsForReport } from "../../SQLiteDatabaseAction/DBControllers/TicketController";
 import { getSearchTicket,SearchTicketForSummaryReport} from '../../SQLiteDatabaseAction/DBControllers/TicketController';
-import { Calendar } from "react-native-calendars";
-import CalendarPicker from 'react-native-calendar-picker';
-import moment from "moment";
+import DateRangePicker from "rn-select-date-range";
 
-
+let height = Dimensions.get("screen").height;
 const ServiceTicketSummaryReportScreen = () => {
     const navigation = useNavigation();
     const [tiketNo, settiketNo] = useState(false);
@@ -34,14 +32,11 @@ const ServiceTicketSummaryReportScreen = () => {
     const [endDate, setEndDate] = useState('');
     const [startDate, setStartDate] = useState('');
     const [showCalendar, setShowCalendar] = useState(false);
-    const start = moment(startDate).format("YYYY-MM-DD");
-    console.log('new start'+start);
-    const end = moment(endDate).format("YYYY-MM-DD");
-    console.log('new end'+end);
+    const [selectedStartDate, setselectedStartDate] = useState('');
+    const [selectedEndDate, setselectedEndDate] = useState('');
+    const [modalStyle, setModalStyle] = useState(new Animated.Value(height));
+    const [selectedRange, setRange] = useState({});
     
-    const Handleback = () => {
-        navigation.navigate('ServiceTicketDetailsScreen');
-    }
 
     const getTicketSummaryDetails = () =>{
 
@@ -108,24 +103,6 @@ const ServiceTicketSummaryReportScreen = () => {
 
     }
 
-    const handleDateChange = (date) => {
-        if (!startDate) {
-          setStartDate(date);
-          console.log('start date-'+date );
-        } else if(date>startDate) {
-          setEndDate(date);
-          console.log('End date-'+date);
-          getDateRangeResult(start,end);
-          setShowCalendar(false);
-        
-        }else{
-
-            ToastAndroid.show("Invalide selected date  ", ToastAndroid.SHORT); 
-            setStartDate('');
-            setEndDate('');
-        }
-      //  const start = startDate ? moment(startDate).format("MM/DD/YYYY") : "Not Selected";
-      }
 
     const searchTicket = (text:any) => {
 
@@ -143,7 +120,68 @@ const ServiceTicketSummaryReportScreen = () => {
     
 
    
-  
+    const selectDateRange = () => {
+
+        slideInModal();
+    
+    
+    }
+    const slideInModal = () => {
+    
+        try {
+    
+            Animated.timing(modalStyle, {
+                toValue: height / 3.2,
+                duration: 500,
+                useNativeDriver: false,
+            }).start();
+    
+        } catch (error) {
+            Alert.alert(error + "");
+        }
+    
+    
+    };
+    const slideOutModal = () => {
+    
+    
+        try {
+    
+            Keyboard.dismiss();
+            Animated.timing(modalStyle, {
+                toValue: height,
+                duration: 500,
+                useNativeDriver: false,
+            }).start();
+    
+    
+        } catch (error) {
+            Alert.alert(error + "");
+        }
+    
+    };
+    
+    const getRangeData = () => {
+    
+        slideOutModal();
+    
+        SearchTicketForSummaryReport(selectedStartDate,selectedEndDate,(result:any) => {
+            setTicketList(result);
+        });
+    
+    }
+    
+    const changeRange = (range: any) => {
+    
+        setRange(range);
+    
+        setselectedStartDate(range.firstDate);
+        setselectedEndDate(range.secondDate);
+    
+        console.log(selectedEndDate, " ............ ", selectedStartDate);
+    
+    
+    }
 
     const getDateRangeResult=(DateOne:any,DateTwo:any)=>{
         SearchTicketForSummaryReport(DateOne, DateTwo, (result:any) => {
@@ -216,14 +254,14 @@ const ServiceTicketSummaryReportScreen = () => {
                 />
                 <ActionButton
                     title="Custom"
-                    onPress={btnCloseOnpress}
+                    onPress={selectDateRange}
                     style={custem === true ? style.selectedbutton1 : style.defaultbutton1}
                     textStyle={custem === true ? style.selectedBUTTON_TEXT : style.defaultBUTTON_TEXT}
                 />
 
             </View>
 
-            {showCalendar && (
+            {/* {showCalendar && (
                <View style={{alignContent:'center', justifyContent: 'center',alignItems:'center'}}>
               
                    <CalendarPicker
@@ -233,7 +271,47 @@ const ServiceTicketSummaryReportScreen = () => {
                    />
                </View>
                
-               )}
+               )} */}
+
+                <Animated.View
+                style={{
+                    ...StyleSheet.absoluteFillObject,
+                    top: modalStyle,
+                    backgroundColor: '#fff',
+                    zIndex: 20,
+                    borderRadius: 10,
+                    elevation: 20,
+                    paddingTop: 10,
+                    paddingBottom: 10,
+                    marginLeft: 0,
+                    ...Platform.select({
+                        ios: {
+                            paddingTop: 10
+                        }
+                    })
+                }}>
+
+
+
+                <View style={style.modalCont}>
+
+                    <DateRangePicker
+                        onSelectDateRange={(range) => {
+                            // setRange(range);
+                            changeRange(range);
+                        }}
+                        blockSingleDateSelection={true}
+                        responseFormat="YYYY-MM-DD"
+                        onConfirm={() => getRangeData()}
+                        onClear={slideOutModal}
+                    // maxDate={moment()}
+                    // minDate={moment().subtract(100, "days")}
+                    />
+
+                </View>
+
+
+            </Animated.View>
           
 
             <InputText

@@ -245,11 +245,11 @@ export const updateTicketStatus = (ticketID:any,status:any,callBack:any) => {
   };
 
   export const SearchTicketUsingDateRange = (date1:any,date2:any,callBack:any) => {
-    // console.log(" controller data-  " , date1);
-    // console.log(" controller data-  " , date2);
+    console.log(" controller data-  " , date1);
+    console.log(" controller data-  " , date2);
     DB.searchData(
-        'SELECT * FROM TICKET where (startDate <= ? AND endDate >= ?) OR (startDate <= ? AND endDate >= ?)  ',
-        [date1,date1,date2,date2],
+       'SELECT * FROM TICKET WHERE(startDate >= ? AND startDate <= ?) OR (endDate >= ? AND endDate <= ?)  ',
+        [date1,date2,date1,date2],
         (resp:any, err:any) => {
             callBack(resp, err);
             // console.log(" filter data using date range-  " , resp);
@@ -516,11 +516,12 @@ export const getAllTickets = (callBack:any) =>{
     }
 
     export const SearchTicketForSummaryReport = (date1:any,date2:any,callBack:any) => {
-        // console.log(" controller data-  " , date1);
-        // console.log(" controller data-  " , date2);
+         console.log(" controller data-  " , date1);
+         console.log(" controller data-  " , date2);
+         //
         DB.searchData(
-            'SELECT TICKET._Id,TICKET.ticketId,TICKET.assignTo,TICKET.priority,TICKET.startDate,TICKET.endDate FROM TICKET INNER JOIN SERVICE ON SERVICE.serviceId = TICKET.serviceId  WHERE(TICKET.startDate <= ? AND TICKET.endDate >= ?) OR (TICKET.startDate <= ? AND TICKET.endDate >= ?)',
-            [date1,date1,date2,date2],
+            'SELECT * FROM TICKET INNER JOIN SERVICE ON SERVICE.serviceId = TICKET.serviceId  WHERE (SERVICE.Approve_status != 0 OR SERVICE.Approve_status != 2 ) AND TICKET.attend_status != 3 AND(start_date >= ? AND start_date <= ?) OR (end_date >= ? AND end_date <= ?)   ',
+            [date1,date2,date1,date2],
             (resp:any, err:any) => {
                 callBack(resp, err);
                 // console.log(" filter data using date range-  " , resp);
@@ -534,7 +535,7 @@ export const getAllTickets = (callBack:any) =>{
         // console.log(" controller data-  " , date2);
         DB.searchData(
             'SELECT * FROM TICKET INNER JOIN SERVICE ON SERVICE.serviceId = TICKET.serviceId  WHERE(TICKET.startDate <= ? AND TICKET.endDate >= ?) OR (TICKET.startDate <= ? AND TICKET.endDate >= ?)',
-            [date1,date1,date2,date2],
+            [date1,date2,date1,date2],
             (resp:any, err:any) => {
                 callBack(resp, err);
                 // console.log(" filter data using date range-  " , resp);
