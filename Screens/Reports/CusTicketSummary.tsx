@@ -87,7 +87,9 @@ const ServiceTicketSummaryReportScreen = () => {
    
     
     const selectDateRange = () => {
-
+        setcustomer(false);
+        settiketNo(false);
+        setcustem(true);
         slideInModal();
     
     

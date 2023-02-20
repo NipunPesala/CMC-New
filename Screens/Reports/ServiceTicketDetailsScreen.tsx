@@ -80,7 +80,8 @@ const ServiceTicketDetailsScreen = () => {
 
     }
     const selectDateRange = () => {
-
+        settiketNo(false);
+        setcustome(true);
         slideInModal();
 
 

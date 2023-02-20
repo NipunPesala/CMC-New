@@ -405,14 +405,7 @@ const AttendanceScreen = () => {
     }
   };
 
-  const getDateRangeResult = (DateOne: any, DateTwo: any) => {
-    getALLReadingDetailsbyDateRange(DateOne, DateTwo, (result: any) => {
 
-      setlistdata(result);
-
-    });
-
-  }
 
   const getAllAttendanceDetails = () => {
     try {
@@ -537,26 +530,7 @@ const AttendanceScreen = () => {
   };
 
 
-  const handleDateChange = (date) => {
-    if (!startDate) {
-      setStartDate(date);
-      console.log('start date-' + date);
-
-    } else if (date > startDate) {
-      setEndDate(date);
-      console.log('End date-' + date);
-      // getDateRangeResult(start,end);
-      getDateRangeResult(start, end);
-      setShowCalendar(false);
-
-    } else {
-      ToastAndroid.show("Invalide selected date  ", ToastAndroid.SHORT);
-      setStartDate('');
-      setEndDate('');
-    }
-    //  const start = startDate ? moment(startDate).format("MM/DD/YYYY") : "Not Selected";
-
-  }
+ 
 
   const btnCloseOnpress = () => {
     setShowCalendar(!showCalendar);
@@ -581,7 +555,9 @@ const AttendanceScreen = () => {
   }
 
   const selectDateRange = () => {
-
+    setcustomdays(true);
+    setfirst30dayse(false);
+    setfirst7days(false);
     slideInModalCalander();
 
 

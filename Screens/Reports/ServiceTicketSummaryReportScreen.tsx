@@ -122,7 +122,8 @@ const ServiceTicketSummaryReportScreen = () => {
 
    
     const selectDateRange = () => {
-
+        settiketNo(false);
+        setcustem(true);
         slideInModal();
     
     
@@ -220,13 +221,15 @@ const ServiceTicketSummaryReportScreen = () => {
         settiketNo(false);
         setcustem(false);
         navigation.navigate('CusTicketSummary');
-
+        setcustomer(false);
+        settiketNo(true);
     }
     const handlecustm = () => {
         setModalVisible(true);
         setcustomer(false);
         settiketNo(false);
         setcustem(true);
+        
 
     }
     useEffect(() => {
