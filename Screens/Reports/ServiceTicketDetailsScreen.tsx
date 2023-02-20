@@ -13,8 +13,8 @@ import AttendanceTableDetailsComponent from "../../Components/AttendanceTableDet
 import ActionButton from "../../Components/ActionButton";
 import { getServiceTicketForReport, getSearchServiceTicket, SearchTicketUsingDateRange } from "../../SQLiteDatabaseAction/DBControllers/TicketController";
 import { Calendar } from "react-native-calendars";
-import CalendarPicker from 'react-native-calendar-picker';
 import DateRangePicker from "rn-select-date-range";
+import comStyles from "../../Constant/Components.styles";
 
 let height = Dimensions.get("screen").height;
 const ServiceTicketDetailsScreen = () => {
@@ -90,7 +90,7 @@ const ServiceTicketDetailsScreen = () => {
         try {
 
             Animated.timing(modalStyle, {
-                toValue: height / 3.2,
+                toValue: height / 4,
                 duration: 500,
                 useNativeDriver: false,
             }).start();
@@ -222,6 +222,10 @@ const ServiceTicketDetailsScreen = () => {
                         responseFormat="YYYY-MM-DD"
                         onConfirm={() => getRangeData()}
                         onClear={slideOutModal}
+                        confirmBtnTitle="Search"
+                        clearBtnTitle="Clear"
+                        font={comStyles.FONT_FAMILY.BOLD}
+                        
                     // maxDate={moment()}
                     // minDate={moment().subtract(100, "days")}
                     />

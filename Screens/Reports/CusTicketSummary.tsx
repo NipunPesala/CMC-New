@@ -6,6 +6,7 @@ import { useNavigation } from "@react-navigation/native";
 import InputText from "../../Components/InputText";
 import IconMC from 'react-native-vector-icons/AntDesign';
 import { AttendanceDetails } from '../../Constant/DummyData';
+import comStyles from "../../Constant/Components.styles";
 import style from "./ReportStyle";
 import LeftRightArrowbarComponent from "../../Components/LeftRightArrowbarComponent";
 import AttendanceTableHeaderComponent from "../../Components/AttendanceTableHeaderComponent";
@@ -96,7 +97,7 @@ const ServiceTicketSummaryReportScreen = () => {
         try {
     
             Animated.timing(modalStyle, {
-                toValue: height / 3.2,
+                toValue: height / 4,
                 duration: 500,
                 useNativeDriver: false,
             }).start();
@@ -236,6 +237,9 @@ const ServiceTicketSummaryReportScreen = () => {
                         responseFormat="YYYY-MM-DD"
                         onConfirm={() => getRangeData()}
                         onClear={slideOutModal}
+                        confirmBtnTitle="Search"
+                        clearBtnTitle="Clear"
+                        font={comStyles.FONT_FAMILY.BOLD}
                     // maxDate={moment()}
                     // minDate={moment().subtract(100, "days")}
                     />

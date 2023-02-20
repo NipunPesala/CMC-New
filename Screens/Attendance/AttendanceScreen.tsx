@@ -40,8 +40,9 @@ import {
   getALLReadingDetailsbyDateRange,
 } from '../../SQLiteDatabaseAction/DBControllers/MeterReadingController';
 import { getServiceTicketForReport, getServiceTicketFor7Days, getServiceTicketFor30Days } from '../../SQLiteDatabaseAction/DBControllers/TicketController';
-
-let height = Dimensions.get('screen').height;
+import DateRangePicker from "rn-select-date-range";
+let width = Dimensions.get("screen").width;
+let height = Dimensions.get("screen").height;
 const AttendanceScreen = () => {
   const navigation = useNavigation();
   const [first30dayse, setfirst30dayse] = useState(false);
@@ -65,6 +66,7 @@ const AttendanceScreen = () => {
   const [remark, setremark] = useState('');
 
   const [modalStyle, setModalStyle] = useState(new Animated.Value(height));
+  const [modalStyleCalan, setModalStyleCalan] = useState(new Animated.Value(height));
   const [image, setImage] = useState();
   const [isShowSweep, setIsShowSweep] = useState(true);
   const [ImgStatus, setImgStatus] = useState(false);
@@ -89,8 +91,11 @@ const AttendanceScreen = () => {
   const end = moment(endDate).format("YYYY-MM-DD");
   console.log('new end' + end);
   //
-  const [totalTimeDifference, setTotalTimeDifference] = useState(0);
-  const [overtimeSum, setOvertimeSum] = useState(0);
+  const [totalTimeDifference, setTotalTimeDifference] = useState('');
+  const [overtimeSum, setOvertimeSum] = useState('');
+  const [selectedStartDate, setselectedStartDate] = useState('');
+  const [selectedEndDate, setselectedEndDate] = useState('');
+  const [selectedRange, setRange] = useState({});
 
   const testresult = [
     { "date": "2023-01-20", "inremark": "Hhh", "intime": " ", "outtime": "2023-01-28 22:46:09", "overtime": "20", "shift": "IN", "twhour": "", "value": 158 },
@@ -149,11 +154,12 @@ const AttendanceScreen = () => {
       let roundnum = totalDuration.toFixed(2);
       //let roundnum=57;
       setTotalTimeDifference(roundnum);
-      if (roundnum <= 56) {
+      if (totalDuration <= 56) {
         setOvertimeSum(0);
-      } else if (roundnum >= 56) {
-        let otTime = roundnum - 56;
-        setOvertimeSum(otTime);
+      } else if (totalDuration >= 56) {
+        let otTime = totalDuration - 56;
+        let convertOtTime = otTime.toFixed(2);
+        setOvertimeSum(convertOtTime);
       }
     });
   };
@@ -183,11 +189,12 @@ const AttendanceScreen = () => {
       let roundnum = totalDuration.toFixed(2);
       //let roundnum=57;
       setTotalTimeDifference(roundnum);
-      if (roundnum <= 240) {
-        setOvertimeSum(0);
-      } else if (roundnum >= 240) {
-        let otTime = roundnum - 240;
-        setOvertimeSum(otTime);
+      if (totalDuration <= 240) {
+        setOvertimeSum('0');
+      } else if (totalDuration >= 240) {
+        let otTime = totalDuration - 240;
+        let convertOtTime = otTime.toFixed(2);
+        setOvertimeSum(convertOtTime);
       }
     });
   };
@@ -297,6 +304,8 @@ const AttendanceScreen = () => {
       useNativeDriver: false,
     }).start();
   };
+
+
 
   const slideOutModal = () => {
     getLastReadervalue();
@@ -571,6 +580,71 @@ const AttendanceScreen = () => {
     setRemarks(false);
   }
 
+  const selectDateRange = () => {
+
+    slideInModalCalander();
+
+
+  }
+
+  const slideInModalCalander = () => {
+
+    try {
+
+      Animated.timing(modalStyleCalan, {
+        toValue: height / 4,
+        duration: 500,
+        useNativeDriver: false,
+      }).start();
+
+    } catch (error) {
+      Alert.alert(error + "");
+    }
+
+
+  };
+
+  const slideOutModalCalander = () => {
+
+
+    try {
+
+      Keyboard.dismiss();
+      Animated.timing(modalStyleCalan, {
+        toValue: height,
+        duration: 500,
+        useNativeDriver: false,
+      }).start();
+
+
+    } catch (error) {
+      Alert.alert(error + "");
+    }
+
+  };
+
+  const getRangeData = () => {
+
+    slideOutModalCalander();
+
+    getALLReadingDetailsbyDateRange(selectedStartDate, selectedEndDate, (result: any) => {
+      setlistdata(result);
+    });
+
+  }
+
+  const changeRange = (range: any) => {
+
+    setRange(range);
+
+    setselectedStartDate(range.firstDate);
+    setselectedEndDate(range.secondDate);
+
+    console.log(selectedEndDate, " ............ ", selectedStartDate);
+
+
+  }
+
   ////////////////////////end==============================
 
   return (
@@ -592,6 +666,9 @@ const AttendanceScreen = () => {
             },
           }),
         }}>
+
+
+
         <View style={style.modalCont}>
           {/* ........................................ meter reading modal start.......................................... */}
 
@@ -651,17 +728,17 @@ const AttendanceScreen = () => {
                 max={5}
                 setState={remark => setremark(remark)}
               />
-              
+
               <View
                 style={{
                   justifyContent: 'center',
                   alignItems: 'center',
                   flexDirection: 'column',
                 }}>
-              <Text style={styles.subtxtAtten}>OR</Text>
+                <Text style={styles.subtxtAtten}>OR</Text>
               </View>
 
-              
+
 
               <View
                 style={{
@@ -737,6 +814,7 @@ const AttendanceScreen = () => {
 
           {/* ........................................ meter reading modal end.......................................... */}
         </View>
+
       </Animated.View>
 
       <Header
@@ -774,7 +852,7 @@ const AttendanceScreen = () => {
           />
           <ActionButton
             title="Custom"
-            onPress={btnCloseOnpress}
+            onPress={selectDateRange}
             style={
               customdays === true ? style.selectedbutton : style.defaultbutton
             }
@@ -784,17 +862,11 @@ const AttendanceScreen = () => {
                 : style.defaultBUTTON_TEXT
             }
           />
-        </View>
-        {showCalendar && (
-          <View style={{ alignContent: 'center', justifyContent: 'center', alignItems: 'center' }}>
 
-            <CalendarPicker
-              onDateChange={handleDateChange}
-              selectedStartDate={startDate}
-              selectedEndDate={endDate}
-            />
-          </View>
-        )}
+        </View>
+       
+
+
         <View style={style.detaislContainer}>
           <View style={style.detaislsubContainer}>
             <Text style={style.detaisSubText}>Total Working Hours</Text>
@@ -982,6 +1054,47 @@ const AttendanceScreen = () => {
           iconColor={ComponentsStyles.COLORS.WHITE}
         />
       </View>
+
+      <Animated.View
+          style={{
+            ...StyleSheet.absoluteFillObject,
+            top: modalStyleCalan,
+            backgroundColor: '#fff',
+            zIndex: 20,
+            borderRadius: 10,
+            elevation: 20,
+            paddingTop: 10,
+            paddingBottom: 20,
+            marginLeft: 10,
+            marginRight:10,
+            ...Platform.select({
+              ios: {
+                paddingTop: 50,
+              },
+            }),
+          }}>
+
+          <View style={style.modalContcalander}>
+
+            <DateRangePicker
+              onSelectDateRange={(range) => {
+                // setRange(range);
+                changeRange(range);
+              }}
+              blockSingleDateSelection={true}
+              responseFormat="YYYY-MM-DD"
+              onConfirm={() => getRangeData()}
+              onClear={slideOutModal}
+              confirmBtnTitle="Search"
+              clearBtnTitle="Clear"
+              font={comStyles.FONT_FAMILY.BOLD}
+            // maxDate={moment()}
+            // minDate={moment().subtract(100, "days")}
+            />
+
+          </View>
+
+        </Animated.View>
     </SafeAreaView>
   );
 };
@@ -1061,4 +1174,19 @@ const styles = StyleSheet.create({
     marginLeft: 13,
     marginRight: 13,
   },
+  modalCont: {
+    flex: 1,
+    flexGrow: 1,
+    width: width,
+    paddingHorizontal: 10,
+
+},
+modalContcalander:{
+  flex: 1,
+  flexGrow: 1,
+  width: width,
+ marginLeft:15,
+ marginRight:15,
+ padding:20,
+},
 });
