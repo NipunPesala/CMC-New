@@ -495,7 +495,7 @@ export const getAllTickets = (callBack:any) =>{
 
     export const getSearchTicket = (txt:String, callBack:any) => {
         DB.searchData(
-            'SELECT * FROM TICKET INNER JOIN SERVICE ON SERVICE.serviceId = TICKET.serviceId  WHERE (SERVICE.Approve_status != 0 OR SERVICE.Approve_status != 2) AND TICKET.attend_status = 3 AND (ticketId like ?)',
+            'SELECT * FROM TICKET INNER JOIN SERVICE ON SERVICE.serviceId = TICKET.serviceId  WHERE (SERVICE.Approve_status != 0 OR SERVICE.Approve_status != 2) AND (TICKET.attend_status = 3) AND (TICKET.ticketId like ?)',
             [`%${txt}%`],
             (resp:any, err:any) => {
                 callBack(resp, err);
@@ -520,7 +520,8 @@ export const getAllTickets = (callBack:any) =>{
          console.log(" controller data-  " , date2);
          //
         DB.searchData(
-            'SELECT * FROM TICKET INNER JOIN SERVICE ON SERVICE.serviceId = TICKET.serviceId  WHERE (SERVICE.Approve_status != 0 OR SERVICE.Approve_status != 2 ) AND TICKET.attend_status != 3 AND(start_date >= ? AND start_date <= ?) OR (end_date >= ? AND end_date <= ?)   ',
+            
+            'SELECT TICKET._Id,TICKET.ticketId,TICKET.assignTo,TICKET.priority,TICKET.serviceId FROM TICKET INNER JOIN SERVICE ON SERVICE.serviceId = TICKET.serviceId  WHERE (SERVICE.Approve_status != 0 OR SERVICE.Approve_status != 2) AND (TICKET.attend_status = 3) AND((TICKET.startDate >= ? AND TICKET.startDate <= ?) OR (TICKET.endDate >= ? AND TICKET.endDate <= ?))  ',
             [date1,date2,date1,date2],
             (resp:any, err:any) => {
                 callBack(resp, err);
@@ -534,7 +535,7 @@ export const getAllTickets = (callBack:any) =>{
         // console.log(" controller data-  " , date1);
         // console.log(" controller data-  " , date2);
         DB.searchData(
-            'SELECT * FROM TICKET INNER JOIN SERVICE ON SERVICE.serviceId = TICKET.serviceId  WHERE(TICKET.startDate <= ? AND TICKET.endDate >= ?) OR (TICKET.startDate <= ? AND TICKET.endDate >= ?)',
+            'SELECT * FROM TICKET INNER JOIN SERVICE ON SERVICE.serviceId = TICKET.serviceId  WHERE (SERVICE.Approve_status != 0 OR SERVICE.Approve_status != 2 )AND (TICKET.attend_status = 3) AND((TICKET.startDate >= ? AND TICKET.startDate <= ?) OR (TICKET.endDate >= ? AND TICKET.endDate <= ?))',
             [date1,date2,date1,date2],
             (resp:any, err:any) => {
                 callBack(resp, err);

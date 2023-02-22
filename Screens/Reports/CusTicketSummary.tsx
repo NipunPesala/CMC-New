@@ -133,7 +133,7 @@ const ServiceTicketSummaryReportScreen = () => {
     
         slideOutModal();
     
-        SearchTicketForSummaryReport(selectedStartDate,selectedEndDate,(result:any) => {
+        SearchTicketForCusSummaryReport(selectedStartDate,selectedEndDate,(result:any) => {
             setTicketList(result);
         });
     
