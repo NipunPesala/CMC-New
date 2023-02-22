@@ -1,7 +1,7 @@
 /**
 * @author Gagana Lakruwan
 */
-import { useNavigation } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
 import { 
     View,
@@ -26,19 +26,33 @@ const ServiceHistory = () => {
     const [ticketList,setTicketList]:any[] = useState([]);
     
 
-    useEffect(() => {
+    // useEffect(() => {
 
-      //  console.log(" ServiceHistory ........... ");
+    //   //  console.log(" ServiceHistory ........... ");
 
-        getCurrentServiceCallID().then(res => {
+    //     getCurrentServiceCallID().then(res => {
             
 
-            serviceID = res;
-            getTicketList(serviceID);
+    //         serviceID = res;
+    //         getTicketList(serviceID);
             
-        })
+    //     })
 
-    }, [])
+    // }, [])
+
+    useFocusEffect(
+        React.useCallback(() => {
+
+            getCurrentServiceCallID().then(res => {
+            
+
+                serviceID = res;
+                getTicketList(serviceID);
+                
+            })
+
+        },[])
+    );
     
 
     const getTicketList = (id:any) => {

@@ -9,14 +9,16 @@ export const saveCustomerItems = (data: any, callBack: any) => {
             [
                 {
                     table: 'Customer_Items',
-                    columns: `ItemId,ItemCode,ItemName,CustomerCode,CustomerName,status`,
-                    values: '?,?,?,?,?,?',
+                    columns: `ItemId,ItemCode,ItemName,CustomerCode,CustomerName,Latitude,Longitude,status`,
+                    values: '?,?,?,?,?,?,?,?',
                     params: [
                         data[i].Id,
                         data[i].itemCode,
                         data[i].itemName,
                         data[i].customer,
                         data[i].custmrName,
+                        data[i].Map_Latitude,
+                        data[i].Map_Longitude,
                         data[i].Status,
                     ],
                 },

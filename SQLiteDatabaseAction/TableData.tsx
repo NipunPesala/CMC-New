@@ -1379,6 +1379,20 @@ export const tableData = [
         shouldNotAllowNull: false,
       },
       {
+        name: 'Latitude',
+        dataType: 'TEXT',
+        isPrimaryKey: false,
+        autoIncrement: false,
+        shouldNotAllowNull: false,
+      },
+      {
+        name: 'Longitude',
+        dataType: 'TEXT',
+        isPrimaryKey: false,
+        autoIncrement: false,
+        shouldNotAllowNull: false,
+      },
+      {
         name: 'status',
         dataType: 'TEXT',
         isPrimaryKey: false,

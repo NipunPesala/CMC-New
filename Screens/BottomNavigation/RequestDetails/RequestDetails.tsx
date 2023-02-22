@@ -46,7 +46,9 @@ const RequestDetails = (props: any) => {
     const [screenName, setScreenName] = useState('null');
 
     //Location 
-    const[btnTitle,setBtnTitle] = useState('');
+    const [btnTitle, setBtnTitle] = useState('');
+    const [latitude, setLatitude] = useState("");
+    const [longitude, setLongitude] = useState("");
 
 
 
@@ -170,6 +172,8 @@ const RequestDetails = (props: any) => {
                     setStatus(result[i].status);
                     setSeviceId(result[i].serviceId);
                     setContactNo(result[i].contact_no);
+                    setLatitude(result[i].Latitude);
+                    setLongitude(result[i].Longitude);
                     // console.log(" result id //////////////////////   ",result[i].serviceId);
 
                     // AsyncStorage.setItem(AsyncStorageConstants.ASYNC_CURRENT_SERVICE_CALL_ID,result[i].serviceId);
@@ -226,19 +230,19 @@ const RequestDetails = (props: any) => {
 
     }
 
-    const LoadMap =  () => {
+    const LoadMap = () => {
 
         selection("location")
 
-        const latitude = 6.8734353; // latitude of your desire location
-        const longitude = 79.8798461; // longitude of your desire location
-        // const longitude = 73.35574341458842; // longitude of your desire location
+        const maplatitude = parseFloat(latitude); // latitude of your desire location
+        const maplongitude = parseFloat(longitude); // longitude of your desire location
+
         const scheme = Platform.select({
             ios: "maps:0,0?q=",  // if device is ios 
             android: "geo:0,0?q=", // if device is android 
         });
-        const latLng = `${latitude},${longitude}`;
-        const label = "Pristine Solution";
+        const latLng = `${maplatitude},${maplongitude}`;
+        const label = cusName;
         const url = Platform.select({
             ios: `${scheme}${label}@${latLng}`,
             android: `${scheme}${latLng}(${label})`,
@@ -282,7 +286,7 @@ const RequestDetails = (props: any) => {
     // }, [navigation]);
 
 
-    
+
     useFocusEffect(
         React.useCallback(() => {
             getCurrentServiceCallID().then(res => {
@@ -297,7 +301,7 @@ const RequestDetails = (props: any) => {
 
     return (
         <SafeAreaView style={ComStyles.CONTAINER}>
-            <Header title="Request Details" isBtn={true} btnOnPress={() =>SelectnavigationScreen()} />
+            <Header title="Request Details" isBtn={true} btnOnPress={() => SelectnavigationScreen()} />
             <View style={ComStyles.CONTENT}>
                 <View style={{ padding: 10 }} />
                 <ServiceCustomerDetails
@@ -346,12 +350,11 @@ const RequestDetails = (props: any) => {
                             />
                             :
                             loadScreen == "location" ?
-                                // <Locations
-                                // btnTitle="Start Journey"
-                                // pressbtn={() => LoadMap()}
-                                //  />
+                                <Locations
+                                    btnTitle="Start Journey"
+                                    pressbtn={() => LoadMap()}
+                                />
 
-                                <></>
                                 :
                                 loadScreen == "serviceH" ?
                                     <ServiceHistory />

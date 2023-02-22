@@ -263,36 +263,38 @@ const NewServiceCall = (props: any) => {
             });
     }
     const save_serviceCall = (data: any) => {
-        console.log("**************", data);
-        console.log("**************", JSON.stringify(data));
+        // console.log("**************", data);
+        // console.log("**************", JSON.stringify(data));
         try {
             saveServiceData(data, (result: any) => {
-                console.log(result, "NEWSERVICE_CALL_SAVE");
+                // console.log(result, "NEWSERVICE_CALL_SAVE");
 
                 if (result === "success") {
-                    NetInfo.fetch().then(state => {
-                        if (!state.isConnected) {
-                            console.log('No internet connection');
-                            ToastAndroid.show("Please check your internet connection", ToastAndroid.SHORT);
-                        } else {
-                            console.log('Connected to the internet');
-                            UploadServiceCall();
+                    // NetInfo.fetch().then(state => {
+                    //     if (!state.isConnected) {
+                    //         console.log('No internet connection');
+                    //         ToastAndroid.show("Please check your internet connection", ToastAndroid.SHORT);
+                    //     } else {
+                    //         console.log('Connected to the internet');
+                    //         UploadServiceCall();
 
-                            if (mode == 1) {
-                                console.log("**************", "NEWSERVICE_CALL_UPDATE");
-                                ToastAndroid.show("New Service Call Update Success ", ToastAndroid.SHORT);
+                    //         if (mode == 1) {
+                    //             console.log("**************", "NEWSERVICE_CALL_UPDATE");
+                    //             ToastAndroid.show("New Service Call Update Success ", ToastAndroid.SHORT);
 
-                            } else {
-                                generateCallID();
-                                ToastAndroid.show("New Service Call Create Success ", ToastAndroid.SHORT);
-                            }
+                    //         } else {
+                    //             generateCallID();
+                    //             ToastAndroid.show("New Service Call Create Success ", ToastAndroid.SHORT);
+                    //         }
 
-                            navigation.navigate('Home');
+                    //         navigation.navigate('Home');
 
-                        }
-                    });
+                    //     }
+                    // });
                     //need check internet connection true false
 
+                    ToastAndroid.show("New Service Call Create Success ", ToastAndroid.SHORT);
+                    navigation.navigate('Home');
                 } else {
 
                     Alert.alert(
