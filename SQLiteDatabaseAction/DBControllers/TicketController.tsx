@@ -150,7 +150,7 @@ export const getCompelteTicketByServiceId = (serviceId:any, callBack:any) => {
 
 export const getTicketsForReport = (callBack:any) => {
     DB.searchData(
-        'SELECT TICKET._Id,TICKET.ticketId,TICKET.assignTo,TICKET.priority,TICKET.serviceId FROM TICKET INNER JOIN SERVICE ON SERVICE.serviceId = TICKET.serviceId  WHERE (SERVICE.Approve_status != 0 OR SERVICE.Approve_status != 2) AND TICKET.attend_status != 3',
+        'SELECT TICKET._Id,TICKET.ticketId,TICKET.assignTo,TICKET.priority,TICKET.serviceId FROM TICKET INNER JOIN SERVICE ON SERVICE.serviceId = TICKET.serviceId  WHERE (SERVICE.Approve_status != 0 OR SERVICE.Approve_status != 2) AND TICKET.attend_status = 3',
         [],
         (resp:any, err:any) => {
             callBack(resp, err);
