@@ -213,6 +213,7 @@ const ServiceTicketSummaryReportScreen = () => {
         setcustomer(false);
         setcustem(false);
         setShowCalendar(false);
+        getTicketSummaryDetails();
 
     }
     const handlecustomer = () => {

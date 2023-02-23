@@ -171,6 +171,7 @@ const ServiceTicketSummaryReportScreen = () => {
         setcustomer(true);
         settiketNo(false);
         setcustem(false);
+        getTicketCustomerSummary();
 
     }
     useEffect(() => {
