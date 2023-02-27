@@ -95,6 +95,7 @@ const Home = () => {
     SyncArray.splice();
     console.log(SyncArray, '>>>>>>>>>>>>>2');
   };
+
   const LogoutFuntion = () => {
     Alert.alert('LogOut', 'Are you sure LogOut', [
       {
@@ -110,6 +111,7 @@ const Home = () => {
   };
   const logoutsheet = () => {
     refRBSheet.current.open();
+
   };
 
   const slideInModal = () => {
@@ -419,6 +421,7 @@ const Home = () => {
   }
 
   useEffect(() => {
+
     const focusHandler = navigation.addListener('focus', () => {
       setloandingspinner(true);
       getWellcomeNote();

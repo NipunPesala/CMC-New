@@ -282,6 +282,8 @@ const Login = () => {
                 if (response.data.ResponseDescription == "Login Successful") {
                     await AsyncStorage.setItem(AsyncStorageConstants.ASYNC_STORAGE_LOGIN_NAME, response.data.Username);
                     await AsyncStorage.setItem(AsyncStorageConstants.ASYNC_TOCKEN, response.data.Data[0].Token);
+                   // await AsyncStorage.setItem('UserType','Technician');
+                    await AsyncStorage.setItem('UserType','Admin');
                     // AsyncStorage.setItem(AsyncStorageConstants.ASYNC_LOGIN_USERID, response.data.Data[0].UserId);
                     // AsyncStorage.setItem(AsyncStorageConstants.ASYNC_TOCKEN, response.data.token);
                     await AsyncStorage.setItem(AsyncStorageConstants.ASYNC_LOGIN_USERID, "1");

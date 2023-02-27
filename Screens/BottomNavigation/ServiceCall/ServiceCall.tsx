@@ -62,6 +62,7 @@ const ServiceCall = () => {
     const [selectAssistance, setSelectAssistance] = useState('');
     const [selectTechnician, setSelectTechnician] = useState('');
     const [selectCustomer, setSelectCustomer] = useState('');
+    const [userLavelUpdate, setUserLavelUpdate] = useState(true);
 
     const [customerList, setCustomerList] = useState([]);
     const route=useRoute();
@@ -81,6 +82,20 @@ const ServiceCall = () => {
 
 
     }
+
+    const getUserType=()=>{
+
+       
+        AsyncStorage.getItem('UserType').then((value)=>{
+          console.log('this is a user type+++++++++++++',value);
+          if(value=='Technician'){
+            setUserLavelUpdate(false);
+          }else{
+            setUserLavelUpdate(true);
+          }
+         
+        })
+      }
 
     const RecievedPressed = () => {
         setRecieve(true);
@@ -306,6 +321,7 @@ const ServiceCall = () => {
     }
 
     useEffect(() => {
+        getUserType();
         const focusHandler = navigation.addListener('focus', () => {
             console.log("refresh ******************* ");
             RecievedPressed();
@@ -427,7 +443,7 @@ const ServiceCall = () => {
                                                     nameAddress={true}
                                                     isbtn={recieve}
                                                     isIcon={confirm}
-                                                    isUpdate={true}
+                                                    isUpdate={userLavelUpdate}
                                                     onPressIcon={() => handleclicked(item.serviceId)}
                                                     onPresBtn={() => getServiceID(item.serviceId)}
                                                     onPresBtnupdate = {() => _handleOnPress(item.serviceId,customerList)}

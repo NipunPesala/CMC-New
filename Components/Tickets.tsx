@@ -19,18 +19,19 @@ import ListBox from "./ListBox";
 
 type ParamTypes = {
     btnEnable: boolean;
-    enableStatusUpdate: boolean;
+    
 }
 let serviceID: any;
 var checkstatus = false;
 var checkstatusNum: any;
-const Tickets = ({ btnEnable, enableStatusUpdate }: ParamTypes) => {
+const Tickets = ({ btnEnable }: ParamTypes) => {
     const width = Dimensions.get("screen").width;
     const height = Dimensions.get("screen").height;
     const navigation = useNavigation();
 
     const [ticketList, setTicketList]: any[] = useState([]);
     const [att_status, setatt_status] = useState('');
+    const [enableStatusUpdate, setenableStatusUpdate] = useState(false);
 
     const UpdateHandle = async (ticketID: any) => {
         navigation.navigate('NewServiceTicket', {
@@ -72,14 +73,26 @@ const Tickets = ({ btnEnable, enableStatusUpdate }: ParamTypes) => {
                 if (result[i].attend_status === 0) {
 
                     setatt_status("Open");
+                    AsyncStorage.getItem('UserType').then((value)=>{
+                        console.log('this is a user type+++++++++++++',value);
+                        if(value=='Technician'){
+                            setenableStatusUpdate(true);
+                        }else{
+                            setenableStatusUpdate(false);
+                        }
+                       
+                      })
+                    //setenableStatusUpdate(false);
 
                 } else if (result[i].attend_status === 1) {
 
                     setatt_status("Pending");
+                    setenableStatusUpdate(true);
 
                 } else if (result[i].attend_status === 2) {
 
                     setatt_status("Hold");
+                    setenableStatusUpdate(true);
                 }
 
                 checkstatusNum == result[i].status
@@ -169,7 +182,8 @@ const Tickets = ({ btnEnable, enableStatusUpdate }: ParamTypes) => {
                                 status={item.priority}
                                 isbtn={item.status == "1" ? false : true}
                                 isIcon={item.status == "0" ? false : true}
-                                // isUpdate={item.status == "1" ? false : true}
+                                isUpdate={item.status == "1" ? false : true}
+                                // isUpdate={true}
                                 nameAddress={true}
                                 enableStatus={btnEnable}
                                 onPressIcon={() => HandleIcon(item.id)}

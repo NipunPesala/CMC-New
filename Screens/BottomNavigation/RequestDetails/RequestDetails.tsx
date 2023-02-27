@@ -105,8 +105,8 @@ const RequestDetails = (props: any) => {
             enableServiceCall(sid, 1, (result: any) => {
 
 
-                console.log('---------------------',result);
-                
+                console.log('---------------------', result);
+
 
                 if (result === "success") {
 
@@ -184,13 +184,13 @@ const RequestDetails = (props: any) => {
                     // AsyncStorage.setItem(AsyncStorageConstants.ASYNC_CURRENT_SERVICE_CALL_ID,result[i].serviceId);
 
 
-console.log(" result id //////////////////////   ",result[i].Attend_status);
+                    console.log(" result id //////////////////////   ", result[i].Attend_status);
                     if (result[i].Attend_status === 0) {
 
                         setStatus("Open");
                         setIsServiceActive(true);
 
-                    } else if (result[i].Attend_status ===1) {
+                    } else if (result[i].Attend_status === 1) {
 
                         setStatus("Pending");
                         setIsServiceActive(false);
@@ -353,8 +353,8 @@ console.log(" result id //////////////////////   ",result[i].Attend_status);
 
                             <Tickets
                                 btnEnable={isServiceActive}
-                                enableStatusUpdate={!isServiceActive}
-                                // enableStatusUpdate={isServiceActive}
+
+
                             />
                             :
                             loadScreen == "location" ?
