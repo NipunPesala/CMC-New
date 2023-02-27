@@ -56,7 +56,7 @@ export const getAllUserTypes = (type:any,callBack:any) =>{
         'SELECT * FROM USER_TYPES WHERE status=1 AND type_name=?',
         [type],
         (resp:any, err:any) => {
-          //  console.log(" **************  all customers ************  " + resp);
+        //    console.log(" **************  all customers ************  " + resp);
             callBack(resp, err);
         },
     );

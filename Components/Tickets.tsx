@@ -62,6 +62,9 @@ const Tickets = ({ btnEnable }: ParamTypes) => {
 
         getTicketByServiceId(id, (result: any) => {
 
+
+            console.log('=====================================',result);
+            
             const ticketArray: any[] = [];
 
 
@@ -76,8 +79,11 @@ const Tickets = ({ btnEnable }: ParamTypes) => {
                     AsyncStorage.getItem('UserType').then((value)=>{
                         console.log('this is a user type+++++++++++++',value);
                         if(value=='Technician'){
+                            console.log('----------111111111111');
+                            
                             setenableStatusUpdate(true);
                         }else{
+                            console.log('----------22222222222');
                             setenableStatusUpdate(false);
                         }
                        
@@ -95,6 +101,9 @@ const Tickets = ({ btnEnable }: ParamTypes) => {
                     setenableStatusUpdate(true);
                 }
 
+
+                console.log('---------1111--------------------------',enableStatusUpdate);
+                
                 checkstatusNum == result[i].status
                 if (result[i].status === "0") {
                     checkstatus = true;
@@ -109,13 +118,16 @@ const Tickets = ({ btnEnable }: ParamTypes) => {
                         status: result[i].status,
                         priority: result[i].priority,
                         date: result[i].startDate,
-                        attend_status: att_status,
+                        attend_status: result[i].attend_status,
                         attend_statusStr: att_status,//hold or pending
 
 
 
                     }
                 );
+
+                console.log(ticketArray,'?????????????????????????????');
+                
 
             }
 
@@ -183,7 +195,6 @@ const Tickets = ({ btnEnable }: ParamTypes) => {
                                 isbtn={item.status == "1" ? false : true}
                                 isIcon={item.status == "0" ? false : true}
                                 isUpdate={item.status == "1" ? false : true}
-                                // isUpdate={true}
                                 nameAddress={true}
                                 enableStatus={btnEnable}
                                 onPressIcon={() => HandleIcon(item.id)}
@@ -192,7 +203,7 @@ const Tickets = ({ btnEnable }: ParamTypes) => {
                                 headerType="Ticket No  :"
                                 ticketError={item.error}
                                 btnTitle="Proceed"
-                                enableStatusUpdate={enableStatusUpdate}
+                                enableStatusUpdate={item.attend_status == 0 ? false : true}
                             />
                         </View>
                     );

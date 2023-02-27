@@ -63,39 +63,42 @@ const ServiceCall = () => {
     const [selectTechnician, setSelectTechnician] = useState('');
     const [selectCustomer, setSelectCustomer] = useState('');
     const [userLavelUpdate, setUserLavelUpdate] = useState(true);
+    const [enableUpdate, setenableUpdate] = useState(true);
 
     const [customerList, setCustomerList] = useState([]);
-    const route=useRoute();
+    const route = useRoute();
 
-    const filterServiceCall=()=>{
-        if(route.params.filterId==1){
-                console.log('this is a confirim service call'); 
-                ConfirmPressed();
-              
-        }else if(route.params.filterId==2){
+    const filterServiceCall = () => {
+        if (route.params.filterId == 1) {
+            // console.log('this is a confirim service call');
+            ConfirmPressed();
 
-                console.log('this is a recieved service call'); 
-                RecievedPressed();
-        }else{
-                console.log('error');
+        } else if (route.params.filterId == 2) {
+
+            // console.log('this is a recieved service call');
+            RecievedPressed();
+        } else {
+            console.log('error');
         }
 
 
     }
 
-    const getUserType=()=>{
+    const getUserType = () => {
 
-       
-        AsyncStorage.getItem('UserType').then((value)=>{
-          console.log('this is a user type+++++++++++++',value);
-          if(value=='Technician'){
-            setUserLavelUpdate(false);
-          }else{
-            setUserLavelUpdate(true);
-          }
-         
+
+        AsyncStorage.getItem('UserType').then((value) => {
+            console.log('this is a user type+++++++++++++', value);
+            if (value == 'Technician') {
+                setUserLavelUpdate(false);
+            } else {
+
+                    setUserLavelUpdate(true);
+
+            }
+
         })
-      }
+    }
 
     const RecievedPressed = () => {
         setRecieve(true);
@@ -104,6 +107,8 @@ const ServiceCall = () => {
 
         getServiceCall(0);
         // navigation.navigate('ServiceCall');
+
+       
     }
     const ConfirmPressed = () => {
         setRecieve(false);
@@ -111,11 +116,12 @@ const ServiceCall = () => {
         getServiceCall(1);
         // setlistdata(serviceData);
         // navigation.navigate('ServiceCall');
+        
     }
 
     const slideInModal = () => {
         setIsShowSweep(false);
-       // console.log('sampleIn');
+        // console.log('sampleIn');
         Animated.timing(modalStyle, {
             toValue: height / 1.90,
             duration: 500,
@@ -138,7 +144,7 @@ const ServiceCall = () => {
 
     const acceptServiceCall = (status: any) => {
 
-      //  console.log(serviceID, "  ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,, ");
+        //  console.log(serviceID, "  ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,, ");
 
         // getServiceData();
 
@@ -171,27 +177,27 @@ const ServiceCall = () => {
         try {
 
             updateServiceCAll(serviceID, status, (result: any) => {
-               // console.log(result, "/////////////......................//////////");
+                // console.log(result, "/////////////......................//////////");
 
                 if (result === "success") {
 
 
-                    if(status === 1){
+                    if (status === 1) {
 
                         ToastAndroid.show("Accepted Service call ", ToastAndroid.SHORT);
 
-                    }else if(status === 2){
+                    } else if (status === 2) {
 
                         ToastAndroid.show("Rejected Service call ", ToastAndroid.SHORT);
 
                     }
 
                     RecievedPressed();
-                    
+
                     slideOutModal();
                     // navigation.navigate("ServiceCall");
-                    
-                    
+
+
 
 
                 } else {
@@ -220,14 +226,14 @@ const ServiceCall = () => {
     }
 
 
-    const handleclicked = (callID:any) => {
+    const handleclicked = (callID: any) => {
 
-        AsyncStorage.setItem(AsyncStorageConstants.ASYNC_CURRENT_SERVICE_CALL_ID,callID);
+        AsyncStorage.setItem(AsyncStorageConstants.ASYNC_CURRENT_SERVICE_CALL_ID, callID);
         console.log("call details check");
-        
+
         // navigation.navigate('RequestDetails',{navigateId:1});
-        
-        navigation.navigate('RequestDetails',{navigateId:1})
+
+        navigation.navigate('RequestDetails', { navigateId: 1 })
     };
 
     const getServiceID = (ID: any) => {
@@ -243,13 +249,13 @@ const ServiceCall = () => {
 
     const getServiceCallByStatus = () => {
 
-        console.log("receive  ,,,,,,,,,,  " , recieve , "    confirm ,,,,,,,,,,,,,,,,,,,,,,     " , confirm);
-        
+        console.log("receive  ,,,,,,,,,,  ", recieve, "    confirm ,,,,,,,,,,,,,,,,,,,,,,     ", confirm);
+
 
         if (recieve) {
 
             console.log("received .............");
-            
+
 
             getServiceCall(0);
 
@@ -262,17 +268,17 @@ const ServiceCall = () => {
         }
 
     }
-   
-    const _handleOnPress = (status:any,customerList:any) => {
-       
+
+    const _handleOnPress = (status: any, customerList: any) => {
+
 
         navigation.navigate('NewServiceCall', {
             serviceID: status,
-            mode:1,
-            cusList:customerList,
-            navigate:1,
+            mode: 1,
+            cusList: customerList,
+            navigate: 1,
         });
-      };
+    };
 
     const getServiceCall = (status: any) => {
 
@@ -281,8 +287,8 @@ const ServiceCall = () => {
         getServiceCalls(status, (result: any) => {
             // setServiceCallList(result);
 
-            console.log('<<<<<<<<<<<<<',result);
-            
+            console.log('<<<<<<<<<<<<<', result);
+
 
             try {
                 var dateArr: any = [];
@@ -292,7 +298,7 @@ const ServiceCall = () => {
                 });
                 dateArr = [... new Set(dateArr)];
 
-             //   console.log("............ ", dateArr);
+                //   console.log("............ ", dateArr);
 
 
                 let i = 1;
@@ -321,14 +327,15 @@ const ServiceCall = () => {
     }
 
     useEffect(() => {
-        getUserType();
+
         const focusHandler = navigation.addListener('focus', () => {
             console.log("refresh ******************* ");
             RecievedPressed();
             getCustomers();
             filterServiceCall();
-           // getFilterId();
-           
+            // getFilterId();
+            getUserType();
+
 
         });
         return focusHandler;
@@ -336,7 +343,7 @@ const ServiceCall = () => {
 
     const getCustomers = () => {
         getAllCustomers((result: any) => {
-          //  console.log("<><><><><><><><>< SERVICE CALL"+ result);
+            //  console.log("<><><><><><><><>< SERVICE CALL"+ result);
             setCustomerList(result);
         });
 
@@ -385,14 +392,14 @@ const ServiceCall = () => {
 
                     <ActionButton
                         title="Recieved"
-                         onPress={RecievedPressed}
+                        onPress={RecievedPressed}
                         style={recieve === true ? style.selectedbutton : style.defaultbutton}
                         textStyle={recieve === true ? style.selectedBUTTON_TEXT : style.defaultBUTTON_TEXT}
                     />
                     <ActionButton
                         title="Confirmed"
                         onPress={ConfirmPressed}
-                    
+
                         style={confirm === true ? style.selectedbutton : style.defaultbutton}
                         textStyle={confirm === true ? style.selectedBUTTON_TEXT : style.defaultBUTTON_TEXT}
                     />
@@ -400,7 +407,7 @@ const ServiceCall = () => {
 
                 </View>
 
-                <FlatList    
+                <FlatList
                     showsHorizontalScrollIndicator={false}
                     // data={Arrays.SelectPackage.Wash.filter(ob => ob.extras == true)}
                     data={serviceCallList}
@@ -428,11 +435,11 @@ const ServiceCall = () => {
                                     data={item.details}
                                     style={{ marginTop: 10, alignItems: 'center' }}
                                     horizontal={false}
-                                 
-            
+
+
                                     renderItem={({ item }) => {
-                                        
-                                     //   console.log("_renderItem", item.details);
+
+                                        //   console.log("_renderItem", item.details);
                                         return (
                                             <View style={{ width: '100%', padding: 10, alignItems: 'center' }}>
                                                 <ListBox
@@ -446,14 +453,15 @@ const ServiceCall = () => {
                                                     isUpdate={userLavelUpdate}
                                                     onPressIcon={() => handleclicked(item.serviceId)}
                                                     onPresBtn={() => getServiceID(item.serviceId)}
-                                                    onPresBtnupdate = {() => _handleOnPress(item.serviceId,customerList)}
+                                                    onPresBtnupdate={() => _handleOnPress(item.serviceId, customerList)}
                                                     btnTitle="Proceed"
+                                                    enableStatusUpdate={item.Attend_status == 0 ? false : true}
                                                 />
                                             </View>
                                         );
                                     }
-                                  
-                                }
+
+                                    }
                                     keyExtractor={item => `${item._Id}`}
                                 />
                             </View>
@@ -461,7 +469,7 @@ const ServiceCall = () => {
 
                         );
                     }
-            }
+                    }
                     keyExtractor={item => `${item.date}`}
                 />
 

@@ -167,9 +167,22 @@ const NewServiceTicket = (props: any) => {
         }
     }
     const update_data = (data: any) => {
-        updateTicket(data[0].serviceCallId, startDate, endDate, "sample", content, data[0].assignPerson, data[0].priority, "0", "0", "", "", "", "", TicketID, (result: any) => {
-            ToastAndroid.show("Ticket Update Success ", ToastAndroid.SHORT);
-            navigation.navigate('ServiceTicketList');
+        updateTicket(data, (result: any) => {
+
+            console.log(" update ticket ........ " , result);
+
+            if(result === "success"){
+
+                ToastAndroid.show("Ticket Update Success ", ToastAndroid.SHORT);
+                navigation.navigate('RequestDetails', { navigateId: 0 })
+
+            }else{
+
+                ToastAndroid.show("Ticket Update Failed ", ToastAndroid.SHORT);
+            }
+            
+           
+            // navigation.navigate('ServiceTicketList');
         });
     }
     const save_data = (data: any) => {
@@ -303,7 +316,9 @@ const NewServiceTicket = (props: any) => {
                     const data = result?.filter((a: any) => a.serviceId == result[i].serviceId)[0];
                     setselectServiceCallID(data.serviceId);
                     setSelectPriority(prority);
-                    setSelectAssignPerson(Assistance)
+                    setSelectAssignPerson(Assistance);
+                    setSelectAssignPersonID(result[i].technicianID);
+
                 }
             });
             getAllPriority((result: any) => {

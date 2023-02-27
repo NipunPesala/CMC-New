@@ -324,13 +324,13 @@ export const updateActualendDate = (ticketID:any,Sdate:any,callBack:any) => {
     );
   };
 //====================================================
-  export const updateTicket = (serviceId:any,startDate:any,endDate:any,itemDescription:any,content:any,assignTo:any,priority:any,attend_status:any,status:any,engRemark:any,cusNic:any,cusRemark:any,signatureStatus:any,ticketId:any,callBack:any) => {
- 
- console.log(serviceId,'----',priority);
- 
+  export const updateTicket = (data:any,callBack:any) => {
+    
+console.log(data,'--------------------------------');
+
     DB.updateData(
-      'UPDATE TICKET SET serviceId=?,startDate=?,endDate=?,itemDescription=?,content=?,assignTo=?,priority=?,attend_status=?,status=?,engRemark=?,cusNic=?,cusRemark=?,signatureStatus=? WHERE ticketId=?',
-      [serviceId,startDate,endDate,itemDescription,content,assignTo,priority,attend_status,status,engRemark,cusNic,cusRemark,signatureStatus,ticketId],
+      'UPDATE TICKET SET serviceId=?,startDate=?,endDate=?,itemDescription=?,content=?,assignTo=?,priority=?,attend_status=?,status=?,engRemark=?,cusNic=?,cusRemark=?,signatureStatus=?,technicianID=?,syncStatus=?,actualstartDate=?,actualendtDate=?,itemCode=? WHERE ticketId=?',
+      [data[0].serviceId, data[0].startDate,data[0].endDate,data[0].itemDescription,data[0].content,data[0].assignTo,data[0].priority,data[0].attend_status,data[0].status,data[0].engRemark,data[0].cusNic,data[0].cusRemark,data[0].signatureStatus,data[0].technicianID,data[0].syncStatus,data[0].actualstartDate, data[0].actualendtDate,data[0].itemCode,data[0].ticketId],
       (resp:any, err:any) => {
         callBack(resp, err);
       },

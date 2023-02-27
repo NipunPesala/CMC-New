@@ -63,7 +63,7 @@ export const saveItemSerialNo = (data:any, callBack:any) => {
       
         console.log(" Item code --------------  " , itemCod);
         DB.searchData(
-           'SELECT ItemId,ItemCode,msnfSN,InternalSN FROM Item_serialNO WHERE ItemId=?',
+           'SELECT ItemId,ItemCode,msnfSN,InternalSN FROM Item_serialNO WHERE ItemCode=?',
             [itemCod],
             (resp:any, err:any) => {
                 callBack(resp, err);

@@ -102,6 +102,7 @@ const NewServiceCall = (props: any) => {
     const [itemID, setitemID] = useState(null);
     const [customerID, setcustomerID] = useState(null);
     const [selectSerialNum, setSelectSerialNum] = useState(null);
+    // const [serialNumDesable, setserialNumDesable] = useState(false);
     var TOCKEN_KEY: any;
     const mode = route.params.mode;
 
@@ -113,6 +114,7 @@ const NewServiceCall = (props: any) => {
 
             if (route.params.cusList?.length > 0) {
                 SetPreviousAddedData(route.params.serviceID);
+                // setserialNumDesable(true);
             }
             if (mode != 1) {
                 generateCallID();
@@ -161,89 +163,89 @@ const NewServiceCall = (props: any) => {
         try {
 
 
-        if (selectSerialNum != null || selectSerialNum == "") {
-            if (selectPriority != null) {
-                if (selectServiceType != null || selectServiceType != "") {
-                    if (selectItemCode != null || selectItemCode == "") {
-                        if (selectCustomer != null || selectCustomer == "") {
-                            if (cusAddress != "") {
-                                if (contactPerson != "") {
-                                    if (contactNumber != "") {
-                                        if (subject != "") {
-                                            if (selectTechnician != null || selectTechnician != "") {
-                                                if (selectSecretary != null || selectSecretary != "") {
-                                                    if (selectAssistance != null || selectAssistance != "") {
-                                                        if (startDate != "") {
-                                                            if (startDate != 'Invalid date') {
-                                                                if (endDate != "") {
-                                                                    if (endDate != 'Invalid date') {
+            if (selectSerialNum != null || selectSerialNum == "") {
+                if (selectPriority != null) {
+                    if (selectServiceType != null || selectServiceType != "") {
+                        if (selectItemCode != null || selectItemCode == "") {
+                            if (selectCustomer != null || selectCustomer == "") {
+                                if (cusAddress != "") {
+                                    if (contactPerson != "") {
+                                        if (contactNumber != "") {
+                                            if (subject != "") {
+                                                if (selectTechnician != null || selectTechnician != "") {
+                                                    if (selectSecretary != null || selectSecretary != "") {
+                                                        if (selectAssistance != null || selectAssistance != "") {
+                                                            if (startDate != "") {
+                                                                if (startDate != 'Invalid date') {
+                                                                    if (endDate != "") {
+                                                                        if (endDate != 'Invalid date') {
 
-                                                                        if (contactNumber.length == 10) {
+                                                                            if (contactNumber.length == 10) {
 
-                                                                            if (mode == 1) {
-                                                                                Update_serviceCall(sendData);
+                                                                                if (mode == 1) {
+                                                                                    Update_serviceCall(sendData);
+                                                                                } else {
+                                                                                    save_serviceCall(sendData);
+                                                                                }
                                                                             } else {
-                                                                                save_serviceCall(sendData);
+                                                                                dropDownAlertRef.alertWithType('error', 'Error', 'Invalid Mobile Number..!');
                                                                             }
+
                                                                         } else {
-                                                                            dropDownAlertRef.alertWithType('error', 'Error', 'Invalid Mobile Number..!');
+                                                                            dropDownAlertRef.alertWithType('error', 'Error', 'Please Select valid End Date..!');
                                                                         }
 
                                                                     } else {
-                                                                        dropDownAlertRef.alertWithType('error', 'Error', 'Please Select valid End Date..!');
+                                                                        dropDownAlertRef.alertWithType('error', 'Error', 'Please Select End Date..!');
                                                                     }
 
                                                                 } else {
-                                                                    dropDownAlertRef.alertWithType('error', 'Error', 'Please Select End Date..!');
+                                                                    dropDownAlertRef.alertWithType('error', 'Error', 'Please Select valid Start Date..!');
                                                                 }
 
                                                             } else {
-                                                                dropDownAlertRef.alertWithType('error', 'Error', 'Please Select valid Start Date..!');
+                                                                dropDownAlertRef.alertWithType('error', 'Error', 'Please Select startDate..!');
                                                             }
 
                                                         } else {
-                                                            dropDownAlertRef.alertWithType('error', 'Error', 'Please Select startDate..!');
+                                                            dropDownAlertRef.alertWithType('error', 'Error', 'Please Select Assistance..!');
                                                         }
-
                                                     } else {
-                                                        dropDownAlertRef.alertWithType('error', 'Error', 'Please Select Assistance..!');
+                                                        dropDownAlertRef.alertWithType('error', 'Error', 'Please Select Secretary..! ');
                                                     }
                                                 } else {
-                                                    dropDownAlertRef.alertWithType('error', 'Error', 'Please Select Secretary..! ');
+                                                    dropDownAlertRef.alertWithType('error', 'Error', 'Please Select Technician..! ');
                                                 }
                                             } else {
-                                                dropDownAlertRef.alertWithType('error', 'Error', 'Please Select Technician..! ');
+                                                dropDownAlertRef.alertWithType('error', 'Error', 'Please Enter Subject..!');
                                             }
                                         } else {
-                                            dropDownAlertRef.alertWithType('error', 'Error', 'Please Enter Subject..!');
+                                            dropDownAlertRef.alertWithType('error', 'Error', 'Please Enter Contact Number..!');
                                         }
                                     } else {
-                                        dropDownAlertRef.alertWithType('error', 'Error', 'Please Enter Contact Number..!');
+                                        dropDownAlertRef.alertWithType('error', 'Error', 'Please Enter Contact Person..!');
                                     }
                                 } else {
-                                    dropDownAlertRef.alertWithType('error', 'Error', 'Please Enter Contact Person..!');
+                                    dropDownAlertRef.alertWithType('error', 'Error', 'Please Enter Address..!');
                                 }
                             } else {
-                                dropDownAlertRef.alertWithType('error', 'Error', 'Please Enter Address..!');
+                                dropDownAlertRef.alertWithType('error', 'Error', 'Please Select Customer..! ');
                             }
                         } else {
-                            dropDownAlertRef.alertWithType('error', 'Error', 'Please Select Customer..! ');
+                            dropDownAlertRef.alertWithType('error', 'Error', 'Please Select Service Item Code..!');
                         }
                     } else {
-                        dropDownAlertRef.alertWithType('error', 'Error', 'Please Select Service Item Code..!');
+                        dropDownAlertRef.alertWithType('error', 'Error', 'Please Select Service Type..!');
                     }
+
                 } else {
-                    dropDownAlertRef.alertWithType('error', 'Error', 'Please Select Service Type..!');
+                    dropDownAlertRef.alertWithType('error', 'Error', 'Please Select Service Call Priority..! ');
+
                 }
-
             } else {
-                dropDownAlertRef.alertWithType('error', 'Error', 'Please Select Service Call Priority..! ');
-
-            }
-        } else {
                 dropDownAlertRef.alertWithType('error', 'Error', 'Please Select Serial Number..! ');
 
-    }
+            }
 
 
 
@@ -270,13 +272,14 @@ const NewServiceCall = (props: any) => {
 
     const Update_serviceCall = (data: any) => {
 
-        updateService(data[0].priority, data[0].type, data[0].item_code, data[0].item_description, data[0].customer
-            , data[0].customer_address, data[0].contact_name, data[0].contact_no, data[0].subject, data[0].handle_by,
-            data[0].secretary, data[0].salesAssistance, data[0].startDate, data[0].endDate, data[0].created_by, data[0].approve_status,
-            data[0].attend_status, data[0].status, data[0].serviceId, (result: any) => {
-                // ToastAndroid.show("Service Call Update Success ", ToastAndroid.SHORT);
-                navigation.navigate('ServiceCall');
-            });
+        console.log(data, '---------------------');
+
+
+
+        updateService(data, (result: any) => {
+            // ToastAndroid.show("Service Call Update Success ", ToastAndroid.SHORT);
+            navigation.navigate('ServiceCall');
+        });
     }
     const save_serviceCall = (data: any) => {
         // console.log("**************", data);
@@ -453,13 +456,13 @@ const NewServiceCall = (props: any) => {
 
     }
 
-    const getSerialNumbers = (testitemCode1:any) => {
+    const getSerialNumbers = (testitemCode1: any) => {
 
 
         // getSerialNumber((result: any) => {
         //     setSerialNumList(result);
         // });
-        console.log('hii this is serch item code ---'+testitemCode1);
+        console.log('hii this is serch item code ---' + testitemCode1);
 
         //const testitemCode=16;
         SearchTicketBYItemCode(testitemCode1, (result: any) => {
@@ -467,7 +470,7 @@ const NewServiceCall = (props: any) => {
             setSerialNumList(result);
 
         });
-          //  console.log()
+        //  console.log()
     }
 
 
@@ -658,17 +661,10 @@ const NewServiceCall = (props: any) => {
         // console.log(route.params.serviceID, "Update mode 3 ", loandingspinner);
         try {
             getServiceById(id, (result: any) => {
-                console.log('cus list length ----', result);
+                // console.log('cus list length ----', result);
                 // console.log("####", serviceType);
 
-                //  [{"Approve_status": "0", "Attend_status": "0", "_Id": 1, "assistance": "2", 
-                // "contact_name": "gayan", "contact_no": 769968772, "created_by": "1",
-                //  "customer": "Pathfinder Advisory Services Pvt Ltd", 
-                // "customer_address": "10 1/3 First Floor", "end_date": "31-10-2022",
-                //   "handle_by": "2", "item_code": "SHINI/BH90115000050", "item_description": 
-                // "EGO ASSEMBLE (FOR SCD-400U CLAIM)", "priority": "Medium", "secretary": "2", 
-                // "serviceId": "SC_2022-10-31_1", "service_type": "1",
-                //  "start_date": "31-10-2022", "status": "0", "subject": "car"}]
+                // [{ "SecretaryID": 244894, "Syncstatus": "0", "TechnicianID": 627517,    , , "customer": " The Colombo Ice Company Pvt Ltd", "customerID": " COLOMBO ICE CO", "customer_address": "117 Sir Chittampalam A Gardiner Mawatha,Colombo 2", "end_date": "2023-03-02", "handle_by": "Dasun", "itemID": " DOM/G20I K2138J1P078N150", "item_code": " DOM/G20I K2138J1P078N150", "item_description": " Domino G20i Printer K2138J1P078N150", "priority": "Low", "secretary": "Manjari", "serialNumber": "K2138J1P078N150", "serviceId": "SC_2023-02-27_1", "service_type": "Electric", "start_date": "2023-02-27", "status": "0", "subject": "yyyyyy"}]
 
                 //  [{"typeId": 1, "typeName": "Mechanical"}, {"typeId": 2, "typeName": "Electrical"}, {"typeId": 3, "typeName": "Replacement"},
                 // {"typeId": 4, "typeName": "Service"}, {"typeId": 5, "typeName": "Other"}]
@@ -687,7 +683,7 @@ const NewServiceCall = (props: any) => {
                 setItemDescription(result[0].item_description);
                 // setContactPerson(result[0].contact_name);
                 let number = "0" + result[0].contact_no;
-                console.log(number.length, '>>>>>>>>>>>>>>>>>>>>>');
+                // console.log(number.length, '>>>>>>>>>>>>>>>>>>>>>');
                 // if(result[0].contact_no.length){
                 //     Contact = "0"+result[0].contact_no
 
@@ -699,6 +695,19 @@ const NewServiceCall = (props: any) => {
                 setStartDate(result[0].start_date);
                 setEndDate(result[0].end_date);
                 setSelectPriority(result[0].priority);
+                setContactPerson(result[0].contact_name);
+
+
+                getUserByTypes("Sales Executive", (resultAssisstance: any) => {
+
+                    console.log("set assisstanceee ............ ", resultAssisstance);
+
+                    setSalesAssistance(resultAssisstance);
+                    const data = resultAssisstance?.filter((a: any) => a.name == result[0].assistance)[0];
+                    setSelectAssistance(data.name)
+                    console.log(" assisstance .........  ", data.name)
+
+                });
 
 
                 getAllPriority((result1: any) => {
@@ -711,32 +720,49 @@ const NewServiceCall = (props: any) => {
                     setSelectServiceType(data.typeName);
                 });
 
-                getAllItems((result1: any) => {
-                    setItemCode(result1);
-                    const data = result1?.filter((a: any) => a.itemCode == result[0].item_code)[0];
-                    setSelectItemCode(data.itemCode)
-                   
+                // getAllItems((result1: any) => {
+                //     setItemCode(result1);
+                //     const data = result1?.filter((a: any) => a.itemCode == result[0].item_code)[0];
+                //     setSelectItemCode(data.itemCode)
 
+
+                // });
+
+
+                getAllCustomerVsItems(result[0].customerID, (resultitem: any) => {
+                    setItemCode(resultitem);
+                    const data = resultitem?.filter((a: any) => a.ItemCode == result[0].item_code)[0];
+                    setSelectItemCode(data.ItemCode)
+                    // console.log(" item count .........  ", result)
                 });
 
-                getAllUserTypes("Assistance", (result1: any) => {
-                    const data = result1?.filter((a: any) => a.name == result[0].assistance)[0];
-                    setSelectAssistance(data.name)
 
-                });
-                getAllUserTypes("Secretary", (result1: any) => {
-                    const data = result1?.filter((a: any) => a.name == result[0].secretary)[0];
+                getUserByTypes("Admin", (resultSecretary: any) => {
+                    setSecretaryItem(resultSecretary);
+                    const data = resultSecretary?.filter((a: any) => a.name == result[0].secretary)[0];
                     setSelectSecretary(data.name);
-                });
-                getAllUserTypes("Technician", (result1: any) => {
-                    const data = result1?.filter((a: any) => a.name == result[0].handle_by)[0];
-                    setSelectTechnician(data.name);
+                    console.log(" isecretary .........  ", data.name)
                 });
 
-                getAllContactPerson((result1: any) => {
-                    const data = result1?.filter((a: any) => a.name == result[0].contact_name)[0];
-                    setContactPerson(data.name);
+
+                SearchTicketBYItemCode(result[0].item_code, (resultSerial: any) => {
+
+                    setSerialNumList(resultSerial);
+                    const data = resultSerial?.filter((a: any) => a.msnfSN == result[0].serialNumber)[0];
+                    setSelectSerialNum(data.msnfSN);
                 });
+
+                getUserByTypes("Technician", (resultTech: any) => {
+                    setHandleBy(resultTech);
+                    const data = resultTech?.filter((a: any) => a.name == result[0].handle_by)[0];
+                    setSelectTechnician(data.name);
+                    console.log(" handleby .........  ", data.name)
+                });
+
+                // getAllContactPerson((result1: any) => {
+                //     const data = result1?.filter((a: any) => a.name == result[0].contact_name)[0];
+                //     setContactPerson(data.name);
+                // });
             });
             // setloandingspinner(false);
         } catch (error) {
@@ -918,7 +944,7 @@ const NewServiceCall = (props: any) => {
 
 
                     </View>
-                    
+
                     <View style={{ padding: 8 }} />
                     <View style={{ zIndex: 50 }}>
 
@@ -947,7 +973,7 @@ const NewServiceCall = (props: any) => {
                                 changeItemName(item.ItemName);
                                 ItemDesc = item.ItemName;
                                 console.log(item.itemId + " item iddddd .................... ");
-                                getSerialNumbers(item.ItemId);
+                                getSerialNumbers(item.ItemCode);
 
                                 setIsFocus(false);
                             }}
@@ -966,7 +992,7 @@ const NewServiceCall = (props: any) => {
                     <View style={{ padding: 8 }} />
 
                     <InputText
-                    
+
                         placeholder="Item Name"
                         placeholderColor={comStyles.COLORS.HEADER_BLACK}
                         style={comStyles.serviceTicketInput}
@@ -975,7 +1001,7 @@ const NewServiceCall = (props: any) => {
                         max={50}
 
                     />
-                        {/* for serial number */}
+                    {/* for serial number */}
                     <View style={{ zIndex: 50 }}>
                         <Dropdown
 
@@ -1018,7 +1044,7 @@ const NewServiceCall = (props: any) => {
 
                     <View style={{ padding: 5 }} />
 
-                  
+
 
                     <InputText
                         placeholder="Contact Person"
