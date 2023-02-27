@@ -25,6 +25,7 @@ const MoreInfo = () => {
     const [content_str, setcontent] = useState('');
     const [create_by, setcreate_by] = useState('');
     const [remark, setremark] = useState('');
+    const [serialNo, setSerialNo] = useState('');
     let serviceID;
 
     useEffect(() => {
@@ -64,7 +65,7 @@ const MoreInfo = () => {
                 setItemCode(result[0].item_code);
                 setItemDescription(result[0].item_description);
                 setitemGroup("-");
-                setSerial_no("-")
+                setSerial_no(result[0].serialNumber);
 
 
 

@@ -512,7 +512,7 @@ const RequestBottomSheet = () => {
                         <SparepartsItem
                             is_editinput={true}
                             is_additional={AddInventorySpareParts}
-                            id={item.spId}
+                            id={item.SparePartNo}
                             description={item.description}
                             quantity={item.qty}
 

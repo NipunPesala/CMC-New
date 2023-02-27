@@ -83,7 +83,7 @@ const AddSparePartsComponent = () => {
                         qty: qty,
                         approveStatus: "1",
                         spType_ID: 1, //Additional :2 inventory :1
-                        SPartID: spareID, 
+                        SPartID: spareID1, 
                         creationdate: moment().utcOffset('+05:30').format('YYYY-MM-DD'),
                         isSync: "true",
 
@@ -219,13 +219,13 @@ const AddSparePartsComponent = () => {
 
     const showDialog = (data: any) => {
 
-        console.log(data.spId,"------------------",data.description);
+        // console.log(data.SparePartNo,"------------------",data.description);
         
         setisDialog(true)
         spareID = data;
-        setspareID1(data.spId)
+        setspareID1(data.SparePartNo)
         setDescription(data.description)
-        console.log(data);
+        // console.log(data);
 
     }
     const closeDialog = () => {
@@ -367,7 +367,7 @@ const AddSparePartsComponent = () => {
                     return (
                         <SparepartsItem1
                             is_editinput={true}
-                            id={item.spId}
+                            id={item.SparePartNo}
                             description={item.description}
                             quantity={item.stock_qty}
                             MinonPress={() => { showDialog(item) }}
