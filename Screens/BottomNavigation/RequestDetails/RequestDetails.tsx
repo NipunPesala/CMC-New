@@ -353,8 +353,8 @@ console.log(" result id //////////////////////   ",result[i].Attend_status);
 
                             <Tickets
                                 btnEnable={isServiceActive}
-                                // enableStatusUpdate={!isServiceActive}
-                                enableStatusUpdate={isServiceActive}
+                                enableStatusUpdate={!isServiceActive}
+                                // enableStatusUpdate={isServiceActive}
                             />
                             :
                             loadScreen == "location" ?
