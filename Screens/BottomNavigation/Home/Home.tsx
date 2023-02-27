@@ -678,7 +678,7 @@ const Home = () => {
                   address={item.itemDescription}
                   status={item.priority}
                   isIcon={true}
-                  onPressIcon={() => navigatoTicket(item.ticketId)}
+                  onPressIcon={() => navigatoTicket(item.ticketId,item.serviceId)}
                 />
               </View>
             );
