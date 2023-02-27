@@ -55,7 +55,6 @@ import AsyncStorage from '@react-native-community/async-storage';
 import queryString from 'query-string';
 import axios from 'axios';
 import ComponentsStyles from "../../Constant/Components.styles";
-import PushNotification from "react-native-push-notification";
 import { userLogin } from "../../Services/Api/UserAuthService";
 //import {Permission,PERMISSION_TYPE}from '../../Constant/AppPermission';
 let height = Dimensions.get("screen").height;
@@ -133,12 +132,7 @@ const Login = () => {
 
     const createChannels = () => {
 
-        PushNotification.createChannel(
-            {
-                channelId: "test_channel", // (required)
-                channelName: "Test Channel", // (required)
-                vibrate: true, // (optional) default: true. Creates the default vibration pattern if true.
-            })
+        
     }
 
     const insertServiceData = () => {

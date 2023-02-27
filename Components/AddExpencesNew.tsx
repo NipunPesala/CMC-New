@@ -149,16 +149,20 @@ const AddExpencesNew = (props: any) => {
   };
 
   const SaveData = (data: any) => {
+
+    console.log(data);
+    
     try {
       saveExpences(data, (result: any) => {
         // console.log(result, 'saveExpences');
 
         if (result === 'success') {
-          ToastAndroid.show('Expences Save Success ', ToastAndroid.SHORT);
+         
           // navigation.goBack();
           navigation.navigate('TicketDetails', {
             tab: 'Expences',
           });
+          ToastAndroid.show('Expences Save Success ', ToastAndroid.SHORT);
         } else {
           Alert.alert('Failed...!', 'Expences Save Failed.', [
             {

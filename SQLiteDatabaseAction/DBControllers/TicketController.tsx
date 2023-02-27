@@ -6,8 +6,8 @@ export const saveTicket = (data:any, callBack:any) => {
             [
                 {
                     table: 'TICKET',
-                    columns: `ticketId,serviceId,startDate,endDate,itemDescription,content,assignTo,priority,attend_status,status,engRemark,cusNic,cusRemark,signatureStatus,syncStatus,actualstartDate,actualendtDate`,
-                    values: '?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?',
+                    columns: `ticketId,serviceId,startDate,endDate,itemDescription,content,assignTo,technicianID,priority,attend_status,status,engRemark,cusNic,cusRemark,signatureStatus,syncStatus,actualstartDate,actualendtDate,itemCode`,
+                    values: '?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?',
                     params: [
                         data[i].ticketId,
                         data[i].serviceId,
@@ -16,6 +16,7 @@ export const saveTicket = (data:any, callBack:any) => {
                         data[i].itemDescription,
                         data[i].content,
                         data[i].assignTo,
+                        data[i].technicianID,
                         data[i].priority,
                         data[i].attend_status,
                         data[i].status,
@@ -26,6 +27,7 @@ export const saveTicket = (data:any, callBack:any) => {
                         data[i].syncStatus,
                         data[i].actualstartDate,
                         data[i].actualendtDate,
+                        data[i].itemCode,
                     ],
                     primaryKey: 'ticketId',
                    
@@ -148,6 +150,17 @@ export const getCompelteTicketByServiceId = (serviceId:any, callBack:any) => {
     );
 }
 
+export const getTicketsForHome = (callBack:any) => {
+    DB.searchData(
+        'SELECT TICKET._Id,TICKET.ticketId,TICKET.assignTo,TICKET.priority,TICKET.serviceId FROM TICKET INNER JOIN SERVICE ON SERVICE.serviceId = TICKET.serviceId  WHERE  TICKET.attend_status != 3',
+        [],
+        (resp:any, err:any) => {
+            callBack(resp, err);
+            // console.log(" ************** service getTicketsForReport ************  " ,resp);
+            
+        },
+    );
+}
 export const getTicketsForReport = (callBack:any) => {
     DB.searchData(
         'SELECT TICKET._Id,TICKET.ticketId,TICKET.assignTo,TICKET.priority,TICKET.serviceId FROM TICKET INNER JOIN SERVICE ON SERVICE.serviceId = TICKET.serviceId  WHERE (SERVICE.Approve_status != 0 OR SERVICE.Approve_status != 2) AND TICKET.attend_status = 3',
@@ -332,11 +345,12 @@ export const saveTicketSpareparts = (data:any, callBack:any) => {
             [
                 {
                     table: 'TICKET_SPARE_PARTS',
-                    columns: `SPRequestID,ticketId,name,description,qty,approveStatus,spType_ID,creationdate,isSync`,
-                    values: '?,?,?,?,?,?,?,?,?',
+                    columns: `SPRequestID,ticketId,SPartID,name,description,qty,approveStatus,spType_ID,creationdate,isSync`,
+                    values: '?,?,?,?,?,?,?,?,?,?',
                     params: [
                         data[i].SPRequestID,
                         data[i].ticketId,
+                        data[i].SPartID,
                         data[i].name,
                         data[i].description,
                         data[i].qty,

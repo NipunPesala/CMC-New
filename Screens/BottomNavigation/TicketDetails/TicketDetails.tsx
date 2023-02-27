@@ -144,7 +144,7 @@ const TicketDetails = (props: any) => {
 
                 const sts = result[0].Approve_status;
 
-                if (sts != '1') {
+                if (sts != 1) {
 
                     Alert.alert('Service Call Not Approved', ' Please Approve the Service Call First!', [
                         {
@@ -223,22 +223,22 @@ const TicketDetails = (props: any) => {
 
 
 
-                if (result[i].attend_status === "0") {
+                if (result[i].attend_status === 0) {
 
                     setStatus("Open");
                     setIsServiceActive(true);
 
-                } else if (result[i].attend_status === "1") {
+                } else if (result[i].attend_status === 1) {
 
                     setStatus("Pending");
                     setIsServiceActive(false);
 
-                } else if (result[i].attend_status === "2") {
+                } else if (result[i].attend_status === 2) {
 
                     setStatus("Hold");
                     setIsServiceActive(true);
 
-                } else if (result[i].attend_status === "3") {
+                } else if (result[i].attend_status === 3) {
                     setStatus("Completed");
                     setIsServiceActive(false);
                 }
@@ -267,7 +267,7 @@ const TicketDetails = (props: any) => {
             // console.log("db result " ,  result[0].attend_status);
 
 
-            if (result[0].attend_status == '1') {
+            if (result[0].attend_status == 1) {
 
                 // console.log("awaaaaaaaaaaa");
 

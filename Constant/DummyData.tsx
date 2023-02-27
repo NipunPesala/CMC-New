@@ -828,13 +828,13 @@ export const ExpencesType = [
 
     {
         expTypeId: 1,
-        name: "Tavel",
+        name: "Travel",
         description: "Test",
         status: "1" ,  
     },
     {
         expTypeId: 2,
-        name: "Food & Behavior",
+        name: "Food & Beverages",
         description: "Test",
         status: "1" ,  
     },
@@ -846,7 +846,7 @@ export const ExpencesType = [
     },
     {
         expTypeId: 4,
-        name: "Fual",
+        name: "Fuel",
         description: "Test",
         status: "1" , 
     },

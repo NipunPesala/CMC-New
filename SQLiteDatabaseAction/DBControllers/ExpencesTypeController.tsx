@@ -74,8 +74,8 @@ export const getExpencesTypeById = (expTypeId:any, callBack:any) => {
 }
 export const getAllExpencesType = (callBack:any) => {
     DB.searchData(
-      'SELECT expTypeId,name FROM EXPENCES_TYPE WHERE status=?',
-      [1],
+      'SELECT expTypeId,name FROM EXPENCES_TYPE ',
+      [],
       (resp:any, err:any) => {
         callBack(resp, err);
       },

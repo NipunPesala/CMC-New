@@ -104,13 +104,18 @@ const RequestDetails = (props: any) => {
 
             enableServiceCall(sid, 1, (result: any) => {
 
+
+                console.log('---------------------',result);
+                
+
                 if (result === "success") {
 
-                    ToastAndroid.show("Service enable success ", ToastAndroid.SHORT);
-
+                    // ToastAndroid.show("Service enable success ", ToastAndroid.SHORT);
+                    setIsServiceActive(false);
 
 
                 } else {
+                    setIsServiceActive(true);
 
                     Alert.alert(
                         "Failed...!",
@@ -169,7 +174,7 @@ const RequestDetails = (props: any) => {
                     setCusName(result[i].customer);
                     setContactName(result[i].contact_name);
                     setAddress(result[i].customer_address);
-                    setStatus(result[i].status);
+                    // setStatus(result[i].status);
                     setSeviceId(result[i].serviceId);
                     setContactNo(result[i].contact_no);
                     setLatitude(result[i].Latitude);
@@ -179,34 +184,37 @@ const RequestDetails = (props: any) => {
                     // AsyncStorage.setItem(AsyncStorageConstants.ASYNC_CURRENT_SERVICE_CALL_ID,result[i].serviceId);
 
 
-
-                    if (result[i].Attend_status === "0") {
+console.log(" result id //////////////////////   ",result[i].Attend_status);
+                    if (result[i].Attend_status === 0) {
 
                         setStatus("Open");
+                        setIsServiceActive(true);
 
-                    } else if (result[i].Attend_status === "1") {
+                    } else if (result[i].Attend_status ===1) {
 
-                        setStatus("Ongoing");
+                        setStatus("Pending");
+                        setIsServiceActive(false);
 
-                    } else if (result[i].Attend_status === "2") {
+                    } else if (result[i].Attend_status === 2) {
 
                         setStatus("Hold");
-
-                    }
-
-                    console.log(result[i].Attend_status, " +++++++++++++++++", result[i].status);
-
-                    if (result[i].Attend_status === "0") {
-
                         setIsServiceActive(true);
-                        console.log("false ......");
 
-
-                    } else if (result[i].Attend_status === "1") {
-
-                        setIsServiceActive(false);
-                        console.log("true ......");
                     }
+
+                    // console.log(result[i].Attend_status, " +++++++++++++++++", result[i].status);
+
+                    // if (result[i].Attend_status === "0") {
+
+                    //     setIsServiceActive(true);
+                    //     console.log("false ......");
+
+
+                    // } else if (result[i].Attend_status === "1") {
+
+                    //     setIsServiceActive(false);
+                    //     console.log("true ......");
+                    // }
                 }
 
                 console.log(" active status ,,,,,,,,,,,,,,,,,,,,,,, ", isServiceActive);
@@ -350,10 +358,12 @@ const RequestDetails = (props: any) => {
                             />
                             :
                             loadScreen == "location" ?
-                                <Locations
-                                    btnTitle="Start Journey"
-                                    pressbtn={() => LoadMap()}
-                                />
+                                // <Locations
+                                //     btnTitle="Start Journey"
+                                //     pressbtn={() => LoadMap()}
+                                // />
+
+                                <></>
 
                                 :
                                 loadScreen == "serviceH" ?

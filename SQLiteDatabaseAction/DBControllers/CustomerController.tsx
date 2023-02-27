@@ -32,7 +32,7 @@ export const saveCustomer = (data:any, callBack:any) => {
             (res:any, err:any) => {
                 if(res === 'success'){
                     // response =true;
-                    console.log("___________Customer________________",response);
+                    // console.log("___________Customer________________",response);
 
                     if( i+1 == data.length){
                         response = 3;

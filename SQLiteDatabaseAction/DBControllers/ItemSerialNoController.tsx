@@ -55,3 +55,20 @@ export const saveItemSerialNo = (data:any, callBack:any) => {
     // callBack(response);
     
 };
+
+
+
+
+    export const SearchTicketBYItemCode = (itemCod:any,callBack:any) => {
+      
+        console.log(" Item code --------------  " , itemCod);
+        DB.searchData(
+           'SELECT ItemId,ItemCode,msnfSN,InternalSN FROM Item_serialNO WHERE ItemId=?',
+            [itemCod],
+            (resp:any, err:any) => {
+                callBack(resp, err);
+                // console.log(" filter data using date range-  " , resp);
+                
+            },
+        );
+      };

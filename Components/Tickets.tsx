@@ -24,12 +24,10 @@ type ParamTypes = {
 let serviceID: any;
 var checkstatus = false;
 var checkstatusNum: any;
-const Tickets = ({ btnEnable,enableStatusUpdate }: ParamTypes) => {
+const Tickets = ({ btnEnable, enableStatusUpdate }: ParamTypes) => {
     const width = Dimensions.get("screen").width;
     const height = Dimensions.get("screen").height;
     const navigation = useNavigation();
-
-
 
     const [ticketList, setTicketList]: any[] = useState([]);
     const [att_status, setatt_status] = useState('');
@@ -46,11 +44,11 @@ const Tickets = ({ btnEnable,enableStatusUpdate }: ParamTypes) => {
         });
     }
     const navigatoTicket = async (ticketID: any) => {
-        console.log(serviceID, "go .......", ticketID, '--------', checkstatusNum);
+        // console.log(serviceID, "go .......", ticketID, '--------', checkstatusNum);
         navigation.navigate('TicketDetails', {
             ticketID: ticketID,
         });
-       
+
 
         // AsyncStorage.setItem(AsyncStorageConstants.ASYNC_CURRENT_TICKET_ID,ticketID);
 
@@ -65,11 +63,27 @@ const Tickets = ({ btnEnable,enableStatusUpdate }: ParamTypes) => {
 
             const ticketArray: any[] = [];
 
+
             for (let i = 0; i < result.length; ++i) {
 
 
+                // console.log(" status ticket .??? " , result[i].attend_status);
+
+                if (result[i].attend_status === 0) {
+
+                    setatt_status("Open");
+
+                } else if (result[i].attend_status === 1) {
+
+                    setatt_status("Pending");
+
+                } else if (result[i].attend_status === 2) {
+
+                    setatt_status("Hold");
+                }
+
                 checkstatusNum == result[i].status
-                if (result[i].status == 0) {
+                if (result[i].status === "0") {
                     checkstatus = true;
                 } else {
                     checkstatus = false;
@@ -82,8 +96,10 @@ const Tickets = ({ btnEnable,enableStatusUpdate }: ParamTypes) => {
                         status: result[i].status,
                         priority: result[i].priority,
                         date: result[i].startDate,
-                        attend_status: result[i].attend_status,
-                        attend_statusStr: result[i].attend_statusStr,//hold or pending
+                        attend_status: att_status,
+                        attend_statusStr: att_status,//hold or pending
+
+
 
                     }
                 );
@@ -92,7 +108,7 @@ const Tickets = ({ btnEnable,enableStatusUpdate }: ParamTypes) => {
 
             setTicketList(ticketArray);
 
-            console.log("***** ", ticketList)
+            // console.log("***** ", ticketList)
 
 
         });
@@ -102,15 +118,15 @@ const Tickets = ({ btnEnable,enableStatusUpdate }: ParamTypes) => {
 
     useFocusEffect(
         React.useCallback(() => {
-           
+
             getCurrentServiceCallID().then(res => {
 
 
                 serviceID = res;
                 getTicketList(serviceID);
-    
+
                 // console.log(" async data ........... ",btnEnable);
-    
+
             })
 
         }, []),

@@ -29,7 +29,7 @@ export const saveItem = (data, callBack) => {
             (res:any, err:any) => {
                 if(res === 'success'){
 
-                    console.log(i,"___________Item________________",response);
+                    // console.log(i,"___________Item________________",response);
 
                     if( i+1 == data.length){
                         response = 3;
@@ -97,11 +97,13 @@ export const getAllItems = (callBack:any) =>{
 }
 
 export const getAllCustomerVsItems = (cusID:any,callBack:any) =>{
-
+// console.log('getAllCustomerVsItems---------');
     DB.searchData(
-        'SELECT itemCode,ItemName,itemID FROM Customer_Items WHERE CustomerCode=?',
+        'SELECT itemCode,ItemName,itemId FROM Customer_Items WHERE CustomerCode=?',
         [cusID],
         (resp:any, err:any) => {
+console.log("Item ID list .................>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ", resp);
+
             callBack(resp, err);
         },
     );

@@ -51,7 +51,7 @@ const ReportsScreen = () => {
 
                 <View style={style.container}>
                     <ActionButton
-                        title="KPI"
+                        title="Performance Summary"
                         onPress={KpiPressed}
                         style={kpi === true ? style.selectedbutton : style.defaultbutton}
                         textStyle={kpi === true ? style.selectedBUTTON_TEXT : style.defaultBUTTON_TEXT}

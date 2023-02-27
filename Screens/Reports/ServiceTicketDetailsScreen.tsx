@@ -289,8 +289,8 @@ const ServiceTicketDetailsScreen = () => {
                             isHeadertitle2={true}
                             Headertitle2={item.assignTo}
                             isHeadertitle3={true}
-                            batchStyle={item.status == 0 ? style.openstyle : item.status == 1 ? style.pendingstyle : item.status == 2 ? style.holdstyle : style.Completestyle}
-                            Headertitle3={item.status == 0 ? "Open" : item.status == 1 ? "Pending" : item.status == 2 ? "Hold" : "Completed"}
+                            batchStyle={item.attend_status == 0 ? style.openstyle : item.attend_status == 1 ? style.pendingstyle : item.attend_status == 2 ? style.holdstyle : style.Completestyle}
+                            Headertitle3={item.attend_status == 0 ? "Open" : item.attend_status == 1 ? "Pending" : item.attend_status == 2 ? "Hold" : "Completed"}
                             isHeadertitle4={true}
                             Headertitle4={item.content}
                             isHeadertitle5={true}

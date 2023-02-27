@@ -129,6 +129,7 @@ var id:any;
                         qty: enterQty,
                         approveStatus: "1",
                         spType_ID: 2, //Additional :2 inventory :1
+                        SPartID: 0, 
                         creationdate: moment().utcOffset('+05:30').format('YYYY-MM-DD'),
                         isSync: "true",
 

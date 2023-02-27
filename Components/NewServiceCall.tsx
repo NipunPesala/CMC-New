@@ -2,7 +2,7 @@
 * @author Madushika Sewwandi
 */
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
     View,
     Text,
@@ -34,6 +34,7 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import { getAllPriority } from "../SQLiteDatabaseAction/DBControllers/PriorityController";
 import { getAllCustomerVsItems, getAllItems } from "../SQLiteDatabaseAction/DBControllers/ItemController";
 import { getAllCustomers } from "../SQLiteDatabaseAction/DBControllers/CustomerController";
+import { SearchTicketBYItemCode } from "../SQLiteDatabaseAction/DBControllers/ItemSerialNoController";
 import { getLastServiceId, getServiceById, saveServiceData, updateService, updateSycnServiceCAll } from "../SQLiteDatabaseAction/DBControllers/ServiceController";
 import { getAllUserTypes } from "../SQLiteDatabaseAction/DBControllers/Users_TypesController";
 import { getAllContactPerson } from "../SQLiteDatabaseAction/DBControllers/ContactPersonController";
@@ -44,6 +45,7 @@ import axios from "axios";
 import { BASE_URL_GET, } from "../Constant/Commen_API_Url";
 import { getUserByTypes } from "../SQLiteDatabaseAction/DBControllers/UserController";
 import NetInfo from '@react-native-community/netinfo';
+import DropdownAlert from 'react-native-dropdownalert';
 
 let ItemDesc = "";
 let serviceid = "";
@@ -54,7 +56,7 @@ const NewServiceCall = (props: any) => {
     const { navigation, route } = props;
 
     // const [loandingspinner, setloandingspinner] = useState(true);
-
+    let dropDownAlertRef = useRef();
     const [isFocus, setIsFocus] = useState(false);
 
     const [priorityList, setPriorityList] = useState([]);
@@ -69,6 +71,7 @@ const NewServiceCall = (props: any) => {
     const [itemCode, setItemCode] = useState([]);
     const [itemDescription, setItemDescription] = useState();
     const [customerList, setCustomerList] = useState([]);
+    const [serialNumList, setSerialNumList] = useState([]);
 
     const [cusAddress, setCusAddress] = useState('');
     const [contactPerson, setContactPerson] = useState('');
@@ -88,11 +91,17 @@ const NewServiceCall = (props: any) => {
     const [dateType, setDateType] = useState('');
     const [lastServiceID, setLastServiceID] = useState([]);
 
+    const [servicetypeID, setServiceTypeID] = useState('');
+    const [secretaryID, setSecretaryID] = useState('');
+    const [AssistanceID, setAssisstanceID] = useState('');
+    const [TechnicianID, setTechnicianID] = useState('');
+
     const [formHeading, setformHeading] = useState(route?.params?.mode == 1 ? " Update Service Call" : "Add New Service Call");
     const [savebutton, setsavebutton] = useState(route?.params?.mode == 1 ? "Update" : "Add");
 
     const [itemID, setitemID] = useState(null);
     const [customerID, setcustomerID] = useState(null);
+    const [selectSerialNum, setSelectSerialNum] = useState(null);
     var TOCKEN_KEY: any;
     const mode = route.params.mode;
 
@@ -104,7 +113,7 @@ const NewServiceCall = (props: any) => {
 
             if (route.params.cusList?.length > 0) {
                 SetPreviousAddedData(route.params.serviceID);
-            } 
+            }
             if (mode != 1) {
                 generateCallID();
             }
@@ -139,6 +148,10 @@ const NewServiceCall = (props: any) => {
                 syncstatus: '0',
                 itemID: selectItemCode,
                 customerID: customerID,
+                TechnicianID: TechnicianID,
+                SecretaryID: secretaryID,
+                AssisstanceID: AssistanceID,
+                serialNumber: selectSerialNum,
 
             }
         ]
@@ -148,7 +161,7 @@ const NewServiceCall = (props: any) => {
         try {
 
 
-
+        if (selectSerialNum != null || selectSerialNum == "") {
             if (selectPriority != null) {
                 if (selectServiceType != null || selectServiceType != "") {
                     if (selectItemCode != null || selectItemCode == "") {
@@ -173,61 +186,64 @@ const NewServiceCall = (props: any) => {
                                                                                 save_serviceCall(sendData);
                                                                             }
                                                                         } else {
-                                                                            ToastAndroid.show("Invalid Mobile Number..!  ", ToastAndroid.SHORT);
+                                                                            dropDownAlertRef.alertWithType('error', 'Error', 'Invalid Mobile Number..!');
                                                                         }
 
                                                                     } else {
-                                                                        ToastAndroid.show("Please Select valid End Date..!  ", ToastAndroid.SHORT);
+                                                                        dropDownAlertRef.alertWithType('error', 'Error', 'Please Select valid End Date..!');
                                                                     }
 
                                                                 } else {
-                                                                    ToastAndroid.show("Please Select End Date..!  ", ToastAndroid.SHORT);
+                                                                    dropDownAlertRef.alertWithType('error', 'Error', 'Please Select End Date..!');
                                                                 }
 
                                                             } else {
-                                                                ToastAndroid.show("Please Select valid Start Date..!  ", ToastAndroid.SHORT);
+                                                                dropDownAlertRef.alertWithType('error', 'Error', 'Please Select valid Start Date..!');
                                                             }
 
                                                         } else {
-                                                            ToastAndroid.show("Please Select startDate..!  ", ToastAndroid.SHORT);
+                                                            dropDownAlertRef.alertWithType('error', 'Error', 'Please Select startDate..!');
                                                         }
 
                                                     } else {
-                                                        ToastAndroid.show("Please Select Assistance..!  ", ToastAndroid.SHORT);
+                                                        dropDownAlertRef.alertWithType('error', 'Error', 'Please Select Assistance..!');
                                                     }
                                                 } else {
-                                                    ToastAndroid.show("Please Select Secretary..!  ", ToastAndroid.SHORT);
+                                                    dropDownAlertRef.alertWithType('error', 'Error', 'Please Select Secretary..! ');
                                                 }
                                             } else {
-                                                ToastAndroid.show("Please Select Technician..!  ", ToastAndroid.SHORT);
+                                                dropDownAlertRef.alertWithType('error', 'Error', 'Please Select Technician..! ');
                                             }
                                         } else {
-                                            ToastAndroid.show("Please Enter Subject..!  ", ToastAndroid.SHORT);
+                                            dropDownAlertRef.alertWithType('error', 'Error', 'Please Enter Subject..!');
                                         }
                                     } else {
-                                        ToastAndroid.show("Please Enter Contact Number..!  ", ToastAndroid.SHORT);
+                                        dropDownAlertRef.alertWithType('error', 'Error', 'Please Enter Contact Number..!');
                                     }
                                 } else {
-                                    ToastAndroid.show("Please Enter Contact Person..!  ", ToastAndroid.SHORT);
+                                    dropDownAlertRef.alertWithType('error', 'Error', 'Please Enter Contact Person..!');
                                 }
                             } else {
-                                ToastAndroid.show("Please Enter Address..!  ", ToastAndroid.SHORT);
+                                dropDownAlertRef.alertWithType('error', 'Error', 'Please Enter Address..!');
                             }
                         } else {
-                            ToastAndroid.show("Please Select Customer..!  ", ToastAndroid.SHORT);
+                            dropDownAlertRef.alertWithType('error', 'Error', 'Please Select Customer..! ');
                         }
                     } else {
-                        ToastAndroid.show("Please Select Service Item Code..!  ", ToastAndroid.SHORT);
+                        dropDownAlertRef.alertWithType('error', 'Error', 'Please Select Service Item Code..!');
                     }
                 } else {
-                    ToastAndroid.show("Please Select Service Type..!  ", ToastAndroid.SHORT);
+                    dropDownAlertRef.alertWithType('error', 'Error', 'Please Select Service Type..!');
                 }
 
             } else {
-                ToastAndroid.show("Please Select Service Call Priority..!  ", ToastAndroid.SHORT);
-
+                dropDownAlertRef.alertWithType('error', 'Error', 'Please Select Service Call Priority..! ');
 
             }
+        } else {
+                dropDownAlertRef.alertWithType('error', 'Error', 'Please Select Serial Number..! ');
+
+    }
 
 
 
@@ -258,7 +274,7 @@ const NewServiceCall = (props: any) => {
             , data[0].customer_address, data[0].contact_name, data[0].contact_no, data[0].subject, data[0].handle_by,
             data[0].secretary, data[0].salesAssistance, data[0].startDate, data[0].endDate, data[0].created_by, data[0].approve_status,
             data[0].attend_status, data[0].status, data[0].serviceId, (result: any) => {
-                ToastAndroid.show("Service Call Update Success ", ToastAndroid.SHORT);
+                // ToastAndroid.show("Service Call Update Success ", ToastAndroid.SHORT);
                 navigation.navigate('ServiceCall');
             });
     }
@@ -293,7 +309,7 @@ const NewServiceCall = (props: any) => {
                     // });
                     //need check internet connection true false
 
-                    ToastAndroid.show("New Service Call Create Success ", ToastAndroid.SHORT);
+                    // ToastAndroid.show("New Service Call Create Success ", ToastAndroid.SHORT);
                     navigation.navigate('Home');
                 } else {
 
@@ -353,6 +369,9 @@ const NewServiceCall = (props: any) => {
                             "sales_assistance": selectAssistance,
                             "start_date": startDate,
                             "end_date": endDate,
+                            "TechnicianID": TechnicianID,
+                            "SecretaryID": secretaryID,
+                            "AssisstanceID": AssistanceID,
                             "created_by": 1, //need to code
                             "active_status": 1,
                             "Approve_status": 0,
@@ -383,7 +402,7 @@ const NewServiceCall = (props: any) => {
                                 updateSycnServiceCAll(response.data.UniqueNo, (result: any) => {
 
                                 });
-                                ToastAndroid.show(response.data.ErrorDescription, ToastAndroid.LONG);
+                                // ToastAndroid.show(response.data.ErrorDescription, ToastAndroid.LONG);
                             }
 
                         } else {
@@ -417,7 +436,7 @@ const NewServiceCall = (props: any) => {
         getAllCustomerVsItems(cusCode, (result: any) => {
             setItemCode(result);
 
-            console.log(" item count .........  ", result.length)
+            console.log(" item count .........  ", result)
         });
 
     }
@@ -432,6 +451,23 @@ const NewServiceCall = (props: any) => {
             setCustomerList(result);
         });
 
+    }
+
+    const getSerialNumbers = (testitemCode1:any) => {
+
+
+        // getSerialNumber((result: any) => {
+        //     setSerialNumList(result);
+        // });
+        console.log('hii this is serch item code ---'+testitemCode1);
+
+        //const testitemCode=16;
+        SearchTicketBYItemCode(testitemCode1, (result: any) => {
+
+            setSerialNumList(result);
+
+        });
+          //  console.log()
     }
 
 
@@ -480,7 +516,7 @@ const NewServiceCall = (props: any) => {
 
                     } else {
 
-                        ToastAndroid.show("The Start date must be less than the end date ", ToastAndroid.SHORT);
+                        dropDownAlertRef.alertWithType('error', 'Error', 'The Start date must be less than the end date..! ');
 
                     }
 
@@ -514,20 +550,18 @@ const NewServiceCall = (props: any) => {
 
                     } else {
 
-                        ToastAndroid.show("The End date must be greater than the start date ", ToastAndroid.SHORT);
 
+                        dropDownAlertRef.alertWithType('error', 'Error', 'The End date must be greater than the start date..! ');
                     }
 
 
                 } else {
-
-                    ToastAndroid.show("Please Select Start Date ", ToastAndroid.SHORT);
+                    dropDownAlertRef.alertWithType('error', 'Error', 'Please Select Start Date..! ');
 
                 }
 
             } else {
-
-                ToastAndroid.show("Please Select Start Date ", ToastAndroid.SHORT);
+                dropDownAlertRef.alertWithType('error', 'Error', 'Please Select Start Date..! ');
 
             }
 
@@ -681,6 +715,8 @@ const NewServiceCall = (props: any) => {
                     setItemCode(result1);
                     const data = result1?.filter((a: any) => a.itemCode == result[0].item_code)[0];
                     setSelectItemCode(data.itemCode)
+                   
+
                 });
 
                 getAllUserTypes("Assistance", (result1: any) => {
@@ -725,6 +761,14 @@ const NewServiceCall = (props: any) => {
         <SafeAreaView style={comStyles.CONTAINER} >
 
             <Header title={formHeading} isBtn={true} btnOnPress={() => navigation.goBack()} />
+
+            <DropdownAlert
+                ref={(ref) => {
+                    if (ref) {
+                        dropDownAlertRef = ref;
+                    }
+                }}
+            />
             <View style={{ padding: 5 }} />
 
             <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", marginBottom: 20, padding: 10, }}>
@@ -766,7 +810,7 @@ const NewServiceCall = (props: any) => {
                             onChange={item => {
                                 console.log('%%%%-----', item);
                                 setSelectCustomer(item.CusName);
-                                // changeCusAddress(item.Address);
+                                changeCusAddress(item.Address);
                                 setcustomerID(item.CusID);
 
                                 getItem(item.CusID);
@@ -859,6 +903,7 @@ const NewServiceCall = (props: any) => {
                                 // setValue(item.description);
 
                                 setSelectServiceType(item.typeName);
+                                setServiceTypeID(item.typeId);
                                 setIsFocus(false);
                             }}
                             renderLeftIcon={() => (
@@ -873,8 +918,8 @@ const NewServiceCall = (props: any) => {
 
 
                     </View>
+                    
                     <View style={{ padding: 8 }} />
-
                     <View style={{ zIndex: 50 }}>
 
                         <Dropdown
@@ -897,12 +942,12 @@ const NewServiceCall = (props: any) => {
 
                                 // setValue(item.description);
                                 setSelectItemCode(item.ItemCode);
-                                setitemID(item.itemID);
+                                setitemID(item.ItemId);
 
                                 changeItemName(item.ItemName);
                                 ItemDesc = item.ItemName;
-                                console.log(ItemDesc + "  .................... ");
-
+                                console.log(item.itemId + " item iddddd .................... ");
+                                getSerialNumbers(item.ItemId);
 
                                 setIsFocus(false);
                             }}
@@ -918,11 +963,11 @@ const NewServiceCall = (props: any) => {
 
                     </View>
 
-
-                    <View style={{ padding: 5 }} />
+                    <View style={{ padding: 8 }} />
 
                     <InputText
-                        placeholder="Item Description"
+                    
+                        placeholder="Item Name"
                         placeholderColor={comStyles.COLORS.HEADER_BLACK}
                         style={comStyles.serviceTicketInput}
                         stateValue={itemDescription}
@@ -930,6 +975,50 @@ const NewServiceCall = (props: any) => {
                         max={50}
 
                     />
+                        {/* for serial number */}
+                    <View style={{ zIndex: 50 }}>
+                        <Dropdown
+
+                            style={[style.dropdown, isFocus && { borderColor: comStyles.COLORS.BORDER_COLOR }]}
+                            placeholderStyle={style.placeholderStyle}
+                            selectedTextStyle={style.selectedTextStyle}
+                            inputSearchStyle={style.inputSearchStyle}
+                            iconStyle={style.iconStyle}
+                            data={serialNumList}
+                            search
+                            maxHeight={300}
+                            labelField="msnfSN"
+                            valueField="msnfSN"
+                            placeholder={!isFocus ? 'Select Serial number ' : '...'}
+                            searchPlaceholder="Search serial number "
+                            value={selectSerialNum}
+                            onFocus={() => setIsFocus(true)}
+                            onBlur={() => setIsFocus(false)}
+                            onChange={item => {
+                                console.log('%%%%-----', item);
+                                setSelectSerialNum(item.msnfSN);
+                                //changeCusAddress(item.Address);
+                                //setcustomerID(item.CusID);
+
+                                //getItem(item.CusID);
+
+                                setIsFocus(false);
+                            }}
+                            renderLeftIcon={() => (
+                                <AntDesign
+                                    style={style.icon}
+                                    color={isFocus ? comStyles.COLORS.HEADER_BLACK : comStyles.COLORS.HEADER_BLACK}
+                                    name="Safety"
+                                    size={15}
+                                />
+                            )}
+                        />
+
+                    </View>
+
+                    <View style={{ padding: 5 }} />
+
+                  
 
                     <InputText
                         placeholder="Contact Person"
@@ -983,7 +1072,7 @@ const NewServiceCall = (props: any) => {
 
                                 // setValue(item.description);
                                 setSelectTechnician(item.name);
-
+                                setTechnicianID(item.user_id);
                                 setIsFocus(false);
                             }}
                             renderLeftIcon={() => (
@@ -1022,7 +1111,7 @@ const NewServiceCall = (props: any) => {
 
 
                                 setSelectSecretary(item.name);
-
+                                setSecretaryID(item.user_id);
 
                                 setIsFocus(false);
                             }}
@@ -1038,8 +1127,9 @@ const NewServiceCall = (props: any) => {
 
                     </View>
 
+
                     <View style={{ padding: 10 }} />
-                
+
 
                     <View style={{ zIndex: 50 }}>
 
@@ -1061,10 +1151,10 @@ const NewServiceCall = (props: any) => {
                             onBlur={() => setIsFocus(false)}
                             onChange={item => {
 
-                               
-                                setSelectAssistance(item.name);
 
-                            
+                                setSelectAssistance(item.name);
+                                setAssisstanceID(item.user_id);
+
 
 
                                 setIsFocus(false);

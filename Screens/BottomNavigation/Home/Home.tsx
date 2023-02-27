@@ -33,6 +33,7 @@ import {
 import AsyncStorage from '@react-native-community/async-storage';
 import AsyncStorageConstants from '../../../Constant/AsyncStorageConstants';
 import {
+  getTicketsForHome,
   getTicketsForInprogress,
   getTicketsForReport,
 } from '../../../SQLiteDatabaseAction/DBControllers/TicketController';
@@ -40,7 +41,6 @@ import axios from 'axios';
 import * as DB_Customer from '../../../SQLiteDatabaseAction/DBControllers/CustomerController';
 import ComponentsStyles from '../../../Constant/Components.styles';
 import { getLoginUserName } from '../../../Constant/AsynStorageFuntion';
-import PushNotification from "react-native-push-notification";
 import { saveServiceData } from "../../../SQLiteDatabaseAction/DBControllers/ServiceController";
 
 const SyncArray1: any[] = [];
@@ -138,11 +138,11 @@ const Home = () => {
 
   //handle notifications
   const handleNotification = () => {
-    PushNotification.localNotification({
-      channelId: "test_channel", // (required)
-      title: "Notification title",
-      message: "Hiii this is a test notification",
-    });
+    // PushNotification.localNotification({
+    //   channelId: "test_channel", // (required)
+    //   title: "Notification title",
+    //   message: "Hiii this is a test notification",
+    // });
   }
 
   const getWellcomeNote = () => {
@@ -192,7 +192,7 @@ const Home = () => {
   };
 
   const getTickets = () => {
-    getTicketsForReport((result: any) => {
+    getTicketsForHome((result: any) => {
       setServiceTicketList(result);
       console.log('ticket for Repaort--' + result);
     });

@@ -50,11 +50,12 @@ const CompleteTicket = () => {
   const [modalStyle, setModalStyle] = useState(new Animated.Value(height));
   const [attend_status, setattend_status] = useState('');
   const [emailDetails, setEmailDetails] = useState([]);
+  var ticketSteteForEmail='status';
   const currentendDate=moment().format('YYYY-MM-DD HH:mm:ss');
   console.log('this is a currnt end date====='+currentendDate);
   const navigation = useNavigation();
   const sign = createRef();
-
+  const [receiverEmail, SetReceiverEmail] = useState('');
   const resetSign = () => {
     sign.current.resetImage();
   };
@@ -96,10 +97,10 @@ const CompleteTicket = () => {
  const handleEmail1 = () => {
     Mailer.mail({
       subject: 'Service Ticket Completed',
-      recipients: ['support@example.com'],
-      ccRecipients: ['supportCC@example.com'],
-      bccRecipients: ['supportBCC@example.com'],
-      body: 'Service ticket ID- '+serviceID+'<br/>Customer -'+emailDetails[0].customer+'<br/>Item code-'+emailDetails[0].itemID+'<br/>Handle by-'+emailDetails[0].handle_by+'<br/>Ticket status -Completed '+'<br/>Start Date-'+emailDetails[0].start_date+'<br/>End Date-'+emailDetails[0].start_date+'<br/>Subject-'+emailDetails[0].subject+'',
+      recipients: [receiverEmail],
+      //ccRecipients: ['supportCC@example.com'],
+      //bccRecipients: ['supportBCC@example.com'],
+      body: 'Service ticket ID- ' + serviceID + '<br/>Customer -' + emailDetails[0].customer + '<br/>Item code-' + emailDetails[0].itemID + '<br/>Handle by-' + emailDetails[0].handle_by + '<br/>Ticket status-' + ticketSteteForEmail + '<br/>Start Date-' + emailDetails[0].start_date + '<br/>End Date-' + emailDetails[0].start_date + '<br/>Subject-' + emailDetails[0].subject + '',
       customChooserTitle: 'This is my new title', // Android only (defaults to "Send Mail")
       isHTML: true,
     }, (error, event) => {
@@ -108,7 +109,24 @@ const CompleteTicket = () => {
   }
 
 
+  const getTicketState = () => {
+console.log('hiiiiiiiiiiiiiii');
+    if (pending == true && hold == false && complete == false) {
+      ticketSteteForEmail = 'Pending';
+
+    } else if (pending == false && hold == true && complete == false) {
+
+      ticketSteteForEmail = 'Hold';
+    } else if (pending == false && hold == false && complete == true) {
+      ticketSteteForEmail = 'Complete';
+    } else {
+
+      //console.log('error++++++++');
+    }
+  }
+
   const handleComplete = () => {
+    getTicketState();
     console.log(pending, '---', hold, '---', complete);
 
     //NEW ticket=1
@@ -124,7 +142,6 @@ const CompleteTicket = () => {
     //     },
     //   ]);
     //   }
-
     if (complete == true || pending == true || hold == true) {
       console.log('!!!!!!!!!!!!!!!', EngeneerRemark);
 
@@ -134,71 +151,84 @@ const CompleteTicket = () => {
             Alert.alert('Failed...!', 'do not enter special characters', [
               {
                 text: 'OK',
-                onPress: () => {},
+                onPress: () => { },
               },
             ]);
           } else {
             if (CusRemark != null && CusRemark != '') {
-              if (signature != null) {
-                try {
+              //
+              if (receiverEmail != '' && receiverEmail != null) {
 
-                  CompleteTicket_Update(
-                    EngeneerRemark,
-                    nic,
-                    CusRemark,
-                    '1',
-                    attend_status,
-                    id,
-                    (result: any) => {
-                      if (result === 'success') {
+                if (signature != null) {
+                  try {
 
-                        updateActualendDate(id, currentendDate, (result: any) => {
-                          console.log('Hii this is update actual end date'+result);
-                         
-                      });
+                    CompleteTicket_Update(
+                      EngeneerRemark,
+                      nic,
+                      CusRemark,
+                      '1',
+                      attend_status,
+                      id,
+                      (result: any) => {
+                        if (result === 'success') {
 
-                        AsyncStorage.setItem(AsyncStorageConstants.ASYNC_CURRENT_TICKET_ID, '');
-                        ToastAndroid.show(
-                          'Complete success ',
-                          ToastAndroid.SHORT,
-                        );
+                          updateActualendDate(id, currentendDate, (result: any) => {
+                            console.log('Hii this is update actual end date' + result);
 
-                        handleEmail1();
+                          });
 
-                      AsyncStorage.setItem(AsyncStorageConstants.ASYNC_CURRENT_SERVICE_CALL_ID, serviceID);
-                      navigation.navigate('RequestDetails', {
-                          callID: serviceID,
-                      });
+                          AsyncStorage.setItem(AsyncStorageConstants.ASYNC_CURRENT_TICKET_ID, '');
+                          ToastAndroid.show(
+                            'Complete success ',
+                            ToastAndroid.SHORT,
+                          );
 
-                     // handleEmail1();
-                        // navigation.navigate('ServiceCall');
-                      } else {
-                        Alert.alert('Failed...!', ' Save Failed.', [
-                          {
-                            text: 'OK',
-                            onPress: () => {},
-                          },
-                        ]);
-                      }
+                          // handleEmail1();
+
+                          AsyncStorage.setItem(AsyncStorageConstants.ASYNC_CURRENT_SERVICE_CALL_ID, serviceID);
+                          navigation.navigate('RequestDetails', {
+                            callID: serviceID,
+                          });
+
+                          handleEmail1();
+                          // navigation.navigate('ServiceCall');
+                        } else {
+                          Alert.alert('Failed...!', ' Save Failed.', [
+                            {
+                              text: 'OK',
+                              onPress: () => { },
+                            },
+                          ]);
+                        }
+                      },
+                    );
+
+                  } catch (error) {
+                    console.log(error);
+                  }
+                } else {
+                  Alert.alert('Failed...!', ' Enter Customer Signature', [
+                    {
+                      text: 'OK',
+                      onPress: () => { },
                     },
-                  );
-                  
-                } catch (error) {
-                  console.log(error);
+                  ]);
                 }
               } else {
-                Alert.alert('Failed...!', ' Enter Customer Signature', [
+                Alert.alert('Failed...!', ' Enter receiver email address!', [
                   {
                     text: 'OK',
-                    onPress: () => {},
+                    onPress: () => { },
                   },
                 ]);
+
               }
+              //
             } else {
               Alert.alert('Failed...!', ' Enter Customer Remark', [
                 {
                   text: 'OK',
-                  onPress: () => {},
+                  onPress: () => { },
                 },
               ]);
             }
@@ -207,7 +237,7 @@ const CompleteTicket = () => {
           Alert.alert('Failed...!', ' Enter National ID', [
             {
               text: 'OK',
-              onPress: () => {},
+              onPress: () => { },
             },
           ]);
         }
@@ -215,7 +245,7 @@ const CompleteTicket = () => {
         Alert.alert('Failed...!', ' Enter Engineer Remark', [
           {
             text: 'OK',
-            onPress: () => {},
+            onPress: () => { },
           },
         ]);
       }
@@ -224,7 +254,7 @@ const CompleteTicket = () => {
       Alert.alert('Failed...!', ' Select Service Ticket Status.!', [
         {
           text: 'OK',
-          onPress: () => {},
+          onPress: () => { },
         },
       ]);
     }
@@ -460,7 +490,24 @@ const CompleteTicket = () => {
             setState={(val: any) => setCusRemark(val)}
             max={25}
           />
-          <View style={{ marginTop: 20}}></View>
+          <View style={{ marginTop: 40}}></View>
+          <InputText
+            placeholder="receiver email address*"
+            placeholderColor={comStyles.COLORS.HEADER_BLACK}
+            style={{ 
+              borderColor: '#cfcccc',
+              paddingLeft: 5,
+              fontSize: 12,
+            }}
+            bdrStyle={{
+              paddingTop: 5,
+              paddingBottom: 0,
+            }}
+            stateValue={receiverEmail}
+            setState={(val: any) => SetReceiverEmail(val)}
+            max={30}
+          />
+          <View style={{ marginTop: 10 }}></View>
           <View
             style={{
               height: '50%',

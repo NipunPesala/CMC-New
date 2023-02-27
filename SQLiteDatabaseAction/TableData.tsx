@@ -87,6 +87,13 @@ export const tableData = [
         shouldNotAllowNull: false,
       },
       {
+        name: 'TechnicianID',
+        dataType: 'INTEGER',
+        isPrimaryKey: false,
+        autoIncrement: false,
+        shouldNotAllowNull: false,
+      },
+      {
         name: 'secretary',
         dataType: 'TEXT',
         isPrimaryKey: false,
@@ -94,8 +101,22 @@ export const tableData = [
         shouldNotAllowNull: false,
       },
       {
+        name: 'SecretaryID',
+        dataType: 'INTEGER',
+        isPrimaryKey: false,
+        autoIncrement: false,
+        shouldNotAllowNull: false,
+      },
+      {
         name: 'assistance',
         dataType: 'TEXT',
+        isPrimaryKey: false,
+        autoIncrement: false,
+        shouldNotAllowNull: false,
+      },
+      {
+        name: 'AssisstanceID',
+        dataType: 'INTEGER',
         isPrimaryKey: false,
         autoIncrement: false,
         shouldNotAllowNull: false,
@@ -123,14 +144,14 @@ export const tableData = [
       },
       {
         name: 'Approve_status',
-        dataType: 'TEXT',
+        dataType: 'INTEGER',
         isPrimaryKey: false,
         autoIncrement: false,
         shouldNotAllowNull: false,
       },
       {
         name: 'Attend_status',
-        dataType: 'TEXT',
+        dataType: 'INTEGER',
         isPrimaryKey: false,
         autoIncrement: false,
         shouldNotAllowNull: false,
@@ -166,6 +187,13 @@ export const tableData = [
       {
         name: 'customerID',
         dataType: 'INTEGER',
+        isPrimaryKey: false,
+        autoIncrement: false,
+        shouldNotAllowNull: false,
+      },
+      {
+        name: 'serialNumber',
+        dataType: 'TEXT',
         isPrimaryKey: false,
         autoIncrement: false,
         shouldNotAllowNull: false,
@@ -355,6 +383,20 @@ export const tableData = [
         shouldNotAllowNull: true,
       },
       {
+        name: 'technicianID',
+        dataType: 'INTEGER',
+        isPrimaryKey: false,
+        autoIncrement: false,
+        shouldNotAllowNull: true,
+      },
+      {
+        name: 'itemCode',
+        dataType: 'TEXT',
+        isPrimaryKey: false,
+        autoIncrement: false,
+        shouldNotAllowNull: true,
+      },
+      {
         name: 'priority',
         dataType: 'TEXT',
         isPrimaryKey: false,
@@ -363,7 +405,7 @@ export const tableData = [
       },
       {
         name: 'attend_status',
-        dataType: 'TEXT',
+        dataType: 'INTEGER',
         isPrimaryKey: false,
         autoIncrement: false,
         shouldNotAllowNull: true,
@@ -453,6 +495,13 @@ export const tableData = [
         shouldNotAllowNull: false,
       },
       {
+        name: 'SPartID',
+        dataType: 'INTEGER',
+        isPrimaryKey: false,
+        autoIncrement: false,
+        shouldNotAllowNull: false,
+      },
+      {
         name: 'name',
         dataType: 'TEXT',
         isPrimaryKey: false,
@@ -536,7 +585,7 @@ export const tableData = [
       },
       {
         name: 'status',
-        dataType: 'TEXT',
+        dataType: 'INTEGER',
         isPrimaryKey: false,
         autoIncrement: false,
         shouldNotAllowNull: false,

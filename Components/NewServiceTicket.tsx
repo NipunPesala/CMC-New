@@ -29,7 +29,7 @@ import DropDownPicker from 'react-native-dropdown-picker';
 import { addNewTicket } from "../Services/Api/SyncService";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import moment from "moment";
-import { getCallDates, getServiceCallCustomer, getServiceId } from "../SQLiteDatabaseAction/DBControllers/ServiceController";
+import { getCallDates, getServiceById, getServiceCallCustomer, getServiceId } from "../SQLiteDatabaseAction/DBControllers/ServiceController";
 import { Dropdown } from "react-native-element-dropdown";
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import { getLastTicketId, saveTicket, getALLTicketById, updateTicket, updateSyncServiceTicket } from "../SQLiteDatabaseAction/DBControllers/TicketController";
@@ -59,6 +59,7 @@ const NewServiceTicket = (props: any) => {
     const [assignPersonList, setAssignPersonList] = useState([]);
     const [serviceCallIdList, setserviceCallIdList] = useState([]);
     const [selectAssignPerson, setSelectAssignPerson] = useState(null);
+    const [selectAssignPersonID, setSelectAssignPersonID] = useState(null);
     const [selectPriority, setSelectPriority] = useState(null);
     const [selectServiceCallID, setselectServiceCallID] = useState(null);
     const [lastTicketID, setLastTicketID]: any[] = useState([]);
@@ -75,6 +76,7 @@ const NewServiceTicket = (props: any) => {
     const [isFocus, setIsFocus] = useState(false);
     const [callStartDate, setCallStartDate] = useState('');
     const [callEndDate, setCallEndDate] = useState('');
+    const [ItemCode, setItemCode] = useState('');
     const routeNav = useRoute();
     var TOCKEN_KEY: any;
     const onChangePicker = (event, type) => {
@@ -99,7 +101,7 @@ const NewServiceTicket = (props: any) => {
                 ticketId: TicketID,
                 serviceId: selectServiceCallID,
                 content: content,
-                itemDescription: "sample",
+                itemDescription: itemDescription,
                 startDate: startDate,
                 endDate: endDate,
                 priority: selectPriority,
@@ -113,6 +115,9 @@ const NewServiceTicket = (props: any) => {
                 syncStatus: 'true',
                 actualstartDate: '',
                 actualendtDate: '',
+                technicianID: selectAssignPersonID,
+                itemCode: ItemCode,
+                
             }
         ]
         if (selectServiceCallID != null) {
@@ -400,6 +405,7 @@ const NewServiceTicket = (props: any) => {
                             "assignTo": selectAssignPerson,
                             "attend_status": 0,
                             "priority": selectPriority,
+                            "technicianID": selectAssignPersonID,
                             "createAt": moment().utcOffset('+05:30').format('YYYY-MM-DD kk:mm:ss'),
                         }
                     ]
@@ -451,6 +457,14 @@ const NewServiceTicket = (props: any) => {
             console.log(">>>>>>>>>>>>", error);
 
         }
+    }
+
+    const getItemDetails = (SID:any) => {
+
+        getServiceById(SID,(result:any) => {
+            setItemDescription(result[0].item_description);
+            setItemCode(result[0].item_code);
+        });
     }
 
 
@@ -674,6 +688,7 @@ const NewServiceTicket = (props: any) => {
                             setselectServiceCallID(item.serviceId);
                             setIsFocus(false);
                             getCustomer(item.serviceId);
+                            getItemDetails(item.serviceId);
                         }}
                         renderLeftIcon={() => (
                             <AntDesign
@@ -762,6 +777,7 @@ const NewServiceTicket = (props: any) => {
                             // console.log(item.serviceId);
 
                             setSelectAssignPerson(item.name);
+                            setSelectAssignPersonID(item.user_id);
                             setIsFocus(false);
                         }}
                         renderLeftIcon={() => (

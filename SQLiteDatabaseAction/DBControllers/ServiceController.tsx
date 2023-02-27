@@ -10,8 +10,8 @@ export const saveServiceData = (data:any, callBack:any) => {
         {
           table: 'SERVICE',
           columns: `serviceId, priority, service_type, item_code, item_description, customer,customer_address,contact_name,contact_no,
-        subject, handle_by, secretary, assistance,start_date, end_date, created_by,Approve_status,Attend_status,status,CreateAt,Syncstatus,itemID,customerID`,
-          values: '?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?',
+        subject, handle_by, TechnicianID,secretary, SecretaryID,assistance,AssisstanceID,start_date, end_date, created_by,Approve_status,Attend_status,status,CreateAt,Syncstatus,itemID,customerID,serialNumber`,
+          values: '?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?',
           params: [
             // data[i].serviceId,
             // data[i].priority,
@@ -47,8 +47,11 @@ export const saveServiceData = (data:any, callBack:any) => {
             data[i].contact_no,
             data[i].Subject,
             data[i].HandledBy,
+            data[i].TechnicianID,
             data[i].Secretary,
+            data[i].SecretaryID,
             data[i].SalesAssistant,
+            data[i].AssisstanceID,
             data[i].PlanedStartDateTime,
             data[i].PlanedEndDateTime,
             data[i].CreatedBy,
@@ -59,6 +62,8 @@ export const saveServiceData = (data:any, callBack:any) => {
             data[i].syncstatus,
             data[i].itemID,
             data[i].customerID,
+            data[i].serialNumber,
+           
           ],
           primaryKey: 'serviceId',
         //   subQuery: `priority = EXCLUDED.priority,
@@ -113,6 +118,9 @@ export const updateServiceCAll = (serviceId:any,status:any,callBack:any) => {
 
 
 export const enableServiceCall = (serviceId:any,status:any,callBack:any) => {
+
+  console.log(serviceId,"---",status);
+  
   DB.updateData(
     'UPDATE SERVICE SET Attend_status=? WHERE serviceId=?',
     [status,serviceId],
@@ -184,7 +192,6 @@ export const getServiceCalls = (status:any,callBack:any) => {
     },
   );
 };
-
 
 export const getServiceCallCustomer = (id:any,callBack:any) => {
 
