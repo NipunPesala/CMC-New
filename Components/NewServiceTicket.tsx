@@ -312,7 +312,7 @@ const NewServiceTicket = (props: any) => {
                 setSelectPriority(data.name);
             });
 
-            getUserByTypes(3, (result: any) => {
+            getUserByTypes("Technician", (result: any) => {
                 setAssignPersonList(result);
                 const data = result?.filter((a: any) => a.name == Assistance)[0];
                 setSelectAssignPerson(data.name);
@@ -375,7 +375,7 @@ const NewServiceTicket = (props: any) => {
         getAllPriority((result: any) => {
             setPriorityList(result);
         });
-        getUserByTypes(3, (result: any) => {
+        getUserByTypes("Technician", (result: any) => {
             setAssignPersonList(result);
         });
     }

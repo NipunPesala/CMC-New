@@ -636,13 +636,13 @@ const NewServiceCall = (props: any) => {
         });
     }
     const getAllUserTypesData = () => {
-        getUserByTypes(3, (result: any) => {
+        getUserByTypes("Sales Executive", (result: any) => {
             setSalesAssistance(result);
         });
-        getUserByTypes(2, (result: any) => {
+        getUserByTypes("Admin", (result: any) => {
             setSecretaryItem(result);
         });
-        getUserByTypes(1, (result: any) => {
+        getUserByTypes("Technician", (result: any) => {
             setHandleBy(result);
         });
         getAllPriority((result: any) => {

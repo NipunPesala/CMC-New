@@ -61,7 +61,7 @@ export const saveUser = (data:any, callBack:any) => {
 export const getUserByTypes = (type:any,callBack:any) =>{
 
     DB.searchData(
-        'SELECT * FROM User  WHERE status=1 AND userTypeId=?',
+        'SELECT User.* FROM User INNER JOIN User_Type ON User_Type.type_id = User.userTypeId WHERE User.status=1 AND User_Type.description=?',
         [type],
         (resp:any, err:any) => {
           //  console.log(" **************  all customers ************  " + resp);
