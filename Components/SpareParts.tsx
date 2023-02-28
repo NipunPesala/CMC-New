@@ -40,7 +40,7 @@ const SpareParts = (sparePartList: any, isActive: boolean,ticketID:any) => {
         console.log(" ticket is ..........   " , callDetailList.ticketID);
         
 
-        getALLTicketById(callDetailList.ticketID, (result:any)  => {
+        getALLTicketById(callDetailList.ticketID, async (result:any)  => {
 
             // console.log("db result " ,  result[0].attend_status);
             
@@ -50,7 +50,7 @@ const SpareParts = (sparePartList: any, isActive: boolean,ticketID:any) => {
                 // console.log("awaaaaaaaaaaa");
                 
 
-                AsyncStorage.setItem(AsyncStorageConstants.SELECT_TICKET, 'false');
+                await AsyncStorage.setItem(AsyncStorageConstants.SELECT_TICKET, 'false');
                 navigation.navigate("RequestBottomSheet");
 
             }else{
