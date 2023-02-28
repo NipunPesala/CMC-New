@@ -102,6 +102,8 @@ const NewServiceCall = (props: any) => {
     const [itemID, setitemID] = useState(null);
     const [customerID, setcustomerID] = useState(null);
     const [selectSerialNum, setSelectSerialNum] = useState(null);
+    const [attendStatus, setAttendStatus] = useState(0);
+    const [approveStatus, setApproveStatus] = useState(0);
     // const [serialNumDesable, setserialNumDesable] = useState(false);
     var TOCKEN_KEY: any;
     const mode = route.params.mode;
@@ -141,11 +143,11 @@ const NewServiceCall = (props: any) => {
                 Priority: selectPriority,
                 type: selectServiceType,
                 Secretary: selectSecretary,
-                attend_status: '0',
+                attend_status: attendStatus,
                 Status: '0',
                 customer: selectCustomer,
                 CreatedBy: "1",
-                approve_status: '0',
+                approve_status: approveStatus,
                 createAt: moment().utcOffset('+05:30').format('YYYY-MM-DD kk:mm:ss'),
                 syncstatus: '0',
                 itemID: selectItemCode,
@@ -696,7 +698,8 @@ const NewServiceCall = (props: any) => {
                 setEndDate(result[0].end_date);
                 setSelectPriority(result[0].priority);
                 setContactPerson(result[0].contact_name);
-
+                setAttendStatus(result[0].Attend_status);
+                setApproveStatus(result[0].Approve_status);
 
                 getUserByTypes("Sales Executive", (resultAssisstance: any) => {
 

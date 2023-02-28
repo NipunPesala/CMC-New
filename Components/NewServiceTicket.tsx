@@ -77,6 +77,7 @@ const NewServiceTicket = (props: any) => {
     const [callStartDate, setCallStartDate] = useState('');
     const [callEndDate, setCallEndDate] = useState('');
     const [ItemCode, setItemCode] = useState('');
+    const [attendStatus, setAttendStatus] = useState(0);
     const routeNav = useRoute();
     var TOCKEN_KEY: any;
     const onChangePicker = (event, type) => {
@@ -106,7 +107,7 @@ const NewServiceTicket = (props: any) => {
                 endDate: endDate,
                 priority: selectPriority,
                 assignTo: selectAssignPerson,
-                attend_status: "0",
+                attend_status: attendStatus,
                 status: '0',
                 engRemark: '',
                 cusNic: '',
@@ -318,6 +319,7 @@ const NewServiceTicket = (props: any) => {
                     setSelectPriority(prority);
                     setSelectAssignPerson(Assistance);
                     setSelectAssignPersonID(result[i].technicianID);
+                    setAttendStatus(result[i].attend_status);
 
                 }
             });
