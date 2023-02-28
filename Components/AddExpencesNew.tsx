@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { View, StyleSheet, Platform, ToastAndroid, Alert } from 'react-native';
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 import { Text } from 'react-native-paper';
@@ -30,12 +30,14 @@ import axios from "axios";
 import AsyncStorage from '@react-native-community/async-storage';
 import AsyncStorageConstants from '../Constant/AsyncStorageConstants';
 import { getTicketDates } from '../SQLiteDatabaseAction/DBControllers/TicketController';
+import DropdownAlert from 'react-native-dropdownalert';
 var id: any;
 var loginUser: any;
 var type: any;
 var exid: any;
 const AddExpencesNew = (props: any) => {
   const { navigation, route } = props;
+  let dropDownAlertRef = useRef();
   const [isFocus, setIsFocus] = useState(false);
 
   const [craeteDate, setCreateDate] = useState('');
@@ -97,10 +99,7 @@ const AddExpencesNew = (props: any) => {
       if (expencesTypeId != '') {
         if (amount != '') {
           if (!/^[0-9]+$/.test(amount)) {
-            ToastAndroid.show(
-              'Please Enter only numeric characters. ',
-              ToastAndroid.SHORT,
-            );
+            dropDownAlertRef.alertWithType('error', 'Error', 'Please Enter only numeric characters..!');
           } else {
             if (startDate != '') {
               if (type == '1') {
@@ -109,23 +108,17 @@ const AddExpencesNew = (props: any) => {
                 SaveData(sendData);
               }
             } else {
-              ToastAndroid.show(
-                'Please Select Relevent Date..!  ',
-                ToastAndroid.SHORT,
-              );
+              dropDownAlertRef.alertWithType('error', 'Error', 'Please Select Relevent Date..!');
             }
           }
         } else {
-          ToastAndroid.show('Please Enter Amount..!  ', ToastAndroid.SHORT);
+          dropDownAlertRef.alertWithType('error', 'Error', 'Please Enter Amount..!');
         }
       } else {
-        ToastAndroid.show(
-          'Please Select Expences Type..!  ',
-          ToastAndroid.SHORT,
-        );
+        dropDownAlertRef.alertWithType('error', 'Error', 'Please Select Expences Type..!');
       }
     } else {
-      ToastAndroid.show('Please Check Service ID..!  ', ToastAndroid.SHORT);
+      dropDownAlertRef.alertWithType('error', 'Error', 'Please Check Service ID..! ..!');
     }
   };
 
@@ -142,7 +135,7 @@ const AddExpencesNew = (props: any) => {
       exid,
       (result: any) => {
         // console.log(result, '!!!!!!!!!!!!!!!!!!!!');
-        ToastAndroid.show('Expences Save Success ', ToastAndroid.SHORT);
+        // ToastAndroid.show('Expences Save Success ', ToastAndroid.SHORT);
         navigation.goBack();
       },
     );
@@ -162,7 +155,7 @@ const AddExpencesNew = (props: any) => {
           navigation.navigate('TicketDetails', {
             tab: 'Expences',
           });
-          ToastAndroid.show('Expences Save Success ', ToastAndroid.SHORT);
+          // ToastAndroid.show('Expences Save Success ', ToastAndroid.SHORT);
         } else {
           Alert.alert('Failed...!', 'Expences Save Failed.', [
             {
@@ -375,7 +368,7 @@ const AddExpencesNew = (props: any) => {
                 updateSycnExpences(response.data.UniqueNo, (result: any) => {
 
                 });
-                ToastAndroid.show(response.data.ErrorDescription, ToastAndroid.LONG);
+                dropDownAlertRef.alertWithType('error', 'Error', response.data.ErrorDescription);
               }
 
             } else {
@@ -426,7 +419,7 @@ const AddExpencesNew = (props: any) => {
 
   };
 
-  const GetLastID = (id: any) => {
+  const GetLastID = async (id: any) => {
 
     var requestID = parseInt(id) + 1;
     console.log(requestID, "  ///////////////////////////////////////   ");
@@ -434,7 +427,7 @@ const AddExpencesNew = (props: any) => {
     const rid = "EXP_" + moment().utcOffset('+05:30').format('YYYY-MM-DD') + "_" + requestID;
 
     setExpenseID(rid);
-    AsyncStorage.setItem(AsyncStorageConstants.ASYNC_CURRENT_EXP_REQUEST_ID, rid);
+    await AsyncStorage.setItem(AsyncStorageConstants.ASYNC_CURRENT_EXP_REQUEST_ID, rid);
   };
 
 
@@ -583,7 +576,9 @@ const AddExpencesNew = (props: any) => {
           value={new Date()}
           mode={'date'}
           is24Hour={true}
-          display="default"
+          display={
+            Platform.OS === "ios" ? "spinner" : "default"
+          }
           minimumDate={new Date(ticketStartDate)}
           maximumDate={new Date(ticketEndDate)}
           onChange={onChange}
