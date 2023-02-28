@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect ,useRef} from "react"
 import {
     View,
     Text,
@@ -6,6 +6,7 @@ import {
     TouchableOpacity,
     SafeAreaView,
     Alert,
+    ScrollView,
 } from "react-native";
 import ActionButton from "./ActionButton";
 import comStyles from "../Constant/Components.styles";
@@ -19,20 +20,19 @@ import AdditionalSparepartsItem from "../SubComponents/AdditionalSparePartItem";
 import { useFocusEffect, useNavigation, useRoute } from "@react-navigation/native";
 import LeftRightArrowbarComponent from "./LeftRightArrowbarComponent";
 import Header from "./Header";
-import { getALLAInventrySpareTiketdetasils, getALLAdditionalSpareTiketdetasils, getLastRequestId, getTicketsForInprogress } from "../SQLiteDatabaseAction/DBControllers/TicketController";
+import { getALLAInventrySpareTiketdetasils, getALLAdditionalSpareTiketdetasils, getLastRequestId, getTicketsForInprogress, getSparepartDetailsForEmail } from "../SQLiteDatabaseAction/DBControllers/TicketController";
 import { getASYNC_CURRENT_TICKET_ID, getASYNC_SELECT_TICKET } from "../Constant/AsynStorageFuntion"
 import moment from "moment";
 import AsyncStorage from "@react-native-community/async-storage";
 import AsyncStorageConstants from "../Constant/AsyncStorageConstants";
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import { Dropdown } from "react-native-element-dropdown";
-
+import DialogInput from 'react-native-dialog-input';
+import Mailer from 'react-native-mail';
 
 var id: any;
 const RequestBottomSheet = () => {
     const navigation = useNavigation();
-
-
     const [AddInventorySpareParts, setAddInventorySpareParts] = useState(false);
     const [AddAdditionalSpareParts, setAddAdditionalSpareParts] = useState(false);
     const [sparepartsList, setsparepartsList] = useState([]);
@@ -42,14 +42,15 @@ const RequestBottomSheet = () => {
     const [isSelectTicket, setIsSelectTicket] = useState(true);   // dashborad spare part  = true
     const [ticketList, setTicketList] = useState([]);
     const [isFocus, setIsFocus] = useState(false);
-
-
-
+    const [isDialog, setisDialog] = useState(false);
+    const [sendEmailDetails, setSendEmailDetails] = useState([]);
+    var emaildetailArray: any[] = [];
+    let dropDownAlertRef = useRef();
     const handle_AddInventorySpareParts = () => {
 
-        console.log(" request bottom sheet  ,,,,,,,,,,,,,,,,,,,,, " , isSelectTicket);
+        console.log(" request bottom sheet  ,,,,,,,,,,,,,,,,,,,,, ", isSelectTicket);
 
-        if(isSelectTicket == true){
+        if (isSelectTicket == true) {
 
             if (ticketList.length > 0) {
 
@@ -57,25 +58,25 @@ const RequestBottomSheet = () => {
                 setAddAdditionalSpareParts(false);
                 setInvenrty("1");
                 getALlDatainventy(TicketID);
-    
+
             } else {
-    
+
                 // Alert.alert(
                 //     "Failed...!",
                 //     "No Available Service Tickets.",
                 //     [
                 //         {
                 //             text: "OK", onPress: () => {
-    
+
                 //             }
                 //         }
                 //     ]
                 // );
-    
-            }
-    
 
-        }else{
+            }
+
+
+        } else {
 
             setAddInventorySpareParts(true);
             setAddAdditionalSpareParts(false);
@@ -85,15 +86,15 @@ const RequestBottomSheet = () => {
 
         }
 
-      
+
 
     };
     const handale_AddAdditionalSpareParts = () => {
-        console.log(" ,,,,,,,,,,,,,,,,,,,,, " , isSelectTicket);
+        console.log(" ,,,,,,,,,,,,,,,,,,,,, ", isSelectTicket);
 
-        if(isSelectTicket == true){
+        if (isSelectTicket == true) {
 
-           
+
             if (ticketList.length > 0) {
 
                 setAddInventorySpareParts(false);
@@ -102,25 +103,25 @@ const RequestBottomSheet = () => {
                 getALlDatAdditional(TicketID);
                 // getLastReadervalue();
                 // getAllAttendanceDetails();
-    
+
             } else {
-    
+
                 Alert.alert(
                     "Failed...!",
                     "No Available Service Tickets.",
                     [
                         {
                             text: "OK", onPress: () => {
-    
+
                             }
                         }
                     ]
                 );
-    
+
             }
 
 
-        }else{
+        } else {
 
             setAddInventorySpareParts(false);
             setAddAdditionalSpareParts(true);
@@ -129,7 +130,7 @@ const RequestBottomSheet = () => {
 
         }
 
-       
+
 
 
 
@@ -137,15 +138,15 @@ const RequestBottomSheet = () => {
     };
 
 
-    const AddInventory = () =>{
+    const AddInventory = () => {
 
-        if(isSelectTicket == true){
+        if (isSelectTicket == true) {
 
             if (ticketList.length > 0) {
 
                 navigation.navigate("AddSparePartsComponent");
 
-            }else{
+            } else {
 
                 Alert.alert(
                     "Failed...!",
@@ -153,7 +154,7 @@ const RequestBottomSheet = () => {
                     [
                         {
                             text: "OK", onPress: () => {
-    
+
                             }
                         }
                     ]
@@ -161,7 +162,7 @@ const RequestBottomSheet = () => {
             }
 
 
-        }else{
+        } else {
 
             navigation.navigate("AddSparePartsComponent");
 
@@ -174,13 +175,13 @@ const RequestBottomSheet = () => {
     const AddAdditional = () => {
 
 
-        if(isSelectTicket == true){
+        if (isSelectTicket == true) {
 
             if (ticketList.length > 0) {
 
                 navigation.navigate("AddAdditionalSpareParts")
 
-            }else{
+            } else {
 
                 Alert.alert(
                     "Failed...!",
@@ -188,18 +189,18 @@ const RequestBottomSheet = () => {
                     [
                         {
                             text: "OK", onPress: () => {
-    
+
                             }
                         }
                     ]
                 );
-    
+
 
 
             }
 
 
-        }else{
+        } else {
 
             navigation.navigate("AddAdditionalSpareParts")
 
@@ -257,7 +258,7 @@ const RequestBottomSheet = () => {
     useFocusEffect(
         React.useCallback(() => {
 
-
+            setisDialog(false);
             setAddInventorySpareParts(true);
             setAddAdditionalSpareParts(false);
             setInvenrty("1");
@@ -292,7 +293,7 @@ const RequestBottomSheet = () => {
 
 
     // useEffect(() => {
-        
+
     //     const focusHandler = navigation.addListener('focus', () => {
     //         setAddInventorySpareParts(true);
     //         setAddAdditionalSpareParts(false);
@@ -334,7 +335,7 @@ const RequestBottomSheet = () => {
     //     setAddInventorySpareParts(true);
     //     setAddAdditionalSpareParts(false);
     //     setInvenrty("1");
-     
+
 
 
     //     getASYNC_CURRENT_TICKET_ID().then(res => {
@@ -347,7 +348,7 @@ const RequestBottomSheet = () => {
 
 
     //     generateRequestID();
-       
+
     // }, []);
 
     const getALlDatainventy = (data: any) => {
@@ -372,11 +373,76 @@ const RequestBottomSheet = () => {
         });
     }
 
+
+    const onPressGetEmail = (emailAddtrss: any) => {
+        if(sparepartsList.length==0){
+           // dropDownAlertRef.alertWithType('error', 'Error', 'No spare parts to send email..!');
+            Alert.alert('Failed...!', 'No spare parts to send email..!', [
+                {
+                  text: 'OK',
+                  onPress: () => {closeDialog()},
+                },
+              ]);
+           console.log('validate email +++++++++++')
+        }else{
+            handleEmail1(emailAddtrss);
+        }
+      
+    }
+
+    const createEmailbody = (serviceRequestsxx: any) => {
+
+        let body = '';
+        serviceRequestsxx.forEach((emaildetailArray) => {
+            for (const key in emaildetailArray) {
+                if (emaildetailArray.hasOwnProperty(key)) {
+                    body += `${key}:- ${emaildetailArray[key]}<br/>`;
+                }
+            }
+            body += '<br/>';
+        });
+        return body;
+
+    }
+
+
+    const handleEmail1 = (email: any) => {
+
+        getSparepartDetailsForEmail(TicketID, (result: any) => {
+            setSendEmailDetails(result);
+            for (var i = 0; i < result.length; i++) {
+                emaildetailArray.push(result[i]);
+            }
+            const body1 = createEmailbody(emaildetailArray);
+            Mailer.mail({
+                subject: 'Request Sapare Parts',
+                recipients: [email],
+                body: body1,
+                // customChooserTitle: 'This is my new title', // Android only (defaults to "Send Mail")
+                isHTML: true,
+            }, (error, event) => {
+                console.log(error);
+            });
+        });
+    }
+
+
+    const onpressEmailBtn = () => {
+       // emailValidation.alertWithType('error', 'Error', 'No spare parts to send email..!');
+        setisDialog(true);
+
+    }
+
+    const closeDialog = () => {
+        setisDialog(false)
+    }
     return (
         <SafeAreaView style={comStyles.CONTAINER}>
+
             <Header title="Request Spare Parts" isBtn={true} btnOnPress={() => navigation.goBack()} />
             <View style={{ padding: 5 }} />
             {/* <Header title="Request Spare Parts" isBtn={true} btnOnPress={() => navigation.goBack()} /> */}
+
             <View style={{ justifyContent: "center", alignItems: "center", marginTop: 5, }}>
 
                 <View style={{ flexDirection: 'column', justifyContent: "center", alignItems: "center", }}>
@@ -444,86 +510,119 @@ const RequestBottomSheet = () => {
 
 
             </View>
+            <ScrollView style={style.scrollStyle} nestedScrollEnabled={true}>
+                <View style={style.container}>
+                    <ActionButton
+                        title="Inventory Spare Parts"
+                        onPress={handle_AddInventorySpareParts}
+                        style={AddInventorySpareParts === true ? style.selectedbutton : style.defaultbutton}
+                        textStyle={AddInventorySpareParts === true ? style.selectedBUTTON_TEXT : style.defaultBUTTON_TEXT}
+                    />
 
-            <View style={style.container}>
-                <ActionButton
-                    title="Inventory Spare Parts"
-                    onPress={handle_AddInventorySpareParts}
-                    style={AddInventorySpareParts === true ? style.selectedbutton : style.defaultbutton}
-                    textStyle={AddInventorySpareParts === true ? style.selectedBUTTON_TEXT : style.defaultBUTTON_TEXT}
-                />
+                    <ActionButton
+                        title="Additional Spare Parts"
+                        onPress={handale_AddAdditionalSpareParts}
+                        style={AddAdditionalSpareParts === true ? style.selectedbutton : style.defaultbutton}
+                        textStyle={AddAdditionalSpareParts === true ? style.selectedBUTTON_TEXT : style.defaultBUTTON_TEXT}
+                    />
 
-                <ActionButton
-                    title="Additional Spare Parts"
-                    onPress={handale_AddAdditionalSpareParts}
-                    style={AddAdditionalSpareParts === true ? style.selectedbutton : style.defaultbutton}
-                    textStyle={AddAdditionalSpareParts === true ? style.selectedBUTTON_TEXT : style.defaultBUTTON_TEXT}
-                />
+                </View>
 
-            </View>
+                <View>
+                    {AddInventorySpareParts ?
+                        <View>
+                            <ActionButton
+                                title="Add Inventory Spare Parts"
+                                is_icon={true}
+                                icon_name="diff-added"
+                                onPress={() => AddInventory()}
+                                iconColor={comStyles.COLORS.ICON_BLUE}
+                                style={style.partsBtn}
+                                textStyle={{ color: comStyles.COLORS.ICON_BLUE, }}
+                            />
+                            <View style={{ flexDirection: 'row', backgroundColor: comStyles.COLORS.TICKET_HEADER_ASH, justifyContent: 'center', alignItems: 'center', padding: 5, marginTop: 5, }}>
+                                <Text style={{ flex: 1 }}>ID</Text>
+                                <Text style={{ flex: 2 }}>Description</Text>
+                                <Text style={{ flex: 1 }}>Requested Qty</Text>
+                            </View>
 
-            <View>
-                {AddInventorySpareParts ?
-                    <View>
-                        <ActionButton
-                            title="Add Inventory Spare Parts"
-                            is_icon={true}
-                            icon_name="diff-added"
-                            onPress={() => AddInventory()}
-                            iconColor={comStyles.COLORS.ICON_BLUE}
-                            style={style.partsBtn}
-                            textStyle={{ color: comStyles.COLORS.ICON_BLUE, }}
-                        />
-                        <View style={{ flexDirection: 'row', backgroundColor: comStyles.COLORS.TICKET_HEADER_ASH, justifyContent: 'center', alignItems: 'center', padding: 5, marginTop: 5, }}>
-                            <Text style={{ flex: 1 }}>ID</Text>
-                            <Text style={{ flex: 2 }}>Description</Text>
-                            <Text style={{ flex: 1 }}>Requested Qty</Text>
                         </View>
 
-                    </View>
+                        :
+                        <View>
+                            <ActionButton
+                                title="Add Additional Spare Parts"
+                                is_icon={true}
+                                icon_name="diff-added"
+                                onPress={() => AddAdditional()}
+                                iconColor={comStyles.COLORS.ICON_BLUE}
+                                style={style.partsBtn}
+                                textStyle={{ color: comStyles.COLORS.ICON_BLUE, }}
+                            />
 
-                    :
-                    <View>
-                        <ActionButton
-                            title="Add Additional Spare Parts"
-                            is_icon={true}
-                            icon_name="diff-added"
-                            onPress={() => AddAdditional()}
-                            iconColor={comStyles.COLORS.ICON_BLUE}
-                            style={style.partsBtn}
-                            textStyle={{ color: comStyles.COLORS.ICON_BLUE, }}
-                        />
-                        <View style={{ flexDirection: 'row', backgroundColor: comStyles.COLORS.TICKET_HEADER_ASH, justifyContent: 'center', alignItems: 'center', padding: 5, margin: 5, }}>
+                            <View style={{ flexDirection: 'row', backgroundColor: comStyles.COLORS.TICKET_HEADER_ASH, justifyContent: 'center', alignItems: 'center', padding: 5, margin: 5, }}>
 
-                            <Text style={{ flex: 2 }}>Description</Text>
-                            <Text style={{ flex: 1 }}>Requested Qty</Text>
+                                <Text style={{ flex: 2 }}>Description</Text>
+                                <Text style={{ flex: 1 }}>Requested Qty</Text>
+                            </View>
                         </View>
-                    </View>
 
-                }
-            </View>
-            <FlatList
-                // showsHorizontalScrollIndicator={false}
-                // data={Arrays.SelectPackage.Wash.filter(ob => ob.extras == true)}
-                data={sparepartsList}
-                style={{ marginTop: 5, marginBottom: 5, }}
-                renderItem={({ item }) => {
-                    return (
-                        <SparepartsItem
-                            is_editinput={true}
-                            is_additional={AddInventorySpareParts}
-                            id={item.SPartID}
-                            description={item.description}
-                            quantity={item.qty}
+                    }
+
+                </View>
+                <View >
+                    <ScrollView
+                        horizontal={true}
+                        contentContainerStyle={{ width: '95%', height: '95%' ,marginLeft:15,marginRight:15}}>
+                        <FlatList
+                            // showsHorizontalScrollIndicator={false}
+                            // data={Arrays.SelectPackage.Wash.filter(ob => ob.extras == true)}
+                            data={sparepartsList}
+                            scrollEnabled={true}
+                            style={{ marginTop: 5, marginBottom: 5, }}
+                            renderItem={({ item }) => {
+                                return (
+                                    <SparepartsItem
+                                        is_editinput={true}
+                                        is_additional={AddInventorySpareParts}
+                                        id={item.SPartID}
+                                        description={item.description}
+                                        quantity={item.qty}
+
+
+                                    />
+                                );
+                            }}
+                            keyExtractor={item => `${item.spId}`}
 
                         />
-                    );
-                }}
-                keyExtractor={item => `${item.spId}`}
-            />
+                    </ScrollView>
+                </View>
+                <View style={{ marginLeft: 10, marginRight: 10 }}>
+                    <ActionButton
+                        title="Send Email"
+                        onPress={onpressEmailBtn}
 
-
+                    // iconColor={ComStyles.COLORS.WHITE}
+                    />
+                </View>
+            </ScrollView>
+            <View style={{ marginBottom: 50 }} />
             <View style={{ padding: 15 }} />
+
+
+
+            <DialogInput
+                isDialogVisible={isDialog}
+                title={"Add Email Address"}
+                hintInput={"Email Address"}
+                submitInput={(inputText) => {
+                    onPressGetEmail(inputText)
+                }}
+                closeDialog={() => { closeDialog() }}
+
+            >
+            </DialogInput>
         </SafeAreaView>
         // <View style={style.modalMainContainer}>
 
@@ -784,6 +883,11 @@ const style = StyleSheet.create({
     icon: {
         marginRight: 5,
         color: comStyles.COLORS.HEADER_BLACK,
+    },
+    scrollStyle: {
+        marginBottom: 0,
+        marginLeft: 0,
+        marginRight: 0,
     },
 
 });

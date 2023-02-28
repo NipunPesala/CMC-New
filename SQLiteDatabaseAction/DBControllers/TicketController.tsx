@@ -406,6 +406,19 @@ export const getALLAInventrySpareTiketdetasils = (data:any,callBack:any) => {
 
 }
 
+
+
+export const getSparepartDetailsForEmail = (ticketId:any,callBack:any) => {
+    DB.searchData(
+              "select SPRequestID,SPartID,description,qty,creationdate from TICKET_SPARE_PARTS  where ticketId=? ",
+        [ticketId],
+        (resp:any, err:any) => {
+            callBack(resp, err);
+            console.log('ticket details for email+++++++++',resp);
+        },
+    );
+
+}
 export const getAll_Data = (callBack:any) => {
     DB.searchData(
               "select * from TICKET_SPARE_PARTS order by  spId asc",
