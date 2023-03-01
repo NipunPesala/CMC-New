@@ -42,7 +42,7 @@ import axios from "axios";
 import { getTicketDetailsFromID } from "../SQLiteDatabaseAction/DBControllers/TicketController";
 import { BASE_URL_GET } from "../Constant/Commen_API_Url";
 import { getUserByTypes } from "../SQLiteDatabaseAction/DBControllers/UserController";
-
+import {get_ASYNC_USERID} from "../Constant/AsynStorageFuntion";
 
 var selectMode: any
 var TiketID: any
@@ -80,6 +80,7 @@ const NewServiceTicket = (props: any) => {
     const [attendStatus, setAttendStatus] = useState(0);
     const routeNav = useRoute();
     var TOCKEN_KEY: any;
+    var UserIdKey:any;
     const onChangePicker = (event, type) => {
         switch (type) {
             case "serviceCallId":
@@ -483,15 +484,29 @@ const NewServiceTicket = (props: any) => {
             setItemCode(result[0].item_code);
         });
     }
+    const getLoginUserID=()=>{
+   
+        get_ASYNC_USERID().then(res => {
+            UserIdKey = res;
+            console.log('user id upload  --'+UserIdKey);
+        })
 
+
+
+    }
 
     const GetLastID = (id: any) => {
         var ticketID = parseInt(id) + 1;
-        setTicketID("SCT_" + moment().utcOffset('+05:30').format('YYYY-MM-DD') + "_" + ticketID);
+        var randomNum=Math.floor(Math.random()*1000)+1;
+        setTicketID("SCT_" +UserIdKey+"_"+randomNum + "_" + ticketID+"_M");
+    
+        //setServiceId("SC_" + moment().utcOffset('+05:30').format('YYYY-MM-DD') + "_" + serviceID);
+
     }
     useEffect(() => {
         selectMode = route.params.mode;
         TiketID = route.params.ID;
+        getLoginUserID();
         let date = moment().utcOffset('+05:30').format('YYYY-MM-DD')
         if (route.params.mode == 0) {
             setTextHeader('Add New Service Ticket')

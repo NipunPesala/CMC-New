@@ -383,7 +383,6 @@ const RequestBottomSheet = () => {
                   onPress: () => {closeDialog()},
                 },
               ]);
-           console.log('validate email +++++++++++')
         }else{
             handleEmail1(emailAddtrss);
         }

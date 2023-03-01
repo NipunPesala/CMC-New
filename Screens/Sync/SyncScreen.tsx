@@ -33,6 +33,7 @@ import * as DB_SpareParts from '../../SQLiteDatabaseAction/DBControllers/SparePa
 import * as DB_ExpenseType from '../../SQLiteDatabaseAction/DBControllers/ExpencesTypeController';
 import * as DB_Vehicle from '../../SQLiteDatabaseAction/DBControllers/VehicleController';
 import * as DB_Tool from '../../SQLiteDatabaseAction/DBControllers/ToolController';
+import * as DB_ServiceCall from '../../SQLiteDatabaseAction/DBControllers/ServiceController';
 import { ExpencesType, priorityListInitial, Service_types } from "../../Constant/DummyData";
 import { logProfileData } from 'react-native-calendars/src/Profiler';
 import { getASYNC_LOGIN_STATUS } from "../../Constant/AsynStorageFuntion"
@@ -950,6 +951,7 @@ const SyncScreen = (props: any) => {
 
   }
 
+
   //-------------------------------- Download Expense Type -----------------------------
   const Sync_ExpenseType = () => {
 
@@ -979,8 +981,8 @@ const SyncScreen = (props: any) => {
         });
         setSyncArray(SyncArray1);
         setOnRefresh(true);
-        Sync_Priority();
-
+       // Sync_Priority();// remove priority 
+          Sync_ServiceCall(TOCKEN_KEY);
       } else if (res == 3) {
 
         arrayindex++;
@@ -991,10 +993,91 @@ const SyncScreen = (props: any) => {
         });
         setSyncArray(SyncArray1);
         setOnRefresh(true);
-        Sync_Priority();
+        //Sync_Priority(); // remove priority 
+        Sync_ServiceCall(TOCKEN_KEY);
       }
 
     })
+
+  }
+  //-------------------------------- Download Service Calls  nipun------------------------
+  const Sync_ServiceCall = (Key: any) => {
+    console.log('this is a sync_service call ')
+    const AuthStr = 'Bearer '.concat(Key);
+    const URL = GET_URL + "service-call";
+    axios.get(URL, { headers: { Authorization: AuthStr } })
+      .then(response => {
+        if (response.status === 200) {
+          DB_ServiceCall.saveServiceData(response.data, (res: any) => {
+
+            setOnRefresh(false);
+
+            if (res == 1) {
+              arrayindex++;
+
+              SyncArray1.push({
+                name: 'Service Call Downloading...',
+                id: arrayindex,
+              });
+              setSyncArray(SyncArray1);
+              setOnRefresh(true);
+      
+
+            } else if (res == 2) {
+
+              arrayindex++;
+
+              SyncArray1.push({
+                name: 'Service Call Download Failed...',
+                id: arrayindex,
+              });
+              setSyncArray(SyncArray1);
+              setOnRefresh(true);
+              Sync_Priority();
+
+            } else if (res == 3) {
+
+              arrayindex++;
+
+              SyncArray1.push({
+                name: 'Service Call Download Sucsessfully...',
+                id: arrayindex,
+              });
+              setSyncArray(SyncArray1);
+              setOnRefresh(true);
+              Sync_Priority();
+            }
+          });
+        } else {
+          console.log('fails');
+
+          setOnRefresh(false);
+
+          arrayindex++;
+
+          SyncArray1.push({
+            name: 'Tool Download Failed...',
+            id: arrayindex,
+          });
+          setSyncArray(SyncArray1);
+          setOnRefresh(true);
+          Sync_Priority();
+        }
+      })
+      .catch((error) => {
+
+        setOnRefresh(false);
+
+        arrayindex++;
+        SyncArray1.push({
+          name: 'Tool Download Failed...',
+          id: arrayindex,
+        });
+        setSyncArray(SyncArray1);
+        console.log('errorrrrr ' + error);
+        setOnRefresh(true);
+        Sync_Priority();
+      });
 
   }
 

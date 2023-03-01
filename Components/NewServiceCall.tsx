@@ -40,7 +40,7 @@ import { getAllUserTypes } from "../SQLiteDatabaseAction/DBControllers/Users_Typ
 import { getAllContactPerson } from "../SQLiteDatabaseAction/DBControllers/ContactPersonController";
 import Spinner from 'react-native-loading-spinner-overlay';
 import ComponentsStyles from "../Constant/Components.styles";
-import { get_ASYNC_TOCKEN, get_ASYNC_USERID } from "../Constant/AsynStorageFuntion";
+import { get_ASYNC_TOCKEN, get_ASYNC_USERID ,getLoginUserName} from "../Constant/AsynStorageFuntion";
 import axios from "axios";
 import { BASE_URL_GET, } from "../Constant/Commen_API_Url";
 import { getUserByTypes } from "../SQLiteDatabaseAction/DBControllers/UserController";
@@ -106,10 +106,14 @@ const NewServiceCall = (props: any) => {
     const [approveStatus, setApproveStatus] = useState(0);
     // const [serialNumDesable, setserialNumDesable] = useState(false);
     var TOCKEN_KEY: any;
+    var UserNameUpload:any;
+    var UserIdUpload:any;
     const mode = route.params.mode;
 
     useFocusEffect(
+
         React.useCallback(() => {
+            getLoginUserNameForUplode();
             getServiceCallTypes();
             getCustomers();
             getAllUserTypesData();
@@ -344,44 +348,89 @@ const NewServiceCall = (props: any) => {
         });
 
     }
+    const getLoginUserNameForUplode=()=>{
+        getLoginUserName().then(res => {
+            UserNameUpload = res;
+            console.log('user Name --'+UserNameUpload);
+        })
+        get_ASYNC_USERID().then(res => {
+            UserIdUpload = res;
+            console.log('user id upload  --'+UserIdUpload);
+        })
+
+
+
+    }
 
     const UploadServiceCall = () => {
+
+
         try {
 
             get_ASYNC_TOCKEN().then(res => {
                 TOCKEN_KEY = res;
                 const AuthStr = 'Bearer '.concat(TOCKEN_KEY);
 
-                // console.log( 'AuthStr####3%%%%%%%%%%%%%',AuthStr);
-
                 const prams = {
-                    "UserName": "",
+                    "UserName": UserNameUpload,
                     "objServiceCallList": [
                         {
-                            "UserID": 1,  //need to code
+                            // "UserID": 1,  //need to code
+                            // "serviceId": serviceId,
+                            // "priority": selectPriority,
+                            // "service_type": selectServiceType,
+                            // "item_code": selectItemCode,
+                            // "itemID": itemID,
+                            // "customerID": customerID,
+                            // "customer": selectCustomer,
+                            // "customer_address": cusAddress,
+                            // "contact_name": contactPerson,
+                            // "contact_no": contactNumber,
+                            // "handle_by": selectTechnician,
+                            // "secretary": selectSecretary,
+                            // "sales_assistance": selectAssistance,
+                            // "start_date": startDate,
+                            // "end_date": endDate,
+                            // "TechnicianID": TechnicianID,
+                            // "SecretaryID": secretaryID,
+                            // "AssisstanceID": AssistanceID,
+                            // "created_by": 1, //need to code
+                            // "active_status": 1,
+                            // "Approve_status": 0,
+                            // "Attend_status": 0,
+                            // "createAt": moment().utcOffset('+05:30').format('YYYY-MM-DD kk:mm:ss'),
+
+                            "UserID": UserIdUpload,//int
+                            "problem_type": selectServiceType,  //
                             "serviceId": serviceId,
                             "priority": selectPriority,
-                            "service_type": selectServiceType,
+                            "service_type": selectServiceType, //int //db text
                             "item_code": selectItemCode,
-                            "itemID": itemID,
-                            "customerID": customerID,
+                            "itemID": selectItemCode, //int 
+                            "customerID": customerID, //int
                             "customer": selectCustomer,
                             "customer_address": cusAddress,
                             "contact_name": contactPerson,
                             "contact_no": contactNumber,
-                            "handle_by": selectTechnician,
-                            "secretary": selectSecretary,
-                            "sales_assistance": selectAssistance,
+                            "handle_by": selectTechnician,  //int //we -string
+                            "secretary": selectSecretary,  //int
+                            "sales_assistance": selectAssistance,   //int
                             "start_date": startDate,
                             "end_date": endDate,
-                            "TechnicianID": TechnicianID,
-                            "SecretaryID": secretaryID,
-                            "AssisstanceID": AssistanceID,
-                            "created_by": 1, //need to code
-                            "active_status": 1,
-                            "Approve_status": 0,
-                            "Attend_status": 0,
-                            "createAt": moment().utcOffset('+05:30').format('YYYY-MM-DD kk:mm:ss'),
+                            "created_by": "1",
+                            "active_status": 1,  //int
+                            "Approve_status": approveStatus,  //int
+                            "Attend_status": attendStatus,  // int
+                            "created_At":  moment().utcOffset('+05:30').format('YYYY-MM-DD kk:mm:ss'),
+                            "handledByHandledByCode": TechnicianID,  //int //techniciatID
+                            "originsDropDownOriginCode": 1,  //int
+                            "problemTypesDropDownProblemTypeCode": 1,  //int //service type id
+                            "clusterHeadClusterHeadCode": 1,  //int
+                            "secretaryDBSecretaryCode": secretaryID,   //int //secrectry id 
+                            "salesAssistantDBSalesAssistantCode": secretaryID,  //int //secrectry id 
+                            "inquiryType": "new",
+                            "subject": subject
+
                         }
                     ]
                 }
@@ -433,6 +482,7 @@ const NewServiceCall = (props: any) => {
 
         }
     }
+
 
 
     const getItem = (cusCode: any) => {
@@ -625,8 +675,9 @@ const NewServiceCall = (props: any) => {
 
         var serviceID = parseInt(id) + 1;
         console.log(serviceID, "  ///////////////////////////////////////   ");
-
-        setServiceId("SC_" + moment().utcOffset('+05:30').format('YYYY-MM-DD') + "_" + serviceID);
+        var randomNum=Math.floor(Math.random()*1000)+1;
+        //setServiceId("SC_" + moment().utcOffset('+05:30').format('YYYY-MM-DD') + "_" + serviceID);
+        setServiceId("SC_" +UserIdUpload + "_"+randomNum+"_"+ serviceID+"_M");
     }
 
 
