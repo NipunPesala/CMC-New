@@ -160,6 +160,7 @@ const NewServiceCall = (props: any) => {
                 SecretaryID: secretaryID,
                 AssisstanceID: AssistanceID,
                 serialNumber: selectSerialNum,
+                service_web_RefID:0
 
             }
         ]
@@ -352,6 +353,7 @@ const NewServiceCall = (props: any) => {
         });
 
     }
+
     const getLoginUserNameForUplode=()=>{
         getLoginUserName().then(res => {
             UserNameUpload = res;

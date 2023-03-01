@@ -198,6 +198,14 @@ export const tableData = [
         autoIncrement: false,
         shouldNotAllowNull: false,
       },
+      {
+        name: 'service_web_RefID',
+        dataType: 'INTEGER',
+        isPrimaryKey: false,
+        autoIncrement: false,
+        shouldNotAllowNull: false,
+      },
+
 
     ],
   },
@@ -462,6 +470,13 @@ export const tableData = [
       {
         name: 'actualendtDate',
         dataType: 'TEXT',
+        isPrimaryKey: false,
+        autoIncrement: false,
+        shouldNotAllowNull: true,
+      },
+      {
+        name: 'Ticket_web_RefID',
+        dataType: 'INTEGER',
         isPrimaryKey: false,
         autoIncrement: false,
         shouldNotAllowNull: true,

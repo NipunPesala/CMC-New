@@ -6,8 +6,8 @@ export const saveTicket = (data:any, callBack:any) => {
             [
                 {
                     table: 'TICKET',
-                    columns: `ticketId,serviceId,startDate,endDate,itemDescription,content,assignTo,technicianID,priority,attend_status,status,engRemark,cusNic,cusRemark,signatureStatus,syncStatus,actualstartDate,actualendtDate,itemCode`,
-                    values: '?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?',
+                    columns: `ticketId,serviceId,startDate,endDate,itemDescription,content,assignTo,technicianID,priority,attend_status,status,engRemark,cusNic,cusRemark,signatureStatus,syncStatus,actualstartDate,actualendtDate,itemCode,Ticket_web_RefID`,
+                    values: '?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?',
                     params: [
                         data[i].ticketId,
                         data[i].serviceId,
@@ -28,6 +28,7 @@ export const saveTicket = (data:any, callBack:any) => {
                         data[i].actualstartDate,
                         data[i].actualendtDate,
                         data[i].itemCode,
+                        data[i].Ticket_web_RefID,
                     ],
                     primaryKey: 'ticketId',
                    

@@ -42,7 +42,7 @@ import axios from "axios";
 import { getTicketDetailsFromID } from "../SQLiteDatabaseAction/DBControllers/TicketController";
 import { BASE_URL_GET } from "../Constant/Commen_API_Url";
 import { getUserByTypes } from "../SQLiteDatabaseAction/DBControllers/UserController";
-import {get_ASYNC_USERID} from "../Constant/AsynStorageFuntion";
+import {get_ASYNC_USERID,getLoginUserName} from "../Constant/AsynStorageFuntion";
 
 var selectMode: any
 var TiketID: any
@@ -81,6 +81,7 @@ const NewServiceTicket = (props: any) => {
     const routeNav = useRoute();
     var TOCKEN_KEY: any;
     var UserIdKey:any;
+    var UserNameUpload:any;
     const onChangePicker = (event, type) => {
         switch (type) {
             case "serviceCallId":
@@ -119,6 +120,8 @@ const NewServiceTicket = (props: any) => {
                 actualendtDate: '',
                 technicianID: selectAssignPersonID,
                 itemCode: ItemCode,
+                Ticket_web_RefID:0
+
                 
             }
         ]
@@ -400,6 +403,8 @@ const NewServiceTicket = (props: any) => {
 
 
 
+
+
     const UploadServiceTicket = () => {
         try {
 
@@ -413,7 +418,7 @@ const NewServiceTicket = (props: any) => {
                     "UserName": "",
                     "objServiceCallList": [
                         {
-                            "UserID": 1,  //need to code
+                            "UserID": UserNameUpload,  //need to code
                             "ticketId": TicketID,
                             "serviceId": selectServiceCallID,
                             "startDate": startDate,
@@ -421,7 +426,7 @@ const NewServiceTicket = (props: any) => {
                             "endDate": endDate,
                             "content": content,
                             "assignTo": selectAssignPerson,
-                            "attend_status": 0,
+                            "attend_status": attendStatus,
                             "priority": selectPriority,
                             "technicianID": selectAssignPersonID,
                             "createAt": moment().utcOffset('+05:30').format('YYYY-MM-DD kk:mm:ss'),
@@ -491,7 +496,10 @@ const NewServiceTicket = (props: any) => {
             console.log('user id upload  --'+UserIdKey);
         })
 
-
+        getLoginUserName().then(res => {
+            UserNameUpload = res;
+            console.log('user Name --'+UserNameUpload);
+        })
 
     }
 
