@@ -408,7 +408,7 @@ const NewServiceCall = (props: any) => {
 
                             "UserID": UserIdUpload,//int
                             "problem_type": selectServiceType,  //
-                            "serviceId": serviceId,
+                            "serviceId": 5481,
                             "priority": selectPriority,
                             "service_type": selectServiceType, //int //db text
                             "item_code": selectItemCode,

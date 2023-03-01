@@ -1003,7 +1003,7 @@ const SyncScreen = (props: any) => {
 
 
   //------------------------------ Download Service Calls  nipun------------------------
-  ///////////
+  
   const Sync_ServiceCall = (Key: any) => {
     console.log('this is a sync_service call ')
     const AuthStr = 'Bearer '.concat(Key);
