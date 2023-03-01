@@ -296,6 +296,9 @@ const NewServiceCall = (props: any) => {
                 // console.log(result, "NEWSERVICE_CALL_SAVE");
 
                 if (result === "success") {
+
+
+                    UploadServiceCall();
                     // NetInfo.fetch().then(state => {
                     //     if (!state.isConnected) {
                     //         console.log('No internet connection');

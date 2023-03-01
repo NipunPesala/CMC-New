@@ -284,10 +284,10 @@ const ServiceTicketSummaryReportScreen = () => {
                 isHeadertitle2={true}
                 Headertitle2="Ticket content"
                 isHeadertitle3={true}
-                Headertitle3="Ticket state"
+                Headertitle3="Ticket status"
                 isHeadertitle4={true}
                 Headertitle4="Contact No"
-                isHeadertitle5={true}
+                isHeadertitle5={false}
                 Headertitle5="Contact No"
                 isHeadertitle6={true}
                 Headertitle6="Customer"
