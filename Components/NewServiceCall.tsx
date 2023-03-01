@@ -192,6 +192,7 @@ const NewServiceCall = (props: any) => {
                                                                                     Update_serviceCall(sendData);
                                                                                 } else {
                                                                                     save_serviceCall(sendData);
+                                                                                   // UploadServiceCall();
                                                                                 }
                                                                             } else {
                                                                                 dropDownAlertRef.alertWithType('error', 'Error', 'Invalid Mobile Number..!');

@@ -981,8 +981,8 @@ const SyncScreen = (props: any) => {
         });
         setSyncArray(SyncArray1);
         setOnRefresh(true);
-       // Sync_Priority();// remove priority 
-          Sync_ServiceCall(TOCKEN_KEY);
+          Sync_Priority();// remove priority 
+          //Sync_ServiceCall(TOCKEN_KEY);
       } else if (res == 3) {
 
         arrayindex++;
@@ -993,8 +993,8 @@ const SyncScreen = (props: any) => {
         });
         setSyncArray(SyncArray1);
         setOnRefresh(true);
-        //Sync_Priority(); // remove priority 
-        Sync_ServiceCall(TOCKEN_KEY);
+        Sync_Priority(); // remove priority 
+       // Sync_ServiceCall(TOCKEN_KEY);
       }
 
     })
