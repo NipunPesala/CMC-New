@@ -110,7 +110,7 @@ const CompleteTicket = () => {
 
 
   const getTicketState = () => {
-console.log('hiiiiiiiiiiiiiii');
+// console.log('hiiiiiiiiiiiiiii');
     if (pending == true && hold == false && complete == false) {
       ticketSteteForEmail = 'Pending';
 
@@ -143,7 +143,7 @@ console.log('hiiiiiiiiiiiiiii');
     //   ]);
     //   }
     if (complete == true || pending == true || hold == true) {
-      console.log('!!!!!!!!!!!!!!!', EngeneerRemark);
+      // console.log('!!!!!!!!!!!!!!!', EngeneerRemark);
 
       if (EngeneerRemark != null && EngeneerRemark != '') {
         if (nic != null && nic != '') {
@@ -173,7 +173,7 @@ console.log('hiiiiiiiiiiiiiii');
                         if (result === 'success') {
 
                           updateActualendDate(id, currentendDate, (result: any) => {
-                            console.log('Hii this is update actual end date' + result);
+                            // console.log('Hii this is update actual end date' + result);
 
                           });
 

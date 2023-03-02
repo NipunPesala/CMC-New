@@ -283,7 +283,7 @@ const RequestBottomSheet = () => {
             });
 
             generateRequestID();
-           
+
 
         }, []),
     );
@@ -594,15 +594,17 @@ const RequestBottomSheet = () => {
                         />
                     </ScrollView>
                 </View>
-                <View style={{ marginLeft: 10, marginRight: 10 }}>
-                    <ActionButton
-                        title="Send Email"
-                        onPress={onpressEmailBtn}
 
-                    // iconColor={ComStyles.COLORS.WHITE}
-                    />
-                </View>
             </ScrollView>
+
+            <View style={{ marginLeft: 10, marginRight: 10 }}>
+                <ActionButton
+                    title="Send Email"
+                    onPress={onpressEmailBtn}
+
+                // iconColor={ComStyles.COLORS.WHITE}
+                />
+            </View>
             <View style={{ marginBottom: 50 }} />
             <View style={{ padding: 15 }} />
 
@@ -613,7 +615,8 @@ const RequestBottomSheet = () => {
                 title={"Add Email Address"}
                 hintInput={"Email Address"}
                 submitInput={(inputText) => {
-                    onPressGetEmail(inputText)
+                    onPressGetEmail(inputText);
+                    closeDialog();
                 }}
                 closeDialog={() => { closeDialog() }}
 
