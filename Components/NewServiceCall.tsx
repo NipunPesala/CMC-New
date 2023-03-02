@@ -299,7 +299,7 @@ const NewServiceCall = (props: any) => {
                 if (result === "success") {
 
 
-                    UploadServiceCall();
+                   // UploadServiceCall();
                     // NetInfo.fetch().then(state => {
                     //     if (!state.isConnected) {
                     //         console.log('No internet connection');
