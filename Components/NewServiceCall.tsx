@@ -726,7 +726,7 @@ const NewServiceCall = (props: any) => {
         // console.log(route.params.serviceID, "Update mode 3 ", loandingspinner);
         try {
             getServiceById(id, (result: any) => {
-                // console.log('cus list length ----', result);
+                console.log('cus list length ---------------', result);
                 // console.log("####", serviceType);
 
                 // [{ "SecretaryID": 244894, "Syncstatus": "0", "TechnicianID": 627517,    , , "customer": " The Colombo Ice Company Pvt Ltd", "customerID": " COLOMBO ICE CO", "customer_address": "117 Sir Chittampalam A Gardiner Mawatha,Colombo 2", "end_date": "2023-03-02", "handle_by": "Dasun", "itemID": " DOM/G20I K2138J1P078N150", "item_code": " DOM/G20I K2138J1P078N150", "item_description": " Domino G20i Printer K2138J1P078N150", "priority": "Low", "secretary": "Manjari", "serialNumber": "K2138J1P078N150", "serviceId": "SC_2023-02-27_1", "service_type": "Electric", "start_date": "2023-02-27", "status": "0", "subject": "yyyyyy"}]
@@ -794,12 +794,12 @@ const NewServiceCall = (props: any) => {
 
                 // });
 
-
-                getAllCustomerVsItems(result[0].customerID, (resultitem: any) => {
+                console.log(" item count ....1111111.....  ", data.CusID)
+                getAllCustomerVsItems(data.CusID, (resultitem: any) => {
                     setItemCode(resultitem);
                     const data = resultitem?.filter((a: any) => a.ItemCode == result[0].item_code)[0];
                     setSelectItemCode(data.ItemCode)
-                    // console.log(" item count .........  ", result)
+                    console.log(" item count .........  ", data.ItemCode)
                 });
 
 
