@@ -29,7 +29,7 @@ import DropDownPicker from 'react-native-dropdown-picker';
 import { addNewTicket } from "../Services/Api/SyncService";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import moment from "moment";
-import { getCallDates, getServiceById, getServiceCallCustomer, getServiceId } from "../SQLiteDatabaseAction/DBControllers/ServiceController";
+import { getServiceById, getServiceCallCustomer, getServiceId } from "../SQLiteDatabaseAction/DBControllers/ServiceController";
 import { Dropdown } from "react-native-element-dropdown";
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import { getLastTicketId, saveTicket, getALLTicketById, updateTicket, updateSyncServiceTicket } from "../SQLiteDatabaseAction/DBControllers/TicketController";
@@ -239,7 +239,7 @@ const NewServiceTicket = (props: any) => {
 
                         } else {
 
-                            ToastAndroid.show("The Start date must be less than the end date ", ToastAndroid.SHORT);
+                            ToastAndroid.show("The Start date must be equal or less than the end date ", ToastAndroid.SHORT);
 
                         }
 
@@ -270,7 +270,7 @@ const NewServiceTicket = (props: any) => {
 
                         } else {
 
-                            ToastAndroid.show("The End date must be greater than the start date ", ToastAndroid.SHORT);
+                            ToastAndroid.show("The End date must be equal or greater than the start date ", ToastAndroid.SHORT);
 
                         }
 

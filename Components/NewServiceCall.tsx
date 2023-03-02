@@ -577,13 +577,13 @@ const NewServiceCall = (props: any) => {
                 if (endDate != 'Invalid date') {
 
 
-                    if (moment(new Date(currentDate)).format('YYYY-MM-DD') < moment(new Date(endDate)).format('YYYY-MM-DD')) {
+                    if (moment(new Date(currentDate)).format('YYYY-MM-DD') <= moment(new Date(endDate)).format('YYYY-MM-DD')) {
 
                         setStartDate(moment(new Date(currentDate)).format('YYYY-MM-DD'))
 
                     } else {
 
-                        dropDownAlertRef.alertWithType('error', 'Error', 'The Start date must be less than the end date..! ');
+                        dropDownAlertRef.alertWithType('error', 'Error', 'The Start date must be equal or less than the end date..! ');
 
                     }
 
@@ -610,7 +610,7 @@ const NewServiceCall = (props: any) => {
 
                     console.log(" .................   ", startDate, moment(new Date(currentDate)).format('YYYY-MM-DD'));
 
-                    if (moment(new Date(currentDate)).format('YYYY-MM-DD') > moment(new Date(startDate)).format('YYYY-MM-DD')) {
+                    if (moment(new Date(currentDate)).format('YYYY-MM-DD') >= moment(new Date(startDate)).format('YYYY-MM-DD')) {
 
                         setEndDate(moment(new Date(currentDate)).format('YYYY-MM-DD'))
 
@@ -618,7 +618,7 @@ const NewServiceCall = (props: any) => {
                     } else {
 
 
-                        dropDownAlertRef.alertWithType('error', 'Error', 'The End date must be greater than the start date..! ');
+                        dropDownAlertRef.alertWithType('error', 'Error', 'The End date must be equal or greater than the start date..! ');
                     }
 
 
