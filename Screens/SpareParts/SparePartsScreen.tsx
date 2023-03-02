@@ -10,7 +10,6 @@ import {
     StyleSheet,
     Platform,
     Alert,
-    AsyncStorage,
 } from 'react-native';
 import Header from '../../Components/Header';
 import ComStyles from '../../Constant/Components.styles';
@@ -27,6 +26,7 @@ import AddAdditionalSpareParts from '../../Components/AddAdditionalSpareParts';
 import { getSearchSpareParts, getSparePartsAllData } from '../../SQLiteDatabaseAction/DBControllers/SparePartsController';
 import { getASYNC_CURRENT_TICKET_ID } from '../../Constant/AsynStorageFuntion';
 import AsyncStorageConstants from '../../Constant/AsyncStorageConstants';
+import AsyncStorage from '@react-native-community/async-storage';
 
 let height = Dimensions.get('screen').height;
 

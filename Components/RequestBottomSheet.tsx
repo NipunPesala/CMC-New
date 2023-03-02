@@ -1,4 +1,4 @@
-import React, { useState, useEffect ,useRef} from "react"
+import React, { useState, useEffect, useRef } from "react"
 import {
     View,
     Text,
@@ -10,17 +10,11 @@ import {
 } from "react-native";
 import ActionButton from "./ActionButton";
 import comStyles from "../Constant/Components.styles";
-import { TextInput } from "react-native";
-import IconA from 'react-native-vector-icons/MaterialCommunityIcons';
-import InputText from "./InputText";
 import { FlatList } from "react-native-gesture-handler";
 import SparepartsItem from "../SubComponents/SparepartsItem";
-import { spareparts, additionalSpareParts } from "../Constant/DummyData";
-import AdditionalSparepartsItem from "../SubComponents/AdditionalSparePartItem";
 import { useFocusEffect, useNavigation, useRoute } from "@react-navigation/native";
-import LeftRightArrowbarComponent from "./LeftRightArrowbarComponent";
 import Header from "./Header";
-import { getALLAInventrySpareTiketdetasils, getALLAdditionalSpareTiketdetasils, getLastRequestId, getTicketsForInprogress, getSparepartDetailsForEmail } from "../SQLiteDatabaseAction/DBControllers/TicketController";
+import { getALLAInventrySpareTiketdetasils, getALLAdditionalSpareTiketdetasils, getLastRequestId, getTicketsForInprogress, getSparepartDetailsForEmail, getServiceTicketID } from "../SQLiteDatabaseAction/DBControllers/TicketController";
 import { getASYNC_CURRENT_TICKET_ID, getASYNC_SELECT_TICKET } from "../Constant/AsynStorageFuntion"
 import moment from "moment";
 import AsyncStorage from "@react-native-community/async-storage";
@@ -46,6 +40,8 @@ const RequestBottomSheet = () => {
     const [sendEmailDetails, setSendEmailDetails] = useState([]);
     var emaildetailArray: any[] = [];
     let dropDownAlertRef = useRef();
+
+
     const handle_AddInventorySpareParts = () => {
 
         console.log(" request bottom sheet  ,,,,,,,,,,,,,,,,,,,,, ", isSelectTicket);
@@ -61,17 +57,17 @@ const RequestBottomSheet = () => {
 
             } else {
 
-                // Alert.alert(
-                //     "Failed...!",
-                //     "No Available Service Tickets.",
-                //     [
-                //         {
-                //             text: "OK", onPress: () => {
+                Alert.alert(
+                    "Failed...!",
+                    "No Available Service Tickets.",
+                    [
+                        {
+                            text: "OK", onPress: () => {
 
-                //             }
-                //         }
-                //     ]
-                // );
+                            }
+                        }
+                    ]
+                );
 
             }
 
@@ -236,7 +232,7 @@ const RequestBottomSheet = () => {
     const getTicketList = () => {
 
 
-        getTicketsForInprogress((result: any) => {
+        getServiceTicketID((result: any) => {
             setTicketList(result);
 
             //console.log("^^==================^",JSON.stringify(result));
@@ -375,18 +371,18 @@ const RequestBottomSheet = () => {
 
 
     const onPressGetEmail = (emailAddtrss: any) => {
-        if(sparepartsList.length==0){
-           // dropDownAlertRef.alertWithType('error', 'Error', 'No spare parts to send email..!');
+        if (sparepartsList.length == 0) {
+            // dropDownAlertRef.alertWithType('error', 'Error', 'No spare parts to send email..!');
             Alert.alert('Failed...!', 'No spare parts to send email..!', [
                 {
-                  text: 'OK',
-                  onPress: () => {closeDialog()},
+                    text: 'OK',
+                    onPress: () => { closeDialog() },
                 },
-              ]);
-        }else{
+            ]);
+        } else {
             handleEmail1(emailAddtrss);
         }
-      
+
     }
 
     const createEmailbody = (serviceRequestsxx: any) => {
@@ -427,7 +423,7 @@ const RequestBottomSheet = () => {
 
 
     const onpressEmailBtn = () => {
-       // emailValidation.alertWithType('error', 'Error', 'No spare parts to send email..!');
+        // emailValidation.alertWithType('error', 'Error', 'No spare parts to send email..!');
         setisDialog(true);
 
     }
@@ -572,7 +568,7 @@ const RequestBottomSheet = () => {
                 <View >
                     <ScrollView
                         horizontal={true}
-                        contentContainerStyle={{ width: '95%', height: '95%' ,marginLeft:15,marginRight:15}}>
+                        contentContainerStyle={{ width: '95%', height: '95%', marginLeft: 15, marginRight: 15 }}>
                         <FlatList
                             // showsHorizontalScrollIndicator={false}
                             // data={Arrays.SelectPackage.Wash.filter(ob => ob.extras == true)}

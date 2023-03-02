@@ -156,7 +156,7 @@ const NewServiceCall = (props: any) => {
                 syncstatus: '0',
                 itemID: selectItemCode,
                 customerID: customerID,
-                TechnicianID: TechnicianID,
+                TechnicianID: parseInt(TechnicianID),
                 SecretaryID: secretaryID,
                 AssisstanceID: AssistanceID,
                 serialNumber: selectSerialNum,
@@ -763,6 +763,7 @@ const NewServiceCall = (props: any) => {
                 setContactPerson(result[0].contact_name);
                 setAttendStatus(result[0].Attend_status);
                 setApproveStatus(result[0].Approve_status);
+                setServiceTypeID(result[0].service_typeID);
 
                 getUserByTypes("Sales Executive", (resultAssisstance: any) => {
 

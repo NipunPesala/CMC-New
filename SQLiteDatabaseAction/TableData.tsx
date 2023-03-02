@@ -31,6 +31,13 @@ export const tableData = [
         shouldNotAllowNull: false,
       },
       {
+        name: 'service_typeID',
+        dataType: 'INTEGER',
+        isPrimaryKey: false,
+        autoIncrement: false,
+        shouldNotAllowNull: false,
+      },
+      {
         name: 'item_code',
         dataType: 'TEXT',
         isPrimaryKey: false,
