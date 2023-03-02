@@ -25,6 +25,8 @@ let serviceID: any;
 var checkstatus = false;
 var checkstatusNum: any;
 const Tickets = ({ btnEnable }: ParamTypes) => {
+
+    let ticketArray: any[] = [];
     const width = Dimensions.get("screen").width;
     const height = Dimensions.get("screen").height;
     const navigation = useNavigation();
@@ -60,12 +62,16 @@ const Tickets = ({ btnEnable }: ParamTypes) => {
 
     const getTicketList = (id: any) => {
 
+        ticketArray = [];
+
+        var ticketStatus = "";
+
         getTicketByServiceId(id, (result: any) => {
 
 
             console.log('=====================================',result);
             
-            const ticketArray: any[] = [];
+           
 
 
             for (let i = 0; i < result.length; ++i) {
@@ -76,6 +82,7 @@ const Tickets = ({ btnEnable }: ParamTypes) => {
                 if (result[i].attend_status === 0) {
 
                     setatt_status("Open");
+                    ticketStatus = "Open";
                     AsyncStorage.getItem('UserType').then((value)=>{
                         console.log('this is a user type+++++++++++++',value);
                         if(value=='Technician'){
@@ -93,16 +100,18 @@ const Tickets = ({ btnEnable }: ParamTypes) => {
                 } else if (result[i].attend_status === 1) {
 
                     setatt_status("Pending");
+                    ticketStatus = "Pending";
                     setenableStatusUpdate(true);
 
                 } else if (result[i].attend_status === 2) {
 
                     setatt_status("Hold");
+                    ticketStatus = "Hold";
                     setenableStatusUpdate(true);
                 }
 
 
-                console.log('---------1111--------------------------',enableStatusUpdate);
+                console.log(att_status,'---------1111--------------------------',enableStatusUpdate);
                 
                 checkstatusNum == result[i].status
                 if (result[i].status === "0") {
@@ -119,7 +128,7 @@ const Tickets = ({ btnEnable }: ParamTypes) => {
                         priority: result[i].priority,
                         date: result[i].startDate,
                         attend_status: result[i].attend_status,
-                        attend_statusStr: att_status,//hold or pending
+                        attend_statusStr: ticketStatus,//hold or pending
 
 
 
@@ -149,6 +158,7 @@ const Tickets = ({ btnEnable }: ParamTypes) => {
 
                 serviceID = res;
                 getTicketList(serviceID);
+                
 
                 // console.log(" async data ........... ",btnEnable);
 

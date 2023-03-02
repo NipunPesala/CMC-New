@@ -166,9 +166,11 @@ const TicketDetails = (props: any) => {
 
                         if (result === "success") {
 
+
                             AsyncStorage.setItem(AsyncStorageConstants.ASYNC_CURRENT_TICKET_ID, ticket_id);
 
                             ToastAndroid.show("Ticket Started ", ToastAndroid.SHORT);
+                            setStatus("Pending");
 
                         } else {
 
@@ -262,7 +264,7 @@ const TicketDetails = (props: any) => {
         // console.log("Ticket id ........ " , ticketID);
 
 
-        getALLTicketById(ticketID, (result: any) => {
+        getALLTicketById(ticketID, async (result: any) => {
 
             // console.log("db result " ,  result[0].attend_status);
 
@@ -272,7 +274,7 @@ const TicketDetails = (props: any) => {
                 // console.log("awaaaaaaaaaaa");
 
 
-                AsyncStorage.setItem(AsyncStorageConstants.SELECT_TICKET, 'false');
+               await AsyncStorage.setItem(AsyncStorageConstants.SELECT_TICKET, 'false');
                 navigation.navigate("RequestBottomSheet");
 
             } else {

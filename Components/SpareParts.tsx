@@ -75,7 +75,7 @@ const SpareParts = (sparePartList: any, isActive: boolean,ticketID:any) => {
     }
 
 
-    const checkActive = () => {
+    const checkActive = async () => {
 
         console.log(" spare parts ticket status <<<<<<<<<<<<<<<<<   " , callDetailList.isActive);
         
@@ -92,7 +92,7 @@ const SpareParts = (sparePartList: any, isActive: boolean,ticketID:any) => {
          
 
           
-            AsyncStorage.setItem(AsyncStorageConstants.SELECT_TICKET, 'false');
+            await AsyncStorage.setItem(AsyncStorageConstants.SELECT_TICKET, 'false');
             navigation.navigate("RequestBottomSheet");
 
 

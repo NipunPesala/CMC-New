@@ -265,6 +265,7 @@ const RequestBottomSheet = () => {
                 if (res == 'true') {
                     setIsSelectTicket(true);
                     getTicketList();
+                    handle_AddInventorySpareParts();
 
                 } else {
                     setIsSelectTicket(false);
@@ -282,7 +283,7 @@ const RequestBottomSheet = () => {
             });
 
             generateRequestID();
-            handle_AddInventorySpareParts();
+           
 
         }, []),
     );

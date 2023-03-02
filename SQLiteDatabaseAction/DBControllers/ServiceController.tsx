@@ -11,7 +11,7 @@ export const saveServiceData = (data:any, callBack:any) => {
           table: 'SERVICE',
           columns: `serviceId, priority, service_type, item_code, item_description, customer,customer_address,contact_name,contact_no,
         subject, handle_by, TechnicianID,secretary, SecretaryID,assistance,AssisstanceID,start_date, end_date, created_by,Approve_status,Attend_status,status,CreateAt,Syncstatus,itemID,customerID,serialNumber,service_web_RefID,service_typeID`,
-          values: '?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?',
+          values: '?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?',
           params: [
             // data[i].serviceId,
             // data[i].priority,
