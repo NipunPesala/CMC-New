@@ -40,7 +40,7 @@ import { getAllUserTypes } from "../SQLiteDatabaseAction/DBControllers/Users_Typ
 import { getAllContactPerson } from "../SQLiteDatabaseAction/DBControllers/ContactPersonController";
 import Spinner from 'react-native-loading-spinner-overlay';
 import ComponentsStyles from "../Constant/Components.styles";
-import { get_ASYNC_TOCKEN, get_ASYNC_USERID ,getLoginUserName} from "../Constant/AsynStorageFuntion";
+import { get_ASYNC_TOCKEN, get_ASYNC_USERID, getLoginUserName } from "../Constant/AsynStorageFuntion";
 import axios from "axios";
 import { BASE_URL_GET, } from "../Constant/Commen_API_Url";
 import { getUserByTypes } from "../SQLiteDatabaseAction/DBControllers/UserController";
@@ -106,8 +106,8 @@ const NewServiceCall = (props: any) => {
     const [approveStatus, setApproveStatus] = useState(0);
     // const [serialNumDesable, setserialNumDesable] = useState(false);
     var TOCKEN_KEY: any;
-    var UserNameUpload:any;
-    var UserIdUpload:any;
+    var UserNameUpload: any;
+    var UserIdUpload: any;
     const mode = route.params.mode;
 
     useFocusEffect(
@@ -160,7 +160,7 @@ const NewServiceCall = (props: any) => {
                 SecretaryID: secretaryID,
                 AssisstanceID: AssistanceID,
                 serialNumber: selectSerialNum,
-                service_web_RefID:0
+                service_web_RefID: 0
 
             }
         ]
@@ -193,7 +193,7 @@ const NewServiceCall = (props: any) => {
                                                                                     Update_serviceCall(sendData);
                                                                                 } else {
                                                                                     save_serviceCall(sendData);
-                                                                                   // UploadServiceCall();
+                                                                                    // UploadServiceCall();
                                                                                 }
                                                                             } else {
                                                                                 dropDownAlertRef.alertWithType('error', 'Error', 'Invalid Mobile Number..!');
@@ -354,14 +354,14 @@ const NewServiceCall = (props: any) => {
 
     }
 
-    const getLoginUserNameForUplode=()=>{
+    const getLoginUserNameForUplode = () => {
         getLoginUserName().then(res => {
             UserNameUpload = res;
-            console.log('user Name --'+UserNameUpload);
+            console.log('user Name --' + UserNameUpload);
         })
         get_ASYNC_USERID().then(res => {
             UserIdUpload = res;
-            console.log('user id upload  --'+UserIdUpload);
+            console.log('user id upload  --' + UserIdUpload);
         })
 
 
@@ -378,34 +378,9 @@ const NewServiceCall = (props: any) => {
                 const AuthStr = 'Bearer '.concat(TOCKEN_KEY);
 
                 const prams = {
-                    "UserName": UserNameUpload,
+                    "UserName": "MANAGER",
                     "objServiceCallList": [
                         {
-                            // "UserID": 1,  //need to code
-                            // "serviceId": serviceId,
-                            // "priority": selectPriority,
-                            // "service_type": selectServiceType,
-                            // "item_code": selectItemCode,
-                            // "itemID": itemID,
-                            // "customerID": customerID,
-                            // "customer": selectCustomer,
-                            // "customer_address": cusAddress,
-                            // "contact_name": contactPerson,
-                            // "contact_no": contactNumber,
-                            // "handle_by": selectTechnician,
-                            // "secretary": selectSecretary,
-                            // "sales_assistance": selectAssistance,
-                            // "start_date": startDate,
-                            // "end_date": endDate,
-                            // "TechnicianID": TechnicianID,
-                            // "SecretaryID": secretaryID,
-                            // "AssisstanceID": AssistanceID,
-                            // "created_by": 1, //need to code
-                            // "active_status": 1,
-                            // "Approve_status": 0,
-                            // "Attend_status": 0,
-                            // "createAt": moment().utcOffset('+05:30').format('YYYY-MM-DD kk:mm:ss'),
-
                             "UserID": UserIdUpload,//int
                             "problem_type": selectServiceType,  //
                             "serviceId": 5481,
@@ -436,6 +411,37 @@ const NewServiceCall = (props: any) => {
                             "salesAssistantDBSalesAssistantCode": secretaryID,  //int //secrectry id 
                             "inquiryType": "new",
                             "subject": subject
+
+                            // "UserID": 14,
+                            // "problem_type": "type1",
+                            // "serviceId": "70442",
+                            // "priority": "Medium",
+                            // "service_type": 2,
+                            // "item_code": "SHINI/GBC",
+                            // "itemID": 1,
+                            // "customerID": 2,
+                            // "customer": "Pathfinder Advisory Services",
+                            // "customer_address": "10 1/3 First Floor",
+                            // "contact_name": "Pathfinder",
+                            // "contact_no": "0769968773",
+                            // "handle_by": 3,
+                            // "secretary": 2,
+                            // "sales_assistance": 1,
+                            // "start_date": "2022-10-26",
+                            // "end_date": "2022-10-26",
+                            // "created_by": "gayan1",
+                            // "active_status": 1,
+                            // "Approve_status": 0,
+                            // "Attend_status": 0,
+                            // "created_At": "2022-12-29 10:38:59",
+                            // "handledByHandledByCode": 1,
+                            // "originsDropDownOriginCode": 1,
+                            // "problemTypesDropDownProblemTypeCode": 1,
+                            // "clusterHeadClusterHeadCode": 1,
+                            // "secretaryDBSecretaryCode": 1,
+                            // "salesAssistantDBSalesAssistantCode": 1,
+                            // "inquiryType": "new",
+                            // "subject": "sub"
 
                         }
                     ]
@@ -681,9 +687,9 @@ const NewServiceCall = (props: any) => {
 
         var serviceID = parseInt(id) + 1;
         console.log(serviceID, "  ///////////////////////////////////////   ");
-        var randomNum=Math.floor(Math.random()*1000)+1;
+        var randomNum = Math.floor(Math.random() * 1000) + 1;
         //setServiceId("SC_" + moment().utcOffset('+05:30').format('YYYY-MM-DD') + "_" + serviceID);
-        setServiceId("SC_" +UserIdUpload + "_"+randomNum+"_"+ serviceID+"_M");
+        setServiceId("SC_" + UserIdUpload + "_" + randomNum + "_" + serviceID + "_M");
     }
 
 

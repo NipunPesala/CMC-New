@@ -595,7 +595,9 @@ const Login = () => {
                 <View style={style.modalCont}>
 
                     {/* ........................................ meter reading modal start.......................................... */}
-
+                    <ScrollView
+                    style={comStyles.CONTENTLOG}
+                    showsVerticalScrollIndicator={true}>
 
                     <View style={styles.modalMainContainer}>
 
@@ -664,7 +666,7 @@ const Login = () => {
 
                     {/* ........................................ meter reading modal end.......................................... */}
 
-
+                    </ScrollView>
                 </View>
 
 
