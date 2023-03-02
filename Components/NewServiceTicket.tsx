@@ -389,7 +389,8 @@ const NewServiceTicket = (props: any) => {
                 onPress: () => console.log('Cancel Pressed'),
                 style: 'cancel',
             },
-            { text: 'OK', onPress: () => navigation.goBack(), }
+           { text: 'OK', onPress: () => navigation.goBack(), }
+            // { text: 'OK', onPress: () => UploadServiceTicket(), }
         ]);
     }
     const getAllPriorityList = () => {
@@ -408,6 +409,8 @@ const NewServiceTicket = (props: any) => {
     const UploadServiceTicket = () => {
         try {
 
+            
+            console.log(" ................. 'service id '+selectServiceCallID  ", selectServiceCallID);
             get_ASYNC_TOCKEN().then(res => {
                 TOCKEN_KEY = res;
                 const AuthStr = 'Bearer '.concat(TOCKEN_KEY);
@@ -415,21 +418,48 @@ const NewServiceTicket = (props: any) => {
                 // console.log( 'AuthStr####3%%%%%%%%%%%%%',AuthStr);
 
                 const prams = {
-                    "UserName": "",
-                    "objServiceCallList": [
+                    "UserName": UserNameUpload,
+                    "objServiceTiketList": [
                         {
-                            "UserID": UserNameUpload,  //need to code
+                            // "UserID": UserIdKey,  //need to code
+                            // "ticketId": TicketID,
+                            // "serviceId": selectServiceCallID,
+                            // "startDate": startDate,
+                            // "itemDescription": itemDescription,
+                            // "endDate": endDate,
+                            // "content": content,
+                            // "assignTo": selectAssignPerson,
+                            // "attend_status": attendStatus,
+                            // "priority": selectPriority,
+                            // "technicianID": selectAssignPersonID,
+                            // "createAt": moment().utcOffset('+05:30').format('YYYY-MM-DD kk:mm:ss'),
+
+                            // "UserID": UserIdKey,
+                            // "ticketId": TicketID,
+                            // "serviceId": selectServiceCallID,
+                            // "startDate": startDate,
+                            // "itemDescription": itemDescription,
+                            // "endDate": endDate,
+                            // "content": content,
+                            // "assignTo":selectAssignPerson,
+                            // "attend_status": attendStatus,
+                            // "created_At":  moment().utcOffset('+05:30').format('YYYY-MM-DD kk:mm:ss'),
+                            // "assignedByMobile": 1,
+                            // "assignedToMobile":1,
+                            // "contactPerson":selectAssignPersonID
+                            "UserID": UserIdKey,
                             "ticketId": TicketID,
-                            "serviceId": selectServiceCallID,
-                            "startDate": startDate,
-                            "itemDescription": "",
-                            "endDate": endDate,
-                            "content": content,
-                            "assignTo": selectAssignPerson,
-                            "attend_status": attendStatus,
-                            "priority": selectPriority,
-                            "technicianID": selectAssignPersonID,
-                            "createAt": moment().utcOffset('+05:30').format('YYYY-MM-DD kk:mm:ss'),
+                            "serviceId": 37064,
+                            "startDate": "2022-10-27",
+                            "itemDescription": "SHINI/GBC",
+                            "endDate": "2022-10-31",
+                            "content": "TEST3",
+                            "assignTo": "gayan",
+                            "attend_status": "pending",
+                            "created_At": "2022-12-29 10: 38: 59",
+                            "assignedByMobile": 1,
+                            "assignedToMobile":1,
+                            "contactPerson":"gayan"
                         }
                     ]
                 }

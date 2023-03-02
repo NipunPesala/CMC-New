@@ -160,7 +160,8 @@ const NewServiceCall = (props: any) => {
                 SecretaryID: secretaryID,
                 AssisstanceID: AssistanceID,
                 serialNumber: selectSerialNum,
-                service_web_RefID: 0
+                service_web_RefID: 0,
+                service_typeID:servicetypeID
 
             }
         ]
@@ -369,132 +370,132 @@ const NewServiceCall = (props: any) => {
     }
 
     const UploadServiceCall = () => {
+        console.log('secretaryID id-'+secretaryID);
+       
+    try {
 
+        get_ASYNC_TOCKEN().then(res => {
+            console.log('cus id--'+parseInt(customerID))
+            TOCKEN_KEY = res;
+            const AuthStr = 'Bearer '.concat(TOCKEN_KEY);
 
-        try {
+            const prams = {
+                "UserName": UserNameUpload,
+                "objServiceCallList": [
+                    {
+                        // "UserID": UserIdUpload,//int
+                        // "problem_type": selectServiceType,  //
+                        // "serviceId": 5481,
+                        // "priority": selectPriority,
+                        // "service_type": selectServiceType, //int //db text
+                        // "item_code": selectItemCode,
+                        // "itemID": selectItemCode, //int 
+                        // "customerID": customerID, //int
+                        // "customer": selectCustomer,
+                        // "customer_address": cusAddress,
+                        // "contact_name": contactPerson,
+                        // "contact_no": contactNumber,
+                        // "handle_by": selectTechnician,  //int //we -string
+                        // "secretary": selectSecretary,  //int
+                        // "sales_assistance": selectAssistance,   //int
+                        // "start_date": startDate,
+                        // "end_date": endDate,
+                        // "created_by": "1",
+                        // "active_status": 1,  //int
+                        // "Approve_status": approveStatus,  //int
+                        // "Attend_status": attendStatus,  // int
+                        // "created_At":  moment().utcOffset('+05:30').format('YYYY-MM-DD kk:mm:ss'),
+                        // "handledByHandledByCode": TechnicianID,  //int //techniciatID
+                        // "originsDropDownOriginCode": 1,  //int
+                        // "problemTypesDropDownProblemTypeCode": 1,  //int //service type id
+                        // "clusterHeadClusterHeadCode": 1,  //int
+                        // "secretaryDBSecretaryCode": secretaryID,   //int //secrectry id 
+                        // "salesAssistantDBSalesAssistantCode": secretaryID,  //int //secrectry id 
+                        // "inquiryType": "new",
+                        // "subject": subject
 
-            get_ASYNC_TOCKEN().then(res => {
-                TOCKEN_KEY = res;
-                const AuthStr = 'Bearer '.concat(TOCKEN_KEY);
+                        "UserID":  UserIdUpload,
+                        "problem_type": selectServiceType,
+                        "serviceId": serviceId,
+                        "priority": selectPriority,
+                        "service_type": selectServiceType,
+                        "item_code": selectItemCode,
+                        "itemID": 1, // String Item id
+                        "customerID": 2, // string cus id //Liptom
+                        "customer": selectCustomer,
+                        "customer_address": cusAddress,
+                        "contact_name": contactPerson,
+                        "contact_no": contactNumber,
+                        "handle_by":parseInt(TechnicianID) , //string
+                        "secretary": parseInt(secretaryID), //string
+                        "sales_assistance":parseInt(AssistanceID), //string
+                        "start_date": startDate,
+                        "end_date": endDate,
+                        "created_by": UserNameUpload,
+                        "active_status": 1, //attendStatus ?
+                        "Approve_status": approveStatus,
+                        "Attend_status": attendStatus,
+                        "created_At":  moment().utcOffset('+05:30').format('YYYY-MM-DD kk:mm:ss'),
+                        "handledByHandledByCode":1, //sql error  Technician id
+                        "originsDropDownOriginCode": 1, //unknown
+                        "problemTypesDropDownProblemTypeCode": 1, // //service type id
+                        "clusterHeadClusterHeadCode": 1, //sql error 
+                        "secretaryDBSecretaryCode": 1, //sql error secrectry id 
+                        "salesAssistantDBSalesAssistantCode": 1, //sql  secrectry id 
+                        "inquiryType": "new",
+                        "subject": subject
 
-                const prams = {
-                    "UserName": "MANAGER",
-                    "objServiceCallList": [
-                        {
-                            "UserID": UserIdUpload,//int
-                            "problem_type": selectServiceType,  //
-                            "serviceId": 5481,
-                            "priority": selectPriority,
-                            "service_type": selectServiceType, //int //db text
-                            "item_code": selectItemCode,
-                            "itemID": selectItemCode, //int 
-                            "customerID": customerID, //int
-                            "customer": selectCustomer,
-                            "customer_address": cusAddress,
-                            "contact_name": contactPerson,
-                            "contact_no": contactNumber,
-                            "handle_by": selectTechnician,  //int //we -string
-                            "secretary": selectSecretary,  //int
-                            "sales_assistance": selectAssistance,   //int
-                            "start_date": startDate,
-                            "end_date": endDate,
-                            "created_by": "1",
-                            "active_status": 1,  //int
-                            "Approve_status": approveStatus,  //int
-                            "Attend_status": attendStatus,  // int
-                            "created_At":  moment().utcOffset('+05:30').format('YYYY-MM-DD kk:mm:ss'),
-                            "handledByHandledByCode": TechnicianID,  //int //techniciatID
-                            "originsDropDownOriginCode": 1,  //int
-                            "problemTypesDropDownProblemTypeCode": 1,  //int //service type id
-                            "clusterHeadClusterHeadCode": 1,  //int
-                            "secretaryDBSecretaryCode": secretaryID,   //int //secrectry id 
-                            "salesAssistantDBSalesAssistantCode": secretaryID,  //int //secrectry id 
-                            "inquiryType": "new",
-                            "subject": subject
+                    }
+                ]
+            }
 
-                            // "UserID": 14,
-                            // "problem_type": "type1",
-                            // "serviceId": "70442",
-                            // "priority": "Medium",
-                            // "service_type": 2,
-                            // "item_code": "SHINI/GBC",
-                            // "itemID": 1,
-                            // "customerID": 2,
-                            // "customer": "Pathfinder Advisory Services",
-                            // "customer_address": "10 1/3 First Floor",
-                            // "contact_name": "Pathfinder",
-                            // "contact_no": "0769968773",
-                            // "handle_by": 3,
-                            // "secretary": 2,
-                            // "sales_assistance": 1,
-                            // "start_date": "2022-10-26",
-                            // "end_date": "2022-10-26",
-                            // "created_by": "gayan1",
-                            // "active_status": 1,
-                            // "Approve_status": 0,
-                            // "Attend_status": 0,
-                            // "created_At": "2022-12-29 10:38:59",
-                            // "handledByHandledByCode": 1,
-                            // "originsDropDownOriginCode": 1,
-                            // "problemTypesDropDownProblemTypeCode": 1,
-                            // "clusterHeadClusterHeadCode": 1,
-                            // "secretaryDBSecretaryCode": 1,
-                            // "salesAssistantDBSalesAssistantCode": 1,
-                            // "inquiryType": "new",
-                            // "subject": "sub"
+            console.log('--NEW SERVICE CALL UPLOAD JSON--', prams);
 
-                        }
-                    ]
-                }
-
-                console.log('--NEW SERVICE CALL UPLOAD JSON--', prams);
-
-                const headers = {
-                    'Authorization': AuthStr
-                }
-                const URL = BASE_URL_GET + "service-call";
-                axios.post(URL, prams, {
-                    headers: headers
-                })
-                    .then((response) => {
-                        console.log("[s][t][a][t][u][s][]", response.status);
-                        if (response.status == 200) {
-
-                            console.log('<------ NEW SERVICE CALL UPLOAD Method --->', response.data)
-                            console.log(response.data.UniqueNo);
-
-                            if (response.data.ErrorId = 0) {
-                                // this use fro update sync flag as 1 
-                                updateSycnServiceCAll(response.data.UniqueNo, (result: any) => {
-
-                                });
-                                // ToastAndroid.show(response.data.ErrorDescription, ToastAndroid.LONG);
-                            }
-
-                        } else {
-                            Alert.alert(
-                                "Invalid Details!",
-                                "Bad Request",
-                                [
-                                    { text: "OK", onPress: () => console.log("OK Pressed") }
-                                ]
-                            );
-
-                        }
-
-                    })
-                    .catch((error) => {
-                        Alert.alert('error', error.response)
-
-                    })
-
+            const headers = {
+                'Authorization': AuthStr
+            }
+            const URL = BASE_URL_GET + "service-call";
+            axios.post(URL, prams, {
+                headers: headers
             })
-        } catch (error) {
-            console.log(">>>>>>>>>>>>", error);
+                .then((response) => {
+                    console.log("[s][t][a][t][u][s][]", response.status);
+                    if (response.status == 200) {
 
-        }
+                        console.log('<------ NEW SERVICE CALL UPLOAD Method --->', response.data)
+                        console.log(response.data.UniqueNo);
+
+                        if (response.data.ErrorId = 0) {
+                            // this use fro update sync flag as 1 
+                            updateSycnServiceCAll(response.data.UniqueNo, (result: any) => {
+
+                            });
+                            // ToastAndroid.show(response.data.ErrorDescription, ToastAndroid.LONG);
+                        }
+
+                    } else {
+                        Alert.alert(
+                            "Invalid Details!",
+                            "Bad Request",
+                            [
+                                { text: "OK", onPress: () => console.log("OK Pressed") }
+                            ]
+                        );
+
+                    }
+
+                })
+                .catch((error) => {
+                    Alert.alert('error', error.response)
+
+                })
+
+        })
+    } catch (error) {
+        console.log(">>>>>>>>>>>>", error);
+
     }
-
+}
 
 
     const getItem = (cusCode: any) => {
@@ -845,7 +846,9 @@ const NewServiceCall = (props: any) => {
                 onPress: () => console.log('Cancel Pressed'),
                 style: 'cancel',
             },
-            { text: 'OK', onPress: () => navigation.goBack(), }
+           { text: 'OK', onPress: () => navigation.goBack(), }
+            // { text: 'OK', onPress: () => UploadServiceCall(), }
+            
         ]);
     }
 
