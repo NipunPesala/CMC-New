@@ -96,7 +96,7 @@ const CompleteTicket = () => {
 
  const handleEmail1 = () => {
     Mailer.mail({
-      subject: 'Service Ticket Completed',
+      subject: 'Service Ticket Status Details',
       recipients: [receiverEmail],
       //ccRecipients: ['supportCC@example.com'],
       //bccRecipients: ['supportBCC@example.com'],
