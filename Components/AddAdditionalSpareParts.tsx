@@ -362,10 +362,11 @@ var id:any;
                             }
                             }>Add the description and qty</Text>
                         </View>
+                        <View style={{marginLeft:60,marginRight:60}}>
                         <InputText
                             style={styles.inputTextStyle}
                             placeholder="Enter Description"
-                            max={30}
+                            max={50}
                             stateValue={descriptionvalue}
                             setState={
                                 (descriptionvalue) => setdescriptionvalue(descriptionvalue)
@@ -380,7 +381,7 @@ var id:any;
                             setState={
                                 (enterQty) => setenterQty(enterQty)}
                         />
-
+                        </View>
                             <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center",marginBottom: 10}}>
                         <ActionButton title="Capture image"
                                 onPress={() => takePhotoFromCamera()}

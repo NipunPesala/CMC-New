@@ -785,6 +785,7 @@ const AttendanceScreen = () => {
                 style={styles.ActionButton}
                 onPress={() => slideOutModal()}
               />
+             
             </ScrollView>
           </View>
 
@@ -1126,8 +1127,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   ActionButton: {
-    marginTop: 20,
-    marginBottom: 5,
+    marginTop: 10,
+    marginBottom: 0,
+    
   },
 
   inputTextStyle: {
@@ -1164,5 +1166,10 @@ modalContcalander:{
  marginLeft:15,
  marginRight:15,
  padding:20,
+},
+scrollStyle: {
+  marginBottom: 0,
+  marginLeft: 13,
+  marginRight: 13,
 },
 });

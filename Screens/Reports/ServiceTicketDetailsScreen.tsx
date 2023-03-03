@@ -35,7 +35,7 @@ const ServiceTicketDetailsScreen = () => {
         settiketNo(true);
         setcustome(false);
         setShowCalendar(false);
-
+        getDerviceTiket();
     }
 
 
@@ -268,8 +268,8 @@ const ServiceTicketDetailsScreen = () => {
                 Headertitle3="Service status"
                 isHeadertitle4={true}
                 Headertitle4="Ticket Content"
-                isHeadertitle5={true}
-                Headertitle5=" Ticket Content"
+                isHeadertitle5={false}
+                Headertitle5=""
                 isHeadertitle6={true}
                 Headertitle6="Service call ID"
 

@@ -510,8 +510,8 @@ console.log('hiiiiiiiiiiiiiii');
           <View style={{ marginTop: 10 }}></View>
           <View
             style={{
-              height: '50%',
-              width: 400,
+              height: 250,
+              width: '98%',
               margin: 5,
               marginTop: 20,
               borderColor: 'black',
@@ -528,7 +528,7 @@ console.log('hiiiiiiiiiiiiiii');
           </View>
         </View>
       </ScrollView>
-
+      <View style={{ marginBottom: 100 }}></View>
       {/* <View>
                 
 
@@ -551,8 +551,6 @@ const style = StyleSheet.create({
   },
   signature: {
     flex: 1,
-    borderColor: '#000033',
-    borderWidth: 1,
     width: '100%',
     height: 400,
   },
