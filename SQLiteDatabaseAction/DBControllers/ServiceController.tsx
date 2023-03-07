@@ -178,9 +178,10 @@ export const getUploadServiceCallsById = (serviceId:any, callBack:any) => {
 };
 
 export const updateSycnServiceCAll = (serviceId:any,callBack:any) => {
+  var status = "1";
   DB.updateData(
-    'UPDATE SERVICE SET Syncstatus=1 WHERE serviceId=?',
-    [serviceId],
+    'UPDATE SERVICE SET Syncstatus=? WHERE serviceId=?',
+    [status,serviceId],
     (resp:any, err:any) => {
       callBack(resp, err);
     },

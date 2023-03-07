@@ -44,8 +44,8 @@ import { get_ASYNC_TOCKEN, get_ASYNC_USERID, getLoginUserName } from "../Constan
 import axios from "axios";
 import { BASE_URL_GET, } from "../Constant/Commen_API_Url";
 import { getUserByTypes } from "../SQLiteDatabaseAction/DBControllers/UserController";
-import NetInfo from '@react-native-community/netinfo';
 import DropdownAlert from 'react-native-dropdownalert';
+import { isNetworkAvailable } from "../Constant/CommonFunctions";
 
 let ItemDesc = "";
 let serviceid = "";
@@ -298,34 +298,19 @@ const NewServiceCall = (props: any) => {
                 // console.log(result, "NEWSERVICE_CALL_SAVE");
 
                 if (result === "success") {
+                    
+                    isNetworkAvailable((res:any) => {
 
+                        if(res != null){
 
-                    UploadServiceCall();
-                    // NetInfo.fetch().then(state => {
-                    //     if (!state.isConnected) {
-                    //         console.log('No internet connection');
-                    //         ToastAndroid.show("Please check your internet connection", ToastAndroid.SHORT);
-                    //     } else {
-                    //         console.log('Connected to the internet');
-                    //         UploadServiceCall();
+                            UploadServiceCall();
 
-                    //         if (mode == 1) {
-                    //             console.log("**************", "NEWSERVICE_CALL_UPDATE");
-                    //             ToastAndroid.show("New Service Call Update Success ", ToastAndroid.SHORT);
+                        }
+                        
+                    });
 
-                    //         } else {
-                    //             generateCallID();
-                    //             ToastAndroid.show("New Service Call Create Success ", ToastAndroid.SHORT);
-                    //         }
-
-                    //         navigation.navigate('Home');
-
-                    //     }
-                    // });
-                    //need check internet connection true false
-
-                    // ToastAndroid.show("New Service Call Create Success ", ToastAndroid.SHORT);
                     navigation.navigate('Home');
+                    
                 } else {
 
                     Alert.alert(
@@ -444,12 +429,16 @@ const NewServiceCall = (props: any) => {
                             console.log('this is if inside----');
                             // this use fro update sync flag as 1 
                             console.log('this is a web service call id ----',response.data[0].ServiceCallId);
-                            updateSycnServiceCAll(response.data.UniqueNo, (result: any) => {
+                            updateSycnServiceCAll(response.data[0].UniqueNo, (result: any) => {
 
                             });
                             Update_webRefId(response.data[0].ServiceCallId,serviceId,(result: any) => {
                                     console.log('web ref update_____'+result)
                             });
+                        }else{
+
+                            Alert.alert(response.ErrorDescription);
+
                         }
 
                     } else {
