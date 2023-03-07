@@ -444,12 +444,16 @@ const NewServiceCall = (props: any) => {
                             console.log('this is if inside----');
                             // this use fro update sync flag as 1 
                             console.log('this is a web service call id ----',response.data[0].ServiceCallId);
-                            updateSycnServiceCAll(response.data.UniqueNo, (result: any) => {
+                            updateSycnServiceCAll(response.data[0].UniqueNo, (result: any) => {
 
                             });
                             Update_webRefId(response.data[0].ServiceCallId,serviceId,(result: any) => {
                                     console.log('web ref update_____'+result)
                             });
+                        }else{
+
+                            Alert.alert(response.ErrorDescription);
+
                         }
 
                     } else {
