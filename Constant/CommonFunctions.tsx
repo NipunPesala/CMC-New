@@ -1,5 +1,6 @@
 import moment from "moment";
 import { BackHandler } from "react-native";
+import NetInfo from '@react-native-community/netinfo';
 
  export const getCurrentTime = callback => {
 
@@ -25,5 +26,21 @@ export const BackPressHandler = callback => {
       return true;
     });
 }
+
+export const isNetworkAvailable = (callBack:any) => {
+
+  NetInfo.fetch().then(state => {
+    console.log("Connection type", state.type);
+    console.log("Is connected?", state.isConnected);
+    console.log("Is connected?", state.isInternetReachable);
+
+    callBack = state.isInternetReachable;
+  });
+
+  callBack();
+
+}
+
+
 
 

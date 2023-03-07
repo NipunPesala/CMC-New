@@ -48,7 +48,7 @@ const RequestBottomSheet = () => {
 
         if (isSelectTicket == true) {
 
-            if (ticketList.length > 0) {
+            if (TicketID != "") {
 
                 setAddInventorySpareParts(true);
                 setAddAdditionalSpareParts(false);
@@ -59,7 +59,7 @@ const RequestBottomSheet = () => {
 
                 Alert.alert(
                     "Failed...!",
-                    "No Available Service Tickets.",
+                    "Service Ticket not selected.",
                     [
                         {
                             text: "OK", onPress: () => {
@@ -91,7 +91,7 @@ const RequestBottomSheet = () => {
         if (isSelectTicket == true) {
 
 
-            if (ticketList.length > 0) {
+            if (TicketID != "") {
 
                 setAddInventorySpareParts(false);
                 setAddAdditionalSpareParts(true);
@@ -104,7 +104,7 @@ const RequestBottomSheet = () => {
 
                 Alert.alert(
                     "Failed...!",
-                    "No Available Service Tickets.",
+                    "Service Ticket not selected.",
                     [
                         {
                             text: "OK", onPress: () => {
@@ -138,7 +138,7 @@ const RequestBottomSheet = () => {
 
         if (isSelectTicket == true) {
 
-            if (ticketList.length > 0) {
+            if (TicketID != "") {
 
                 navigation.navigate("AddSparePartsComponent");
 
@@ -146,7 +146,7 @@ const RequestBottomSheet = () => {
 
                 Alert.alert(
                     "Failed...!",
-                    "No Available Service Tickets.",
+                    "Service Ticket not selected.",
                     [
                         {
                             text: "OK", onPress: () => {
@@ -173,7 +173,7 @@ const RequestBottomSheet = () => {
 
         if (isSelectTicket == true) {
 
-            if (ticketList.length > 0) {
+            if (TicketID != "") {
 
                 navigation.navigate("AddAdditionalSpareParts")
 
@@ -181,7 +181,7 @@ const RequestBottomSheet = () => {
 
                 Alert.alert(
                     "Failed...!",
-                    "No Available Service Tickets.",
+                    "Service Ticket not selected.",
                     [
                         {
                             text: "OK", onPress: () => {
@@ -265,7 +265,7 @@ const RequestBottomSheet = () => {
                 if (res == 'true') {
                     setIsSelectTicket(true);
                     getTicketList();
-                    handle_AddInventorySpareParts();
+                    // handle_AddInventorySpareParts();
 
                 } else {
                     setIsSelectTicket(false);
