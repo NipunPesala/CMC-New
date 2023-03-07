@@ -389,8 +389,8 @@ const NewServiceTicket = (props: any) => {
                 onPress: () => console.log('Cancel Pressed'),
                 style: 'cancel',
             },
-           { text: 'OK', onPress: () => navigation.goBack(), }
-            // { text: 'OK', onPress: () => UploadServiceTicket(), }
+        //    { text: 'OK', onPress: () => navigation.goBack(), }
+        { text: 'OK', onPress: () => UploadServiceTicket(), }
         ]);
     }
     const getAllPriorityList = () => {
@@ -450,13 +450,13 @@ const NewServiceTicket = (props: any) => {
                             "UserID": UserIdKey,
                             "ticketId": TicketID,
                             "serviceId": 37064,
-                            "startDate": "2022-10-27",
-                            "itemDescription": "SHINI/GBC",
-                            "endDate": "2022-10-31",
-                            "content": "TEST3",
-                            "assignTo": "gayan",
-                            "attend_status": "pending",
-                            "created_At": "2022-12-29 10: 38: 59",
+                            "startDate": startDate,
+                            "itemDescription": itemDescription,
+                            "endDate": endDate,
+                            "content": content,
+                            "assignTo": selectAssignPerson,
+                            "attend_status": attendStatus.toString(),
+                            "created_At":moment().utcOffset('+05:30').format('YYYY-MM-DD kk:mm:ss'),
                             "assignedByMobile": 1,
                             "assignedToMobile":1,
                             "contactPerson":"gayan"

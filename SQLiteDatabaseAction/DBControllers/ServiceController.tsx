@@ -164,6 +164,7 @@ export const getServiceById = (serviceId:any, callBack:any) => {
     },
   );
 };
+
 //------------------------------------------------------------------------
 
 export const getUploadServiceCallsById = (serviceId:any, callBack:any) => {
@@ -181,6 +182,19 @@ export const updateSycnServiceCAll = (serviceId:any,callBack:any) => {
     'UPDATE SERVICE SET Syncstatus=1 WHERE serviceId=?',
     [serviceId],
     (resp:any, err:any) => {
+      callBack(resp, err);
+    },
+  );
+};
+
+export const Update_webRefId = (webFef:any,serviceCallId:any,callBack:any) => {
+  // console.log('sql web ref id========='+webFef)
+  // console.log('sql service call id========='+serviceCallId)
+  DB.updateData(
+    'UPDATE SERVICE SET service_web_RefID=? WHERE serviceId=?',
+    [webFef,serviceCallId],
+    (resp:any, err:any) => {
+      console.log('web ref id update--------- ',resp);
       callBack(resp, err);
     },
   );

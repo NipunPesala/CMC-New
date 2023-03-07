@@ -35,7 +35,7 @@ import { getAllPriority } from "../SQLiteDatabaseAction/DBControllers/PriorityCo
 import { getAllCustomerVsItems, getAllItems } from "../SQLiteDatabaseAction/DBControllers/ItemController";
 import { getAllCustomers } from "../SQLiteDatabaseAction/DBControllers/CustomerController";
 import { SearchTicketBYItemCode } from "../SQLiteDatabaseAction/DBControllers/ItemSerialNoController";
-import { getLastServiceId, getServiceById, saveServiceData, updateService, updateSycnServiceCAll } from "../SQLiteDatabaseAction/DBControllers/ServiceController";
+import { getLastServiceId, getServiceById, saveServiceData, updateService, updateSycnServiceCAll,Update_webRefId } from "../SQLiteDatabaseAction/DBControllers/ServiceController";
 import { getAllUserTypes } from "../SQLiteDatabaseAction/DBControllers/Users_TypesController";
 import { getAllContactPerson } from "../SQLiteDatabaseAction/DBControllers/ContactPersonController";
 import Spinner from 'react-native-loading-spinner-overlay';
@@ -49,7 +49,9 @@ import DropdownAlert from 'react-native-dropdownalert';
 
 let ItemDesc = "";
 let serviceid = "";
-
+var TOCKEN_KEY: any;
+var UserNameUpload: any;
+var UserIdUpload: any;
 // const NewServiceCall = ({ onClose }: ParamTypes) => {
 const NewServiceCall = (props: any) => {
 
@@ -99,15 +101,13 @@ const NewServiceCall = (props: any) => {
     const [formHeading, setformHeading] = useState(route?.params?.mode == 1 ? " Update Service Call" : "Add New Service Call");
     const [savebutton, setsavebutton] = useState(route?.params?.mode == 1 ? "Update" : "Add");
 
-    const [itemID, setitemID] = useState(null);
+    const [itemID, setitemID] = useState(0);
     const [customerID, setcustomerID] = useState(null);
     const [selectSerialNum, setSelectSerialNum] = useState(null);
     const [attendStatus, setAttendStatus] = useState(0);
     const [approveStatus, setApproveStatus] = useState(0);
     // const [serialNumDesable, setserialNumDesable] = useState(false);
-    var TOCKEN_KEY: any;
-    var UserNameUpload: any;
-    var UserIdUpload: any;
+    
     const mode = route.params.mode;
 
     useFocusEffect(
@@ -154,7 +154,7 @@ const NewServiceCall = (props: any) => {
                 approve_status: approveStatus,
                 createAt: moment().utcOffset('+05:30').format('YYYY-MM-DD kk:mm:ss'),
                 syncstatus: '0',
-                itemID: selectItemCode,
+                itemID: itemID,
                 customerID: customerID,
                 TechnicianID: parseInt(TechnicianID),
                 SecretaryID: secretaryID,
@@ -300,7 +300,7 @@ const NewServiceCall = (props: any) => {
                 if (result === "success") {
 
 
-                   // UploadServiceCall();
+                    UploadServiceCall();
                     // NetInfo.fetch().then(state => {
                     //     if (!state.isConnected) {
                     //         console.log('No internet connection');
@@ -370,87 +370,62 @@ const NewServiceCall = (props: any) => {
     }
 
     const UploadServiceCall = () => {
-        console.log('secretaryID id-'+secretaryID);
+        // console.log('contact num-'+servicetypeID);
+        // console.log('user name '+UserNameUpload);
+        // console.log('user id -'+UserIdUpload);
+
+    
        
     try {
 
+        const prams = {
+            "UserName": UserNameUpload,
+            "objServiceCallList": [
+                {
+                    "UserID": UserIdUpload,
+                    "problem_type": selectServiceType,
+                    "serviceId": serviceId,
+                    "priority": selectPriority,
+                    "service_type": selectServiceType,
+                    "item_code": selectItemCode,
+                    "itemID":itemID, // String Item id
+                    "customerID": customerID, // string cus id //Liptom
+                    "customer": selectCustomer,
+                    "customer_address": cusAddress,
+                    "contact_name": contactPerson,
+                    "contact_no": contactNumber, //contactNumber.toString(),// "0769968773"
+                    "handle_by": parseInt(TechnicianID),
+                    "secretary":  parseInt(secretaryID),
+                    "sales_assistance": parseInt(AssistanceID),
+                    "start_date": startDate,
+                    "end_date": endDate,
+                    "created_by": UserNameUpload,
+                    "active_status": 1,
+                    "Approve_status": approveStatus,
+                    "Attend_status": attendStatus,
+                    "created_At": moment().utcOffset('+05:30').format('YYYY-MM-DD kk:mm:ss'),
+                    "handledByHandledByCode":  parseInt(TechnicianID),
+                    "originsDropDownOriginCode": 1,
+                    "problemTypesDropDownProblemTypeCode":parseInt(servicetypeID) ,
+                    "clusterHeadClusterHeadCode": parseInt(TechnicianID),
+                    "secretaryDBSecretaryCode":  parseInt(secretaryID),
+                    "salesAssistantDBSalesAssistantCode": parseInt(AssistanceID),
+                    "inquiryType":"new",
+                    "subject":subject
+
+                }
+            ]
+        }
+
+        console.log('--NEW SERVICE CALL UPLOAD JSON--', prams);
+
+
         get_ASYNC_TOCKEN().then(res => {
-            console.log('cus id--'+parseInt(customerID))
+            console.log('cus id--'+customerID)
             TOCKEN_KEY = res;
-            const AuthStr = 'Bearer '.concat(TOCKEN_KEY);
-
-            const prams = {
-                "UserName": UserNameUpload,
-                "objServiceCallList": [
-                    {
-                        // "UserID": UserIdUpload,//int
-                        // "problem_type": selectServiceType,  //
-                        // "serviceId": 5481,
-                        // "priority": selectPriority,
-                        // "service_type": selectServiceType, //int //db text
-                        // "item_code": selectItemCode,
-                        // "itemID": selectItemCode, //int 
-                        // "customerID": customerID, //int
-                        // "customer": selectCustomer,
-                        // "customer_address": cusAddress,
-                        // "contact_name": contactPerson,
-                        // "contact_no": contactNumber,
-                        // "handle_by": selectTechnician,  //int //we -string
-                        // "secretary": selectSecretary,  //int
-                        // "sales_assistance": selectAssistance,   //int
-                        // "start_date": startDate,
-                        // "end_date": endDate,
-                        // "created_by": "1",
-                        // "active_status": 1,  //int
-                        // "Approve_status": approveStatus,  //int
-                        // "Attend_status": attendStatus,  // int
-                        // "created_At":  moment().utcOffset('+05:30').format('YYYY-MM-DD kk:mm:ss'),
-                        // "handledByHandledByCode": TechnicianID,  //int //techniciatID
-                        // "originsDropDownOriginCode": 1,  //int
-                        // "problemTypesDropDownProblemTypeCode": 1,  //int //service type id
-                        // "clusterHeadClusterHeadCode": 1,  //int
-                        // "secretaryDBSecretaryCode": secretaryID,   //int //secrectry id 
-                        // "salesAssistantDBSalesAssistantCode": secretaryID,  //int //secrectry id 
-                        // "inquiryType": "new",
-                        // "subject": subject
-
-                        "UserID":  UserIdUpload,
-                        "problem_type": selectServiceType,
-                        "serviceId": serviceId,
-                        "priority": selectPriority,
-                        "service_type": selectServiceType,
-                        "item_code": selectItemCode,
-                        "itemID": 1, // String Item id
-                        "customerID": 2, // string cus id //Liptom
-                        "customer": selectCustomer,
-                        "customer_address": cusAddress,
-                        "contact_name": contactPerson,
-                        "contact_no": contactNumber,
-                        "handle_by":parseInt(TechnicianID) , //string
-                        "secretary": parseInt(secretaryID), //string
-                        "sales_assistance":parseInt(AssistanceID), //string
-                        "start_date": startDate,
-                        "end_date": endDate,
-                        "created_by": UserNameUpload,
-                        "active_status": 1, //attendStatus ?
-                        "Approve_status": approveStatus,
-                        "Attend_status": attendStatus,
-                        "created_At":  moment().utcOffset('+05:30').format('YYYY-MM-DD kk:mm:ss'),
-                        "handledByHandledByCode":1, //sql error  Technician id
-                        "originsDropDownOriginCode": 1, //unknown
-                        "problemTypesDropDownProblemTypeCode": 1, // //service type id
-                        "clusterHeadClusterHeadCode": 1, //sql error 
-                        "secretaryDBSecretaryCode": 1, //sql error secrectry id 
-                        "salesAssistantDBSalesAssistantCode": 1, //sql  secrectry id 
-                        "inquiryType": "new",
-                        "subject": subject
-
-                    }
-                ]
-            }
-
-            console.log('--NEW SERVICE CALL UPLOAD JSON--', prams);
-
+           // const AuthStr = 'Bearer '.concat(TOCKEN_KEY);
+           const AuthStr = ` Bearer ${TOCKEN_KEY}`;
+        
             const headers = {
                 'Authorization': AuthStr
             }
@@ -463,14 +438,18 @@ const NewServiceCall = (props: any) => {
                     if (response.status == 200) {
 
                         console.log('<------ NEW SERVICE CALL UPLOAD Method --->', response.data)
-                        console.log(response.data.UniqueNo);
-
-                        if (response.data.ErrorId = 0) {
+                        console.log('uplode api response',response.data[0].ErrorId);
+                        console.log('web service call id',response.data[0].ServiceCallId);
+                        if (response.data[0].ErrorId == 0) {
+                            console.log('this is if inside----');
                             // this use fro update sync flag as 1 
+                            console.log('this is a web service call id ----',response.data[0].ServiceCallId);
                             updateSycnServiceCAll(response.data.UniqueNo, (result: any) => {
 
                             });
-                            // ToastAndroid.show(response.data.ErrorDescription, ToastAndroid.LONG);
+                            Update_webRefId(response.data[0].ServiceCallId,serviceId,(result: any) => {
+                                    console.log('web ref update_____'+result)
+                            });
                         }
 
                     } else {
@@ -487,6 +466,7 @@ const NewServiceCall = (props: any) => {
                 })
                 .catch((error) => {
                     Alert.alert('error', error.response)
+                    console.log('error+++++',error);
 
                 })
 
@@ -846,7 +826,7 @@ const NewServiceCall = (props: any) => {
                 onPress: () => console.log('Cancel Pressed'),
                 style: 'cancel',
             },
-           { text: 'OK', onPress: () => navigation.goBack(), }
+          { text: 'OK', onPress: () => navigation.goBack(), }
             // { text: 'OK', onPress: () => UploadServiceCall(), }
             
         ]);
