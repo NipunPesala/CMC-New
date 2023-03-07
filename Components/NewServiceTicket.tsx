@@ -59,7 +59,7 @@ const NewServiceTicket = (props: any) => {
     const [assignPersonList, setAssignPersonList] = useState([]);
     const [serviceCallIdList, setserviceCallIdList] = useState([]);
     const [selectAssignPerson, setSelectAssignPerson] = useState(null);
-    const [selectAssignPersonID, setSelectAssignPersonID] = useState(null);
+    const [selectAssignPersonID, setSelectAssignPersonID] = useState('');
     const [selectPriority, setSelectPriority] = useState(null);
     const [selectServiceCallID, setselectServiceCallID] = useState(null);
     const [lastTicketID, setLastTicketID]: any[] = useState([]);
@@ -77,6 +77,7 @@ const NewServiceTicket = (props: any) => {
     const [callStartDate, setCallStartDate] = useState('');
     const [callEndDate, setCallEndDate] = useState('');
     const [ItemCode, setItemCode] = useState('');
+    const [webRefId, setWebRefId] = useState(0);
     const [attendStatus, setAttendStatus] = useState(0);
     const routeNav = useRoute();
     var TOCKEN_KEY: any;
@@ -196,7 +197,7 @@ const NewServiceTicket = (props: any) => {
                 if (result === "success") {
 
                     //need check internet connection true false
-                    //  UploadServiceTicket();
+                      UploadServiceTicket();
 
                     ToastAndroid.show("New Service Ticket Create Success ", ToastAndroid.SHORT);
                     navigation.navigate('Home');
@@ -409,8 +410,8 @@ const NewServiceTicket = (props: any) => {
     const UploadServiceTicket = () => {
         try {
 
-            
-            console.log(" ................. 'service id '+selectServiceCallID  ", selectServiceCallID);
+            console.log('this is a set web ref id ++++++++++++++++++',webRefId);
+            console.log(" ................. selectAssignPersonID id_________ ", selectAssignPersonID);
             get_ASYNC_TOCKEN().then(res => {
                 TOCKEN_KEY = res;
                 const AuthStr = 'Bearer '.concat(TOCKEN_KEY);
@@ -421,35 +422,10 @@ const NewServiceTicket = (props: any) => {
                     "UserName": UserNameUpload,
                     "objServiceTiketList": [
                         {
-                            // "UserID": UserIdKey,  //need to code
-                            // "ticketId": TicketID,
-                            // "serviceId": selectServiceCallID,
-                            // "startDate": startDate,
-                            // "itemDescription": itemDescription,
-                            // "endDate": endDate,
-                            // "content": content,
-                            // "assignTo": selectAssignPerson,
-                            // "attend_status": attendStatus,
-                            // "priority": selectPriority,
-                            // "technicianID": selectAssignPersonID,
-                            // "createAt": moment().utcOffset('+05:30').format('YYYY-MM-DD kk:mm:ss'),
-
-                            // "UserID": UserIdKey,
-                            // "ticketId": TicketID,
-                            // "serviceId": selectServiceCallID,
-                            // "startDate": startDate,
-                            // "itemDescription": itemDescription,
-                            // "endDate": endDate,
-                            // "content": content,
-                            // "assignTo":selectAssignPerson,
-                            // "attend_status": attendStatus,
-                            // "created_At":  moment().utcOffset('+05:30').format('YYYY-MM-DD kk:mm:ss'),
-                            // "assignedByMobile": 1,
-                            // "assignedToMobile":1,
-                            // "contactPerson":selectAssignPersonID
+                
                             "UserID": UserIdKey,
                             "ticketId": TicketID,
-                            "serviceId": 37064,
+                            "serviceId": webRefId,
                             "startDate": startDate,
                             "itemDescription": itemDescription,
                             "endDate": endDate,
@@ -458,8 +434,8 @@ const NewServiceTicket = (props: any) => {
                             "attend_status": attendStatus.toString(),
                             "created_At":moment().utcOffset('+05:30').format('YYYY-MM-DD kk:mm:ss'),
                             "assignedByMobile": 1,
-                            "assignedToMobile":1,
-                            "contactPerson":"gayan"
+                            "assignedToMobile":selectAssignPersonID,
+                            "contactPerson":selectAssignPersonID
                         }
                     ]
                 }
@@ -517,6 +493,9 @@ const NewServiceTicket = (props: any) => {
         getServiceById(SID,(result:any) => {
             setItemDescription(result[0].item_description);
             setItemCode(result[0].item_code);
+            console.log('for web ref object +++++++++++',result[0]);
+            console.log('for web fre id +++++++++++',result[0].service_web_RefID);
+            setWebRefId(result[0].service_web_RefID);
         });
     }
     const getLoginUserID=()=>{
