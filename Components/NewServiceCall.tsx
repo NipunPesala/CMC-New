@@ -310,7 +310,7 @@ const NewServiceCall = (props: any) => {
                     });
 
                     navigation.navigate('Home');
-                    
+
                 } else {
 
                     Alert.alert(

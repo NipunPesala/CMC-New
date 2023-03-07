@@ -88,7 +88,7 @@ const ServiceCall = () => {
 
 
         await AsyncStorage.getItem('UserType').then((value) => {
-            console.log('this is a user type+++++++++++++', value);
+            // console.log('this is a user type+++++++++++++', value);
             if (value == 'Technician') {
                 setUserLavelUpdate(false);
             } else {
@@ -229,7 +229,7 @@ const ServiceCall = () => {
     const handleclicked = async (callID: any) => {
 
         await AsyncStorage.setItem(AsyncStorageConstants.ASYNC_CURRENT_SERVICE_CALL_ID, callID);
-        console.log("call details check");
+        // console.log("call details check");
 
         // navigation.navigate('RequestDetails',{navigateId:1});
 
@@ -287,7 +287,7 @@ const ServiceCall = () => {
         getServiceCalls(status, (result: any) => {
             // setServiceCallList(result);
 
-            console.log('<<<<<<<<<<<<<', result);
+            // console.log('<<<<<<<<<<<<<', result);
 
 
             try {
