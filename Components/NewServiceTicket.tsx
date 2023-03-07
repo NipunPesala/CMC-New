@@ -389,8 +389,8 @@ const NewServiceTicket = (props: any) => {
                 onPress: () => console.log('Cancel Pressed'),
                 style: 'cancel',
             },
-        //    { text: 'OK', onPress: () => navigation.goBack(), }
-        { text: 'OK', onPress: () => UploadServiceTicket(), }
+           { text: 'OK', onPress: () => navigation.goBack(), }
+        // { text: 'OK', onPress: () => UploadServiceTicket(), }
         ]);
     }
     const getAllPriorityList = () => {
