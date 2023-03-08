@@ -43,7 +43,8 @@ import { getTicketDetailsFromID } from "../SQLiteDatabaseAction/DBControllers/Ti
 import { BASE_URL_GET } from "../Constant/Commen_API_Url";
 import { getUserByTypes } from "../SQLiteDatabaseAction/DBControllers/UserController";
 import { get_ASYNC_USERID, getLoginUserName } from "../Constant/AsynStorageFuntion";
-import { isNetworkAvailable } from "../Constant/CommonFunctions";
+// import { isNetworkAvailable } from "../Constant/CommonFunctions";
+// import NetInfo from '@react-native-community/netinfo';
 
 var selectMode: any
 var TiketID: any
@@ -84,6 +85,7 @@ const NewServiceTicket = (props: any) => {
     const [ItemCode, setItemCode] = useState('');
     const [webRefId, setWebRefId] = useState(0);
     const [attendStatus, setAttendStatus] = useState(0);
+    const [isDesable, setIsDesable] = useState(true);
     const routeNav = useRoute();
 
     const onChangePicker = (event, type) => {
@@ -182,6 +184,8 @@ const NewServiceTicket = (props: any) => {
 
             if (result === "success") {
 
+
+                uploadUpdateData();
                 ToastAndroid.show("Ticket Update Success ", ToastAndroid.SHORT);
                 navigation.navigate('RequestDetails', { navigateId: 0 })
 
@@ -200,23 +204,9 @@ const NewServiceTicket = (props: any) => {
                 if (result === "success") {
 
                     UploadServiceTicket();
-                    // isNetworkAvailable((res: any) => {
 
-                    //     if (res) {
-
-
-                    //         console.log(" connected ticket  ********  " );
-                    //         //need check internet connection true false
-
-                    //         UploadServiceTicket();
-
-                    //     }
-
-                    //     // navigation.navigate('Home');
-
-                    // });
                     navigation.navigate('Home');
-                    ToastAndroid.show("New Service Ticket Create Success ", ToastAndroid.SHORT);
+                    // ToastAndroid.show("New Service Ticket Create Success ", ToastAndroid.SHORT);
 
                 } else {
                     Alert.alert(
@@ -325,9 +315,15 @@ const NewServiceTicket = (props: any) => {
     const getServiceCallIDUpdate = () => {
         getServiceId((result: any) => {
             setserviceCallIdList(result);
-            getCustomer(result[0].serviceId);
+            // getCustomer(result[0].serviceId);
+            // console.log(" cus name -----------  " ,result[0].customer );
+
+
             getALLTicketById(TiketID, (result: any) => {
                 for (let i = 0; i < result.length; ++i) {
+
+                    console.log(result[i]);
+
                     setselectServiceCallID(result[i].serviceId)
                     prority = result[i].priority;
                     Assistance = result[i].assignTo;
@@ -342,6 +338,8 @@ const NewServiceTicket = (props: any) => {
                     setSelectAssignPerson(Assistance);
                     setSelectAssignPersonID(result[i].technicianID);
                     setAttendStatus(result[i].attend_status);
+                    getCustomer(data.serviceId);
+                    setWebRefId(result[i].Ticket_web_RefID);
 
                 }
             });
@@ -476,13 +474,16 @@ const NewServiceTicket = (props: any) => {
                             if (response.data[0].ErrorId == 0) {
                                 // this use fro update sync flag as 1 
                                 console.log('<------service ticket id  --->', response.data[0].ServiceTicketId)
-                                Update_serviceTicket_webRefId(response.data[0].ServiceTicketId, TicketID, (result: any) => {
-                                    console.log('Ticket web ref update _____' + result)
-                                });
+
                                 updateSyncServiceTicket(TicketID, (result: any) => {
                                     console.log("ticket sync status update --------- ", result);
 
                                 });
+
+                                Update_serviceTicket_webRefId(response.data[0].ServiceTicketId, TicketID, (result: any) => {
+                                    console.log('Ticket web ref update _____' + result)
+                                });
+
                                 ToastAndroid.show(response.data.ErrorDescription, ToastAndroid.LONG);
                             }
 
@@ -561,6 +562,7 @@ const NewServiceTicket = (props: any) => {
                 setCallStartDate(date);
                 setCallEndDate(date);
             } else {
+                setIsDesable(true);
                 getServiceCallIDUpdate();
                 setTextHeader('Update Service Ticket')
                 setButtonTitle('Update')
@@ -675,14 +677,6 @@ const NewServiceTicket = (props: any) => {
     // );
 
 
-    const SetPreviousAddedData2 = (id: any) => {
-
-        setTicketID(id);
-        //      const data = routeNav.params.tickList?.filter()[0];
-        //   console.log('check filter data --'+data);
-
-    }
-
     const SetPreviousAddedData = (id: any) => {
 
         setTicketID(id);
@@ -690,22 +684,6 @@ const NewServiceTicket = (props: any) => {
             getTicketDetailsFromID(id, (result: any) => {
                 console.log('update service list length ----', result);
                 // console.log("####", serviceType);
-
-                //  [{"Approve_status": "0", "Attend_status": "0", "_Id": 1, "assistance": "2", 
-                // "contact_name": "gayan", "contact_no": 769968772, "created_by": "1",
-                //  "customer": "Pathfinder Advisory Services Pvt Ltd", 
-                // "customer_address": "10 1/3 First Floor", "end_date": "31-10-2022",
-                //   "handle_by": "2", "item_code": "SHINI/BH90115000050", "item_description": 
-                // "EGO ASSEMBLE (FOR SCD-400U CLAIM)", "priority": "Medium", "secretary": "2", 
-                // "serviceId": "SC_2022-10-31_1", "service_type": "1",
-                //  "start_date": "31-10-2022", "status": "0", "subject": "car"}]
-
-                //  [{"typeId": 1, "typeName": "Mechanical"}, {"typeId": 2, "typeName": "Electrical"}, {"typeId": 3, "typeName": "Replacement"},
-                // {"typeId": 4, "typeName": "Service"}, {"typeId": 5, "typeName": "Other"}]
-
-                // console.log('cus list length ----', route.params.cusList.length);
-                // console.log('*******',customerList?.filter(a => a.CusName == result[0].customer),);
-                //setSelectCustomer(customerList?.filter((a)=> a.CusName == result[0].customer)[0]);
 
                 const data = result[0];
                 console.log('<<<<<<<<<<<<<<< show data --', data.assignTo);
@@ -716,28 +694,7 @@ const NewServiceTicket = (props: any) => {
                 setStartDate(data.startDate);
                 //setCustomer();
                 setEndDate(data.endDate);
-
-
-                // setSelectCustomer(data.CusName);
-                // setCusAddress(result[0].customer_address);
-
-                // setItemDescription(result[0].item_description);
-
-                // let number = "0" + result[0].contact_no;
-                // console.log(number.length, '>>>>>>>>>>>>>>>>>>>>>');
-
-                // setContactNumber(number);
-                // setSubject(result[0].subject);
-                // setStartDate(result[0].start_date);
-                // setEndDate(result[0].end_date);
-                // setSelectPriority(result[0].priority);
-
-
-
-
-
-
-
+                // setWebRefId();
 
 
             });
@@ -746,6 +703,82 @@ const NewServiceTicket = (props: any) => {
             console.log("NEW SERVICECALL/setPreviousAddedData", error);
 
         }
+    }
+
+    const uploadUpdateData = () => {
+
+        try {
+
+            const prams = [
+                {
+                    "ticketId": webRefId,
+                    "startDate": startDate,
+                    "endDate": endDate,
+                    "content": content,
+                    "assignTo": selectAssignPerson,
+                    "assignedToMobile": selectAssignPersonID,
+                    "attend_status": attendStatus.toString(),
+                    "update_by": UserIdKey,
+                    "Update_At": moment().utcOffset('+05:30').format('YYYY-MM-DD kk:mm:ss')
+                }
+            ]
+
+            console.log('--NEW SERVICE TICKET UPLOAD JSON--', prams);
+
+            get_ASYNC_TOCKEN().then(res => {
+                TOCKEN_KEY = res;
+                const AuthStr = 'Bearer '.concat(TOCKEN_KEY);
+
+                const headers = {
+                    'Authorization': AuthStr
+                }
+                const URL = BASE_URL_GET + "service-ticket";
+                axios.put(URL, prams, {
+                    headers: headers
+                })
+                    .then((response) => {
+                        console.log("[s][t][a][t][u][s][]", response.status);
+                        if (response.status == 200) {
+
+                            console.log('<------ UPDATE SERVICE TICKET UPLOAD Method --->', response.data)
+                            console.log(response.data[0].UniqueNo);
+
+                            if (response.data[0].ErrorId == 0) {
+                                // this use fro update sync flag as 1 
+                                console.log('<------service ticket id  --->', response.data[0].ServiceTicketId)
+
+                                updateSyncServiceTicket(TicketID, (result: any) => {
+                                    console.log("ticket sync status update --------- ", result);
+
+                                });
+
+                                ToastAndroid.show(response.data.ErrorDescription, ToastAndroid.LONG);
+                            }
+
+                        } else {
+                            Alert.alert(
+                                "Invalid Details!",
+                                "Bad Request",
+                                [
+                                    { text: "OK", onPress: () => console.log("OK Pressed") }
+                                ]
+                            );
+
+                        }
+
+                    })
+                    .catch((error) => {
+                        Alert.alert('error', error.response)
+
+                    })
+
+            })
+        } catch (error) {
+            console.log(">>>>>>>>>>>>", error);
+
+        }
+
+
     }
 
 
@@ -781,6 +814,7 @@ const NewServiceTicket = (props: any) => {
                         inputSearchStyle={style.inputSearchStyle}
                         iconStyle={style.iconStyle}
                         data={serviceCallIdList}
+                        disable={isDesable}
                         search
                         maxHeight={300}
                         labelField="serviceId"

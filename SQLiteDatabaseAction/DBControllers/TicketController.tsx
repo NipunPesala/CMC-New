@@ -306,9 +306,10 @@ export const updateActualendDate = (ticketID:any,Sdate:any,callBack:any) => {
   };
   //====================================================
   export const updateSyncServiceTicket = (ticketID:any,callBack:any) => {
+    var status = "1";
     DB.updateData(
-      'UPDATE TICKET SET syncStatus=1 WHERE ticketId=?',
-      [ticketID],
+      'UPDATE TICKET SET syncStatus=? WHERE ticketId=?',
+      [status,ticketID],
       (resp:any, err:any) => {
         callBack(resp, err);
       },
@@ -320,6 +321,7 @@ export const updateActualendDate = (ticketID:any,Sdate:any,callBack:any) => {
     console.log('sql web ref id========='+webFef , " --------------  " , serviceCallId)
     // console.log('sql service call id========='+serviceCallId)
     DB.updateData(
+    //   'UPDATE TICKET SET Ticket_web_RefID=? WHERE ticketId=?',
       'UPDATE TICKET SET Ticket_web_RefID=? WHERE ticketId=?',
       [webFef,serviceCallId],
       (resp:any, err:any) => {

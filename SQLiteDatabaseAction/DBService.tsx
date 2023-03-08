@@ -633,7 +633,7 @@ export const insertData = (data:any, callBack:any) => {
 
 //UPDATE QUERY
 export const updateData = (query:any, params:any, callBack:any) => {
-  console.log("update ticket ref id");
+  // console.log("update ticket ref id");
   
   try {
     db.transaction(

@@ -111,8 +111,8 @@ export const saveServiceData = (data:any,type: any, callBack:any) => {
             data[i].PlanedStartDateTime,// done 
             data[i].PlanedEndDateTime, // done
             data[i].CreatedBy,
-            data[i].ApprovedBy, //done
-            data[i].attend_status,
+            data[i].IsApprovedBy, //done
+            data[i].Status,
             data[i].Status, //done
             data[i].CreatedOn,//done
             data[i].syncstatus,
@@ -316,7 +316,7 @@ export const getLastServiceId = (callBack:any) => {
 
 export const getServiceId = (callBack:any) => {
   DB.searchData(
-    'SELECT serviceId,_Id FROM SERVICE WHERE Approve_status != 2',
+    'SELECT serviceId,_Id,customer FROM SERVICE WHERE Approve_status != 2',
     [],
     (resp:any, err:any) => {
       callBack(resp, err);
