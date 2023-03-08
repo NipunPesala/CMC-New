@@ -297,8 +297,7 @@ const NewServiceCall = (props: any) => {
                         console.log(" connected ********  ");
 
                         UploadUpdates();
-
-
+                        
                     }
 
                 });

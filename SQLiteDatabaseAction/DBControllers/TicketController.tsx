@@ -315,6 +315,21 @@ export const updateActualendDate = (ticketID:any,Sdate:any,callBack:any) => {
     );
   };
 
+
+  export const Update_serviceTicket_webRefId = (webFef:any,serviceCallId:any,callBack:any) => {
+    // console.log('sql web ref id========='+webFef)
+    // console.log('sql service call id========='+serviceCallId)
+    DB.updateData(
+      'UPDATE TICKET SET Ticket_web_RefID=? WHERE ticketId=?',
+      [webFef,serviceCallId],
+      (resp:any, err:any) => {
+        console.log('web ref id update--------- ',resp);
+        callBack(resp, err);
+      },
+    );
+  };
+
+
   export const uplodeCompTicketAync = (ticketID:any,callBack:any) => {
     DB.updateData(
       'UPDATE TICKET SET syncStatus=1 WHERE ticketId=?',

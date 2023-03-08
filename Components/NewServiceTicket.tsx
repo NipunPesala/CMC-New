@@ -32,7 +32,7 @@ import moment from "moment";
 import { getServiceById, getServiceCallCustomer, getServiceId } from "../SQLiteDatabaseAction/DBControllers/ServiceController";
 import { Dropdown } from "react-native-element-dropdown";
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import { getLastTicketId, saveTicket, getALLTicketById, updateTicket, updateSyncServiceTicket } from "../SQLiteDatabaseAction/DBControllers/TicketController";
+import { getLastTicketId, saveTicket, getALLTicketById, updateTicket, updateSyncServiceTicket,Update_serviceTicket_webRefId} from "../SQLiteDatabaseAction/DBControllers/TicketController";
 import { getAllPriority } from "../SQLiteDatabaseAction/DBControllers/PriorityController";
 import { getAllUserTypes } from "../SQLiteDatabaseAction/DBControllers/Users_TypesController";
 import Toast from 'react-native-toast-message';
@@ -197,7 +197,7 @@ const NewServiceTicket = (props: any) => {
             saveTicket(data, (result: any) => {
                 if (result === "success") {
 
-
+                    UploadServiceTicket();
                     isNetworkAvailable((res: any) => {
 
                         if (res) {
@@ -205,7 +205,7 @@ const NewServiceTicket = (props: any) => {
 
                             console.log(" connected ticket  ********  " );
                             //need check internet connection true false
-                            // UploadServiceTicket();
+                            
 
 
                         }
@@ -472,9 +472,13 @@ const NewServiceTicket = (props: any) => {
                             console.log('<------ NEW SERVICE TICKET UPLOAD Method --->', response.data)
                             console.log(response.data.UniqueNo);
 
-                            if (response.data.ErrorId = 0) {
+                            if (response.data[0].ErrorId == 0) {
                                 // this use fro update sync flag as 1 
-                                updateSyncServiceTicket(response.data.UniqueNo, (result: any) => {
+                                console.log('<------service ticket id  --->', response.data[0].ServiceTicketId)
+                                Update_serviceTicket_webRefId(response.data[0].ServiceTicketId,TicketID,(result: any) => {
+                                    console.log('Ticket web ref update _____'+result)
+                                     });
+                                updateSyncServiceTicket(TicketID, (result: any) => {
 
                                 });
                                 ToastAndroid.show(response.data.ErrorDescription, ToastAndroid.LONG);
