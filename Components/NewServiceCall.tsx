@@ -35,7 +35,7 @@ import { getAllPriority } from "../SQLiteDatabaseAction/DBControllers/PriorityCo
 import { getAllCustomerVsItems, getAllItems } from "../SQLiteDatabaseAction/DBControllers/ItemController";
 import { getAllCustomers } from "../SQLiteDatabaseAction/DBControllers/CustomerController";
 import { SearchTicketBYItemCode } from "../SQLiteDatabaseAction/DBControllers/ItemSerialNoController";
-import { getLastServiceId, getServiceById, saveServiceData, updateService, updateSycnServiceCAll,Update_webRefId } from "../SQLiteDatabaseAction/DBControllers/ServiceController";
+import { getLastServiceId, getServiceById, saveServiceData, updateService, updateSycnServiceCAll, Update_webRefId } from "../SQLiteDatabaseAction/DBControllers/ServiceController";
 import { getAllUserTypes } from "../SQLiteDatabaseAction/DBControllers/Users_TypesController";
 import { getAllContactPerson } from "../SQLiteDatabaseAction/DBControllers/ContactPersonController";
 import Spinner from 'react-native-loading-spinner-overlay';
@@ -46,6 +46,7 @@ import { BASE_URL_GET, } from "../Constant/Commen_API_Url";
 import { getUserByTypes } from "../SQLiteDatabaseAction/DBControllers/UserController";
 import DropdownAlert from 'react-native-dropdownalert';
 import { isNetworkAvailable } from "../Constant/CommonFunctions";
+import NetInfo from '@react-native-community/netinfo';
 
 let ItemDesc = "";
 let serviceid = "";
@@ -106,8 +107,9 @@ const NewServiceCall = (props: any) => {
     const [selectSerialNum, setSelectSerialNum] = useState(null);
     const [attendStatus, setAttendStatus] = useState(0);
     const [approveStatus, setApproveStatus] = useState(0);
-    // const [serialNumDesable, setserialNumDesable] = useState(false);
-    
+    const [IsDesable, setIsDesable] = useState(false);
+    const [webRefID, setWebRefID] = useState(0);
+
     const mode = route.params.mode;
 
     useFocusEffect(
@@ -120,7 +122,7 @@ const NewServiceCall = (props: any) => {
 
             if (route.params.cusList?.length > 0) {
                 SetPreviousAddedData(route.params.serviceID);
-                // setserialNumDesable(true);
+                setIsDesable(true);
             }
             if (mode != 1) {
                 generateCallID();
@@ -150,7 +152,7 @@ const NewServiceCall = (props: any) => {
                 attend_status: attendStatus,
                 Status: '0',
                 customer: selectCustomer,
-                CreatedBy: "1",
+                CreatedBy: UserIdUpload,
                 approve_status: approveStatus,
                 createAt: moment().utcOffset('+05:30').format('YYYY-MM-DD kk:mm:ss'),
                 syncstatus: '0',
@@ -161,7 +163,7 @@ const NewServiceCall = (props: any) => {
                 AssisstanceID: AssistanceID,
                 serialNumber: selectSerialNum,
                 service_web_RefID: 0,
-                service_typeID:servicetypeID
+                service_typeID: servicetypeID
 
             }
         ]
@@ -283,13 +285,46 @@ const NewServiceCall = (props: any) => {
 
         console.log(data, '---------------------');
 
-
-
         updateService(data, (result: any) => {
             // ToastAndroid.show("Service Call Update Success ", ToastAndroid.SHORT);
-            navigation.navigate('ServiceCall');
+
+            if (result === "success") {
+
+                NetInfo.fetch().then(state => {
+
+                    if (state.isInternetReachable) {
+
+                        console.log(" connected ********  ");
+
+                        UploadUpdates();
+
+
+                    }
+
+                });
+
+                navigation.navigate('ServiceCall');
+
+            } else {
+
+                Alert.alert(
+                    "Failed...!",
+                    "Service Call Update Failed.",
+                    [
+                        {
+                            text: "OK", onPress: () => {
+                                navigation.navigate('ServiceCall');
+                            }
+                        }
+                    ]
+                );
+            }
+
+
         });
     }
+
+
     const save_serviceCall = (data: any) => {
         // console.log("**************", data);
         // console.log("**************", JSON.stringify(data));
@@ -298,15 +333,22 @@ const NewServiceCall = (props: any) => {
                 // console.log(result, "NEWSERVICE_CALL_SAVE");
 
                 if (result === "success") {
-                    
-                    isNetworkAvailable((res:any) => {
 
-                        if(res != null){
+                    NetInfo.fetch().then(state => {
+                        // console.log("Connection type", state.type);
+                        // console.log("Is connected?", state.isConnected);
+                        // console.log("Is connected?", state.isInternetReachable);
+
+
+                        if (state.isInternetReachable) {
+
+                            console.log(" connected ********  ");
+
 
                             UploadServiceCall();
 
                         }
-                        
+
                     });
 
                     navigation.navigate('Home');
@@ -359,112 +401,112 @@ const NewServiceCall = (props: any) => {
         // console.log('user name '+UserNameUpload);
         // console.log('user id -'+UserIdUpload);
 
-    
-       
-    try {
-
-        const prams = {
-            "UserName": UserNameUpload,
-            "objServiceCallList": [
-                {
-                    "UserID": UserIdUpload,
-                    "problem_type": selectServiceType,
-                    "serviceId": serviceId,
-                    "priority": selectPriority,
-                    "service_type": selectServiceType,
-                    "item_code": selectItemCode,
-                    "itemID":itemID, // String Item id
-                    "customerID": customerID, // string cus id //Liptom
-                    "customer": selectCustomer,
-                    "customer_address": cusAddress,
-                    "contact_name": contactPerson,
-                    "contact_no": contactNumber, //contactNumber.toString(),// "0769968773"
-                    "handle_by": parseInt(TechnicianID),
-                    "secretary":  parseInt(secretaryID),
-                    "sales_assistance": parseInt(AssistanceID),
-                    "start_date": startDate,
-                    "end_date": endDate,
-                    "created_by": UserNameUpload,
-                    "active_status": 1,
-                    "Approve_status": approveStatus,
-                    "Attend_status": attendStatus,
-                    "created_At": moment().utcOffset('+05:30').format('YYYY-MM-DD kk:mm:ss'),
-                    "handledByHandledByCode":  parseInt(TechnicianID),
-                    "originsDropDownOriginCode": 1,
-                    "problemTypesDropDownProblemTypeCode":parseInt(servicetypeID) ,
-                    "clusterHeadClusterHeadCode": parseInt(TechnicianID),
-                    "secretaryDBSecretaryCode":  parseInt(secretaryID),
-                    "salesAssistantDBSalesAssistantCode": parseInt(AssistanceID),
-                    "inquiryType":"new",
-                    "subject":subject
-
-                }
-            ]
-        }
-
-        console.log('--NEW SERVICE CALL UPLOAD JSON--', prams);
 
 
-        get_ASYNC_TOCKEN().then(res => {
-            console.log('cus id--'+customerID)
-            TOCKEN_KEY = res;
-           // const AuthStr = 'Bearer '.concat(TOCKEN_KEY);
-           const AuthStr = ` Bearer ${TOCKEN_KEY}`;
-        
-            const headers = {
-                'Authorization': AuthStr
+        try {
+
+            const prams = {
+                "UserName": UserNameUpload,
+                "objServiceCallList": [
+                    {
+                        "UserID": UserIdUpload,
+                        "problem_type": selectServiceType,
+                        "serviceId": serviceId,
+                        "priority": selectPriority,
+                        "service_type": selectServiceType,
+                        "item_code": selectItemCode,
+                        "itemID": itemID, // String Item id
+                        "customerID": customerID, // string cus id //Liptom
+                        "customer": selectCustomer,
+                        "customer_address": cusAddress,
+                        "contact_name": contactPerson,
+                        "contact_no": contactNumber, //contactNumber.toString(),// "0769968773"
+                        "handle_by": parseInt(TechnicianID),
+                        "secretary": parseInt(secretaryID),
+                        "sales_assistance": parseInt(AssistanceID),
+                        "start_date": startDate,
+                        "end_date": endDate,
+                        "created_by": UserNameUpload,
+                        "active_status": 1,
+                        "Approve_status": approveStatus,
+                        "Attend_status": attendStatus,
+                        "created_At": moment().utcOffset('+05:30').format('YYYY-MM-DD kk:mm:ss'),
+                        "handledByHandledByCode": parseInt(TechnicianID),
+                        "originsDropDownOriginCode": 1,
+                        "problemTypesDropDownProblemTypeCode": parseInt(servicetypeID),
+                        "clusterHeadClusterHeadCode": parseInt(TechnicianID),
+                        "secretaryDBSecretaryCode": parseInt(secretaryID),
+                        "salesAssistantDBSalesAssistantCode": parseInt(AssistanceID),
+                        "inquiryType": "new",
+                        "subject": subject
+
+                    }
+                ]
             }
-            const URL = BASE_URL_GET + "service-call";
-            axios.post(URL, prams, {
-                headers: headers
-            })
-                .then((response) => {
-                    console.log("[s][t][a][t][u][s][]", response.status);
-                    if (response.status == 200) {
 
-                        console.log('<------ NEW SERVICE CALL UPLOAD Method --->', response.data)
-                        console.log('uplode api response',response.data[0].ErrorId);
-                        console.log('web service call id',response.data[0].ServiceCallId);
-                        if (response.data[0].ErrorId == 0) {
-                            console.log('this is if inside----');
-                            // this use fro update sync flag as 1 
-                            console.log('this is a web service call id ----',response.data[0].ServiceCallId);
-                            updateSycnServiceCAll(response.data[0].UniqueNo, (result: any) => {
+            console.log('--NEW SERVICE CALL UPLOAD JSON--', prams);
 
-                            });
-                            Update_webRefId(response.data[0].ServiceCallId,serviceId,(result: any) => {
-                                    console.log('web ref update_____'+result)
-                            });
-                        }else{
 
-                            Alert.alert(response.ErrorDescription);
+            get_ASYNC_TOCKEN().then(res => {
+                console.log('cus id--' + customerID)
+                TOCKEN_KEY = res;
+                // const AuthStr = 'Bearer '.concat(TOCKEN_KEY);
+                const AuthStr = ` Bearer ${TOCKEN_KEY}`;
+
+                const headers = {
+                    'Authorization': AuthStr
+                }
+                const URL = BASE_URL_GET + "service-call";
+                axios.post(URL, prams, {
+                    headers: headers
+                })
+                    .then((response) => {
+                        console.log("[s][t][a][t][u][s][]", response.status);
+                        if (response.status == 200) {
+
+                            console.log('<------ NEW SERVICE CALL UPLOAD Method --->', response.data)
+                            console.log('uplode api response', response.data[0].ErrorId);
+                            console.log('web service call id', response.data[0].ServiceCallId);
+                            if (response.data[0].ErrorId == 0) {
+                                console.log('this is if inside----');
+                                // this use fro update sync flag as 1 
+                                console.log('this is a web service call id ----', response.data[0].ServiceCallId);
+                                updateSycnServiceCAll(response.data[0].UniqueNo, (result: any) => {
+
+                                });
+                                Update_webRefId(response.data[0].ServiceCallId, serviceId, (result: any) => {
+                                    console.log('web ref update_____' + result)
+                                });
+                            } else {
+
+                                Alert.alert(response.ErrorDescription);
+
+                            }
+
+                        } else {
+                            Alert.alert(
+                                "Invalid Details!",
+                                "Bad Request",
+                                [
+                                    { text: "OK", onPress: () => console.log("OK Pressed") }
+                                ]
+                            );
 
                         }
 
-                    } else {
-                        Alert.alert(
-                            "Invalid Details!",
-                            "Bad Request",
-                            [
-                                { text: "OK", onPress: () => console.log("OK Pressed") }
-                            ]
-                        );
+                    })
+                    .catch((error) => {
+                        Alert.alert('error', error.response)
+                        console.log('error+++++', error);
 
-                    }
+                    })
 
-                })
-                .catch((error) => {
-                    Alert.alert('error', error.response)
-                    console.log('error+++++',error);
+            })
+        } catch (error) {
+            console.log(">>>>>>>>>>>>", error);
 
-                })
-
-        })
-    } catch (error) {
-        console.log(">>>>>>>>>>>>", error);
-
+        }
     }
-}
 
 
     const getItem = (cusCode: any) => {
@@ -710,7 +752,9 @@ const NewServiceCall = (props: any) => {
 
                 var Contact: any;
                 const data = route.params.cusList?.filter((a) => a.CusName == result[0].customer)[0];
-                console.log('<<<<<<<<<<<<<<<', data);
+                // console.log(result[0].service_web_RefID,'<<<<<<<<<<<<<<<', data);
+
+                setWebRefID(result[0].service_web_RefID);
 
                 setSelectCustomer(data.CusName);
                 setCusAddress(result[0].customer_address);
@@ -740,8 +784,9 @@ const NewServiceCall = (props: any) => {
                     console.log("set assisstanceee ............ ", resultAssisstance);
 
                     setSalesAssistance(resultAssisstance);
-                    const data = resultAssisstance?.filter((a: any) => a.name == result[0].assistance)[0];
-                    setSelectAssistance(data.name)
+                    const data = resultAssisstance?.filter((a: any) => a.user_id == result[0].AssisstanceID)[0];
+                    setSelectAssistance(data.name);
+                    setAssisstanceID(data.user_id);
                     console.log(" assisstance .........  ", data.name)
 
                 });
@@ -776,8 +821,9 @@ const NewServiceCall = (props: any) => {
 
                 getUserByTypes("Admin", (resultSecretary: any) => {
                     setSecretaryItem(resultSecretary);
-                    const data = resultSecretary?.filter((a: any) => a.name == result[0].secretary)[0];
+                    const data = resultSecretary?.filter((a: any) => a.user_id == result[0].SecretaryID)[0];
                     setSelectSecretary(data.name);
+                    setSecretaryID(data.user_id)
                     console.log(" isecretary .........  ", data.name)
                 });
 
@@ -791,8 +837,9 @@ const NewServiceCall = (props: any) => {
 
                 getUserByTypes("Technician", (resultTech: any) => {
                     setHandleBy(resultTech);
-                    const data = resultTech?.filter((a: any) => a.name == result[0].handle_by)[0];
+                    const data = resultTech?.filter((a: any) => a.user_id == result[0].TechnicianID)[0];
                     setSelectTechnician(data.name);
+                    setTechnicianID(data.user_id);
                     console.log(" handleby .........  ", data.name)
                 });
 
@@ -815,10 +862,99 @@ const NewServiceCall = (props: any) => {
                 onPress: () => console.log('Cancel Pressed'),
                 style: 'cancel',
             },
-          { text: 'OK', onPress: () => navigation.goBack(), }
+            { text: 'OK', onPress: () => navigation.goBack(), }
             // { text: 'OK', onPress: () => UploadServiceCall(), }
-            
+
         ]);
+    }
+
+    const UploadUpdates = () => {
+
+
+        try {
+
+            const prams = {
+                        "problem_type": selectServiceType,
+                        "serviceId": webRefID,
+                        "priority": selectPriority,
+                        "service_type": selectServiceType,
+                        "contact_name": contactPerson,
+                        "contact_no": contactNumber, //contactNumber.toString(),// "0769968773"
+                        "handle_by": parseInt(TechnicianID),
+                        "secretary": parseInt(secretaryID),
+                        "sales_assistance": parseInt(AssistanceID),
+                        "start_date": startDate,
+                        "end_date": endDate,
+                        "update_by": UserNameUpload,
+                        "Update_At": moment().utcOffset('+05:30').format('YYYY-MM-DD kk:mm:ss'),
+                        "handledByHandledByCode": parseInt(TechnicianID),
+                        "problemTypesDropDownProblemTypeCode": parseInt(servicetypeID),
+                        "secretaryDBSecretaryCode": parseInt(secretaryID),
+                        "salesAssistantDBSalesAssistantCode": parseInt(AssistanceID),
+                        "subject": subject
+            }
+
+            console.log('----- SERVICE CALL UPDATE UPLOAD JSON-- ----   ', prams);
+
+
+            get_ASYNC_TOCKEN().then(res => {
+                // console.log('cus id--' + customerID)
+                TOCKEN_KEY = res;
+                // const AuthStr = 'Bearer '.concat(TOCKEN_KEY);
+                const AuthStr = ` Bearer ${TOCKEN_KEY}`;
+
+                const headers = {
+                    'Authorization': AuthStr
+                }
+                const URL = BASE_URL_GET + "service-call";
+                axios.put(URL, prams, {
+                    headers: headers
+                })
+                    .then((response) => {
+                        console.log("[s][t][a][t][u][s][]", response.status);
+                        if (response.status == 200) {
+
+                            console.log('<------ NEW SERVICE CALL UPLOAD Method --->', response.data)
+                            console.log('uplode api response', response.data.ErrorId);
+                            console.log('web service call id', response.data.UniqueNo);
+                            if (response.data.ErrorId == 0) {
+                                console.log('this is if inside----');
+                                // this use fro update sync flag as 1 
+                                // console.log('this is a web service call id ----', response.data[0].ServiceCallId);
+                                updateSycnServiceCAll(serviceId, (result: any) => {
+
+                                });
+
+                            } else {
+
+                                Alert.alert(response.ErrorDescription);
+
+                            }
+
+                        } else {
+                            Alert.alert(
+                                "Invalid Details!",
+                                "Bad Request",
+                                [
+                                    { text: "OK", onPress: () => console.log("OK Pressed") }
+                                ]
+                            );
+
+                        }
+
+                    })
+                    .catch((error) => {
+                        Alert.alert('error', error.response)
+                        console.log('error+++++', error);
+
+                    })
+
+            })
+        } catch (error) {
+            console.log(">>>>>>>>>>>>", error);
+
+        }
+
     }
 
     return (
@@ -863,6 +999,7 @@ const NewServiceCall = (props: any) => {
                             inputSearchStyle={style.inputSearchStyle}
                             iconStyle={style.iconStyle}
                             data={customerList}
+                            disable={IsDesable}
                             search
                             maxHeight={300}
                             labelField="CusName"
@@ -994,6 +1131,7 @@ const NewServiceCall = (props: any) => {
                             inputSearchStyle={style.inputSearchStyle}
                             iconStyle={style.iconStyle}
                             data={itemCode}
+                            disable={IsDesable}
                             search
                             maxHeight={300}
                             labelField="ItemCode"
@@ -1050,6 +1188,7 @@ const NewServiceCall = (props: any) => {
                             inputSearchStyle={style.inputSearchStyle}
                             iconStyle={style.iconStyle}
                             data={serialNumList}
+                            disable={IsDesable}
                             search
                             maxHeight={300}
                             labelField="msnfSN"

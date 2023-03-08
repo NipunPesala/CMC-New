@@ -42,7 +42,8 @@ import axios from "axios";
 import { getTicketDetailsFromID } from "../SQLiteDatabaseAction/DBControllers/TicketController";
 import { BASE_URL_GET } from "../Constant/Commen_API_Url";
 import { getUserByTypes } from "../SQLiteDatabaseAction/DBControllers/UserController";
-import {get_ASYNC_USERID,getLoginUserName} from "../Constant/AsynStorageFuntion";
+import { get_ASYNC_USERID, getLoginUserName } from "../Constant/AsynStorageFuntion";
+import { isNetworkAvailable } from "../Constant/CommonFunctions";
 
 var selectMode: any
 var TiketID: any
@@ -81,8 +82,8 @@ const NewServiceTicket = (props: any) => {
     const [attendStatus, setAttendStatus] = useState(0);
     const routeNav = useRoute();
     var TOCKEN_KEY: any;
-    var UserIdKey:any;
-    var UserNameUpload:any;
+    var UserIdKey: any;
+    var UserNameUpload: any;
     const onChangePicker = (event, type) => {
         switch (type) {
             case "serviceCallId":
@@ -121,9 +122,9 @@ const NewServiceTicket = (props: any) => {
                 actualendtDate: '',
                 technicianID: selectAssignPersonID,
                 itemCode: ItemCode,
-                Ticket_web_RefID:0
+                Ticket_web_RefID: 0
 
-                
+
             }
         ]
         if (selectServiceCallID != null) {
@@ -175,19 +176,19 @@ const NewServiceTicket = (props: any) => {
     const update_data = (data: any) => {
         updateTicket(data, (result: any) => {
 
-            console.log(" update ticket ........ " , result);
+            console.log(" update ticket ........ ", result);
 
-            if(result === "success"){
+            if (result === "success") {
 
                 ToastAndroid.show("Ticket Update Success ", ToastAndroid.SHORT);
                 navigation.navigate('RequestDetails', { navigateId: 0 })
 
-            }else{
+            } else {
 
                 ToastAndroid.show("Ticket Update Failed ", ToastAndroid.SHORT);
             }
-            
-           
+
+
             // navigation.navigate('ServiceTicketList');
         });
     }
@@ -196,11 +197,26 @@ const NewServiceTicket = (props: any) => {
             saveTicket(data, (result: any) => {
                 if (result === "success") {
 
-                    //need check internet connection true false
-                      UploadServiceTicket();
+
+                    isNetworkAvailable((res: any) => {
+
+                        if (res) {
+
+
+                            console.log(" connected ticket  ********  " );
+                            //need check internet connection true false
+                            // UploadServiceTicket();
+
+
+                        }
+
+                        // navigation.navigate('Home');
+
+                    });
+
 
                     ToastAndroid.show("New Service Ticket Create Success ", ToastAndroid.SHORT);
-                    navigation.navigate('Home');
+                   
                 } else {
                     Alert.alert(
                         "Failed...!",
@@ -390,8 +406,8 @@ const NewServiceTicket = (props: any) => {
                 onPress: () => console.log('Cancel Pressed'),
                 style: 'cancel',
             },
-           { text: 'OK', onPress: () => navigation.goBack(), }
-        // { text: 'OK', onPress: () => UploadServiceTicket(), }
+            { text: 'OK', onPress: () => navigation.goBack(), }
+            // { text: 'OK', onPress: () => UploadServiceTicket(), }
         ]);
     }
     const getAllPriorityList = () => {
@@ -410,7 +426,7 @@ const NewServiceTicket = (props: any) => {
     const UploadServiceTicket = () => {
         try {
 
-            console.log('this is a set web ref id ++++++++++++++++++',webRefId);
+            console.log('this is a set web ref id ++++++++++++++++++', webRefId);
             console.log(" ................. selectAssignPersonID id_________ ", selectAssignPersonID);
             get_ASYNC_TOCKEN().then(res => {
                 TOCKEN_KEY = res;
@@ -422,7 +438,7 @@ const NewServiceTicket = (props: any) => {
                     "UserName": UserNameUpload,
                     "objServiceTiketList": [
                         {
-                
+
                             "UserID": UserIdKey,
                             "ticketId": TicketID,
                             "serviceId": webRefId,
@@ -432,10 +448,10 @@ const NewServiceTicket = (props: any) => {
                             "content": content,
                             "assignTo": selectAssignPerson,
                             "attend_status": attendStatus.toString(),
-                            "created_At":moment().utcOffset('+05:30').format('YYYY-MM-DD kk:mm:ss'),
+                            "created_At": moment().utcOffset('+05:30').format('YYYY-MM-DD kk:mm:ss'),
                             "assignedByMobile": 1,
-                            "assignedToMobile":selectAssignPersonID,
-                            "contactPerson":selectAssignPersonID
+                            "assignedToMobile": selectAssignPersonID,
+                            "contactPerson": selectAssignPersonID
                         }
                     ]
                 }
@@ -488,35 +504,35 @@ const NewServiceTicket = (props: any) => {
         }
     }
 
-    const getItemDetails = (SID:any) => {
+    const getItemDetails = (SID: any) => {
 
-        getServiceById(SID,(result:any) => {
+        getServiceById(SID, (result: any) => {
             setItemDescription(result[0].item_description);
             setItemCode(result[0].item_code);
-            console.log('for web ref object +++++++++++',result[0]);
-            console.log('for web fre id +++++++++++',result[0].service_web_RefID);
+            console.log('for web ref object +++++++++++', result[0]);
+            console.log('for web fre id +++++++++++', result[0].service_web_RefID);
             setWebRefId(result[0].service_web_RefID);
         });
     }
-    const getLoginUserID=()=>{
-   
+    const getLoginUserID = () => {
+
         get_ASYNC_USERID().then(res => {
             UserIdKey = res;
-            console.log('user id upload  --'+UserIdKey);
+            console.log('user id upload  --' + UserIdKey);
         })
 
         getLoginUserName().then(res => {
             UserNameUpload = res;
-            console.log('user Name --'+UserNameUpload);
+            console.log('user Name --' + UserNameUpload);
         })
 
     }
 
     const GetLastID = (id: any) => {
         var ticketID = parseInt(id) + 1;
-        var randomNum=Math.floor(Math.random()*1000)+1;
-        setTicketID("SCT_" +UserIdKey+"_"+randomNum + "_" + ticketID+"_M");
-    
+        var randomNum = Math.floor(Math.random() * 1000) + 1;
+        setTicketID("SCT_" + UserIdKey + "_" + randomNum + "_" + ticketID + "_M");
+
         //setServiceId("SC_" + moment().utcOffset('+05:30').format('YYYY-MM-DD') + "_" + serviceID);
 
     }

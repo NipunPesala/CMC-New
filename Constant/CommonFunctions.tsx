@@ -29,15 +29,16 @@ export const BackPressHandler = callback => {
 
 export const isNetworkAvailable = (callBack:any) => {
 
+  var isConnect:any;
   NetInfo.fetch().then(state => {
     console.log("Connection type", state.type);
     console.log("Is connected?", state.isConnected);
     console.log("Is connected?", state.isInternetReachable);
 
-    callBack = state.isInternetReachable;
+    isConnect = state.isInternetReachable;
   });
 
-  callBack();
+  callBack(isConnect);
 
 }
 
