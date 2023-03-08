@@ -67,6 +67,7 @@ const NewServiceTicket = (props: any) => {
     const [TicketID, setTicketID] = useState('');
     const [TextHeader, setTextHeader] = useState('');
     const [ButtonTitle, setButtonTitle] = useState('');
+    const [contactPerson, setContactPerson] = useState('');
     const [content, setContent] = useState('');
     const [itemDescription, setItemDescription] = useState('');
     const [Customer, setCustomer] = useState('');
@@ -198,23 +199,22 @@ const NewServiceTicket = (props: any) => {
                 if (result === "success") {
 
                     UploadServiceTicket();
-                    isNetworkAvailable((res: any) => {
+                    // isNetworkAvailable((res: any) => {
 
-                        if (res) {
+                    //     if (res) {
 
 
-                            console.log(" connected ticket  ********  " );
-                            //need check internet connection true false
+                    //         console.log(" connected ticket  ********  " );
+                    //         //need check internet connection true false
                             
+                    //         UploadServiceTicket();
 
+                    //     }
 
-                        }
+                    //     // navigation.navigate('Home');
 
-                        // navigation.navigate('Home');
-
-                    });
-
-
+                    // });
+                    navigation.navigate('Home');
                     ToastAndroid.show("New Service Ticket Create Success ", ToastAndroid.SHORT);
                    
                 } else {
@@ -449,9 +449,9 @@ const NewServiceTicket = (props: any) => {
                             "assignTo": selectAssignPerson,
                             "attend_status": attendStatus.toString(),
                             "created_At": moment().utcOffset('+05:30').format('YYYY-MM-DD kk:mm:ss'),
-                            "assignedByMobile": 1,
+                            "assignedByMobile": UserIdKey,
                             "assignedToMobile": selectAssignPersonID,
-                            "contactPerson": selectAssignPersonID
+                            "contactPerson": contactPerson
                         }
                     ]
                 }
@@ -516,6 +516,7 @@ const NewServiceTicket = (props: any) => {
             console.log('for web ref object +++++++++++', result[0]);
             console.log('for web fre id +++++++++++', result[0].service_web_RefID);
             setWebRefId(result[0].service_web_RefID);
+            setContactPerson(result[0].contact_name);
         });
     }
     const getLoginUserID = () => {
