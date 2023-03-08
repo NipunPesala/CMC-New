@@ -32,7 +32,7 @@ import moment from "moment";
 import { getServiceById, getServiceCallCustomer, getServiceId } from "../SQLiteDatabaseAction/DBControllers/ServiceController";
 import { Dropdown } from "react-native-element-dropdown";
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import { getLastTicketId, saveTicket, getALLTicketById, updateTicket, updateSyncServiceTicket,Update_serviceTicket_webRefId} from "../SQLiteDatabaseAction/DBControllers/TicketController";
+import { getLastTicketId, saveTicket, getALLTicketById, updateTicket, updateSyncServiceTicket, Update_serviceTicket_webRefId } from "../SQLiteDatabaseAction/DBControllers/TicketController";
 import { getAllPriority } from "../SQLiteDatabaseAction/DBControllers/PriorityController";
 import { getAllUserTypes } from "../SQLiteDatabaseAction/DBControllers/Users_TypesController";
 import Toast from 'react-native-toast-message';
@@ -49,6 +49,9 @@ var selectMode: any
 var TiketID: any
 var prority: any
 var Assistance: any
+var TOCKEN_KEY: any;
+var UserIdKey: any;
+var UserNameUpload: any;
 // const NewServiceTicket = ({ onClose, onpressclose }: ParamTypes) => {
 const NewServiceTicket = (props: any) => {
     const { navigation, route } = props;
@@ -82,9 +85,7 @@ const NewServiceTicket = (props: any) => {
     const [webRefId, setWebRefId] = useState(0);
     const [attendStatus, setAttendStatus] = useState(0);
     const routeNav = useRoute();
-    var TOCKEN_KEY: any;
-    var UserIdKey: any;
-    var UserNameUpload: any;
+
     const onChangePicker = (event, type) => {
         switch (type) {
             case "serviceCallId":
@@ -206,7 +207,7 @@ const NewServiceTicket = (props: any) => {
 
                     //         console.log(" connected ticket  ********  " );
                     //         //need check internet connection true false
-                            
+
                     //         UploadServiceTicket();
 
                     //     }
@@ -216,7 +217,7 @@ const NewServiceTicket = (props: any) => {
                     // });
                     navigation.navigate('Home');
                     ToastAndroid.show("New Service Ticket Create Success ", ToastAndroid.SHORT);
-                   
+
                 } else {
                     Alert.alert(
                         "Failed...!",
@@ -432,7 +433,7 @@ const NewServiceTicket = (props: any) => {
                 TOCKEN_KEY = res;
                 const AuthStr = 'Bearer '.concat(TOCKEN_KEY);
 
-                // console.log( 'AuthStr####3%%%%%%%%%%%%%',AuthStr);
+                console.log('AuthStr####3%%%%%%%%%%%%%', UserIdKey);
 
                 const prams = {
                     "UserName": UserNameUpload,
@@ -470,15 +471,16 @@ const NewServiceTicket = (props: any) => {
                         if (response.status == 200) {
 
                             console.log('<------ NEW SERVICE TICKET UPLOAD Method --->', response.data)
-                            console.log(response.data.UniqueNo);
+                            console.log(response.data[0].UniqueNo);
 
                             if (response.data[0].ErrorId == 0) {
                                 // this use fro update sync flag as 1 
                                 console.log('<------service ticket id  --->', response.data[0].ServiceTicketId)
-                                Update_serviceTicket_webRefId(response.data[0].ServiceTicketId,TicketID,(result: any) => {
-                                    console.log('Ticket web ref update _____'+result)
-                                     });
+                                Update_serviceTicket_webRefId(response.data[0].ServiceTicketId, TicketID, (result: any) => {
+                                    console.log('Ticket web ref update _____' + result)
+                                });
                                 updateSyncServiceTicket(TicketID, (result: any) => {
+                                    console.log("ticket sync status update --------- ", result);
 
                                 });
                                 ToastAndroid.show(response.data.ErrorDescription, ToastAndroid.LONG);
@@ -541,36 +543,16 @@ const NewServiceTicket = (props: any) => {
         //setServiceId("SC_" + moment().utcOffset('+05:30').format('YYYY-MM-DD') + "_" + serviceID);
 
     }
-    useEffect(() => {
-        selectMode = route.params.mode;
-        TiketID = route.params.ID;
-        getLoginUserID();
-        let date = moment().utcOffset('+05:30').format('YYYY-MM-DD')
-        if (route.params.mode == 0) {
-            setTextHeader('Add New Service Ticket')
-            setButtonTitle('Add')
-            getServiceCallID();
-            generateCallID();
-            getAllPriorityList();
-            setCallStartDate(date);
-            setCallEndDate(date);
-        } else {
-            setTextHeader('Update Service Ticket')
-            setButtonTitle('Update')
-            getServiceCallIDUpdate();
-        }
 
 
-    }, [])
-    useEffect(() => {
-        const focusHandler = navigation.addListener('focus', () => {
+    useFocusEffect(
+        React.useCallback(() => {
 
-            selectMode == route.params.mode;
+            selectMode = route.params.mode;
             TiketID = route.params.ID;
+            getLoginUserID();
             let date = moment().utcOffset('+05:30').format('YYYY-MM-DD')
-
             if (route.params.mode == 0) {
-
                 setTextHeader('Add New Service Ticket')
                 setButtonTitle('Add')
                 getServiceCallID();
@@ -578,9 +560,7 @@ const NewServiceTicket = (props: any) => {
                 getAllPriorityList();
                 setCallStartDate(date);
                 setCallEndDate(date);
-
             } else {
-
                 getServiceCallIDUpdate();
                 setTextHeader('Update Service Ticket')
                 setButtonTitle('Update')
@@ -595,9 +575,67 @@ const NewServiceTicket = (props: any) => {
                 }
             }
 
-        });
-        return focusHandler;
-    }, [navigation]);
+        }, [])
+    );
+
+    // useEffect(() => {
+    //     selectMode = route.params.mode;
+    //     TiketID = route.params.ID;
+    //     getLoginUserID();
+    //     let date = moment().utcOffset('+05:30').format('YYYY-MM-DD')
+    //     if (route.params.mode == 0) {
+    //         setTextHeader('Add New Service Ticket')
+    //         setButtonTitle('Add')
+    //         getServiceCallID();
+    //         generateCallID();
+    //         getAllPriorityList();
+    //         setCallStartDate(date);
+    //         setCallEndDate(date);
+    //     } else {
+    //         setTextHeader('Update Service Ticket')
+    //         setButtonTitle('Update')
+    //         getServiceCallIDUpdate();
+    //     }
+
+
+    // }, [])
+    // useEffect(() => {
+    //     const focusHandler = navigation.addListener('focus', () => {
+
+    //         selectMode == route.params.mode;
+    //         TiketID = route.params.ID;
+    //         getLoginUserID();
+    //         let date = moment().utcOffset('+05:30').format('YYYY-MM-DD')
+
+    //         if (route.params.mode == 0) {
+
+    //             setTextHeader('Add New Service Ticket')
+    //             setButtonTitle('Add')
+    //             getServiceCallID();
+    //             generateCallID();
+    //             getAllPriorityList();
+    //             setCallStartDate(date);
+    //             setCallEndDate(date);
+
+    //         } else {
+
+    //             getServiceCallIDUpdate();
+    //             setTextHeader('Update Service Ticket')
+    //             setButtonTitle('Update')
+    //             // console.log('-----service ticeket check-------');
+    //             // console.log('-----Ticket id is -------'+routeNav.params.ticketID);
+    //             // console.log('-----Ticket list length-------'+routeNav.params.tickList[0]);
+    //             if (route.params.tickList?.length > 0) {
+    //                 console.log('-----service length check-----');
+    //                 SetPreviousAddedData(routeNav.params.ticketID);
+    //             } else {
+
+    //             }
+    //         }
+
+    //     });
+    //     return focusHandler;
+    // }, [navigation]);
 
 
     // useFocusEffect(

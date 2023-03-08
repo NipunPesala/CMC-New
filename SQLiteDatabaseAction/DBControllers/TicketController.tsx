@@ -317,7 +317,7 @@ export const updateActualendDate = (ticketID:any,Sdate:any,callBack:any) => {
 
 
   export const Update_serviceTicket_webRefId = (webFef:any,serviceCallId:any,callBack:any) => {
-    // console.log('sql web ref id========='+webFef)
+    console.log('sql web ref id========='+webFef , " --------------  " , serviceCallId)
     // console.log('sql service call id========='+serviceCallId)
     DB.updateData(
       'UPDATE TICKET SET Ticket_web_RefID=? WHERE ticketId=?',
