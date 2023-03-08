@@ -981,8 +981,8 @@ const SyncScreen = (props: any) => {
         });
         setSyncArray(SyncArray1);
         setOnRefresh(true);
-          Sync_Priority();// remove priority 
-          //Sync_ServiceCall(TOCKEN_KEY);
+         // Sync_Priority();// remove priority 
+          Sync_ServiceCall(TOCKEN_KEY);
       } else if (res == 3) {
 
         arrayindex++;
@@ -993,8 +993,8 @@ const SyncScreen = (props: any) => {
         });
         setSyncArray(SyncArray1);
         setOnRefresh(true);
-        Sync_Priority(); // remove priority 
-       // Sync_ServiceCall(TOCKEN_KEY);
+       // Sync_Priority(); // remove priority 
+        Sync_ServiceCall(TOCKEN_KEY);
       }
 
     })
@@ -1010,7 +1010,7 @@ const SyncScreen = (props: any) => {
     axios.get(URL, { headers: { Authorization: AuthStr } })
       .then(response => {
         if (response.status === 200) {
-          DB_ServiceCall.saveServiceData(response.data, (res: any) => {
+          DB_ServiceCall.saveServiceData(response.data,1, (res: any) => {
 
             setOnRefresh(false);
 

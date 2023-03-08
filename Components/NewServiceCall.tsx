@@ -328,7 +328,7 @@ const NewServiceCall = (props: any) => {
         // console.log("**************", data);
         // console.log("**************", JSON.stringify(data));
         try {
-            saveServiceData(data, (result: any) => {
+            saveServiceData(data,0, (result: any) => {
                 // console.log(result, "NEWSERVICE_CALL_SAVE");
 
                 if (result === "success") {
