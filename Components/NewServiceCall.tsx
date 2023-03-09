@@ -735,36 +735,9 @@ const NewServiceCall = (props: any) => {
         try {
             getServiceById(id, (result: any) => {
                 console.log('cus list length ---------------', result);
-                // console.log("####", serviceType);
+                console.log('cus no ---------------', result[0].start_date);
 
-                // [{ "SecretaryID": 244894, "Syncstatus": "0", "TechnicianID": 627517,    , , "customer": " The Colombo Ice Company Pvt Ltd", "customerID": " COLOMBO ICE CO", "customer_address": "117 Sir Chittampalam A Gardiner Mawatha,Colombo 2", "end_date": "2023-03-02", "handle_by": "Dasun", "itemID": " DOM/G20I K2138J1P078N150", "item_code": " DOM/G20I K2138J1P078N150", "item_description": " Domino G20i Printer K2138J1P078N150", "priority": "Low", "secretary": "Manjari", "serialNumber": "K2138J1P078N150", "serviceId": "SC_2023-02-27_1", "service_type": "Electric", "start_date": "2023-02-27", "status": "0", "subject": "yyyyyy"}]
-
-                //  [{"typeId": 1, "typeName": "Mechanical"}, {"typeId": 2, "typeName": "Electrical"}, {"typeId": 3, "typeName": "Replacement"},
-                // {"typeId": 4, "typeName": "Service"}, {"typeId": 5, "typeName": "Other"}]
-
-                // console.log('cus list length ----', route.params.cusList.length);
-                // console.log('*******',customerList?.filter(a => a.CusName == result[0].customer),);
-                //setSelectCustomer(customerList?.filter((a)=> a.CusName == result[0].customer)[0]);
-
-                var Contact: any;
-                const data = route.params.cusList?.filter((a) => a.CusName == result[0].customer)[0];
-                // console.log(result[0].service_web_RefID,'<<<<<<<<<<<<<<<', data);
-
-                setWebRefID(result[0].service_web_RefID);
-
-                setSelectCustomer(data.CusName);
-                setCusAddress(result[0].customer_address);
-
-                setItemDescription(result[0].item_description);
-                // setContactPerson(result[0].contact_name);
                 let number = "0" + result[0].contact_no;
-                // console.log(number.length, '>>>>>>>>>>>>>>>>>>>>>');
-                // if(result[0].contact_no.length){
-                //     Contact = "0"+result[0].contact_no
-
-                //     console.log(Contact,'>>>>>>>>>>>>2222>>>>>>>>>');
-
-                // }
                 setContactNumber(number);
                 setSubject(result[0].subject);
                 setStartDate(result[0].start_date);
@@ -775,6 +748,16 @@ const NewServiceCall = (props: any) => {
                 setApproveStatus(result[0].Approve_status);
                 setServiceTypeID(result[0].service_typeID);
 
+                setWebRefID(result[0].service_web_RefID);
+
+                setCusAddress(result[0].customer_address);
+
+                setItemDescription(result[0].item_description);
+                // setContactPerson(result[0].contact_name);
+              
+                console.log(number.length, '>>>>>>>>>>>>>>>>>>>>>');
+        
+              
                 getUserByTypes("Sales Executive", (resultAssisstance: any) => {
 
                     console.log("set assisstanceee ............ ", resultAssisstance);
@@ -806,13 +789,7 @@ const NewServiceCall = (props: any) => {
 
                 // });
 
-                console.log(" item count ....1111111.....  ", data.CusID)
-                getAllCustomerVsItems(data.CusID, (resultitem: any) => {
-                    setItemCode(resultitem);
-                    const data = resultitem?.filter((a: any) => a.ItemCode == result[0].item_code)[0];
-                    setSelectItemCode(data.ItemCode)
-                    console.log(" item count .........  ", data.ItemCode)
-                });
+              
 
 
                 getUserByTypes("Admin", (resultSecretary: any) => {
@@ -828,6 +805,8 @@ const NewServiceCall = (props: any) => {
 
                     setSerialNumList(resultSerial);
                     const data = resultSerial?.filter((a: any) => a.msnfSN == result[0].serialNumber)[0];
+                    console.log("serial number ---------" , result[0].item_code);
+                    
                     setSelectSerialNum(data.msnfSN);
                 });
 
@@ -839,10 +818,19 @@ const NewServiceCall = (props: any) => {
                     console.log(" handleby .........  ", data.name)
                 });
 
-                // getAllContactPerson((result1: any) => {
-                //     const data = result1?.filter((a: any) => a.name == result[0].contact_name)[0];
-                //     setContactPerson(data.name);
-                // });
+
+                const data = route.params.cusList?.filter((a) => a.CusName == result[0].customer)[0];
+
+                console.log(" item count ....1111111.....  ", data.CusID)
+                getAllCustomerVsItems(data.CusID, (resultitem: any) => {
+                    setItemCode(resultitem);
+                    const data = resultitem?.filter((a: any) => a.ItemCode == result[0].item_code)[0];
+                    setSelectItemCode(data.ItemCode)
+                    console.log(" item count .........  ", data.ItemCode)
+                });
+
+                setSelectCustomer(data.CusName);
+            
             });
             // setloandingspinner(false);
         } catch (error) {
@@ -1225,7 +1213,7 @@ const NewServiceCall = (props: any) => {
                         placeholderColor={comStyles.COLORS.HEADER_BLACK}
                         style={comStyles.serviceTicketInput}
                         stateValue={String(contactPerson)}
-                        max={10}
+                        max={30}
                         setState={setContactPerson}
                     />
 

@@ -85,7 +85,7 @@ const NewServiceTicket = (props: any) => {
     const [ItemCode, setItemCode] = useState('');
     const [webRefId, setWebRefId] = useState(0);
     const [attendStatus, setAttendStatus] = useState(0);
-    const [isDesable, setIsDesable] = useState(true);
+    const [isDesable, setIsDesable] = useState(false);
     const routeNav = useRoute();
 
     const onChangePicker = (event, type) => {

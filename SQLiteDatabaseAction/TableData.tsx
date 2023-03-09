@@ -381,14 +381,14 @@ export const tableData = [
         dataType: 'TEXT',
         isPrimaryKey: false,
         autoIncrement: false,
-        shouldNotAllowNull: true,
+        shouldNotAllowNull: false,
       },
       {
         name: 'content',
         dataType: 'TEXT',
         isPrimaryKey: false,
         autoIncrement: false,
-        shouldNotAllowNull: true,
+        shouldNotAllowNull: false,
       },
       {
         name: 'assignTo',
@@ -437,7 +437,7 @@ export const tableData = [
         dataType: 'TEXT',
         isPrimaryKey: false,
         autoIncrement: false,
-        shouldNotAllowNull: true,
+        shouldNotAllowNull: false,
       },
       {
         name: 'cusNic',

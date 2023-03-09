@@ -82,7 +82,15 @@ export const saveServiceData = (data: any, type: any, callBack: any) => {
   } else if (type == 1) {
     // web service calls
     console.log('web service call+++++++++++');
+    var start;
+    var end;
     for (let i = 0; i < data.length; ++i) {
+
+      start = data[i].PlanedStartDateTime.split("T")[0];// done 
+      end = data[i].PlanedEndDateTime.split("T")[0]; // done
+
+      console.log(" split start  --------  " , start);
+      
 
       DB.indateData(
         [
@@ -108,8 +116,8 @@ export const saveServiceData = (data: any, type: any, callBack: any) => {
               data[i].secretaryUserId,//done
               data[i].SalesAssistant,
               data[i].SalesAssistant,//done
-              data[i].PlanedStartDateTime,// done 
-              data[i].PlanedEndDateTime, // done
+              start,// done 
+              end, // done
               data[i].CreatedBy,
               data[i].IsApprovedBy, //done
               data[i].StatusId,
