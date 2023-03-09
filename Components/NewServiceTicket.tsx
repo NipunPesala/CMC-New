@@ -359,6 +359,8 @@ const NewServiceTicket = (props: any) => {
     const getServiceCallID = () => {
         getServiceId((result: any) => {
             setserviceCallIdList(result);
+            console.log(" Call List ------------------- [][][]  " , result);
+            
         });
     }
     const generateCallID = () => {
