@@ -210,7 +210,7 @@ const Home = () => {
     getServiceCalls(status, (result: any) => {
       setRecievedServiceCallList(result);
       // const serviceArray: any[] = [];
-      // console.log(" list size ............  ", result.length);
+      console.log(" list size ............  ", result[0]);
 
       // for (let i = 0; i < result.length; ++i) {
 

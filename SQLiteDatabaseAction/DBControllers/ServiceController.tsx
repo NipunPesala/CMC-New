@@ -92,12 +92,12 @@ export const saveServiceData = (data:any,type: any, callBack:any) => {
         subject, handle_by, TechnicianID,secretary, SecretaryID,assistance,AssisstanceID,start_date, end_date, created_by,Approve_status,Attend_status,status,CreateAt,Syncstatus,itemID,customerID,serialNumber,service_web_RefID,service_typeID`,
           values: '?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?',
           params: [
-            data[i].ServiceCallId, //mobille service call id 
+            data[i].ServiceCallNumber, //mobille service call id 
             data[i].Priority, //done
-            data[i].type,
+            data[i].ProblemType,
             data[i].ItemCode,//done
             data[i].item_description,
-            data[i].customer,
+            data[i].CustomerCode,
             data[i].customer_address,
             data[i].ContactPerson,//done
             data[i].TelephoneNumber,//
