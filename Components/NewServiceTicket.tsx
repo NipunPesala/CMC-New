@@ -182,6 +182,7 @@ const NewServiceTicket = (props: any) => {
 
             console.log(" update ticket ........ ", result);
 
+
             if (result === "success") {
 
 
@@ -322,7 +323,7 @@ const NewServiceTicket = (props: any) => {
             getALLTicketById(TiketID, (result: any) => {
                 for (let i = 0; i < result.length; ++i) {
 
-                    console.log(result[i]);
+                    // console.log(result[i]);
 
                     setselectServiceCallID(result[i].serviceId)
                     prority = result[i].priority;
@@ -359,7 +360,7 @@ const NewServiceTicket = (props: any) => {
     const getServiceCallID = () => {
         getServiceId((result: any) => {
             setserviceCallIdList(result);
-            console.log(" Call List ------------------- [][][]  " , result);
+            // console.log(" Call List ------------------- [][][]  " , result);
             
         });
     }
@@ -481,14 +482,6 @@ const NewServiceTicket = (props: any) => {
                                     console.log("ticket sync status,web ref update --------- ", result);
 
                                 });
-                                // updateSyncServiceTicket(TicketID, (result: any) => {
-                                //     console.log("ticket sync status update --------- ", result);
-
-                                // });
-
-                                // Update_serviceTicket_webRefId(response.data[0].ServiceTicketId, TicketID, (result: any) => {
-                                //     console.log('Ticket web ref update _____' + result)
-                                // });
 
                             }
 
@@ -730,7 +723,8 @@ const NewServiceTicket = (props: any) => {
                 }
             ]
 
-            console.log('--NEW SERVICE TICKET UPLOAD JSON--', prams);
+
+            console.log('--UPDATE SERVICE TICKET UPLOAD JSON--', prams);
 
             get_ASYNC_TOCKEN().then(res => {
                 TOCKEN_KEY = res;
@@ -759,7 +753,7 @@ const NewServiceTicket = (props: any) => {
 
                                 });
 
-                                ToastAndroid.show(response.data.ErrorDescription, ToastAndroid.LONG);
+                                // ToastAndroid.show(response.data.ErrorDescription, ToastAndroid.LONG);
                             }
 
                         } else {
@@ -775,14 +769,16 @@ const NewServiceTicket = (props: any) => {
 
                     })
                     .catch((error) => {
-                        Alert.alert('error', error.response)
+                        Alert.alert('error', error.response);
+                        navigation.navigate('Home');
 
                     })
 
             })
         } catch (error) {
             console.log(">>>>>>>>>>>>", error);
-
+            Alert.alert('Failed !', "Upload Failed")
+            navigation.navigate('Home');
         }
 
 

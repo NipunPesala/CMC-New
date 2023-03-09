@@ -105,7 +105,7 @@ const RequestDetails = (props: any) => {
             enableServiceCall(sid, 1, (result: any) => {
 
 
-                console.log('---------------------', result);
+                // console.log('---------------------', result);
 
 
                 if (result === "success") {

@@ -306,7 +306,7 @@ export const updateActualendDate = (ticketID:any,Sdate:any,callBack:any) => {
   };
   //====================================================
   export const updateSyncServiceTicket = (ticketID:any,callBack:any) => {
-    var status = "1";
+    var status = 1;
     DB.updateData(
       'UPDATE TICKET SET syncStatus=? WHERE ticketId=?',
       [status,ticketID],

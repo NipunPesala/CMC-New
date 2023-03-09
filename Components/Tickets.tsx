@@ -69,7 +69,7 @@ const Tickets = ({ btnEnable }: ParamTypes) => {
         getTicketByServiceId(id, (result: any) => {
 
 
-            console.log('=====================================',result);
+            // console.log('=====================================',result);
             
            
 
@@ -84,13 +84,13 @@ const Tickets = ({ btnEnable }: ParamTypes) => {
                     setatt_status("Open");
                     ticketStatus = "Open";
                     AsyncStorage.getItem('UserType').then((value)=>{
-                        console.log('this is a user type+++++++++++++',value);
+                        // console.log('this is a user type+++++++++++++',value);
                         if(value=='Technician'){
-                            console.log('----------111111111111');
+                            // console.log('----------111111111111');
                             
                             setenableStatusUpdate(true);
                         }else{
-                            console.log('----------22222222222');
+                            // console.log('----------22222222222');
                             setenableStatusUpdate(false);
                         }
                        
@@ -111,7 +111,7 @@ const Tickets = ({ btnEnable }: ParamTypes) => {
                 }
 
 
-                console.log(att_status,'---------1111--------------------------',enableStatusUpdate);
+                // console.log(att_status,'---------1111--------------------------',enableStatusUpdate);
                 
                 checkstatusNum == result[i].status
                 if (result[i].status === "0") {
@@ -135,7 +135,7 @@ const Tickets = ({ btnEnable }: ParamTypes) => {
                     }
                 );
 
-                console.log(ticketArray,'?????????????????????????????');
+                // console.log(ticketArray,'?????????????????????????????');
                 
 
             }
