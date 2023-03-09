@@ -1,45 +1,111 @@
 import * as DB from '../DBService';
 
-export const saveTicket = (data:any, callBack:any) => {
-    for (let i = 0; i < data.length; ++i) {
-        DB.indateData(
-            [
-                {
-                    table: 'TICKET',
-                    columns: `ticketId,serviceId,startDate,endDate,itemDescription,content,assignTo,technicianID,priority,attend_status,status,engRemark,cusNic,cusRemark,signatureStatus,syncStatus,actualstartDate,actualendtDate,itemCode,Ticket_web_RefID`,
-                    values: '?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?',
-                    params: [
-                        data[i].ticketId,
-                        data[i].serviceId,
-                        data[i].startDate,
-                        data[i].endDate,
-                        data[i].itemDescription,
-                        data[i].content,
-                        data[i].assignTo,
-                        data[i].technicianID,
-                        data[i].priority,
-                        data[i].attend_status,
-                        data[i].status,
-                        data[i].engRemark,
-                        data[i].cusNic,
-                        data[i].cusRemark,
-                        data[i].signatureStatus,
-                        data[i].syncStatus,
-                        data[i].actualstartDate,
-                        data[i].actualendtDate,
-                        data[i].itemCode,
-                        data[i].Ticket_web_RefID,
-                    ],
-                    primaryKey: 'ticketId',
-                   
+export const saveTicket = (data:any,type:any, callBack:any) => {
+    var response: any;
+    if (type==0){
+
+        for (let i = 0; i < data.length; ++i) {
+            DB.indateData(
+                [
+                    {
+                        table: 'TICKET',
+                        columns: `ticketId,serviceId,startDate,endDate,itemDescription,content,assignTo,technicianID,priority,attend_status,status,engRemark,cusNic,cusRemark,signatureStatus,syncStatus,actualstartDate,actualendtDate,itemCode,Ticket_web_RefID`,
+                        values: '?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?',
+                        params: [
+                            data[i].ticketId,
+                            data[i].serviceId,
+                            data[i].startDate,
+                            data[i].endDate,
+                            data[i].itemDescription,
+                            data[i].content,
+                            data[i].assignTo,
+                            data[i].technicianID,
+                            data[i].priority,
+                            data[i].attend_status,
+                            data[i].status,
+                            data[i].engRemark,
+                            data[i].cusNic,
+                            data[i].cusRemark,
+                            data[i].signatureStatus,
+                            data[i].syncStatus,
+                            data[i].actualstartDate,
+                            data[i].actualendtDate,
+                            data[i].itemCode,
+                            data[i].Ticket_web_RefID,
+                        ],
+                        primaryKey: 'ticketId',
+                       
+                    },
+                ],
+                (res:any, err:any) => {
+                    console.log(err , " ___________________ " , res);
+                    
+                    callBack(res, err);
                 },
-            ],
-            (res:any, err:any) => {
-                console.log(err , " ___________________ " , res);
-                
-                callBack(res, err);
-            },
-        );
+            );
+        }
+
+    }else if(type==1){
+        console.log('thi is a sync------------')
+        for (let i = 0; i < data.length; ++i) {
+            DB.indateData(
+                [
+                    {
+                        table: 'TICKET',
+                        columns: `ticketId,serviceId,startDate,endDate,itemDescription,content,assignTo,technicianID,priority,attend_status,status,engRemark,cusNic,cusRemark,signatureStatus,syncStatus,actualstartDate,actualendtDate,itemCode,Ticket_web_RefID`,
+                        values: '?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?',
+                        params: [
+                            data[i].ticketId, // need to change done
+                            data[i].serviceId,
+                            data[i].PlannedStartDate,// done 
+                            data[i].PlannedEndDate, //done
+                            data[i].itemDescription,
+                            data[i].Content,// done 
+                            data[i].AssignedTo,//done
+                            data[i].handledByUserId,//done
+                            data[i].priority,
+                            data[i].StatusId,//attend_status
+                            data[i].Status,//done
+                            data[i].engRemark,
+                            data[i].cusNic,
+                            data[i].cusRemark,
+                            data[i].signatureStatus,
+                            data[i].syncStatus,
+                            data[i].ActualStartDate, //done
+                            data[i].ActualEndDate, //done
+                            data[i].itemCode,
+                            data[i].TicketId,//done
+                        ],
+                        primaryKey: 'ticketId',
+                       
+                    },
+                ],
+                (res:any, err:any) => {
+                    if (res === 'success') {
+
+                        if (i + 1 == data.length) {
+                            response = 3;
+            
+                            callBack(response);
+                            console.log(" done unaaaaaaaa");
+                        } else if (i == 0) {
+            
+                            response = 1;
+                            callBack(response);
+                            console.log(" first time .....");
+                        }
+            
+            
+                    } else {
+                        // response =false;
+                        response = 2;
+                        callBack(response);
+                    }
+                    callBack(res, err);
+                },
+            );
+        }
+
     }
 };
 

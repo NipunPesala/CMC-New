@@ -105,8 +105,8 @@ export const saveServiceData = (data: any, type: any, callBack: any) => {
               data[i].ProblemType,
               data[i].ItemCode,//done
               data[i].item_description,
-              data[i].CustomerCode,
-              data[i].customer_address,
+              data[i].CustomerName,
+              data[i].CustomerAddress,
               data[i].ContactPerson,//done
               data[i].TelephoneNumber,//
               data[i].Subject,

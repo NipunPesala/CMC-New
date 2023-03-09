@@ -18,7 +18,7 @@ import ComStyles from "../../Constant/Components.styles";
 import SyncStyle from './SyncStyle';
 import axios from 'axios';
 import AsyncStorageConstants from '../../Constant/AsyncStorageConstants';
-
+import * as DB_ServiceTicket from '../../SQLiteDatabaseAction/DBControllers/TicketController';
 import { BASE_URL_GET } from '../../Constant/Commen_API_Url';
 import { get_ASYNC_TOCKEN } from '../../Constant/AsynStorageFuntion';
 import * as DB_Customer from '../../SQLiteDatabaseAction/DBControllers/CustomerController';
@@ -1035,7 +1035,8 @@ const SyncScreen = (props: any) => {
               });
               setSyncArray(SyncArray1);
               setOnRefresh(true);
-              Sync_Priority();
+              //Sync_Priority();
+              Sync_Service_ticket(TOCKEN_KEY)
 
             } else if (res == 3) {
 
@@ -1043,6 +1044,90 @@ const SyncScreen = (props: any) => {
 
               SyncArray1.push({
                 name: 'Service Call Download Sucsessfully...',
+                id: arrayindex,
+              });
+              setSyncArray(SyncArray1);
+              setOnRefresh(true);
+              //Sync_Priority();
+              Sync_Service_ticket(TOCKEN_KEY)
+            }
+          });
+        } else {
+          console.log('fails');
+
+          setOnRefresh(false);
+
+          arrayindex++;
+
+          SyncArray1.push({
+            name: 'Service Call  Download Failed...',
+            id: arrayindex,
+          });
+          setSyncArray(SyncArray1);
+          setOnRefresh(true);
+        //  Sync_Priority();
+        Sync_Service_ticket(TOCKEN_KEY)
+        }
+      })
+      .catch((error) => {
+
+        setOnRefresh(false);
+
+        arrayindex++;
+        SyncArray1.push({
+          name: 'Service Call Download Failed...',
+          id: arrayindex,
+        });
+        setSyncArray(SyncArray1);
+        console.log('errorrrrr ' + error);
+        setOnRefresh(true);
+        //Sync_Priority();
+        Sync_Service_ticket(TOCKEN_KEY)
+      });
+
+  }
+  //--------------------------------Download ticket----------------------------------
+  const Sync_Service_ticket = (Key: any) => {
+    console.log('this is a sync_servic ticket ')
+    const AuthStr = 'Bearer '.concat(Key);
+    const URL = GET_URL + "service-call/service-ticket";
+    axios.get(URL, { headers: { Authorization: AuthStr } })
+      .then(response => {
+        if (response.status === 200) {
+         // console.log('ticket responce data------------ ',response.data.);
+          DB_ServiceTicket.saveTicket(response.data,1, (res: any) => {
+
+            setOnRefresh(false);
+
+            if (res == 1) {
+              arrayindex++;
+
+              SyncArray1.push({
+                name: 'Service Ticket Downloading...',
+                id: arrayindex,
+              });
+              setSyncArray(SyncArray1);
+              setOnRefresh(true);
+      
+
+            } else if (res == 2) {
+
+              arrayindex++;
+
+              SyncArray1.push({
+                name: 'Service Ticket Download Failed...',
+                id: arrayindex,
+              });
+              setSyncArray(SyncArray1);
+              setOnRefresh(true);
+              Sync_Priority();
+
+            } else if (res == 3) {
+
+              arrayindex++;
+
+              SyncArray1.push({
+                name: 'Service Ticket Download Sucsessfully...',
                 id: arrayindex,
               });
               setSyncArray(SyncArray1);
@@ -1058,7 +1143,7 @@ const SyncScreen = (props: any) => {
           arrayindex++;
 
           SyncArray1.push({
-            name: 'Tool Download Failed...',
+            name: 'Ticket Download Failed...',
             id: arrayindex,
           });
           setSyncArray(SyncArray1);
@@ -1072,7 +1157,7 @@ const SyncScreen = (props: any) => {
 
         arrayindex++;
         SyncArray1.push({
-          name: 'Tool Download Failed...',
+          name: 'Ticket Download Failed...',
           id: arrayindex,
         });
         setSyncArray(SyncArray1);
@@ -1082,6 +1167,7 @@ const SyncScreen = (props: any) => {
       });
 
   }
+
 
   //-------------------------------- Download Priority -----------------------------
   const Sync_Priority = () => {

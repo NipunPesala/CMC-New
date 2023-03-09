@@ -201,7 +201,7 @@ const NewServiceTicket = (props: any) => {
     }
     const save_data = (data: any) => {
         try {
-            saveTicket(data, (result: any) => {
+            saveTicket(data,0, (result: any) => {
                 if (result === "success") {
 
                     UploadServiceTicket();
