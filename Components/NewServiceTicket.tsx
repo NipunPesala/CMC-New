@@ -32,7 +32,7 @@ import moment from "moment";
 import { getServiceById, getServiceCallCustomer, getServiceId } from "../SQLiteDatabaseAction/DBControllers/ServiceController";
 import { Dropdown } from "react-native-element-dropdown";
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import { getLastTicketId, saveTicket, getALLTicketById, updateTicket, updateSyncServiceTicket, Update_serviceTicket_webRefId } from "../SQLiteDatabaseAction/DBControllers/TicketController";
+import { getLastTicketId, saveTicket, getALLTicketById, updateTicket, updateSyncServiceTicket, Update_serviceTicket_webRefId, updateUploadedServiceTicket } from "../SQLiteDatabaseAction/DBControllers/TicketController";
 import { getAllPriority } from "../SQLiteDatabaseAction/DBControllers/PriorityController";
 import { getAllUserTypes } from "../SQLiteDatabaseAction/DBControllers/Users_TypesController";
 import Toast from 'react-native-toast-message';
@@ -206,7 +206,7 @@ const NewServiceTicket = (props: any) => {
                     UploadServiceTicket();
 
                     navigation.navigate('Home');
-                    // ToastAndroid.show("New Service Ticket Create Success ", ToastAndroid.SHORT);
+                    ToastAndroid.show("New Service Ticket Create Success ", ToastAndroid.SHORT);
 
                 } else {
                     Alert.alert(
@@ -477,16 +477,19 @@ const NewServiceTicket = (props: any) => {
                                 // this use fro update sync flag as 1 
                                 console.log('<------service ticket id  --->', response.data[0].ServiceTicketId)
 
-                                updateSyncServiceTicket(TicketID, (result: any) => {
-                                    console.log("ticket sync status update --------- ", result);
+                                updateUploadedServiceTicket(TicketID, response.data[0].ServiceTicketId,(result: any) => {
+                                    console.log("ticket sync status,web ref update --------- ", result);
 
                                 });
+                                // updateSyncServiceTicket(TicketID, (result: any) => {
+                                //     console.log("ticket sync status update --------- ", result);
 
-                                Update_serviceTicket_webRefId(response.data[0].ServiceTicketId, TicketID, (result: any) => {
-                                    console.log('Ticket web ref update _____' + result)
-                                });
+                                // });
 
-                                ToastAndroid.show(response.data.ErrorDescription, ToastAndroid.LONG);
+                                // Update_serviceTicket_webRefId(response.data[0].ServiceTicketId, TicketID, (result: any) => {
+                                //     console.log('Ticket web ref update _____' + result)
+                                // });
+
                             }
 
                         } else {
@@ -502,7 +505,9 @@ const NewServiceTicket = (props: any) => {
 
                     })
                     .catch((error) => {
-                        Alert.alert('error', error.response)
+                        console.log( "error .........", error);
+                        
+                        Alert.alert('error', error)
 
                     })
 

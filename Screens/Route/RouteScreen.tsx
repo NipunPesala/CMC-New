@@ -10,7 +10,6 @@ import {
     TouchableOpacity,
     FlatList,
     Dimensions,
-    AsyncStorage,
     Animated,
     Alert,
     Keyboard,
@@ -28,6 +27,7 @@ import moment from "moment";
 import { RequestBydateRangeRoute, RequestBydateRoute } from "../../SQLiteDatabaseAction/DBControllers/ServiceController";
 import AsyncStorageConstants from "../../Constant/AsyncStorageConstants";
 import DateRangePicker from "rn-select-date-range";
+import AsyncStorage from "@react-native-community/async-storage";
 
 let height = Dimensions.get("screen").height;
 

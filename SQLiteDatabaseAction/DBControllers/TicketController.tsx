@@ -316,6 +316,17 @@ export const updateActualendDate = (ticketID:any,Sdate:any,callBack:any) => {
     );
   };
 
+  export const updateUploadedServiceTicket = (ticketID:any,webFef:any,callBack:any) => {
+    var status = 1;
+    DB.updateData(
+      'UPDATE TICKET SET syncStatus=?, Ticket_web_RefID=? WHERE ticketId=?',
+      [status,webFef,ticketID],
+      (resp:any, err:any) => {
+        callBack(resp, err);
+      },
+    );
+  };
+
 
   export const Update_serviceTicket_webRefId = (webFef:any,serviceCallId:any,callBack:any) => {
     console.log('sql web ref id========='+webFef , " --------------  " , serviceCallId)
