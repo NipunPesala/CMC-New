@@ -250,6 +250,16 @@ export const updateServiceCAll = (serviceId: any, status: any, callBack: any) =>
   );
 };
 
+export const getWebRefIDServiceCAll = (serviceId: any, callBack: any) => {
+  DB.searchData(
+    'SELECT service_web_RefID FROM SERVICE WHERE serviceId=?',
+    [serviceId],
+    (resp: any, err: any) => {
+      callBack(resp, err);
+    },
+  );
+};
+
 
 
 export const enableServiceCall = (serviceId: any, status: any, callBack: any) => {

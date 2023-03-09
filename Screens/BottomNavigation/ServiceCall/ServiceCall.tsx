@@ -28,14 +28,22 @@ import style from "./style";
 import { serviceData } from '../../../Constant/DummyData'
 import ServiceListComponent from "../../../Components/ServiceListComponent";
 import ActinModalCmponent from "../../../Components/ActionModalComponent";
-import { getServiceById, getServiceCalls, saveServiceData, updateServiceCAll } from "../../../SQLiteDatabaseAction/DBControllers/ServiceController";
+import { getServiceById, getServiceCalls, getWebRefIDServiceCAll, saveServiceData, updateServiceCAll } from "../../../SQLiteDatabaseAction/DBControllers/ServiceController";
 import ListBox from "../../../Components/ListBox";
 import AsyncStorage from "@react-native-community/async-storage";
 import AsyncStorageConstants from "../../../Constant/AsyncStorageConstants";
 import RNRestart from 'react-native-restart';
 import { getAllCustomers } from "../../../SQLiteDatabaseAction/DBControllers/CustomerController";
+import { getLoginUserName, get_ASYNC_TOCKEN, get_ASYNC_USERID } from "../../../Constant/AsynStorageFuntion";
+import moment from "moment";
+import { BASE_URL_GET } from "../../../Constant/Commen_API_Url";
+import axios from "axios";
 
 let height = Dimensions.get("screen").height;
+
+var UserNameUpload: any;
+var UserIdUpload: any;
+var TOCKEN_KEY: any;
 
 const ServiceCall = () => {
     const navigation = useNavigation();
@@ -64,6 +72,7 @@ const ServiceCall = () => {
     const [selectCustomer, setSelectCustomer] = useState('');
     const [userLavelUpdate, setUserLavelUpdate] = useState(true);
     const [enableUpdate, setenableUpdate] = useState(true);
+    const [webRefID, setWebRefID] = useState('');
 
     const [customerList, setCustomerList] = useState([]);
     const route = useRoute();
@@ -84,6 +93,21 @@ const ServiceCall = () => {
 
     }
 
+    const getLoginUserNameForUplode = () => {
+        getLoginUserName().then(res => {
+            UserNameUpload = res;
+            console.log('user Name --' + UserNameUpload);
+        })
+        get_ASYNC_USERID().then(res => {
+            UserIdUpload = res;
+            console.log('user id upload  --' + UserIdUpload);
+        })
+
+
+
+    }
+
+
     const getUserType = async () => {
 
 
@@ -93,7 +117,7 @@ const ServiceCall = () => {
                 setUserLavelUpdate(false);
             } else {
 
-                    setUserLavelUpdate(true);
+                setUserLavelUpdate(true);
 
             }
 
@@ -108,7 +132,7 @@ const ServiceCall = () => {
         getServiceCall(0);
         // navigation.navigate('ServiceCall');
 
-       
+
     }
     const ConfirmPressed = () => {
         setRecieve(false);
@@ -116,7 +140,7 @@ const ServiceCall = () => {
         getServiceCall(1);
         // setlistdata(serviceData);
         // navigation.navigate('ServiceCall');
-        
+
     }
 
     const slideInModal = () => {
@@ -148,30 +172,20 @@ const ServiceCall = () => {
 
         // getServiceData();
 
+     
+        const prams = [
+            {
+                "UserName": UserNameUpload,
+                "UserID": UserIdUpload,
+                "serviceId": webRefID,
+                "Approve_status": status,
+                "created_At": moment().utcOffset('+05:30').format('YYYY-MM-DD kk:mm:ss'),
+            }
+        ]
 
-        // const updateData = [
-        //     {
-        //         serviceId: serviceID,
-        //         item_code: itemCode,
-        //         item_description: itemDescription,
-        //         customer_address: cusAddress,
-        //         contact_name: contactPerson,
-        //         contact_no: contactNumber,
-        //         subject: subject,
-        //         handle_by: selectTechnician,
-        //         salesAssistance: selectAssistance,
-        //         startDate: startDate,
-        //         endDate: endDate,
-        //         priority: selectPriority,
-        //         type: selectServiceType,
-        //         secretary: selectSecretary,
-        //         attend_status: '1',
-        //         status: 'false',
-        //         customer: selectCustomer,
-        //         created_by: '1',
-
-        //     }
-        // ]
+        
+        console.log(" --- [][][][][][] APPROVE SC JSON --------------  " , prams);
+        
 
 
         try {
@@ -180,6 +194,62 @@ const ServiceCall = () => {
                 // console.log(result, "/////////////......................//////////");
 
                 if (result === "success") {
+
+                    // ----------------- UPLOAD APPROVE STATUS ---------------------------
+
+                    get_ASYNC_TOCKEN().then(res => {
+                        // console.log('cus id--' + customerID)
+                        TOCKEN_KEY = res;
+                        const AuthStr = ` Bearer ${TOCKEN_KEY}`;
+        
+                        const headers = {
+                            'Authorization': AuthStr
+                        }
+                        const URL = BASE_URL_GET + "service-call/approve-status";
+                        axios.put(URL, prams, {
+                            headers: headers
+                        })
+                            .then((response) => {
+                                console.log("[s][t][a][t][u][s][]", response.status);
+                                if (response.status == 200) {
+        
+                                    console.log('<------  SERVICE CALL APPROVE UPLOAD Method --->', response.data)
+                                    // console.log('uplode api response', response.data.ErrorId);
+                                    // console.log('web service call id', response.data.UniqueNo);
+                                    if (response.data.ErrorId == 0) {
+                                        console.log('this is if inside----');
+                                        // this use fro update sync flag as 1 
+                                        // console.log('this is a web service call id ----', response.data[0].ServiceCallId);
+        
+                                    } else {
+        
+                                        Alert.alert(response.data.ErrorDescription);
+        
+                                    }
+        
+                                } else {
+                                    Alert.alert(
+                                        "Invalid Details!",
+                                        "Bad Request",
+                                        [
+                                            { text: "OK", onPress: () => console.log("OK Pressed") }
+                                        ]
+                                    );
+        
+                                }
+        
+                            })
+                            .catch((error) => {
+                                Alert.alert('error', error.response)
+                                console.log('error+++++', error);
+        
+                            })
+        
+                    })
+
+
+
+                    // ----------------- UPLOAD APPROVE STATUS ---------------------------
 
 
                     if (status === 1) {
@@ -240,6 +310,12 @@ const ServiceCall = () => {
 
         setSeviceID(ID);
         // console.log(service_id, "  ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,, ");
+
+        getWebRefIDServiceCAll(ID,(res:any) => {
+            // console.log("web ref id -------------", res[0].service_web_RefID);
+            setWebRefID(res[0].service_web_RefID);
+ 
+        });
 
 
         slideInModal();
@@ -330,6 +406,7 @@ const ServiceCall = () => {
 
         const focusHandler = navigation.addListener('focus', () => {
             console.log("refresh ******************* ");
+            getLoginUserNameForUplode();
             RecievedPressed();
             getCustomers();
             filterServiceCall();
