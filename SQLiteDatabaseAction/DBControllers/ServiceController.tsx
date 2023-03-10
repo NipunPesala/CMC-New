@@ -1,4 +1,6 @@
+import { useState } from 'react';
 import * as DB from '../DBService';
+import { getItemDescription } from './ItemController';
 
 //INSERT OR (UPDATE ON CONFLICT) QUERY
 export const saveServiceData = (data: any, type: any, callBack: any) => {
@@ -82,29 +84,29 @@ export const saveServiceData = (data: any, type: any, callBack: any) => {
   } else if (type == 1) {
     // web service calls
     console.log('web service call+++++++++++');
-    var start;
-    var end;
+    var start: any;
+    var end: any;
+
     for (let i = 0; i < data.length; ++i) {
 
       start = data[i].PlanedStartDateTime.split("T")[0];// done 
       end = data[i].PlanedEndDateTime.split("T")[0]; // done
 
-      console.log(" split start  --------  " , start);
-      
 
       DB.indateData(
         [
           {
             table: 'SERVICE',
             columns: `serviceId, priority, service_type, item_code, item_description, customer,customer_address,contact_name,contact_no,
-        subject, handle_by, TechnicianID,secretary, SecretaryID,assistance,AssisstanceID,start_date, end_date, created_by,Approve_status,Attend_status,status,CreateAt,Syncstatus,itemID,customerID,serialNumber,service_web_RefID,service_typeID`,
+            subject, handle_by, TechnicianID,secretary, SecretaryID,assistance,AssisstanceID,start_date, end_date, created_by,Approve_status,Attend_status,status,CreateAt,Syncstatus,itemID,customerID,serialNumber,service_web_RefID,service_typeID`,
             values: '?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?',
             params: [
               data[i].ServiceCallNumber, //mobille service call id 
               data[i].Priority, //done
               data[i].ProblemType,
               data[i].ItemCode,//done
-              data[i].item_description,
+              // ItemName,
+              "",
               data[i].CustomerName,
               data[i].CustomerAddress,
               data[i].ContactPerson,//done
@@ -130,58 +132,9 @@ export const saveServiceData = (data: any, type: any, callBack: any) => {
               data[i].msnfSN,
               data[i].ServiceCallId,// done
               data[i].service_typeID,
-
-
-              // "ServiceCallId": 5481, 
-              // "Status": "Pending",
-              // "Priority": "Medium",
-              // "ServiceCallNumber": "null",
-              // "Subject": "sc",
-              // "Origin": "1", // unknown
-              // "ProblemType": "1",  //unknown
-              // "InquiryType": "fs", //unknown
-              // "CreatedBy": "Admin",
-              // "HandledBy": "7",
-              // "Queue": "3", // unknown
-              // "Secretary": "2",
-              // "IsApprovedBy": 0, // unknow
-              // "ApprovedBy": "null",
-              // "ApprovedAt": "2023-02-27T10:36:34.000Z", //unknow
-              // "SalesAssistant": "1",
-              // "CreatedOn": "2023-02-26T10:37:13.000Z",
-              // "Remark": "null",
-              // "PlanedStartDateTime": "2023-02-27T13:00:57.000Z",
-              // "EstimatedDutation": "359H:57M:07S",
-              // "PlanedEndDateTime": "2023-03-14T12:58:04.000Z",
-              // "ActualStartDate": null,
-              // "IsToSAP": 0,
-              // "sapSuccess": 0,
-              // "ActualEndDate": null,
-              // "NextStartDate": "2023-02-27T15:08:59.000Z",
-              // "NextEndDate": "2023-02-28T07:33:02.000Z",
-              // "customerEntityID": 1,
-              // "itemEntityId": 1,
-              // "handledByHandledByCode": 7,
-              // "originsDropDownOriginCode": 1,
-              // "problemTypesDropDownProblemTypeCode": 1,
-              // "clusterHeadClusterHeadCode": 3,
-              // "secretaryDBSecretaryCode": 2,
-              // "salesAssistantDBSalesAssistantCode": 1,
-              // "TelephoneNumber": 0,
-              // "ModifyAt": "2023-03-01T11:26:17.000Z",
-              // "ModifyBy": null,
-              // "ContactPerson": "null",
-              // "clusterHeadUserId": 373081,
-              // "handledByUserId": 627517,
-              // "secretaryUserId": 383005,
-              // "salesAssistantUserId": 360667
             ],
             primaryKey: 'serviceId',
-            //   subQuery: `priority = EXCLUDED.priority,
-            //   service_type = EXCLUDED.service_type, item_code = EXCLUDED.item_code,
-            //   item_description = EXCLUDED.item_description, customer_address = EXCLUDED.customer_address, 
-            //   contact_name=EXCLUDED.contact_name, contact_no = EXCLUDED.contact_no,subject = EXCLUDED.subject,
-            // handle_by = EXCLUDED.handle_by`,
+
           },
         ],
         (res: any, err: any) => {
@@ -205,9 +158,27 @@ export const saveServiceData = (data: any, type: any, callBack: any) => {
             response = 2;
             callBack(response);
           }
-          callBack(res, err);
+          // callBack(res, err);
         },
       );
+
+
+
+      // console.log(" *************** split start  --------  ", );
+
+      getItemDescription(data[i].ItemCode, (res: any) => {
+        // console.log(res[0].description, "  [][][][ ========= ", res);
+
+        updateSycnServiceCAllItemName(data[i].ServiceCallNumber,res[0].description,(resp:any) => {
+          // console.log(" update response ===========  " , resp);
+          
+        });
+
+
+      });
+
+
+
     }
   }
 
@@ -260,6 +231,16 @@ export const getWebRefIDServiceCAll = (serviceId: any, callBack: any) => {
   );
 };
 
+export const getMobileRefData = (serviceId: any, callBack: any) => {
+  DB.searchData(
+    'SELECT item_code,item_description,serviceId FROM SERVICE WHERE service_web_RefID=?',
+    [serviceId],
+    (resp: any, err: any) => {
+      callBack(resp, err);
+    },
+  );
+};
+
 
 
 export const enableServiceCall = (serviceId: any, status: any, callBack: any) => {
@@ -303,6 +284,17 @@ export const updateSycnServiceCAll = (serviceId: any, callBack: any) => {
   DB.updateData(
     'UPDATE SERVICE SET Syncstatus=? WHERE serviceId=?',
     [status, serviceId],
+    (resp: any, err: any) => {
+      callBack(resp, err);
+    },
+  );
+};
+
+export const updateSycnServiceCAllItemName = (serviceId: any, item:any,callBack: any) => {
+ 
+  DB.updateData(
+    'UPDATE SERVICE SET item_description=? WHERE serviceId=?',
+    [item, serviceId],
     (resp: any, err: any) => {
       callBack(resp, err);
     },

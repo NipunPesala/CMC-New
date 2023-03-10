@@ -1,10 +1,12 @@
 import * as DB from '../DBService';
+import { getMobileRefData } from './ServiceController';
 
 export const saveTicket = (data:any,type:any, callBack:any) => {
     var response: any;
     if (type==0){
 
         for (let i = 0; i < data.length; ++i) {
+
             DB.indateData(
                 [
                     {
@@ -47,7 +49,14 @@ export const saveTicket = (data:any,type:any, callBack:any) => {
 
     }else if(type==1){
         console.log('thi is a sync------------')
+
+        var start;
+        var end;
         for (let i = 0; i < data.length; ++i) {
+
+            start = data[i].PlannedStartDate.split("T")[0];// done 
+            end = data[i].PlannedEndDate.split("T")[0]; // done
+
             DB.indateData(
                 [
                     {
@@ -55,11 +64,11 @@ export const saveTicket = (data:any,type:any, callBack:any) => {
                         columns: `ticketId,serviceId,startDate,endDate,itemDescription,content,assignTo,technicianID,priority,attend_status,status,engRemark,cusNic,cusRemark,signatureStatus,syncStatus,actualstartDate,actualendtDate,itemCode,Ticket_web_RefID`,
                         values: '?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?',
                         params: [
-                            data[i].ticketId, // need to change done
-                            data[i].serviceId,
-                            data[i].PlannedStartDate,// done 
-                            data[i].PlannedEndDate, //done
-                            data[i].itemDescription,
+                            data[i].ServiceTicketNumber, // need to change done
+                           "",
+                            start,// done 
+                            end, //done
+                            "",
                             data[i].Content,// done 
                             data[i].AssignedTo,//done
                             data[i].handledByUserId,//done
@@ -70,10 +79,10 @@ export const saveTicket = (data:any,type:any, callBack:any) => {
                             data[i].cusNic,
                             data[i].cusRemark,
                             data[i].signatureStatus,
-                            data[i].syncStatus,
+                            1,  // sync status
                             data[i].ActualStartDate, //done
                             data[i].ActualEndDate, //done
-                            data[i].itemCode,
+                            "",
                             data[i].TicketId,//done
                         ],
                         primaryKey: 'ticketId',
@@ -101,9 +110,24 @@ export const saveTicket = (data:any,type:any, callBack:any) => {
                         response = 2;
                         callBack(response);
                     }
-                    callBack(res, err);
+                    // callBack(res, err);
                 },
             );
+
+
+            getMobileRefData(data[i].serviceCallServiceCallId, (res: any) => {
+                // console.log(res[0].description, "  [][][][ ========= ", res);
+        
+                updateSycnServiceTicketDetails(data[i].ServiceTicketNumber,res[0].serviceId,res[0].item_description,res[0].item_code,(resp:any) => {
+                  console.log(" update response ===========  " , resp);
+                  
+                });
+        
+        
+              });
+
+
+
         }
 
     }
@@ -318,6 +342,17 @@ export const updateTicketStatus = (ticketID:any,status:any,callBack:any) => {
     DB.updateData(
       'UPDATE TICKET SET status=? WHERE ticketId=?',
       [status,ticketID],
+      (resp:any, err:any) => {
+        callBack(resp, err);
+      },
+    );
+  };
+
+
+export const updateSycnServiceTicketDetails = (ticketID:any,serviceID:any,desc:any,code:any,callBack:any) => {
+    DB.updateData(
+      'UPDATE TICKET SET serviceId=?,itemDescription=?,itemCode=? WHERE ticketId=?',
+      [serviceID,desc,code,ticketID],
       (resp:any, err:any) => {
         callBack(resp, err);
       },

@@ -551,6 +551,32 @@ export const tableIndexKey = () => {
     },
   );
 
+   // ----------------------------------- TICKET IDX --------------------------------------
+
+
+   db.transaction(
+    (tx:any) => {
+      const query_idx_Ticket = `CREATE UNIQUE INDEX IF NOT EXISTS idx_Ticket ON TICKET(ticketId)`;
+
+      tx.executeSql(
+        query_idx_Ticket,
+        [],
+        (tx: any, response: any) => {
+          console.log(`create table index success TICKET: `, response);
+        },
+        (tx: any, error: any) => {
+          console.log(`create table index key error TICKET: `, error);
+        },
+      );
+    },
+    (error:any) => {
+      console.log('table create query transaction failed TICKET: ', error);
+    },
+    (success:any) => {
+      console.log('table create query transaction:', 'success');
+    },
+  );
+
   return null;
 
 } catch (error) {
@@ -762,6 +788,7 @@ export const indateData = (data:any, callBack:any) => {
           // let queryString = `INSERT INTO ${table.table} (${table.columns}) VALUES (${table.values})
           // ON CONFLICT(${table.primaryKey}) DO UPDATE SET ${table.subQuery}`;
 
+          // console.log("insert query **********************   ");
           // console.log("insert query **********************   "+queryString);
 
           let queryString = `INSERT OR REPlACE INTO ${table.table} (${table.columns}) VALUES (${table.values})`;

@@ -735,7 +735,7 @@ const NewServiceCall = (props: any) => {
         try {
             getServiceById(id, (result: any) => {
                 console.log('cus list length ---------------', result);
-                console.log('cus no ---------------', result[0].start_date);
+                console.log('ITEM NAME [][][][][] ---------------', result[0].item_description);
 
                 let number = "0" + result[0].contact_no;
                 setContactNumber(number);

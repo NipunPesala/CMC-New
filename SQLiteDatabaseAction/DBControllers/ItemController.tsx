@@ -108,3 +108,14 @@ console.log("Item ID list .................>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ", re
         },
     );
 }
+
+export const getItemDescription = (code:any, callBack:any) => {
+    DB.searchData(
+        'SELECT description FROM ITEM WHERE itemCode=?',
+        [code],
+        (resp:any, err:any) => {
+            callBack(resp, err);
+            
+        },
+    );
+}

@@ -172,20 +172,20 @@ const ServiceCall = () => {
 
         // getServiceData();
 
-     
-        const prams = [
-            {
-                "UserName": UserNameUpload,
-                "UserID": UserIdUpload,
-                "serviceId": webRefID,
-                "Approve_status": status,
-                "created_At": moment().utcOffset('+05:30').format('YYYY-MM-DD kk:mm:ss'),
-            }
-        ]
 
-        
-        console.log(" --- [][][][][][] APPROVE SC JSON --------------  " , prams);
-        
+        const prams =
+        {
+            "UserName": UserNameUpload,
+            "UserID": UserIdUpload,
+            "serviceId": webRefID,
+            "Approve_status": status,
+            "created_At": moment().utcOffset('+05:30').format('YYYY-MM-DD kk:mm:ss'),
+        }
+
+
+
+        console.log(" --- [][][][][][] APPROVE SC JSON --------------  ", prams);
+
 
 
         try {
@@ -201,7 +201,7 @@ const ServiceCall = () => {
                         // console.log('cus id--' + customerID)
                         TOCKEN_KEY = res;
                         const AuthStr = ` Bearer ${TOCKEN_KEY}`;
-        
+
                         const headers = {
                             'Authorization': AuthStr
                         }
@@ -212,7 +212,7 @@ const ServiceCall = () => {
                             .then((response) => {
                                 console.log("[s][t][a][t][u][s][]", response.status);
                                 if (response.status == 200) {
-        
+
                                     console.log('<------  SERVICE CALL APPROVE UPLOAD Method --->', response.data)
                                     // console.log('uplode api response', response.data.ErrorId);
                                     // console.log('web service call id', response.data.UniqueNo);
@@ -220,13 +220,13 @@ const ServiceCall = () => {
                                         console.log('this is if inside----');
                                         // this use fro update sync flag as 1 
                                         // console.log('this is a web service call id ----', response.data[0].ServiceCallId);
-        
+
                                     } else {
-        
+
                                         Alert.alert(response.data.ErrorDescription);
-        
+
                                     }
-        
+
                                 } else {
                                     Alert.alert(
                                         "Invalid Details!",
@@ -235,16 +235,16 @@ const ServiceCall = () => {
                                             { text: "OK", onPress: () => console.log("OK Pressed") }
                                         ]
                                     );
-        
+
                                 }
-        
+
                             })
                             .catch((error) => {
                                 Alert.alert('error', error.response)
                                 console.log('error+++++', error);
-        
+
                             })
-        
+
                     })
 
 
@@ -311,10 +311,10 @@ const ServiceCall = () => {
         setSeviceID(ID);
         // console.log(service_id, "  ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,, ");
 
-        getWebRefIDServiceCAll(ID,(res:any) => {
+        getWebRefIDServiceCAll(ID, (res: any) => {
             // console.log("web ref id -------------", res[0].service_web_RefID);
             setWebRefID(res[0].service_web_RefID);
- 
+
         });
 
 
