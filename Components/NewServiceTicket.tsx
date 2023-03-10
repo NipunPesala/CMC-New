@@ -449,11 +449,12 @@ const NewServiceTicket = (props: any) => {
                             "endDate": endDate,
                             "content": content,
                             "assignTo": selectAssignPerson,
-                            "attend_status": attendStatus.toString(),
+                            "attend_status": "Pending",
                             "created_At": moment().utcOffset('+05:30').format('YYYY-MM-DD kk:mm:ss'),
                             "assignedByMobile": UserIdKey,
                             "assignedToMobile": selectAssignPersonID,
-                            "contactPerson": contactPerson
+                            "contactPerson": contactPerson,
+                            "priority" : selectPriority
                         }
                     ]
                 }
@@ -717,9 +718,10 @@ const NewServiceTicket = (props: any) => {
                     "content": content,
                     "assignTo": selectAssignPerson,
                     "assignedToMobile": selectAssignPersonID,
-                    "attend_status": attendStatus.toString(),
+                    "attend_status": "Pending",
                     "update_by": UserIdKey,
-                    "Update_At": moment().utcOffset('+05:30').format('YYYY-MM-DD kk:mm:ss')
+                    "Update_At": moment().utcOffset('+05:30').format('YYYY-MM-DD kk:mm:ss'),
+                    "priority" : selectPriority
                 }
             ]
 

@@ -1,4 +1,4 @@
-import React, {useState, useEffect, createRef} from 'react';
+import React, { useState, useEffect, createRef } from 'react';
 import {
   View,
   Text,
@@ -16,14 +16,16 @@ import ActionButton from './ActionButton';
 import comStyles from '../Constant/Components.styles';
 import CheckBox from '@react-native-community/checkbox';
 import InputText from './InputText';
-import {useNavigation} from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import SignatureCapture from 'react-native-signature-capture';
-import {CompleteTicket_Update,updateActualendDate} from '../SQLiteDatabaseAction/DBControllers/TicketController';
+import { CompleteTicket_Update, getTicketById, updateActualendDate } from '../SQLiteDatabaseAction/DBControllers/TicketController';
 import ComStyles from "../Constant/Components.styles";
 import Header from "../Components/Header";
 import {
   getASYNC_CURRENT_TICKET_ID,
   getCurrentServiceCallID,
+  getLoginUserName,
+  get_ASYNC_USERID,
 } from '../Constant/AsynStorageFuntion';
 import { get_ASYNC_TOCKEN } from "../Constant/AsynStorageFuntion";
 import email from 'react-native-email';
@@ -34,10 +36,12 @@ import axios from "axios";
 import { BASE_URL_GET } from "../Constant/Commen_API_Url";
 let height = Dimensions.get("screen").height;
 import moment from 'moment';
-import {uplodeCompTicketAync} from "../SQLiteDatabaseAction/DBControllers/TicketController";
+import { uplodeCompTicketAync } from "../SQLiteDatabaseAction/DBControllers/TicketController";
 import Mailer from 'react-native-mail';
 var id: any;
 var serviceID: any;
+var UserNameUpload: any;
+var UserIdUpload: any;
 var TOCKEN_KEY: any;
 const CompleteTicket = () => {
   const [pending, setPending] = useState(false);
@@ -50,12 +54,15 @@ const CompleteTicket = () => {
   const [modalStyle, setModalStyle] = useState(new Animated.Value(height));
   const [attend_status, setattend_status] = useState('');
   const [emailDetails, setEmailDetails] = useState([]);
-  var ticketSteteForEmail='status';
-  const currentendDate=moment().format('YYYY-MM-DD HH:mm:ss');
-  console.log('this is a currnt end date====='+currentendDate);
+  var ticketSteteForEmail = 'status';
+  const currentendDate = moment().format('YYYY-MM-DD HH:mm:ss');
+  console.log('this is a currnt end date=====' + currentendDate);
   const navigation = useNavigation();
   const sign = createRef();
   const [receiverEmail, SetReceiverEmail] = useState('');
+  const [attendStatusUpload, SetAttendStatusUpload] = useState('');
+  const [webRefID, SetWebRefID] = useState('');
+  const [priority, SetPriority] = useState('');
   const resetSign = () => {
     sign.current.resetImage();
   };
@@ -80,21 +87,21 @@ const CompleteTicket = () => {
 
   const getCompleteTicketDetails = (serviceID: any) => {
 
-    console.log(serviceID,' iddddddddddddddddddddddddddd............');
+    console.log(serviceID, ' iddddddddddddddddddddddddddd............');
 
     getDataForEmail(serviceID, (result: any) => {
 
-        console.log("result *************** email  ",result);
+      console.log("result *************** email  ", result);
 
-        setEmailDetails(result);
-        console.log('save state details',emailDetails);
-        console.log('save state priority',emailDetails[0].priority);
-        
+      setEmailDetails(result);
+      console.log('save state details', emailDetails);
+      console.log('save state priority', emailDetails[0].priority);
+
     });
 
-}
+  }
 
- const handleEmail1 = () => {
+  const handleEmail1 = () => {
     Mailer.mail({
       subject: 'Service Ticket Status Details',
       recipients: [receiverEmail],
@@ -104,13 +111,13 @@ const CompleteTicket = () => {
       customChooserTitle: 'This is my new title', // Android only (defaults to "Send Mail")
       isHTML: true,
     }, (error, event) => {
-   console.log(error);
+      console.log(error);
     });
   }
 
 
   const getTicketState = () => {
-// console.log('hiiiiiiiiiiiiiii');
+    // console.log('hiiiiiiiiiiiiiii');
     if (pending == true && hold == false && complete == false) {
       ticketSteteForEmail = 'Pending';
 
@@ -118,7 +125,7 @@ const CompleteTicket = () => {
 
       ticketSteteForEmail = 'Hold';
     } else if (pending == false && hold == false && complete == true) {
-      ticketSteteForEmail = 'Complete';
+      ticketSteteForEmail = 'Completed';
     } else {
 
       //console.log('error++++++++');
@@ -178,6 +185,7 @@ const CompleteTicket = () => {
                           });
 
                           AsyncStorage.setItem(AsyncStorageConstants.ASYNC_CURRENT_TICKET_ID, '');
+                          UploadTicketComplete();
                           ToastAndroid.show(
                             'Complete success ',
                             ToastAndroid.SHORT,
@@ -190,7 +198,7 @@ const CompleteTicket = () => {
                             callID: serviceID,
                           });
 
-                         handleEmail1();
+                          handleEmail1();
                           // navigation.navigate('ServiceCall');
                         } else {
                           Alert.alert('Failed...!', ' Save Failed.', [
@@ -260,33 +268,49 @@ const CompleteTicket = () => {
     }
   };
 
+  const getTicketWebRefID = (tID: any) => {
+
+    getTicketById(tID, (res: any) => {
+
+      SetWebRefID(res[0].Ticket_web_RefID);
+      SetPriority(res[0].priority);
+
+    });
+
+  }
+
   useEffect(() => {
     getASYNC_CURRENT_TICKET_ID().then(res => {
       console.log(res);
       id = res;
       //console.log(id, "=====================================");
 
+      getTicketWebRefID(res);
+
       // setTicketID(id);
     });
+
+    getLoginUserNameForUplode();
 
     getCurrentServiceCallID().then(res => {
       console.log(res);
       serviceID = res;
-       console.log(serviceID, "============serviceID=========================");
+      console.log(serviceID, "============serviceID=========================");
 
       // setTicketID(id);
       getCompleteTicketDetails(serviceID);
     });
 
-    
 
-  
+
+
   }, []);
 
   const handlePendingChange = () => {
     setHold(false);
     setComplete(false);
     setattend_status('1');
+    SetAttendStatusUpload("Pending");
     //  console.log("COMPLETE_TICKET","Pendig click");
   };
 
@@ -294,75 +318,98 @@ const CompleteTicket = () => {
     setPending(false);
     setComplete(false);
     setattend_status('2');
+    SetAttendStatusUpload("Hold");
   };
 
   const handleCompleteChange = () => {
     setHold(false);
     setPending(false);
     setattend_status('3');
+    SetAttendStatusUpload("Completed");
   };
 
-  
-  const UploadServiceCall = () => {
+  const getLoginUserNameForUplode = () => {
+    getLoginUserName().then(res => {
+      UserNameUpload = res;
+      console.log('user Name --' + UserNameUpload);
+    })
+    get_ASYNC_USERID().then(res => {
+      UserIdUpload = res;
+      console.log('user id upload  --' + UserIdUpload);
+    })
+
+
+
+  }
+
+  const UploadTicketComplete = () => {
     try {
+
+      // 0 - Pending  1 - Ongoing  2 - Hold 3 - Completed
+
+      const prams =
+      {
+        "UserID": UserIdUpload,
+        "UserName": UserNameUpload,
+        "ticketId": webRefID,
+        "attend_status": attendStatusUpload,
+        "engineer_remark": EngeneerRemark,
+        "customer_remark": CusRemark,
+        "customer_NIC": nic,
+        "signature": "ecs.png",
+        "created_At": moment().utcOffset('+05:30').format('YYYY-MM-DD kk:mm:ss'),
+        "actual_end_date": moment().utcOffset('+05:30').format('YYYY-MM-DD kk:mm:ss'),
+        "priority": priority
+      }
+
+      console.log('------TICKET Complite ticket JSON-----', prams);
+
 
       get_ASYNC_TOCKEN().then(res => {
         TOCKEN_KEY = res;
         const AuthStr = 'Bearer '.concat(TOCKEN_KEY);
-       
-     // console.log( 'AuthStr####3%%%%%%%%%%%%%',AuthStr);
 
-    const prams= {
-          "UserName": "",
-          "UserID": 1,  //need to code
-          "serviceId": id,
-          "Attend_status": attend_status,
-          "created_At": "",
-  
-    }
-     
-     console.log('--NEW  Complite ticket JSON--', prams);
-
-      const headers = {
-        'Authorization': AuthStr
-      }
-      const URL = BASE_URL_GET+"service-ticket/status";
-      axios.post(URL, prams, {
-        headers: headers
-      })
-        .then((response) => {
-            console.log("[s][t][a][t][u][s][]",response.status);
+        // console.log( 'AuthStr####3%%%%%%%%%%%%%',AuthStr)
+        const headers = {
+          'Authorization': AuthStr
+        }
+        const URL = BASE_URL_GET + "service-ticket/complete";
+        axios.put(URL, prams, {
+          headers: headers
+        })
+          .then((response) => {
+            console.log("[s][t][a][t][u][s][]", response.status);
             if (response.status == 200) {
 
-           console.log('<------ NEW complite ticket UPLOAD Method --->', response.data)
-           console.log(response.data.UniqueNo);
-           
-           if(response.data.ErrorId=0){
-            // this use fro update sync flag as 1 
-            uplodeCompTicketAync(response.data.UniqueNo, (result: any) => {
+              console.log('<------ NEW complite ticket UPLOAD Method --->', response.data)
+              console.log(response.data.UniqueNo);
 
-            });
-            ToastAndroid.show(response.data.ErrorDescription, ToastAndroid.LONG);
-           }
-           
-        }else{
-            Alert.alert(
+              if (response.data.ErrorId = 0) {
+                // this use fro update sync flag as 1 
+                // uplodeCompTicketAync(response.data.UniqueNo, (result: any) => {
+
+                // });
+                ToastAndroid.show(response.data.ErrorDescription, ToastAndroid.LONG);
+              }
+
+            } else {
+              Alert.alert(
                 "Invalid Details!",
                 "Bad Request",
                 [
-                    { text: "OK", onPress: () => console.log("OK Pressed") }
+                  { text: "OK", onPress: () => console.log("OK Pressed") }
                 ]
-            );
+              );
 
             }
 
-        })
-        .catch((error) => {
-          Alert.alert('error', error.response)
+          })
+          .catch((error) => {
+            Alert.alert('error', error.response)
 
-        })
+          })
 
-   })
+      })
     } catch (error) {
       console.log(">>>>>>>>>>>>", error);
 
@@ -371,11 +418,11 @@ const CompleteTicket = () => {
 
   return (
     <SafeAreaView style={ComStyles.CONTAINER}>
-  
+
       <Header title="Complete Ticket" isBtn={true} btnOnPress={() => navigation.goBack()} />
       <View style={{ padding: 5 }} />
 
-      <View style={{flexDirection: 'row', marginTop: 10 ,paddingLeft:10,paddingRight:10}}>
+      <View style={{ flexDirection: 'row', marginTop: 10, paddingLeft: 10, paddingRight: 10 }}>
         <ActionButton
           title="Cancel"
           style={style.loginBtn}
@@ -386,14 +433,14 @@ const CompleteTicket = () => {
 
         <ActionButton
           title="Complete"
-          style={{flex: 0.5}}
+          style={{ flex: 0.5 }}
           onPress={handleComplete}
         />
       </View>
 
-      <View style={{ marginTop: 5 ,paddingLeft:10,paddingRight:10,alignItems:'center'}}>
-      <Text style={style.maintxt}>Complete Ticket</Text>
-      <Text style={style.modalTitle}>Select Service Ticket Status</Text>
+      <View style={{ marginTop: 5, paddingLeft: 10, paddingRight: 10, alignItems: 'center' }}>
+        <Text style={style.maintxt}>Complete Ticket</Text>
+        <Text style={style.modalTitle}>Select Service Ticket Status</Text>
       </View>
       <View
         style={{
@@ -490,11 +537,11 @@ const CompleteTicket = () => {
             setState={(val: any) => setCusRemark(val)}
             max={25}
           />
-          <View style={{ marginTop: 40}}></View>
+          <View style={{ marginTop: 40 }}></View>
           <InputText
             placeholder="receiver email address*"
             placeholderColor={comStyles.COLORS.HEADER_BLACK}
-            style={{ 
+            style={{
               borderColor: '#cfcccc',
               paddingLeft: 5,
               fontSize: 12,
@@ -517,7 +564,7 @@ const CompleteTicket = () => {
               borderColor: 'black',
               borderWidth: 2,
             }}>
-            
+
             <SignatureCapture
               style={style.signature}
               ref={sign}
@@ -537,7 +584,7 @@ const CompleteTicket = () => {
 
                 
             </View> */}
- 
+
     </SafeAreaView>
   );
 };

@@ -35,16 +35,22 @@ import TicketMoreInfo from "../../../Components/TicketMoreInfo";
 import Tickets from "../../../Components/Tickets";
 import TicketsHistory from "../../../Components/TicketsHistory";
 import AsyncStorageConstants from "../../../Constant/AsyncStorageConstants";
-import { getCurrentServiceCallID } from "../../../Constant/AsynStorageFuntion";
+import { getCurrentServiceCallID, getLoginUserName, get_ASYNC_TOCKEN, get_ASYNC_USERID } from "../../../Constant/AsynStorageFuntion";
 import ComStyles from "../../../Constant/Components.styles";
 import { getServiceById } from "../../../SQLiteDatabaseAction/DBControllers/ServiceController";
 import { getSparePartsAllData } from "../../../SQLiteDatabaseAction/DBControllers/SparePartsController";
 import { getTicketById, updateTicketAttendStatus, updateTicketStatus, getServiceTicketForReport, updateActualStartDate, getALLAInventrySpareTiketdetasils, getALLTicketById } from "../../../SQLiteDatabaseAction/DBControllers/TicketController";
 import style from "./style";
 import moment from 'moment';
+import { BASE_URL_GET } from "../../../Constant/Commen_API_Url";
+import axios from "axios";
 const currentstsartDate = moment().format('YYYY-MM-DD HH:mm:ss');
 console.log('this is a currnt start date=====' + currentstsartDate);
 let height = Dimensions.get("screen").height;
+
+var UserNameUpload: any;
+var UserIdUpload: any;
+var TOCKEN_KEY: any;
 
 const TicketDetails = (props: any) => {
 
@@ -69,6 +75,9 @@ const TicketDetails = (props: any) => {
     const [callDetailList, setCallDetailList]: any[] = useState([]);
     const [SparePartList, setSparePartList]: any[] = useState([]);
     const currentstsartDate = moment().format('YYYY-MM-DD HH:mm:ss');
+    const [webRefCallID, setSwebRefCallID] = useState('');
+    const [webRefTicketID, setwebRefTicketID] = useState('');
+
     // console.log('this is a currnt start date=====' + currentstsartDate);
 
     const selection = (screen: string) => {
@@ -91,6 +100,9 @@ const TicketDetails = (props: any) => {
 
             setCallDetailList(result);
 
+            setSwebRefCallID(result[0].service_web_RefID);
+            // console.log("=========================  ", result);
+            // console.log("=========================  ", result[0].service_web_RefID);
             // console.log(result, "   call details ..........   ", callDetailList);
 
 
@@ -158,16 +170,18 @@ const TicketDetails = (props: any) => {
                     setIsServiceActive(!isServiceActive);
                     // console.log(isServiceActive);
                     updateActualStartDate(ticket_id, currentstsartDate, (result: any) => {
-                        // console.log('Hii this is update actual start date' + result);
+                        // console.log('Hii this is update actual start date *********' + result);
 
                     });
 
-                    updateTicketAttendStatus(ticket_id, 1, (result: any) => {
+                    updateTicketAttendStatus(ticket_id, 1, async (result: any) => {
 
                         if (result === "success") {
 
 
-                            AsyncStorage.setItem(AsyncStorageConstants.ASYNC_CURRENT_TICKET_ID, ticket_id);
+                            await AsyncStorage.setItem(AsyncStorageConstants.ASYNC_CURRENT_TICKET_ID, ticket_id);
+
+                            UploadTicketAttendStatus();
 
                             ToastAndroid.show("Ticket Started ", ToastAndroid.SHORT);
                             setStatus("Pending");
@@ -200,6 +214,90 @@ const TicketDetails = (props: any) => {
 
     }
 
+    const getLoginUserNameForUplode = () => {
+        getLoginUserName().then(res => {
+            UserNameUpload = res;
+            console.log('user Name --' + UserNameUpload);
+        })
+        get_ASYNC_USERID().then(res => {
+            UserIdUpload = res;
+            console.log('user id upload  --' + UserIdUpload);
+        })
+
+
+
+    }
+
+
+    const UploadTicketAttendStatus = () => {
+
+        // 0 - Pending  1 - Ongoing  2 - Hold 3 - Completed
+
+        const params =
+        {
+            "UserID": UserIdUpload,
+            "ticketId": webRefTicketID,
+            "serviceId": webRefCallID,
+            "attend_status": "Ongoing",
+            "created_At": moment().utcOffset('+05:30').format('YYYY-MM-DD kk:mm:ss'),
+        }
+
+        console.log(" =========== [][][][][] TICKET START UPLOAD JSON ============  ",params);
+        
+
+        get_ASYNC_TOCKEN().then(res => {
+            // console.log('cus id--' + customerID)
+            TOCKEN_KEY = res;
+            const AuthStr = ` Bearer ${TOCKEN_KEY}`;
+
+            const headers = {
+                'Authorization': AuthStr
+            }
+            const URL = BASE_URL_GET + "service-ticket/status";
+            axios.put(URL, params, {
+                headers: headers
+            })
+                .then((response) => {
+                    console.log("[s][t][a][t][u][s][]", response.status);
+                    if (response.status == 200) {
+
+                        console.log('<------  SERVICE CALL START UPLOAD Method --->', response.data)
+                        // console.log('uplode api response', response.data.ErrorId);
+                        // console.log('web service call id', response.data.UniqueNo);
+                        if (response.data.ErrorId == 0) {
+                            console.log('SERVICE CALL START UPLOAD Method SUCCESS----');
+                            // this use fro update sync flag as 1 
+                            // console.log('this is a web service call id ----', response.data[0].ServiceCallId);
+
+                        } else {
+
+                            Alert.alert(response.data.ErrorDescription);
+
+                        }
+
+                    } else {
+                        Alert.alert(
+                            "Invalid Details!",
+                            "Bad Request",
+                            [
+                                { text: "OK", onPress: () => console.log("OK Pressed") }
+                            ]
+                        );
+
+                    }
+
+                })
+                .catch((error) => {
+                    Alert.alert('error', error.response)
+                    console.log('error+++++', error);
+
+                })
+
+        })
+
+
+    }
+
     const getTicketDetails = (ticketId: any) => {
 
         // console.log("TICKET ID ,,,,,,,,,, ", ticketId);
@@ -207,23 +305,21 @@ const TicketDetails = (props: any) => {
 
         getTicketById(ticketId, (result: any) => {
 
-
-
-
+            console.log(" TICKET DETAILS *********  " , result);
+            
             for (let i = 0; i < result.length; ++i) {
 
-                // console.log(result[i].attend_status);
+               
                 setCustomer(result[i].customer);
                 setTechnician(result[i].assignTo);
                 setLocation(result[i].customer_address);
                 setContactNo(result[i].contact_no);
                 setServiceCall_ID(result[i].serviceId);
+                setwebRefTicketID(result[i].Ticket_web_RefID);
 
                 // console.log("^^^^^^^^^^^^^^^^^^^^^^^    "  , result[i].serviceId,   " ...........  " ,serviceCall_ID);
 
                 getServiceCallDetails(result[i].serviceId);
-
-
 
                 if (result[i].attend_status === 0) {
 
@@ -274,7 +370,7 @@ const TicketDetails = (props: any) => {
                 // console.log("awaaaaaaaaaaa");
 
 
-               await AsyncStorage.setItem(AsyncStorageConstants.SELECT_TICKET, 'false');
+                await AsyncStorage.setItem(AsyncStorageConstants.SELECT_TICKET, 'false');
                 navigation.navigate("RequestBottomSheet");
 
             } else {
@@ -310,7 +406,7 @@ const TicketDetails = (props: any) => {
             setTicketID(route.params.ticketID);
             AsyncStorage.setItem(AsyncStorageConstants.ASYNC_CURRENT_TICKET_ID, route.params.ticketID);
             getTicketDetails(route.params.ticketID);
-
+            getLoginUserNameForUplode();
 
         }, []),
     );

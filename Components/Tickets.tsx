@@ -203,7 +203,7 @@ const Tickets = ({ btnEnable }: ParamTypes) => {
                                 ticketStatus={"Status:" + item.attend_statusStr}
                                 status={item.priority}
                                 isbtn={item.status == "1" ? false : true}
-                                isIcon={item.status == "0" ? false : true}
+                                // isIcon={item.status == "0" ? false : true}
                                 isUpdate={item.status == "1" ? false : true}
                                 nameAddress={true}
                                 enableStatus={btnEnable}

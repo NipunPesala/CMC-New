@@ -41,7 +41,6 @@ import axios from 'axios';
 import * as DB_Customer from '../../../SQLiteDatabaseAction/DBControllers/CustomerController';
 import ComponentsStyles from '../../../Constant/Components.styles';
 import { getLoginUserName } from '../../../Constant/AsynStorageFuntion';
-import { saveServiceData } from "../../../SQLiteDatabaseAction/DBControllers/ServiceController";
 
 const SyncArray1: any[] = [];
 let arrayindex = 0;
@@ -73,18 +72,7 @@ const Home = () => {
 
   const navigation = useNavigation();
   const isVisible = useIsFocused();
-  const save_serviceCall = (data: any) => {
-    console.log("**************", data);
-    console.log("**************", JSON.stringify(data));
-    try {
-      saveServiceData(data, (result: any) => {
-        console.log(result, "NEWSERVICE_CALL_SAVE");
-
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  }
+ 
   //////////////////////////////////////////////
 
   const handleslideInModal = () => {

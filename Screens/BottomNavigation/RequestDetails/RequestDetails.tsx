@@ -26,10 +26,17 @@ import { BackPressHandler } from "../../../Constant/CommonFunctions";
 import ComStyles from "../../../Constant/Components.styles";
 import { enableServiceCall, getServiceById } from "../../../SQLiteDatabaseAction/DBControllers/ServiceController";
 import style from "./style";
-import { getCurrentServiceCallID } from "../../../Constant/AsynStorageFuntion";
+import { getCurrentServiceCallID, getLoginUserName, get_ASYNC_TOCKEN, get_ASYNC_USERID } from "../../../Constant/AsynStorageFuntion";
 import { getTicketByServiceId } from "../../../SQLiteDatabaseAction/DBControllers/TicketController";
+import { BASE_URL_GET } from "../../../Constant/Commen_API_Url";
+import axios from "axios";
+import moment from "moment";
 
 let changetitle = 0;
+
+var UserNameUpload: any;
+var UserIdUpload: any;
+var TOCKEN_KEY: any;
 
 const RequestDetails = (props: any) => {
     const { navigation, route } = props;
@@ -44,6 +51,8 @@ const RequestDetails = (props: any) => {
     const [btnEnable, setButtonEnable] = useState(true);
     const [ticketList, setTicketList] = useState([]);
     const [screenName, setScreenName] = useState('null');
+    const [webRefCallID, setSwebRefCallID] = useState('');
+    const [webRefTicketID, setwebRefTicketID] = useState('');
 
     //Location 
     const [btnTitle, setBtnTitle] = useState('');
@@ -102,6 +111,9 @@ const RequestDetails = (props: any) => {
 
             console.log("  tickets available ......  ", ticketList.length);
 
+          
+
+
             enableServiceCall(sid, 1, (result: any) => {
 
 
@@ -112,6 +124,8 @@ const RequestDetails = (props: any) => {
 
                     // ToastAndroid.show("Service enable success ", ToastAndroid.SHORT);
                     setIsServiceActive(false);
+
+                    UploadAttendStatus();
 
 
                 } else {
@@ -158,6 +172,20 @@ const RequestDetails = (props: any) => {
 
     }
 
+    const getLoginUserNameForUplode = () => {
+        getLoginUserName().then(res => {
+            UserNameUpload = res;
+            console.log('user Name --' + UserNameUpload);
+        })
+        get_ASYNC_USERID().then(res => {
+            UserIdUpload = res;
+            console.log('user id upload  --' + UserIdUpload);
+        })
+
+
+
+    }
+
     const getServiceData = (call_id: any) => {
 
         console.log(call_id, "  ,,,,,,,,,,,,,,,,,,,,,,,, ******************  ");
@@ -167,7 +195,7 @@ const RequestDetails = (props: any) => {
 
             getServiceById(call_id, (result: any) => {
 
-                console.log(call_id, "   ------------------------  ");
+                console.log(result, "   ------------------------  ");
 
                 for (let i = 0; i < result.length; ++i) {
 
@@ -179,6 +207,7 @@ const RequestDetails = (props: any) => {
                     setContactNo(result[i].contact_no);
                     setLatitude(result[i].Latitude);
                     setLongitude(result[i].Longitude);
+                    setSwebRefCallID(result[i].service_web_RefID);
                     // console.log(" result id //////////////////////   ",result[i].serviceId);
 
                     // AsyncStorage.setItem(AsyncStorageConstants.ASYNC_CURRENT_SERVICE_CALL_ID,result[i].serviceId);
@@ -261,6 +290,77 @@ const RequestDetails = (props: any) => {
 
     }
 
+
+    const UploadAttendStatus = () => {
+
+        // 0 - Pending  1 - Ongoing  2 - Hold 3 - Completed
+
+        const params =
+        {
+            "UserName": UserNameUpload,
+            "UserID": UserIdUpload,
+            "serviceId": webRefCallID,
+            "Attend_status": "Ongoing",
+            "created_At": moment().utcOffset('+05:30').format('YYYY-MM-DD kk:mm:ss'),
+                
+        }
+
+        console.log(" =========== [][][][][] ============  ",params);
+        
+
+        get_ASYNC_TOCKEN().then(res => {
+            // console.log('cus id--' + customerID)
+            TOCKEN_KEY = res;
+            const AuthStr = ` Bearer ${TOCKEN_KEY}`;
+
+            const headers = {
+                'Authorization': AuthStr
+            }
+            const URL = BASE_URL_GET + "service-call/attend-status";
+            axios.put(URL, params, {
+                headers: headers
+            })
+                .then((response) => {
+                    console.log("[s][t][a][t][u][s][]", response.status);
+                    if (response.status == 200) {
+
+                        console.log('<------  SERVICE CALL ATTEND UPLOAD Method --->', response.data)
+                        // console.log('uplode api response', response.data.ErrorId);
+                        // console.log('web service call id', response.data.UniqueNo);
+                        if (response.data.ErrorId == 0) {
+                            console.log('SERVICE CALL ATTEND UPLOAD Method SUCCESS----');
+                            // this use fro update sync flag as 1 
+                            // console.log('this is a web service call id ----', response.data[0].ServiceCallId);
+
+                        } else {
+
+                            Alert.alert(response.data.ErrorDescription);
+
+                        }
+
+                    } else {
+                        Alert.alert(
+                            "Invalid Details!",
+                            "Bad Request",
+                            [
+                                { text: "OK", onPress: () => console.log("OK Pressed") }
+                            ]
+                        );
+
+                    }
+
+                })
+                .catch((error) => {
+                    Alert.alert('error', error.response)
+                    console.log('error+++++', error);
+
+                })
+
+        })
+
+
+    }
+
     // useEffect(() => {
 
     //     // SelectnavigationScreen();
@@ -299,6 +399,7 @@ const RequestDetails = (props: any) => {
         React.useCallback(() => {
             getCurrentServiceCallID().then(res => {
                 callID = res;
+                getLoginUserNameForUplode();
                 getServiceData(res);
 
                 // console.log(" navigation ........  " , callID);
