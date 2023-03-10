@@ -184,7 +184,7 @@ const ServiceCall = () => {
 
 
 
-        // console.log(" --- [][][][][][] APPROVE SC JSON --------------  ", prams);
+        console.log(" --- [][][][][][] APPROVE SC JSON --------------  ", prams);
 
 
 

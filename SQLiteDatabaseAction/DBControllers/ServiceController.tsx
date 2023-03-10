@@ -117,7 +117,7 @@ export const saveServiceData = (data: any, type: any, callBack: any) => {
               data[i].Secretary,//done
               data[i].secretaryUserId,//done
               data[i].SalesAssistant,
-              data[i].SalesAssistant,//done
+              data[i].salesAssistantUserId,//done
               start,// done 
               end, // done
               data[i].CreatedBy,
@@ -131,7 +131,7 @@ export const saveServiceData = (data: any, type: any, callBack: any) => {
               data[i].customerID,
               data[i].msnfSN,
               data[i].ServiceCallId,// done
-              data[i].service_typeID,
+              data[i].ProblemType,
             ],
             primaryKey: 'serviceId',
 
@@ -327,7 +327,7 @@ export const getLastServiceId = (callBack: any) => {
 
 export const getServiceId = (callBack: any) => {
   DB.searchData(
-    'SELECT serviceId,_Id,customer FROM SERVICE WHERE Approve_status != 3',
+    'SELECT serviceId,_Id,customer FROM SERVICE WHERE Approve_status != 2 OR ',
     [],
     (resp: any, err: any) => {
       callBack(resp, err);

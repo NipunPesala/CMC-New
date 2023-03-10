@@ -406,7 +406,7 @@ const NewServiceCall = (props: any) => {
                 "objServiceCallList": [
                     {
                         "UserID": UserIdUpload,
-                        "problem_type": selectServiceType,
+                        "problem_type": servicetypeID,
                         "serviceId": serviceId,
                         "priority": selectPriority,
                         "service_type": selectServiceType,
@@ -777,7 +777,7 @@ const NewServiceCall = (props: any) => {
                     setSelectPriority(data.name);
                 });
                 getAllTypes((result1: any) => {
-                    const data = result1?.filter((a: any) => a.typeName == result[0].service_type)[0];
+                    const data = result1?.filter((a: any) => a.typeId == result[0].service_typeID)[0];
                     setSelectServiceType(data.typeName);
                 });
 
@@ -858,7 +858,7 @@ const NewServiceCall = (props: any) => {
         try {
 
             const prams = {
-                        "problem_type": selectServiceType,
+                        "problem_type": servicetypeID,
                         "serviceId": webRefID,
                         "priority": selectPriority,
                         "service_type": selectServiceType,
