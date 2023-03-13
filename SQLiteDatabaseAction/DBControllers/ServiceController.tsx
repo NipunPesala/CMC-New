@@ -267,6 +267,18 @@ export const getServiceById = (serviceId: any, callBack: any) => {
   );
 };
 
+//---------------------------get All upload fail service calls --------------------------
+export const getAllUploadFailServiceCalls = (callBack: any) => {
+  DB.searchData(
+    'SELECT * FROM SERVICE WHERE service_web_RefID=0',
+    [],
+    (resp: any, err: any) => {
+      callBack(resp, err);
+    },
+  );
+};
+
+
 //------------------------------------------------------------------------
 
 export const getUploadServiceCallsById = (serviceId: any, callBack: any) => {

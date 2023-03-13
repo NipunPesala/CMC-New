@@ -40,14 +40,23 @@ import { getASYNC_LOGIN_STATUS } from "../../Constant/AsynStorageFuntion"
 import { getCustomers } from '../../Services/Api/SyncService';
 import { getSpareParts } from '../../Services/Api/UserAuthService';
 import { err } from 'react-native-svg/lib/typescript/xml';
+import { get_ASYNC_USERID, getLoginUserName } from "../../Constant/AsynStorageFuntion";
+import { updateSycnServiceCAll, Update_webRefId, getAllUploadFailServiceCalls,getServiceById } from "../../SQLiteDatabaseAction/DBControllers/ServiceController";
+import { getAllUploadFailServiceTickets, updateUploadedServiceTicket } from "../../SQLiteDatabaseAction/DBControllers/TicketController";
+import moment from "moment";
 
 let SyncArray1: any[] = [];
 let arrayindex = 0;
 var TOCKEN_KEY: any;
 var LoginType: any;
 var GET_URL = "http://124.43.13.162:4500/api/";
-
+let UploadFailCalls: any[] = [];
+let UploadFailTickets: any[] = [];
 var ButtonTitle: any;
+
+var UserIdUpload: any;
+var UserNameUpload: any;
+
 const SyncScreen = (props: any) => {
 
   const { navigation, route } = props;
@@ -61,7 +70,10 @@ const SyncScreen = (props: any) => {
   const [disablebtn, setdisablebtn] = useState(false);
   const [syncText, setsyncText] = useState('');
   const [btntitle, setbtntitle] = useState('');
-
+  const [failCalls, setFailCalls]: any[] = useState([]);
+  const [contactPerson, setContactPerson] = useState('');
+  const [webRefId, setWebRefId] = useState('');
+  
   // const route=useRoute();
 
   const syncbtn = () => {
@@ -99,6 +111,9 @@ const SyncScreen = (props: any) => {
   }
 
   useEffect(() => {
+    getLoginUserNameForUplode();
+    getAllUploadFailData();
+    getAllUploadFailTicketData();
     setdisablebtn(true);
     LoginType = route.params.LoginStatus;
     console.log(LoginType, '-----111111111111111111111111111111111111111-----');
@@ -115,15 +130,29 @@ const SyncScreen = (props: any) => {
   }, [])
 
 
+  const getLoginUserNameForUplode = () => {
+    getLoginUserName().then(res => {
+      UserNameUpload = res;
+      console.log('user Name --+++++++++++++' + UserNameUpload);
+    })
+    get_ASYNC_USERID().then(res => {
+      UserIdUpload = res;
+      console.log('user id upload  --+++++++++++++++' + UserIdUpload);
+    })
+
+
+
+  }
+
   // const SyncCustomer = () => {
 
-    // getCustomers()
-    //   .then((res) => {
-    //     console.log(res, " customer sync ....................... ");
-    //   })
-    //   .catch((err) => {
-    //     console.log(err);
-    //   })
+  // getCustomers()
+  //   .then((res) => {
+  //     console.log(res, " customer sync ....................... ");
+  //   })
+  //   .catch((err) => {
+  //     console.log(err);
+  //   })
 
   // }
 
@@ -774,7 +803,7 @@ const SyncScreen = (props: any) => {
       .catch((error) => {
 
         // console.log(" SP error " , error);
-        
+
 
         setOnRefresh(false);
 
@@ -981,8 +1010,8 @@ const SyncScreen = (props: any) => {
         });
         setSyncArray(SyncArray1);
         setOnRefresh(true);
-         // Sync_Priority();// remove priority 
-          Sync_ServiceCall(TOCKEN_KEY);
+        // Sync_Priority();// remove priority 
+        Sync_ServiceCall(TOCKEN_KEY);
       } else if (res == 3) {
 
         arrayindex++;
@@ -993,7 +1022,7 @@ const SyncScreen = (props: any) => {
         });
         setSyncArray(SyncArray1);
         setOnRefresh(true);
-       // Sync_Priority(); // remove priority 
+        // Sync_Priority(); // remove priority 
         Sync_ServiceCall(TOCKEN_KEY);
       }
 
@@ -1010,7 +1039,7 @@ const SyncScreen = (props: any) => {
     axios.get(URL, { headers: { Authorization: AuthStr } })
       .then(response => {
         if (response.status === 200) {
-          DB_ServiceCall.saveServiceData(response.data,1, (res: any) => {
+          DB_ServiceCall.saveServiceData(response.data, 1, (res: any) => {
 
             setOnRefresh(false);
 
@@ -1023,7 +1052,7 @@ const SyncScreen = (props: any) => {
               });
               setSyncArray(SyncArray1);
               setOnRefresh(true);
-      
+
 
             } else if (res == 2) {
 
@@ -1065,8 +1094,8 @@ const SyncScreen = (props: any) => {
           });
           setSyncArray(SyncArray1);
           setOnRefresh(true);
-        //  Sync_Priority();
-        Sync_Service_ticket(TOCKEN_KEY)
+          //  Sync_Priority();
+          Sync_Service_ticket(TOCKEN_KEY)
         }
       })
       .catch((error) => {
@@ -1094,8 +1123,8 @@ const SyncScreen = (props: any) => {
     axios.get(URL, { headers: { Authorization: AuthStr } })
       .then(response => {
         if (response.status === 200) {
-         // console.log('ticket responce data------------ ',response.data.);
-          DB_ServiceTicket.saveTicket(response.data,1, (res: any) => {
+          // console.log('ticket responce data------------ ',response.data.);
+          DB_ServiceTicket.saveTicket(response.data, 1, (res: any) => {
 
             setOnRefresh(false);
 
@@ -1108,7 +1137,7 @@ const SyncScreen = (props: any) => {
               });
               setSyncArray(SyncArray1);
               setOnRefresh(true);
-      
+
 
             } else if (res == 2) {
 
@@ -1272,6 +1301,225 @@ const SyncScreen = (props: any) => {
     setOnRefresh(false);
     syncbtn();
 
+  }
+  //----------------------------uplode added service Tickets  in offline (with out internet connection)-------------------------------------
+  const getAllUploadFailTicketData = () => {
+    getAllUploadFailServiceTickets((result: any) => {
+
+      for (let i = 0; i < result.length; i++) {
+        UploadFailTickets.push(result[i]);
+
+      }
+      console.log('ubpload fail Tickets--- ', UploadFailTickets);
+      console.log('ubpload fail tickets  length --- ', UploadFailTickets.length);
+       UploadServiceTickets(UploadFailTickets);
+    });
+
+  }
+
+
+  const UploadServiceTickets = async (UnsavedArray: any) => {
+
+
+    console.log('+++++++++++++++UploadService Tickets---------------------------', UnsavedArray);
+    try {
+      const authStr = `Bearer ${await get_ASYNC_TOCKEN()}`;
+      const headers = { 'Authorization': authStr };
+      const URL = BASE_URL_GET + "service-ticket";
+
+      for (let i = 0; i < UnsavedArray.length; i++) {
+
+       
+        
+          getServiceById(UnsavedArray[i].serviceId, (result: any) => {
+             
+              console.log('contact person +++++++++++', result[0].contact_name);
+             
+              setContactPerson(result[0].contact_name);
+              setWebRefId(result[i].Ticket_web_RefID);
+          });
+      
+        const prams = {
+          "UserName": UserNameUpload,
+          "objServiceTiketList": [
+            {
+
+              "UserID": UserIdUpload, // done
+              "ticketId":  UnsavedArray[i].ticketId, //done
+              "serviceId": webRefId, // done
+              "startDate":  UnsavedArray[i].startDate, // done
+              "itemDescription":  UnsavedArray[i].itemDescription,// done
+              "endDate":  UnsavedArray[i].endDate,//done
+              "content":  UnsavedArray[i].content,// done
+              "assignTo":  UnsavedArray[i].assignTo, // done
+              "attend_status": "Pending",// done
+              "created_At": moment().utcOffset('+05:30').format('YYYY-MM-DD kk:mm:ss'), //done
+              "assignedByMobile": UserIdUpload, // done
+              "assignedToMobile":  UnsavedArray[i].assignTo,// done
+              "contactPerson": contactPerson,// not
+              "priority":  UnsavedArray[i].priority//done
+            }
+          ]
+        };
+
+        console.log('--NEW Ticket UPLOAD JSON--', prams);
+
+        const response = await axios.post(URL, prams, {
+          headers: headers
+        });
+
+        console.log("[s][t][a][t][u][s][]", response.status);
+
+        if (response.status == 200) {
+
+          console.log('<------ NEW SERVICE TICKET UPLOAD Method --->', response.data)
+          console.log(response.data[0].UniqueNo);
+
+          if (response.data[0].ErrorId == 0) {
+            // this use fro update sync flag as 1 
+            console.log('<------service ticket id  --->', response.data[0].ServiceTicketId)
+
+            updateUploadedServiceTicket(UnsavedArray[i].serviceId, response.data[0].ServiceTicketId, (result: any) => {
+              console.log("ticket sync status,web ref update --------- ", result);
+
+            });
+          } else {
+
+            Alert.alert(
+              "Upload Error !",
+              "Bad Request",
+              [
+                { text: "OK", onPress: () => console.log("OK Pressed") }
+              ]
+            );
+          }
+        } else {
+          Alert.alert(
+            "Invalid Details!",
+            "Bad Request",
+            [
+              { text: "OK", onPress: () => console.log("OK Pressed") }
+            ]
+          );
+        }
+      }
+    } catch (error) {
+      console.log(">>>>>>>>>>>>", error);
+    }
+  }
+
+
+  //----------------------------uplode added service call in offline (with out internet connection)----------------------------------------
+  const getAllUploadFailData = () => {
+    getAllUploadFailServiceCalls((result: any) => {
+
+      for (let i = 0; i < result.length; i++) {
+        UploadFailCalls.push(result[i]);
+
+      }
+      console.log('ubpload fail service call --- ', UploadFailCalls);
+      console.log('ubpload fail service call length --- ', UploadFailCalls.length);
+      UploadServiceCall(UploadFailCalls);
+    });
+
+  }
+
+
+  const UploadServiceCall = async (UnsavedArray: any) => {
+
+    console.log('+++++++++++++++UploadServiceCall++++++++++++++++++++++++++++++++=+');
+    console.log('+++++++++++++++UploadServiceCall----------------------------', UnsavedArray);
+    try {
+      const authStr = `Bearer ${await get_ASYNC_TOCKEN()}`;
+      const headers = { 'Authorization': authStr };
+      const URL = BASE_URL_GET + "service-call";
+
+      for (let i = 0; i < UnsavedArray.length; i++) {
+        const prams = {
+          "UserName": UserNameUpload,
+          "objServiceCallList": [
+            {
+
+              "UserID": UserIdUpload, //done
+              "problem_type": UnsavedArray[i].service_type,//done
+              "serviceId": UnsavedArray[i].serviceId,//done
+              "priority": UnsavedArray[i].priority,//done
+              "service_type": UnsavedArray[i].service_type,//done
+              "item_code": UnsavedArray[i].item_code,//done
+              "itemID": UnsavedArray[i].itemID, //done
+              "customerID": UnsavedArray[i].customerID, //done
+              "customer": UnsavedArray[i].customer,///done
+              "customer_address": UnsavedArray[i].customer_address,//done
+              "contact_name": UnsavedArray[i].contact_name,//done
+              "contact_no": UnsavedArray[i].contact_no, //done
+              "handle_by": UnsavedArray[i].TechnicianID,//done
+              "secretary": UnsavedArray[i].SecretaryID,//done
+              "sales_assistance": UnsavedArray[i].assistance,//done
+              "start_date": UnsavedArray[i].start_date,
+              "end_date": UnsavedArray[i].end_date,//done
+              "created_by": UserNameUpload,//
+              "active_status": 1,
+              "Approve_status": UnsavedArray[i].Approve_status, //done
+              "Attend_status": UnsavedArray[i].Attend_status,//done
+              "created_At": UnsavedArray[i].CreateAt,//done
+              "handledByHandledByCode": UnsavedArray[i].TechnicianID,///done
+              "originsDropDownOriginCode": 1,
+              "problemTypesDropDownProblemTypeCode": UnsavedArray[i].service_typeID,//done
+              "clusterHeadClusterHeadCode": UnsavedArray[i].TechnicianID,//done
+              "secretaryDBSecretaryCode": UnsavedArray[i].SecretaryID,///done
+              "salesAssistantDBSalesAssistantCode": UnsavedArray[i].AssisstanceID,///done
+              "inquiryType": "new",
+              "subject": UnsavedArray[i].subject//done
+            }
+          ]
+        };
+
+        console.log('--NEW SERVICE CALL UPLOAD JSON--', prams);
+
+        const response = await axios.post(URL, prams, {
+          headers: headers
+        });
+
+        console.log("[s][t][a][t][u][s][]", response.status);
+
+        if (response.status == 200) {
+
+          console.log('<------ NEW SERVICE CALL UPLOAD Method --->', response.data)
+          console.log('uplode api response', response.data[0].ErrorId);
+          console.log('web service call id', response.data[0].ServiceCallId);
+
+          if (response.data[0].ErrorId == 0) {
+            console.log('this is if inside----');
+            // this use fro update sync flag as 1 
+            console.log('this is a web service call id ----', response.data[0].ServiceCallId);
+            updateSycnServiceCAll(response.data[0].UniqueNo, (result: any) => { });
+
+            Update_webRefId(response.data[0].ServiceCallId, UnsavedArray[i].serviceId, (result: any) => {
+              console.log('web ref update___' + result)
+            });
+          } else {
+
+            Alert.alert(
+              "Upload Error !",
+              "Bad Request",
+              [
+                { text: "OK", onPress: () => console.log("OK Pressed") }
+              ]
+            );
+          }
+        } else {
+          Alert.alert(
+            "Invalid Details!",
+            "Bad Request",
+            [
+              { text: "OK", onPress: () => console.log("OK Pressed") }
+            ]
+          );
+        }
+      }
+    } catch (error) {
+      console.log(">>>>>>>>>>>>", error);
+    }
   }
 
 

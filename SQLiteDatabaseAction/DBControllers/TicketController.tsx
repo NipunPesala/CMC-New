@@ -171,6 +171,8 @@ export const getALLTicketById = (ticketId: any, callBack: any) => {
     );
 }
 
+
+
 export const getSearchServiceTicket = (txt: String, callBack: any) => {
     DB.searchData(
         'SELECT * FROM TICKET WHERE (ticketId like ? OR assignTo like ? OR priority like ?)',
@@ -372,6 +374,17 @@ export const SearchTicketUsingDateRange = (date1: any, date2: any, callBack: any
         },
     );
 };
+// get all uplode fail tickets
+
+export const getAllUploadFailServiceTickets = (callBack: any) => {
+    DB.searchData(
+      'SELECT * FROM TICKET WHERE Ticket_web_RefID=0',
+      [],
+      (resp: any, err: any) => {
+        callBack(resp, err);
+      },
+    );
+  };
 
 
 export const updateTicketAttendStatus = (ticketID: any, status: any, callBack: any) => {
@@ -427,6 +440,8 @@ export const updateUploadedServiceTicket = (ticketID: any, webFef: any, callBack
         },
     );
 };
+
+
 
 
 export const Update_serviceTicket_webRefId = (webFef: any, serviceCallId: any, callBack: any) => {
