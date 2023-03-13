@@ -121,3 +121,17 @@ export const updateExpences = (ticketID:any,ExpenseTypeID:any,Amount:any,Remark:
       },
     );
   };
+
+  export const getSyncExpences = (TicketID:any , callBack:any) => {
+
+    var status = "0";
+
+    DB.searchData(
+        'SELECT EXPENCES.*,TICKET.Ticket_web_RefID FROM EXPENCES INNER JOIN TICKET ON TICKET.ticketId = EXPENCE.ServiceCall_ID WHERE EXPENCES.ServiceCall_ID=? AND EXPENCES.isSync=?',
+        [TicketID,status],
+        (resp:any, err:any) => {
+            callBack(resp, err);
+        },
+    );
+
+  }
