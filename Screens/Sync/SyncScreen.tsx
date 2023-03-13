@@ -41,7 +41,7 @@ import { getCustomers } from '../../Services/Api/SyncService';
 import { getSpareParts } from '../../Services/Api/UserAuthService';
 import { err } from 'react-native-svg/lib/typescript/xml';
 import { get_ASYNC_USERID, getLoginUserName } from "../../Constant/AsynStorageFuntion";
-import { updateSycnServiceCAll, Update_webRefId, getAllUploadFailServiceCalls,getServiceById } from "../../SQLiteDatabaseAction/DBControllers/ServiceController";
+import { updateSycnServiceCAll, Update_webRefId, getAllUploadFailServiceCalls,getServiceById,getServiceId } from "../../SQLiteDatabaseAction/DBControllers/ServiceController";
 import { getAllUploadFailServiceTickets, updateUploadedServiceTicket } from "../../SQLiteDatabaseAction/DBControllers/TicketController";
 import moment from "moment";
 
@@ -1334,10 +1334,18 @@ const SyncScreen = (props: any) => {
           getServiceById(UnsavedArray[i].serviceId, (result: any) => {
              
               console.log('contact person +++++++++++', result[0].contact_name);
+              console.log('service web ref id', result[0].service_web_RefID);
              
               setContactPerson(result[0].contact_name);
-              setWebRefId(result[i].Ticket_web_RefID);
+              setWebRefId(result[i].service_web_RefID);
+             
           });
+
+          
+             
+            console.log('ticket web reffff +++++++++++',webRefId);
+           
+     
       
         const prams = {
           "UserName": UserNameUpload,

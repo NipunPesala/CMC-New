@@ -435,6 +435,7 @@ const NewServiceTicket = (props: any) => {
                 const AuthStr = 'Bearer '.concat(TOCKEN_KEY);
 
                 console.log('AuthStr####3%%%%%%%%%%%%%', UserIdKey);
+                console.log(' web refffff%%%%%%%%%%%%%', webRefId);
 
                 const prams = {
                     "UserName": UserNameUpload,
