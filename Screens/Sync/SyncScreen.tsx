@@ -1361,9 +1361,9 @@ const SyncScreen = (props: any) => {
               "content":  UnsavedArray[i].content,// done
               "assignTo":  UnsavedArray[i].assignTo, // done
               "attend_status": "Pending",// done
-              "created_At": moment().utcOffset('+05:30').format('YYYY-MM-DD kk:mm:ss'), //done
+              "created_At":moment().utcOffset('+05:30').format('YYYY-MM-DD kk:mm:ss'), //done
               "assignedByMobile": UserIdUpload, // done
-              "assignedToMobile":  UnsavedArray[i].assignTo,// done
+              "assignedToMobile":  UnsavedArray[i].technicianID,// done
               "contactPerson": contactPerson,// not
               "priority":  UnsavedArray[i].priority//done
             }
@@ -1387,7 +1387,7 @@ const SyncScreen = (props: any) => {
             // this use fro update sync flag as 1 
             console.log('<------service ticket id  --->', response.data[0].ServiceTicketId)
 
-            updateUploadedServiceTicket(UnsavedArray[i].serviceId, response.data[0].ServiceTicketId, (result: any) => {
+            updateUploadedServiceTicket(UnsavedArray[i].ticketId, response.data[0].ServiceTicketId, (result: any) => {
               console.log("ticket sync status,web ref update --------- ", result);
 
             });
