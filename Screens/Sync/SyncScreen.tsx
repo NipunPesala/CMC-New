@@ -1333,21 +1333,28 @@ const SyncScreen = (props: any) => {
 
        
         
-          getServiceById(UnsavedArray[i].serviceId, (result: any) => {
+          // getServiceById(UnsavedArray[i].serviceId, (result: any) => {
              
-              console.log('contact person +++++++++++', result[0].contact_name);
-              console.log('service web ref id', result[0].service_web_RefID);
+          //     console.log('contact person +++++++++++', result[0].contact_name);
+          //     console.log('service web ref id', result[0].service_web_RefID);
              
-              setContactPerson(result[0].contact_name);
-              setWebRefId(result[i].service_web_RefID);
-              webRefID2=result[i].service_web_RefID;
-              contactPerson2=result[0].contact_name;
+          //     setContactPerson(result[0].contact_name);
+          //     setWebRefId(result[i].service_web_RefID);
+          //     webRefID2=result[0].service_web_RefID;
+          //     contactPerson2=result[0].contact_name;
+              
              
-          });
+          // });
 
+          const result22:any = await new Promise((resolve, reject) => {
+            getServiceById(UnsavedArray[i].serviceId, (result: any) => {
+              resolve(result);
+            });
+          });
           
+          console.log('new try ___________++++++++',result22[0].service_web_RefID)
              
-            console.log('ticket web reffff +++++++++++',webRefId);
+          //  console.log('ticket web reffff +++++++++++',webRefId);
            
      
       
@@ -1358,7 +1365,7 @@ const SyncScreen = (props: any) => {
 
               "UserID": UserIdUpload, // done
               "ticketId":  UnsavedArray[i].ticketId, //done
-              "serviceId": webRefID2, // done
+              "serviceId": result22[0].service_web_RefID, // done
               "startDate":  UnsavedArray[i].startDate, // done
               "itemDescription":  UnsavedArray[i].itemDescription,// done
               "endDate":  UnsavedArray[i].endDate,//done
@@ -1368,15 +1375,16 @@ const SyncScreen = (props: any) => {
               "created_At":moment().utcOffset('+05:30').format('YYYY-MM-DD kk:mm:ss'), //done
               "assignedByMobile": UserIdUpload, // done
               "assignedToMobile":  UnsavedArray[i].technicianID,// done
-              "contactPerson": contactPerson2,// not
+              "contactPerson": result22[0].contact_name,// not
               "priority":  UnsavedArray[i].priority//done
             }
           ]
-          
+
         };
 
         console.log('--NEW Ticket UPLOAD JSON--', prams);
-
+        console.log('ticket web reffff +++++++++++',webRefID2);
+        console.log('ticket web contact person +++++++++++',contactPerson2);
         const response = await axios.post(URL, prams, {
           headers: headers
         });
