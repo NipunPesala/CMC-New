@@ -87,6 +87,8 @@ const NewServiceTicket = (props: any) => {
     const [attendStatus, setAttendStatus] = useState(0);
     const [isDesable, setIsDesable] = useState(false);
     const routeNav = useRoute();
+    
+
 
     const onChangePicker = (event, type) => {
         switch (type) {
@@ -100,6 +102,24 @@ const NewServiceTicket = (props: any) => {
             default:
                 break;
         }
+    }
+
+    const lodeserviceIdAfterSAddCall=()=>{
+            if(routeNav.params.serviceCallNav==''){
+                setselectServiceCallID(null);
+
+            }else{
+                setselectServiceCallID(routeNav.params.serviceCallNav);
+                getServiceCallCustomer(routeNav.params.serviceCallNav, (result: any) => {
+                    setCustomer(result[0].customer);
+                    setCallStartDate(result[0].start_date);
+                    setCallEndDate(result[0].end_date);
+        
+        
+                });
+            }
+                
+
     }
     const sendData = () => {
 
@@ -550,12 +570,13 @@ const NewServiceTicket = (props: any) => {
 
     useFocusEffect(
         React.useCallback(() => {
-
+           
             selectMode = route.params.mode;
             TiketID = route.params.ID;
             getLoginUserID();
             let date = moment().utcOffset('+05:30').format('YYYY-MM-DD')
             if (route.params.mode == 0) {
+                lodeserviceIdAfterSAddCall();
                 setTextHeader('Add New Service Ticket')
                 setButtonTitle('Add')
                 getServiceCallID();
@@ -827,6 +848,7 @@ const NewServiceTicket = (props: any) => {
                         valueField="serviceId"
                         placeholder={!isFocus ? 'Select Service Call ID' : '...'}
                         searchPlaceholder="Search Service Call ID "
+                        
                         value={selectServiceCallID}
                         onFocus={() => setIsFocus(true)}
                         onBlur={() => setIsFocus(false)}

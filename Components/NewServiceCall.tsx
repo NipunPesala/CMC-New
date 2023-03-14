@@ -347,7 +347,7 @@ const NewServiceCall = (props: any) => {
 
                     });
 
-                    navigation.navigate('Home');
+                    navigation.navigate('NewServiceTicket', { serviceCallNav: serviceId,mode:0 });
 
                 } else {
 
