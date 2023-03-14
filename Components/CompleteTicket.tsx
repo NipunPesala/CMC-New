@@ -38,6 +38,7 @@ let height = Dimensions.get("screen").height;
 import moment from 'moment';
 import { uplodeCompTicketAync } from "../SQLiteDatabaseAction/DBControllers/TicketController";
 import Mailer from 'react-native-mail';
+import { getSyncExpences } from '../SQLiteDatabaseAction/DBControllers/ExpencesController';
 var id: any;
 var serviceID: any;
 var UserNameUpload: any;
@@ -286,6 +287,7 @@ const CompleteTicket = () => {
       //console.log(id, "=====================================");
 
       getTicketWebRefID(res);
+      // uploadExpences();
 
       // setTicketID(id);
     });
@@ -327,20 +329,6 @@ const CompleteTicket = () => {
     setattend_status('3');
     SetAttendStatusUpload("Completed");
   };
-
-  const getLoginUserNameForUplode = () => {
-    getLoginUserName().then(res => {
-      UserNameUpload = res;
-      console.log('user Name --' + UserNameUpload);
-    })
-    get_ASYNC_USERID().then(res => {
-      UserIdUpload = res;
-      console.log('user id upload  --' + UserIdUpload);
-    })
-
-
-
-  }
 
   const UploadTicketComplete = () => {
     try {
@@ -726,3 +714,62 @@ const style = StyleSheet.create({
   },
 });
 export default CompleteTicket;
+
+export const uploadExpences = () => {
+
+  getLoginUserNameForUplode();
+
+  try {
+
+    getSyncExpences(id, (response: any) => {
+
+      console.log(" sync expenses -----------   ", response);
+
+      const objExpenceList: any[] = [];
+
+      for (let i = 0; i < response.length; ++i) {
+
+        const params = {
+          "expenceId": response[i].ExpenseRequestID,
+          "dateExpire": response[i].RelaventDate,
+          "expenseType": response[i].ExpenseTypeID,
+          "created_by": UserIdUpload,
+          "amount": parseFloat(response[i].Amount),
+          "remark": response[i].Remark,
+          "serviceId": response[i].Ticket_web_RefID
+        }
+
+        objExpenceList.push(params);
+
+
+      }
+      const paramarray = {
+        objExpenceList
+      }
+
+      console.log(" upload EXPENSEC JSON === ", paramarray);
+
+
+    });
+
+  } catch (error: any) {
+    Alert.alert(" Error", error);
+  }
+
+
+
+}
+
+export  const getLoginUserNameForUplode = () => {
+  getLoginUserName().then(res => {
+    UserNameUpload = res;
+    console.log('user Name --' + UserNameUpload);
+  })
+  get_ASYNC_USERID().then(res => {
+    UserIdUpload = res;
+    console.log('user id upload  --' + UserIdUpload);
+  })
+
+
+
+}

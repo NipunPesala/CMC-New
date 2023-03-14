@@ -353,44 +353,49 @@ const TicketDetails = (props: any) => {
     }
 
 
-    const setectSparePart = () => {
+    const setectSparePart = async () => {
         // selection("spareparts");
         // getSpareParts();
 
         // console.log("Ticket id ........ " , ticketID);
 
-
-        getALLTicketById(ticketID, async (result: any) => {
-
-            // console.log("db result " ,  result[0].attend_status);
-
-
-            if (result[0].attend_status == 1) {
-
-                // console.log("awaaaaaaaaaaa");
+        
+        await AsyncStorage.setItem(AsyncStorageConstants.SELECT_TICKET, 'false');
+        navigation.navigate("RequestBottomSheet");
 
 
-                await AsyncStorage.setItem(AsyncStorageConstants.SELECT_TICKET, 'false');
-                navigation.navigate("RequestBottomSheet");
 
-            } else {
+        // getALLTicketById(ticketID, async (result: any) => {
 
-                Alert.alert(
-                    "Failed...!",
-                    "Please start ticket..",
-                    [
-                        {
-                            text: "OK", onPress: () => {
-
-                            }
-                        }
-                    ]
-                );
+        //     // console.log("db result " ,  result[0].attend_status);
 
 
-            }
+        //     if (result[0].attend_status == 1) {
 
-        });
+        //         // console.log("awaaaaaaaaaaa");
+
+
+        //         await AsyncStorage.setItem(AsyncStorageConstants.SELECT_TICKET, 'false');
+        //         navigation.navigate("RequestBottomSheet");
+
+        //     } else {
+
+        //         Alert.alert(
+        //             "Failed...!",
+        //             "Please start ticket..",
+        //             [
+        //                 {
+        //                     text: "OK", onPress: () => {
+
+        //                     }
+        //                 }
+        //             ]
+        //         );
+
+
+        //     }
+
+        // });
     }
 
     useFocusEffect(

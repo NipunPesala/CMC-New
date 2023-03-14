@@ -98,30 +98,34 @@ const Expences = (isActive:any) => {
     }
     const onPress = () => {
 
-        console.log("  expences active ticket >>>>>>>>>>>>>>>>>>  ", isActive);
+        // console.log("  expences active ticket >>>>>>>>>>>>>>>>>>  ", isActive);
+
+        navigation.navigate('AddExpencesNew', {
+            type: "0",
+        });
         
 
-        if(isActive.isActive){
+        // if(isActive.isActive){
 
-            Alert.alert(
-                "Failed...!",
-                "Please start ticket..",
-                [
-                    {
-                        text: "OK", onPress: () => {
+        //     Alert.alert(
+        //         "Failed...!",
+        //         "Please start ticket..",
+        //         [
+        //             {
+        //                 text: "OK", onPress: () => {
 
-                        }
-                    }
-                ]
-            );
+        //                 }
+        //             }
+        //         ]
+        //     );
 
 
 
-        }else{
-            navigation.navigate('AddExpencesNew', {
-                type: "0",
-            });
-        }
+        // }else{
+        //     navigation.navigate('AddExpencesNew', {
+        //         type: "0",
+        //     });
+        // }
        
     }
 
