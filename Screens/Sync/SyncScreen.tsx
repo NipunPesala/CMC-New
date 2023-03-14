@@ -56,6 +56,8 @@ var ButtonTitle: any;
 
 var UserIdUpload: any;
 var UserNameUpload: any;
+var webRefID2:any;
+var contactPerson2:any;
 
 const SyncScreen = (props: any) => {
 
@@ -1338,6 +1340,8 @@ const SyncScreen = (props: any) => {
              
               setContactPerson(result[0].contact_name);
               setWebRefId(result[i].service_web_RefID);
+              webRefID2=result[i].service_web_RefID;
+              contactPerson2=result[0].contact_name;
              
           });
 
@@ -1354,7 +1358,7 @@ const SyncScreen = (props: any) => {
 
               "UserID": UserIdUpload, // done
               "ticketId":  UnsavedArray[i].ticketId, //done
-              "serviceId": webRefId, // done
+              "serviceId": webRefID2, // done
               "startDate":  UnsavedArray[i].startDate, // done
               "itemDescription":  UnsavedArray[i].itemDescription,// done
               "endDate":  UnsavedArray[i].endDate,//done
@@ -1364,10 +1368,11 @@ const SyncScreen = (props: any) => {
               "created_At":moment().utcOffset('+05:30').format('YYYY-MM-DD kk:mm:ss'), //done
               "assignedByMobile": UserIdUpload, // done
               "assignedToMobile":  UnsavedArray[i].technicianID,// done
-              "contactPerson": contactPerson,// not
+              "contactPerson": contactPerson2,// not
               "priority":  UnsavedArray[i].priority//done
             }
           ]
+          
         };
 
         console.log('--NEW Ticket UPLOAD JSON--', prams);
