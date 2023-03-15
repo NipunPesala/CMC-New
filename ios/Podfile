@@ -19,6 +19,8 @@ target 'CMCApp' do
     :hermes_enabled => false
   )
 
+  pod 'react-native-cameraroll', :path => '../node_modules/@react-native-camera-roll/camera-roll'
+
   target 'CMCAppTests' do
     inherit! :complete
     # Pods for testing

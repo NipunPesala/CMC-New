@@ -30,7 +30,9 @@ import { Colors } from "react-native-paper";
 import ImagePicker from 'react-native-image-crop-picker';
 import RNFS from 'react-native-fs';
 import base64 from 'base64-js';
+import { CameraRoll } from "@react-native-camera-roll/camera-roll";
 
+var imagePath='';
 type CustomPropTypes = {
     placeholder?: string;
     style?: any;
@@ -53,21 +55,21 @@ const AddAdditionalSpareParts = () => {
     const [ticketID, setTicketID] = useState("");
     const [requestID, setRequestID] = useState("");
     const width = Dimensions.get('screen').width;
-    const [cameraCaptureImg, setCameraCaptureImg] = useState();
+    const [cameraCaptureImg, setCameraCaptureImg] = useState(null);
     const [base64Img, setBase64Img] = useState();
 
-var id:any;
+    var id: any;
     useEffect(() => {
         const focusHandler = navigation.addListener('focus', () => {
-           
+
             getASYNC_CURRENT_TICKET_ID().then(res => {
                 console.log(res);
-                 id = res;
-                 setTicketID(id);
-                console.log(id,"=====================================");
+                id = res;
+                setTicketID(id);
+                console.log(id, "=====================================");
                 getAllSavedTicketSpareParts(res);
                 // setTicketID(id);
-    
+
             });
 
             getASYNC_CURRENT_SP_REQUEST_ID().then(res => {
@@ -122,14 +124,14 @@ var id:any;
                 let data = [
                     {
 
-                        SPRequestID:requestID,
+                        SPRequestID: requestID,
                         ticketId: ticketID,
                         name: "",
                         description: descriptionvalue,
                         qty: enterQty,
                         approveStatus: "1",
                         spType_ID: 2, //Additional :2 inventory :1
-                        SPartID: 0, 
+                        SPartID: 0,
                         creationdate: moment().utcOffset('+05:30').format('YYYY-MM-DD'),
                         isSync: "true",
 
@@ -140,6 +142,7 @@ var id:any;
                     console.log(result, "/ADD_ADDITIONAL_SPARE_PARTS SAVE");
 
                     if (result === "success") {
+                        CameraRoll.save(imagePath);
                         ToastAndroid.show("Additional Spare Parts saved success ", ToastAndroid.SHORT);
                         slideOutModal();
                         getAllSavedTicketSpareParts(ticketID);
@@ -224,10 +227,10 @@ var id:any;
     };
 
 
-    const getAllSavedTicketSpareParts = (data:any) => {
+    const getAllSavedTicketSpareParts = (data: any) => {
         try {
 
-            getALLAdditionalSpareTiketdetasils(data,(result: any) => {
+            getALLAdditionalSpareTiketdetasils(data, (result: any) => {
                 setlistdata(result);
             });
         } catch (error) {
@@ -241,35 +244,46 @@ var id:any;
         getAllSavedTicketSpareParts(ticketID);
     }
 
-    const takePhotoFromCamera=()=>{
+    const takePhotoFromCamera = async() => {
         console.log('check camera button')
-        ImagePicker.openCamera({
+        try{
+        const imageC=await ImagePicker.openCamera({
             width: 300,
             height: 400,
             cropping: true,
             includeBase64: true,
-          }).then(image => {
+        }).then(image => {
             //console.log(image);
             setCameraCaptureImg(image.path);
             setBase64Img(image.data);
-            const Base64String=image.data;
-            console.log('Base 64 image-'+Base64String);
+            const Base64String = image.data;
+            console.log('Base 64 image-' + Base64String);
+            imagePath=image.path;
+           // CameraRoll.save(cameraCaptureImg);
 
+        });
+        
+       console.log('file path state-',imagePath);
+    }catch(error){
 
-          });
-
+        console.log('image_error+++++++++++++++++',error);
     }
-    
+    }
+
+    const remove_image=()=>{
+        setCameraCaptureImg(null);
+    }
+
 
     return (
         <SafeAreaView style={comStyles.CONTAINER}>
-         <Header title="Additional Spare Parts" isBtn={true} btnOnPress={() => navigation.goBack()} />
+            <Header title="Additional Spare Parts" isBtn={true} btnOnPress={() => navigation.goBack()} />
             <View style={{ padding: 5 }} />
-        <View style={comStyles.CONTAINER}>
+            <View style={comStyles.CONTAINER}>
 
-            {/* <TouchableOpacity style={style.dashStyle} onPress={() => navigation.navigate("RequestBottomSheet")} /> */}
+                {/* <TouchableOpacity style={style.dashStyle} onPress={() => navigation.navigate("RequestBottomSheet")} /> */}
 
-            {/* <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", marginTop: 10, }}>
+                {/* <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", marginTop: 10, }}>
 
                 <ActionButton title="Cancel" style={style.loginBtn} textStyle={style.txtStyle} onPress={() => navigation.navigate("RequestBottomSheet")} />
 
@@ -280,155 +294,160 @@ var id:any;
 
 
 
-            <View style={{ flexDirection: 'row', backgroundColor: comStyles.COLORS.TICKET_HEADER_ASH, justifyContent: 'center', alignItems: 'center', padding: 5, marginTop: 5, }}>
-                <Text style={{ flex: 2, textAlign: "left" }}>Description</Text>
-                <Text style={{ flex: 1, textAlign: "left" }}>Req Qty</Text>
-                <Text style={{ flex: 1, textAlign: "right" }}></Text>
-            </View>
-
-            <FlatList
-                showsHorizontalScrollIndicator={false}
-                // data={Arrays.SelectPackage.Wash.filter(ob => ob.extras == true)}
-                data={listdata}
-                style={{ marginTop: 5, marginBottom: 5, flex: 2 }}
-                renderItem={({ item }) => {
-
-                    return (
-
-                        <AdditionalSparepartsItem
-                            id={item.spId}
-                            description={item.description}
-                            quantity={item.qty}
-                            is_icon={true}
-                            onPressIcon={() => deleteItem(item.spId)}
-                        />
-
-                        // <AdditionalSparepartsItem
-                        //     id={item.spId}
-                        //     description={item.description}
-                        //     quantity={item.qty}
-                        //     is_icon={true}
-                        // />
-
-                    );
-
-
-
-
-
-                }}
-
-                keyExtractor={item => `${item.id}`}
-            />
-
-            <ActionButton
-                title="Add Another Product"
-                style={style.partsBtn}
-                onPress={() => slideInModal()}
-                textStyle={{ color: comStyles.COLORS.ICON_BLUE, }}
-            />
-
-
-            {/* ........................................ add new prodcut modal start.......................................... */}
-
-            <Animated.View
-                style={{
-                    ...StyleSheet.absoluteFillObject,
-                    top: modalStyle,
-                    backgroundColor: '#fff',
-                    zIndex: 20,
-                    borderRadius: 10,
-                    elevation: 20,
-                    paddingTop: 10,
-                    paddingBottom: 20,
-                    marginLeft: 0,
-                    ...Platform.select({
-                        ios: {
-                            paddingTop: 50
-                        }
-                    })
-                }}>
-             <ScrollView style={style.scrollStyle} nestedScrollEnabled={true}>
-                <View style={styles.modalCont}>
-                
-
-
-                    <View style={styles.modalMainContainer}>
-
-                        <View style={styles.modalMainContainer}>
-                            <Text style={{
-                                fontFamily: comStyles.FONT_FAMILY.BOLD,
-                                color: comStyles.COLORS.HEADER_BLACK, fontSize: 15, marginTop: 10
-                            }
-                            }>Add the description and qty</Text>
-                        </View>
-                        <View style={{marginLeft:60,marginRight:60}}>
-                        <InputText
-                            style={styles.inputTextStyle}
-                            placeholder="Enter Description"
-                            max={50}
-                            stateValue={descriptionvalue}
-                            setState={
-                                (descriptionvalue) => setdescriptionvalue(descriptionvalue)
-                            }
-                        />
-                        <InputText
-                            style={styles.inputTextStyle}
-                            placeholder="Enter Qty"
-                            stateValue={enterQty}
-                            keyType='numeric'
-                            max={8}
-                            setState={
-                                (enterQty) => setenterQty(enterQty)}
-                        />
-                        </View>
-                            <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center",marginBottom: 10}}>
-                        <ActionButton title="Capture image"
-                                onPress={() => takePhotoFromCamera()}
-                                style={{ flex: 0.5 , backgroundColor: "#17A2B8",}} />    
-                        </View>
-                        <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center",}}>
-                        
-                            <Image
-                                style={{width: 225, height: 175,}}
-                                //source={require('../assets/images/out24.png')}
-                                source={{
-                                    uri:cameraCaptureImg,
-                                }}
-                                 
-                                
-                            /> 
-                        </View>
-                        <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", marginTop: 10, }}>
-
-                            <ActionButton title="Cancel"
-                                style={style.loginBtn}
-                                textStyle={style.txtStyle}
-                                onPress={() => close()} />
-
-
-                            <ActionButton title="Add"
-                                onPress={() => saveTickrSpareParts()}
-                                style={{ flex: 0.5 }} />
-
-                        </View>
-                        <View style={{ padding:30 }} />
-                        
-
-
-                    </View>
-
-
-                    {/* ........................................ add new prodcut  modal end.......................................... */}
-
-              
+                <View style={{ flexDirection: 'row', backgroundColor: comStyles.COLORS.TICKET_HEADER_ASH, justifyContent: 'center', alignItems: 'center', padding: 5, marginTop: 5, }}>
+                    <Text style={{ flex: 2, textAlign: "left" }}>Description</Text>
+                    <Text style={{ flex: 1, textAlign: "left" }}>Req Qty</Text>
+                    <Text style={{ flex: 1, textAlign: "right" }}></Text>
                 </View>
 
-                </ScrollView>
-            </Animated.View>
+                <FlatList
+                    showsHorizontalScrollIndicator={false}
+                    // data={Arrays.SelectPackage.Wash.filter(ob => ob.extras == true)}
+                    data={listdata}
+                    style={{ marginTop: 5, marginBottom: 5, flex: 2 }}
+                    renderItem={({ item }) => {
 
-            <View style={{ padding:30 }} />
-        </View>
+                        return (
+
+                            <AdditionalSparepartsItem
+                                id={item.spId}
+                                description={item.description}
+                                quantity={item.qty}
+                                is_icon={true}
+                                onPressIcon={() => deleteItem(item.spId)}
+                            />
+
+                            // <AdditionalSparepartsItem
+                            //     id={item.spId}
+                            //     description={item.description}
+                            //     quantity={item.qty}
+                            //     is_icon={true}
+                            // />
+
+                        );
+
+
+
+
+
+                    }}
+
+                    keyExtractor={item => `${item.id}`}
+                />
+
+                <ActionButton
+                    title="Add Another Product"
+                    style={style.partsBtn}
+                    onPress={() => slideInModal()}
+                    textStyle={{ color: comStyles.COLORS.ICON_BLUE, }}
+                />
+
+
+                {/* ........................................ add new prodcut modal start.......................................... */}
+
+                <Animated.View
+                    style={{
+                        ...StyleSheet.absoluteFillObject,
+                        top: modalStyle,
+                        backgroundColor: '#fff',
+                        zIndex: 20,
+                        borderRadius: 10,
+                        elevation: 20,
+                        paddingTop: 10,
+                        paddingBottom: 20,
+                        marginLeft: 0,
+                        ...Platform.select({
+                            ios: {
+                                paddingTop: 50
+                            }
+                        })
+                    }}>
+                    <ScrollView style={style.scrollStyle} nestedScrollEnabled={true}>
+                        <View style={styles.modalCont}>
+
+
+
+                            <View style={styles.modalMainContainer}>
+
+                                <View style={styles.modalMainContainer}>
+                                    <Text style={{
+                                        fontFamily: comStyles.FONT_FAMILY.BOLD,
+                                        color: comStyles.COLORS.HEADER_BLACK, fontSize: 15, marginTop: 10
+                                    }
+                                    }>Add the description and qty</Text>
+                                </View>
+                                <View style={{ marginLeft: 60, marginRight: 60 }}>
+                                    <InputText
+                                        style={styles.inputTextStyle}
+                                        placeholder="Enter Description"
+                                        max={50}
+                                        stateValue={descriptionvalue}
+                                        setState={
+                                            (descriptionvalue) => setdescriptionvalue(descriptionvalue)
+                                        }
+                                    />
+                                    <InputText
+                                        style={styles.inputTextStyle}
+                                        placeholder="Enter Qty"
+                                        stateValue={enterQty}
+                                        keyType='numeric'
+                                        max={8}
+                                        setState={
+                                            (enterQty) => setenterQty(enterQty)}
+                                    />
+                                </View>
+                                <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", marginBottom: 10, marginLeft: 20, marginRight: 20 }}>
+                                    <ActionButton title="Capture image"
+                                        onPress={() => takePhotoFromCamera()}
+                                        style={{ flex: 0.5, backgroundColor: "#17A2B8" , marginRight: 10}} />
+                                    <ActionButton title="Remove image"
+                                        onPress={() => remove_image()}
+                                        style={{ flex: 0.5, backgroundColor: "#FE6464", }} />
+                                </View>
+
+                                <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", }}>
+
+                                    <Image
+                                        style={{ width: 225, height: 175, }}
+                                        //source={require('../assets/images/out24.png')}
+                                        source={{
+                                            uri: cameraCaptureImg,
+                                        }}
+
+
+                                    />
+                                </View>
+
+                                <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", marginTop: 10, }}>
+
+                                    <ActionButton title="Cancel"
+                                        style={style.loginBtn}
+                                        textStyle={style.txtStyle}
+                                        onPress={() => close()} />
+
+
+                                    <ActionButton title="Add"
+                                        onPress={() => saveTickrSpareParts()}
+                                        style={{ flex: 0.5 }} />
+
+                                </View>
+                                <View style={{ padding: 30 }} />
+
+
+
+                            </View>
+
+
+                            {/* ........................................ add new prodcut  modal end.......................................... */}
+
+
+                        </View>
+
+                    </ScrollView>
+                </Animated.View>
+
+                <View style={{ padding: 30 }} />
+            </View>
         </SafeAreaView>
 
     );
@@ -461,10 +480,10 @@ const style = StyleSheet.create({
         flex: 0.5,
         marginRight: 10,
     },
-    cameraBtn:{
-       // backgroundColor: '#17A2B8',
-       color: comStyles.COLORS.RED_COLOR,
-       margin:"2"
+    cameraBtn: {
+        // backgroundColor: '#17A2B8',
+        color: comStyles.COLORS.RED_COLOR,
+        margin: "2"
     },
     partsBtn: {
         backgroundColor: comStyles.COLORS.WHITE,
