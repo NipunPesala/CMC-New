@@ -18,6 +18,7 @@ import {
   updateExpences,
   updateSycnExpences,
   getLastExpRequestId,
+  getSyncExpences,
 } from '../SQLiteDatabaseAction/DBControllers/ExpencesController';
 import { Dropdown } from 'react-native-element-dropdown';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -35,6 +36,10 @@ var id: any;
 var loginUser: any;
 var type: any;
 var exid: any;
+var UserNameUpload: any;
+var UserIdUpload: any;
+var TOCKEN_KEY: any;
+
 const AddExpencesNew = (props: any) => {
   const { navigation, route } = props;
   let dropDownAlertRef = useRef();
@@ -61,7 +66,7 @@ const AddExpencesNew = (props: any) => {
     const currentDate = selectedDate;
     setShow(Platform.OS === 'ios');
     if (dateType == 'fromDate') {
-      setStartDate(moment(new Date(currentDate)).format('DD-MM-YYYY'));
+      setStartDate(moment(new Date(currentDate)).format('YYYY-MM-DD'));
     } else {
     }
   };
@@ -86,7 +91,7 @@ const AddExpencesNew = (props: any) => {
         CreateDate: craeteDate,
         RelaventDate: startDate,
         status: 0,
-        isSync: false,
+        isSync: "0",
       },
     ];
     // if(!/^[0-9]+$/.test(amount)){
@@ -133,6 +138,7 @@ const AddExpencesNew = (props: any) => {
       startDate,
       '0',
       exid,
+      "0",
       (result: any) => {
         // console.log(result, '!!!!!!!!!!!!!!!!!!!!');
         // ToastAndroid.show('Expences Save Success ', ToastAndroid.SHORT);
@@ -152,6 +158,7 @@ const AddExpencesNew = (props: any) => {
         if (result === 'success') {
          
           // navigation.goBack();
+          uploadExpences(TicketID);
           navigation.navigate('TicketDetails', {
             tab: 'Expences',
           });
@@ -246,6 +253,7 @@ const AddExpencesNew = (props: any) => {
     React.useCallback(() => {
 
       type = route.params.type;
+      getLoginUserNameForUplode();
 
       if (type == '1') {
 
@@ -321,79 +329,79 @@ const AddExpencesNew = (props: any) => {
     });
   };
 
-  const UploadExpences = () => {
-    try {
+  // const UploadExpences = () => {
+  //   try {
 
-      get_ASYNC_TOCKEN().then(res => {
-        TOCKEN_KEY = res;
-        const AuthStr = 'Bearer '.concat(TOCKEN_KEY);
+  //     get_ASYNC_TOCKEN().then(res => {
+  //       TOCKEN_KEY = res;
+  //       const AuthStr = 'Bearer '.concat(TOCKEN_KEY);
 
-        // console.log( 'AuthStr####3%%%%%%%%%%%%%',AuthStr);
+  //       // console.log( 'AuthStr####3%%%%%%%%%%%%%',AuthStr);
 
-        const prams = {
+  //       const prams = {
 
-          "objServiceCallList": [
-            {
-              "ServiceCall_ID": TicketID,  //need to code
-              "ExpenseTypeID": expencesTypeId,
-              "Amount": amount,
-              "Remark": remark,
-              "CreatedBy": loginUser,
-              "CreateDate": craeteDate,
-              "RelaventDate": startDate,
-              "status": 0,
+  //         "objServiceCallList": [
+  //           {
+  //             "ServiceCall_ID": TicketID,  //need to code
+  //             "ExpenseTypeID": expencesTypeId,
+  //             "Amount": amount,
+  //             "Remark": remark,
+  //             "CreatedBy": loginUser,
+  //             "CreateDate": craeteDate,
+  //             "RelaventDate": startDate,
+  //             "status": 0,
 
-            }
-          ]
-        }
+  //           }
+  //         ]
+  //       }
 
-        console.log('--Expences Uplod json--', prams);
+  //       console.log('--Expences Uplod json--', prams);
 
-        const headers = {
-          'Authorization': AuthStr
-        }
-        const URL = BASE_URL_GET + "expence";
-        axios.post(URL, prams, {
-          headers: headers
-        })
-          .then((response) => {
-            console.log("[s][t][a][t][u][s][]", response.status);
-            if (response.status == 200) {
+  //       const headers = {
+  //         'Authorization': AuthStr
+  //       }
+  //       const URL = BASE_URL_GET + "expence";
+  //       axios.post(URL, prams, {
+  //         headers: headers
+  //       })
+  //         .then((response) => {
+  //           console.log("[s][t][a][t][u][s][]", response.status);
+  //           if (response.status == 200) {
 
-              console.log('<------ NEW SERVICE CALL UPLOAD Method --->', response.data)
-              console.log(response.data.UniqueNo);
+  //             console.log('<------ NEW SERVICE CALL UPLOAD Method --->', response.data)
+  //             console.log(response.data.UniqueNo);
 
-              if (response.data.ErrorId = 0) {
-                // this use fro update sync flag as 1 
-                updateSycnExpences(response.data.UniqueNo, (result: any) => {
+  //             if (response.data.ErrorId = 0) {
+  //               // this use fro update sync flag as 1 
+  //               updateSycnExpences(response.data.UniqueNo, (result: any) => {
 
-                });
-                dropDownAlertRef.alertWithType('error', 'Error', response.data.ErrorDescription);
-              }
+  //               });
+  //               dropDownAlertRef.alertWithType('error', 'Error', response.data.ErrorDescription);
+  //             }
 
-            } else {
-              Alert.alert(
-                "Invalid Details!",
-                "Bad Request",
-                [
-                  { text: "OK", onPress: () => console.log("OK Pressed") }
-                ]
-              );
+  //           } else {
+  //             Alert.alert(
+  //               "Invalid Details!",
+  //               "Bad Request",
+  //               [
+  //                 { text: "OK", onPress: () => console.log("OK Pressed") }
+  //               ]
+  //             );
 
-            }
+  //           }
 
-          })
-          .catch((error) => {
-            Alert.alert('error', error.response)
+  //         })
+  //         .catch((error) => {
+  //           Alert.alert('error', error.response)
 
-          })
+  //         })
 
-      })
-    } catch (error) {
-      console.log(">>>>>>>>>>>>", error);
+  //     })
+  //   } catch (error) {
+  //     console.log(">>>>>>>>>>>>", error);
 
-    }
-  };
+  //   }
+  // };
 
   const generateRequestID = () => {
 
@@ -666,3 +674,60 @@ const style = StyleSheet.create({
     fontSize: 14,
   },
 });
+
+export  const getLoginUserNameForUplode = () => {
+  getLoginUserName().then(res => {
+    UserNameUpload = res;
+    console.log('user Name --' + UserNameUpload);
+  })
+  get_ASYNC_USERID().then(res => {
+    UserIdUpload = res;
+    console.log('user id upload  --' + UserIdUpload);
+  })
+
+}
+
+export const uploadExpences = (TicketID:any) => {
+
+  try {
+
+    getSyncExpences(TicketID, (response: any) => {
+
+      console.log(" sync expenses -----------   ", response);
+
+      const objExpenceList: any[] = [];
+
+      for (let i = 0; i < response.length; ++i) {
+
+        const params = {
+          "expenceId": response[i].ExpenseRequestID,
+          "dateExpire": response[i].RelaventDate,
+          "expenseType": response[i].ExpenseTypeID,
+          "createdBy": UserIdUpload,
+          "amount": parseFloat(response[i].Amount),
+          "remark": response[i].Remark,
+          "ticketId": response[i].Ticket_web_RefID,
+          "expenceCode": response[i].ExpenseRequestID,
+          "createdAt" : response[i].CreateDate
+        }
+
+        objExpenceList.push(params);
+
+
+      }
+      const paramarray = {
+        objExpenceList
+      }
+
+      console.log(" upload EXPENSEC JSON === ", paramarray);
+
+
+    });
+
+  } catch (error: any) {
+    Alert.alert(" Error", error);
+  }
+
+
+
+}

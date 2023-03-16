@@ -101,10 +101,10 @@ export const getAllExpences = (data:any,callBack:any) => {
   };
 
   
-export const updateExpences = (ticketID:any,ExpenseTypeID:any,Amount:any,Remark:any,CreatedBy:any,CreateDate:any,RelaventDate:any,status:any,id:any,callBack:any) => {
+export const updateExpences = (ticketID:any,ExpenseTypeID:any,Amount:any,Remark:any,CreatedBy:any,CreateDate:any,RelaventDate:any,status:any,id:any,syncStatus:any,callBack:any) => {
     DB.updateData(
-      'UPDATE EXPENCES SET ServiceCall_ID=?,ExpenseTypeID=?,Amount=?,Remark=?,CreatedBy=?,CreateDate=?,RelaventDate=?,status=? WHERE _Id=?',
-      [ticketID,ExpenseTypeID,Amount,Remark,CreatedBy,CreateDate,RelaventDate,status,id],
+      'UPDATE EXPENCES SET ServiceCall_ID=?,ExpenseTypeID=?,Amount=?,Remark=?,CreatedBy=?,CreateDate=?,RelaventDate=?,status=?,isSync=? WHERE _Id=?',
+      [ticketID,ExpenseTypeID,Amount,Remark,CreatedBy,CreateDate,RelaventDate,status,id,syncStatus],
       (resp:any, err:any) => {
         callBack(resp, err);
       },
@@ -127,7 +127,7 @@ export const updateExpences = (ticketID:any,ExpenseTypeID:any,Amount:any,Remark:
     var status = "0";
 
     DB.searchData(
-        'SELECT EXPENCES.*,TICKET.Ticket_web_RefID FROM EXPENCES INNER JOIN TICKET ON TICKET.ticketId = EXPENCE.ServiceCall_ID WHERE EXPENCES.ServiceCall_ID=? AND EXPENCES.isSync=?',
+        'SELECT EXPENCES.*,TICKET.Ticket_web_RefID FROM EXPENCES INNER JOIN TICKET ON TICKET.ticketId = EXPENCES.ServiceCall_ID WHERE EXPENCES.ServiceCall_ID=? AND EXPENCES.isSync=?',
         [TicketID,status],
         (resp:any, err:any) => {
             callBack(resp, err);

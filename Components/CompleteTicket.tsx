@@ -715,51 +715,6 @@ const style = StyleSheet.create({
 });
 export default CompleteTicket;
 
-export const uploadExpences = () => {
-
-  getLoginUserNameForUplode();
-
-  try {
-
-    getSyncExpences(id, (response: any) => {
-
-      console.log(" sync expenses -----------   ", response);
-
-      const objExpenceList: any[] = [];
-
-      for (let i = 0; i < response.length; ++i) {
-
-        const params = {
-          "expenceId": response[i].ExpenseRequestID,
-          "dateExpire": response[i].RelaventDate,
-          "expenseType": response[i].ExpenseTypeID,
-          "created_by": UserIdUpload,
-          "amount": parseFloat(response[i].Amount),
-          "remark": response[i].Remark,
-          "serviceId": response[i].Ticket_web_RefID
-        }
-
-        objExpenceList.push(params);
-
-
-      }
-      const paramarray = {
-        objExpenceList
-      }
-
-      console.log(" upload EXPENSEC JSON === ", paramarray);
-
-
-    });
-
-  } catch (error: any) {
-    Alert.alert(" Error", error);
-  }
-
-
-
-}
-
 export  const getLoginUserNameForUplode = () => {
   getLoginUserName().then(res => {
     UserNameUpload = res;
@@ -769,7 +724,5 @@ export  const getLoginUserNameForUplode = () => {
     UserIdUpload = res;
     console.log('user id upload  --' + UserIdUpload);
   })
-
-
 
 }

@@ -9,39 +9,53 @@ import {
 import ActionButton from "./ActionButton";
 import ComStyles from "../Constant/Components.styles";
 import { FlatList } from "react-native-gesture-handler";
-import { getAllExpences, DeleteExpences } from "../SQLiteDatabaseAction/DBControllers/ExpencesController"
-import { useNavigation } from '@react-navigation/native';
+import { getAllExpences, DeleteExpences, getSyncExpences } from "../SQLiteDatabaseAction/DBControllers/ExpencesController"
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import ListBox from "./ListBox";
 import { Text } from "react-native-paper";
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import ComponentsStyles from "../Constant/Components.styles";
-import { getLoginUserName, getASYNC_CURRENT_TICKET_ID } from "../Constant/AsynStorageFuntion"
+import { getLoginUserName, getASYNC_CURRENT_TICKET_ID, get_ASYNC_USERID } from "../Constant/AsynStorageFuntion"
 
 var ticketID:any;
+
 const Expences = (isActive:any) => {
     const navigation = useNavigation();
     const [ExList, setExList] = useState([]);
-    useEffect(() => {     
-        getASYNC_CURRENT_TICKET_ID().then(res => {
-            ticketID =res;
-            Load_All_Expences(res);
-        }); 
-            
-            console.log("fffffffffffff");
-            
-    }, []);
 
-    useEffect(() => {
-        const focusHandler = navigation.addListener('focus', () => {
+
+    // useEffect(() => {     
+    //     getASYNC_CURRENT_TICKET_ID().then(res => {
+    //         ticketID =res;
+    //         Load_All_Expences(res);
+    //     }); 
+            
+    //         console.log("fffffffffffff");
+            
+    // }, []);
+
+    // useEffect(() => {
+    //     const focusHandler = navigation.addListener('focus', () => {
+    //         getASYNC_CURRENT_TICKET_ID().then(res => {
+    //             ticketID =res;
+    //             Load_All_Expences(res);
+    //         }); 
+    //     });
+    //     return focusHandler;
+
+    // }, [navigation]);
+
+
+    useFocusEffect(
+        React.useCallback(() => {
+
             getASYNC_CURRENT_TICKET_ID().then(res => {
                 ticketID =res;
                 Load_All_Expences(res);
             }); 
-        });
-        return focusHandler;
 
-    }, [navigation]);
-
+        },[])
+    );
 
 
     const DeleteEx = (data: any) => {
@@ -211,3 +225,8 @@ const styles = StyleSheet.create({
         flex: 1
     }
 });
+
+
+
+
+  
