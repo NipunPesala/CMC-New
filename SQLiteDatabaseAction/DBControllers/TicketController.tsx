@@ -418,6 +418,20 @@ export const updateActualendDate = (ticketID: any, Sdate: any, callBack: any) =>
         },
     );
 };
+
+////// get web ref id for spare part uplode 
+export const getWebRefIdByServiceId = (data: any, callBack: any) => {
+
+    DB.searchData(
+        "select * from TICKET  where ticketId=?",
+        [data],
+        (resp: any, err: any) => {
+            callBack(resp, err);
+
+        },
+    );
+
+}
 //====================================================
 export const updateSyncServiceTicket = (ticketID: any, callBack: any) => {
     var status = 1;
@@ -575,6 +589,18 @@ export const getAll_Data = (callBack: any) => {
     );
 
 }
+
+//update sync spare part sync state
+export const updateSycncSparepart = (ticketID: any, callBack: any) => {
+  
+    DB.updateData(
+      'UPDATE TICKET_SPARE_PARTS SET isSync=2 WHERE ticketId=?',
+      [ticketID],
+      (resp: any, err: any) => {
+        callBack(resp, err);
+      },
+    );
+  }
 
 export const getSearchSparePart = (txt: String, callBack: any) => {
     DB.searchData(

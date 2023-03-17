@@ -175,7 +175,7 @@ const RequestBottomSheet = () => {
 
             if (TicketID != "") {
 
-                navigation.navigate("AddAdditionalSpareParts")
+                navigation.navigate("AddAdditionalSpareParts",{ ticketIdNav: TicketID,sparePartIdNav:RequestID })
 
             } else {
 

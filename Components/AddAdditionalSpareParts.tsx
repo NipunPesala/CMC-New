@@ -18,13 +18,13 @@ import ActionButton from "./ActionButton";
 import comStyles from "../Constant/Components.styles";
 //import { spareparts, additionalSpareParts } from "../Constant/DummyData";
 import AdditionalSparepartsItem from "../SubComponents/AdditionalSparePartItem";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import InputText from "./InputText";
 import IconA from 'react-native-vector-icons/Ionicons';
 import moment from "moment";
-import { deleteAllSparePartsReleventTickets, getALLAdditionalSpareTiketdetasils, saveTicketSpareparts } from "../SQLiteDatabaseAction/DBControllers/TicketController";
+import { deleteAllSparePartsReleventTickets, getALLAdditionalSpareTiketdetasils, saveTicketSpareparts, getWebRefIdByServiceId, updateSycncSparepart } from "../SQLiteDatabaseAction/DBControllers/TicketController";
 import ListBox from "./ListBox";
-import { getASYNC_CURRENT_SP_REQUEST_ID, getASYNC_CURRENT_TICKET_ID } from "../Constant/AsynStorageFuntion"
+import { getASYNC_CURRENT_SP_REQUEST_ID, get_ASYNC_TOCKEN, get_ASYNC_USERID,getASYNC_CURRENT_TICKET_ID } from "../Constant/AsynStorageFuntion"
 import Header from "./Header";
 import { Colors } from "react-native-paper";
 import ImagePicker from 'react-native-image-crop-picker';
@@ -32,7 +32,9 @@ import RNFS from 'react-native-fs';
 import base64 from 'base64-js';
 import { CameraRoll } from "@react-native-camera-roll/camera-roll";
 
-var imagePath='';
+import { BASE_URL_GET, } from "../Constant/Commen_API_Url";
+import axios from "axios";
+var imagePath = '';
 type CustomPropTypes = {
     placeholder?: string;
     style?: any;
@@ -43,6 +45,12 @@ type CustomPropTypes = {
     icon_name?: string;
 }
 var reqID: any;
+var TOCKEN_KEY: any;
+var TicketIdNav: any;
+var SparePartIdNav: any;
+var UserIdUpload: any;
+var TicketWebRefId: any;
+
 const AddAdditionalSpareParts = () => {
 
     const navigation = useNavigation();
@@ -57,9 +65,17 @@ const AddAdditionalSpareParts = () => {
     const width = Dimensions.get('screen').width;
     const [cameraCaptureImg, setCameraCaptureImg] = useState(null);
     const [base64Img, setBase64Img] = useState();
+    const routeNav = useRoute();
 
     var id: any;
     useEffect(() => {
+        TicketIdNav = routeNav.params.ticketIdNav;
+        SparePartIdNav = routeNav.params.sparePartIdNav;
+        getserviceTiketWebID();
+        get_ASYNC_USERID().then(res => {
+            UserIdUpload = res;
+            console.log('user id upload  --' + UserIdUpload);
+        });
         const focusHandler = navigation.addListener('focus', () => {
 
             getASYNC_CURRENT_TICKET_ID().then(res => {
@@ -115,6 +131,15 @@ const AddAdditionalSpareParts = () => {
     //     }
     //   };
 
+    const getserviceTiketWebID = () => {
+
+        getWebRefIdByServiceId(TicketIdNav, (result: any) => {
+            console.log('get web ref idd=======================', result);
+            TicketWebRefId = result[0].Ticket_web_RefID;
+            console.log('get web ref idd variable =======================', TicketWebRefId);
+            // setlistdata(result);
+        });
+    }
 
     const saveTickrSpareParts = () => {
 
@@ -133,7 +158,7 @@ const AddAdditionalSpareParts = () => {
                         spType_ID: 2, //Additional :2 inventory :1
                         SPartID: 0,
                         creationdate: moment().utcOffset('+05:30').format('YYYY-MM-DD'),
-                        isSync: "true",
+                        isSync: "0",
 
                     }
                 ]
@@ -142,6 +167,8 @@ const AddAdditionalSpareParts = () => {
                     console.log(result, "/ADD_ADDITIONAL_SPARE_PARTS SAVE");
 
                     if (result === "success") {
+                        console.log("inside if++++++");
+                       // UploadAdditionalSparePart();
                         CameraRoll.save(imagePath);
                         ToastAndroid.show("Additional Spare Parts saved success ", ToastAndroid.SHORT);
                         slideOutModal();
@@ -244,35 +271,125 @@ const AddAdditionalSpareParts = () => {
         getAllSavedTicketSpareParts(ticketID);
     }
 
-    const takePhotoFromCamera = async() => {
+    const takePhotoFromCamera = async () => {
         console.log('check camera button')
-        try{
-        const imageC=await ImagePicker.openCamera({
-            width: 300,
-            height: 400,
-            cropping: true,
-            includeBase64: true,
-        }).then(image => {
-            //console.log(image);
-            setCameraCaptureImg(image.path);
-            setBase64Img(image.data);
-            const Base64String = image.data;
-            console.log('Base 64 image-' + Base64String);
-            imagePath=image.path;
-           // CameraRoll.save(cameraCaptureImg);
+        try {
+            const imageC = await ImagePicker.openCamera({
+                width: 300,
+                height: 400,
+                cropping: true,
+                includeBase64: true,
+            }).then(image => {
+                //console.log(image);
+                setCameraCaptureImg(image.path);
+                setBase64Img(image.data);
+                const Base64String = image.data;
+                console.log('Base 64 image-' + Base64String);
+                imagePath = image.path;
+                // CameraRoll.save(cameraCaptureImg);
 
-        });
-        
-       console.log('file path state-',imagePath);
-    }catch(error){
+            });
 
-        console.log('image_error+++++++++++++++++',error);
+            console.log('file path state-', imagePath);
+        } catch (error) {
+
+            console.log('image_error+++++++++++++++++', error);
+        }
     }
-    }
 
-    const remove_image=()=>{
+    const remove_image = () => {
         setCameraCaptureImg(null);
     }
+
+    const UploadAdditionalSparePart = () => {
+        // console.log('this is user ID --------------',UserIdKey);
+         try {
+ 
+             get_ASYNC_TOCKEN().then(res => {
+                 TOCKEN_KEY = res;
+                 const AuthStr = 'Bearer '.concat(TOCKEN_KEY);
+ 
+ 
+                 const prams = {
+ 
+                     "objSparePartList": [
+                         {
+                             "sparePartCode":SparePartIdNav,// done
+                             "remark": "", 
+                             "content": "",
+                             "secretary": "",
+                             "createdBy": UserIdUpload,// done
+                             "ticketId": TicketWebRefId,
+                             "createdAt": moment().utcOffset('+05:30').format('YYYY-MM-DD kk:mm:ss'), // done
+                             "inventory": [
+ 
+                             ],
+                             "additional": [
+                                 {
+                                     "description": descriptionvalue,// done
+                                     "remark": "",
+                                     "qty": enterQty,
+                                     "createdBy": UserIdUpload,
+                                     "createdAt": moment().utcOffset('+05:30').format('YYYY-MM-DD kk:mm:ss') //done
+                                 }
+                             ]
+ 
+                         }
+                     ]
+                 }
+ 
+                 console.log('--Sparew part UPLOAD JSON--', prams);
+ 
+                 const headers = {
+                     'Authorization': AuthStr
+                 }
+                 const URL = BASE_URL_GET + "spare-parts";
+                 axios.post(URL, prams, {
+                     headers: headers
+                 })
+                     .then((response) => {
+                         console.log("[s][t][a][t][u][s][]", response.status);
+                         if (response.status == 200) {
+ 
+                             console.log('<------ Spare parts UPLOAD Method --->', response.data)
+                             console.log('<------ Spare parts UPLOAD Method --->', response.data[0].inventory)
+                             console.log(response.data[0].UniqueNo);
+ 
+                             if (response.data[0].ErrorId == 0) {
+                                 // this use fro update sync flag as 1 
+             
+                                 updateSycncSparepart(TicketIdNav,(result: any) => {
+                                     console.log("additinal spare part sync status--------- ", result);
+ 
+                                 });
+ 
+                             }
+ 
+                         } else {
+                             Alert.alert(
+                                 "Invalid Details!",
+                                 "Bad Request",
+                                 [
+                                     { text: "OK", onPress: () => console.log("OK Pressed") }
+                                 ]
+                             );
+ 
+                         }
+ 
+                     })
+                     .catch((error) => {
+                         console.log("error .........", error);
+ 
+                         Alert.alert('error', error)
+ 
+                     })
+ 
+             })
+         } catch (error) {
+             console.log(">>>>>>>>>>>>", error);
+ 
+         }
+     }
 
 
     return (
@@ -399,9 +516,10 @@ const AddAdditionalSpareParts = () => {
                                 <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", marginBottom: 10, marginLeft: 20, marginRight: 20 }}>
                                     <ActionButton title="Capture image"
                                         onPress={() => takePhotoFromCamera()}
-                                        style={{ flex: 0.5, backgroundColor: "#17A2B8" , marginRight: 10}} />
+                                        style={{ flex: 0.5, backgroundColor: "#17A2B8", marginRight: 10 }} />
                                     <ActionButton title="Remove image"
                                         onPress={() => remove_image()}
+                                      //  onPress={() => UploadAdditionalSparePart()}
                                         style={{ flex: 0.5, backgroundColor: "#FE6464", }} />
                                 </View>
 
