@@ -551,8 +551,10 @@ const TicketDetails = (props: any) => {
                 <View style={{ flex: 1 }}>
                     {
                         loadScreen == "moreInfo" ?
-                            <MoreInfo />
-                            // <TicketMoreInfo serviceCallDEtails={callDetailList} />
+                           
+                            <TicketMoreInfo
+                             ID={route.params.ticketID} 
+                             />
                             :
                             loadScreen == "spareparts" ?
                                 <SpareParts
@@ -565,7 +567,7 @@ const TicketDetails = (props: any) => {
                                 :
                                 loadScreen == "serviceH" ?
 
-                                    <></>
+                                <MoreInfo />
                                     // <TicketsHistory />
                                     :
                                     <Expences

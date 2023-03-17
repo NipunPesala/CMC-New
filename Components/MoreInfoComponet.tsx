@@ -17,18 +17,20 @@ type ParamTypes = {
     serial_no: string,
     item_description: string,
     item_group: string,
+    title: string,
+    isShowEquipment: boolean,
 }
 
-const MoreInfoComponet =({content,st_date,et_date,create_by,remark,item_code,item_description,serial_no,item_group}: ParamTypes) => {
+const MoreInfoComponet = ({ isShowEquipment, title, content, st_date, et_date, create_by, remark, item_code, item_description, serial_no, item_group }: ParamTypes) => {
     return (
-<View style={styles.container}>
+        <View style={styles.container}>
 
             <View style={{ flexDirection: 'row', }}>
-                <Text style={styles.headerText}>Service Call Details  </Text>
-                
+                <Text style={styles.headerText}>{title}</Text>
+
             </View>
 
-         <View style={{ padding: 10 }} />
+            <View style={{ padding: 10 }} />
             <View style={{ flexDirection: 'row', }}>
                 <Text style={styles.bodyTextLeft}>Subject </Text>
                 <Text style={{}}> :  </Text>
@@ -57,7 +59,7 @@ const MoreInfoComponet =({content,st_date,et_date,create_by,remark,item_code,ite
             </View>
 
 
-            
+
             <View style={{ flexDirection: 'row', }}>
                 <Text style={styles.bodyTextLeft}>Contact Name </Text>
                 <Text style={{}}> :  </Text>
@@ -65,46 +67,43 @@ const MoreInfoComponet =({content,st_date,et_date,create_by,remark,item_code,ite
             </View>
 
             <View style={{ flexDirection: 'row', }}>
-              
-            <Text style={{}}>   </Text>
+
+                <Text style={{}}>   </Text>
             </View>
 
+            {
+                isShowEquipment ?
 
-            <View style={{ flexDirection: 'row', }}>
-                <Text style={styles.headerText}>Equipment Card Details  </Text>
-                
-            </View>
+                    <><View style={{ flexDirection: 'row', }}>
+                        <Text style={styles.headerText}>Equipment Card Details  </Text>
 
-          
+                    </View><View style={{ flexDirection: 'row', }}>
+                            <Text style={styles.bodyTextLeft}>Item Code </Text>
+                            <Text style={{}}> :  </Text>
+                            <Text style={styles.bodyTextRight}>{item_code}</Text>
+                        </View><View style={{ flexDirection: 'row', }}>
+                            <Text style={styles.bodyTextLeft}>MFR.Serial No </Text>
+                            <Text style={{}}> :  </Text>
+                            <Text style={styles.bodyTextRight}>{serial_no}</Text>
+                        </View><View style={{ flexDirection: 'row', }}>
+                            <Text style={styles.bodyTextLeft}>Item Description </Text>
+                            <Text style={{}}> :  </Text>
+                            <Text style={styles.bodyTextRight}>{item_description}</Text>
+                        </View></>
 
-            <View style={{ flexDirection: 'row', }}>
-                <Text style={styles.bodyTextLeft}>Item Code </Text>
-                <Text style={{}}> :  </Text>
-                <Text style={styles.bodyTextRight}>{item_code}</Text>
-            </View>
 
-            <View style={{ flexDirection: 'row', }}>
-                <Text style={styles.bodyTextLeft}>MFR.Serial No </Text>
-                <Text style={{}}> :  </Text>
-                <Text style={styles.bodyTextRight}>{serial_no}</Text>
-            </View>
+                    :
 
-            <View style={{ flexDirection: 'row', }}>
-                <Text style={styles.bodyTextLeft}>Item Description </Text>
-                <Text style={{}}> :  </Text>
-                <Text style={styles.bodyTextRight}>{item_description}</Text>
-            </View>
+                    <></>
 
-            <View style={{ flexDirection: 'row', }}>
-                <Text style={styles.bodyTextLeft}>Item Group </Text>
-                <Text style={{}}> :  </Text>
-                <Text style={styles.bodyTextRight}>{item_group}</Text>
-            </View>
+            }
 
-</View>
-        );
-    }
-    export default MoreInfoComponet;
+
+
+        </View>
+    );
+}
+export default MoreInfoComponet;
 
 
 const styles = StyleSheet.create({

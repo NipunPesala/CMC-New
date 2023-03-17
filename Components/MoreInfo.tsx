@@ -59,7 +59,7 @@ const MoreInfo = () => {
                 setStartDate(result[0].start_date);
                 setEndDate(result[0].end_date);
                 setremark(result[0].contact_name);
-                setcreate_by("-");
+                setcreate_by(result[0].created_by);
 
 
                 setItemCode(result[0].item_code);
@@ -88,6 +88,7 @@ const MoreInfo = () => {
                     <View style={{ padding: 10 }} />
 
                     <MoreInfoComponet
+                        title="Service Call Details"
                         content={content_str}
                         st_date={startDate}
                         et_date={endDate}
@@ -96,8 +97,8 @@ const MoreInfo = () => {
                         item_code={itemCode}
                         item_description={itemDescription}
                         item_group={itemGroup}
-                        serial_no={serial_no}
-
+                        serial_no={serial_no} 
+                        isShowEquipment={true}
 
 
                     />

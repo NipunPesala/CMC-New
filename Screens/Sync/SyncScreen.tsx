@@ -41,7 +41,7 @@ import { getCustomers } from '../../Services/Api/SyncService';
 import { getSpareParts } from '../../Services/Api/UserAuthService';
 import { err } from 'react-native-svg/lib/typescript/xml';
 import { get_ASYNC_USERID, getLoginUserName } from "../../Constant/AsynStorageFuntion";
-import { updateSycnServiceCAll, Update_webRefId, getAllUploadFailServiceCalls,getServiceById,getServiceId } from "../../SQLiteDatabaseAction/DBControllers/ServiceController";
+import { updateSycnServiceCAll, Update_webRefId, getAllUploadFailServiceCalls, getServiceById, getServiceId } from "../../SQLiteDatabaseAction/DBControllers/ServiceController";
 import { getAllUploadFailServiceTickets, updateUploadedServiceTicket } from "../../SQLiteDatabaseAction/DBControllers/TicketController";
 import moment from "moment";
 
@@ -56,8 +56,8 @@ var ButtonTitle: any;
 
 var UserIdUpload: any;
 var UserNameUpload: any;
-var webRefID2:any;
-var contactPerson2:any;
+var webRefID2: any;
+var contactPerson2: any;
 
 const SyncScreen = (props: any) => {
 
@@ -75,7 +75,7 @@ const SyncScreen = (props: any) => {
   const [failCalls, setFailCalls]: any[] = useState([]);
   const [contactPerson, setContactPerson] = useState('');
   const [webRefId, setWebRefId] = useState('');
-  
+
   // const route=useRoute();
 
   const syncbtn = () => {
@@ -1045,43 +1045,50 @@ const SyncScreen = (props: any) => {
 
             setOnRefresh(false);
 
-            if (res == 1) {
-              arrayindex++;
+            if (response.data.length > 0) {
 
-              SyncArray1.push({
-                name: 'Service Call Downloading...',
-                id: arrayindex,
-              });
-              setSyncArray(SyncArray1);
-              setOnRefresh(true);
+              if (res == 1) {
+                arrayindex++;
+
+                SyncArray1.push({
+                  name: 'Service Call Downloading...',
+                  id: arrayindex,
+                });
+                setSyncArray(SyncArray1);
+                setOnRefresh(true);
 
 
-            } else if (res == 2) {
+              } else if (res == 2) {
 
-              arrayindex++;
+                arrayindex++;
 
-              SyncArray1.push({
-                name: 'Service Call Download Failed...',
-                id: arrayindex,
-              });
-              setSyncArray(SyncArray1);
-              setOnRefresh(true);
-              //Sync_Priority();
-              Sync_Service_ticket(TOCKEN_KEY)
+                SyncArray1.push({
+                  name: 'Service Call Download Failed...',
+                  id: arrayindex,
+                });
+                setSyncArray(SyncArray1);
+                setOnRefresh(true);
+                //Sync_Priority();
+                Sync_Service_ticket(TOCKEN_KEY)
 
-            } else if (res == 3) {
+              } else if (res == 3) {
 
-              arrayindex++;
+                arrayindex++;
 
-              SyncArray1.push({
-                name: 'Service Call Download Sucsessfully...',
-                id: arrayindex,
-              });
-              setSyncArray(SyncArray1);
-              setOnRefresh(true);
-              //Sync_Priority();
-              Sync_Service_ticket(TOCKEN_KEY)
+                SyncArray1.push({
+                  name: 'Service Call Download Sucsessfully...',
+                  id: arrayindex,
+                });
+                setSyncArray(SyncArray1);
+                setOnRefresh(true);
+                //Sync_Priority();
+                Sync_Service_ticket(TOCKEN_KEY)
+              }
+
+
             }
+
+
           });
         } else {
           console.log('fails');
@@ -1130,41 +1137,48 @@ const SyncScreen = (props: any) => {
 
             setOnRefresh(false);
 
-            if (res == 1) {
-              arrayindex++;
+            if (response.data.length > 0) {
 
-              SyncArray1.push({
-                name: 'Service Ticket Downloading...',
-                id: arrayindex,
-              });
-              setSyncArray(SyncArray1);
-              setOnRefresh(true);
+              if (res == 1) {
+                arrayindex++;
+
+                SyncArray1.push({
+                  name: 'Service Ticket Downloading...',
+                  id: arrayindex,
+                });
+                setSyncArray(SyncArray1);
+                setOnRefresh(true);
 
 
-            } else if (res == 2) {
+              } else if (res == 2) {
 
-              arrayindex++;
+                arrayindex++;
 
-              SyncArray1.push({
-                name: 'Service Ticket Download Failed...',
-                id: arrayindex,
-              });
-              setSyncArray(SyncArray1);
-              setOnRefresh(true);
-              Sync_Priority();
+                SyncArray1.push({
+                  name: 'Service Ticket Download Failed...',
+                  id: arrayindex,
+                });
+                setSyncArray(SyncArray1);
+                setOnRefresh(true);
+                Sync_Priority();
 
-            } else if (res == 3) {
+              } else if (res == 3) {
 
-              arrayindex++;
+                arrayindex++;
 
-              SyncArray1.push({
-                name: 'Service Ticket Download Sucsessfully...',
-                id: arrayindex,
-              });
-              setSyncArray(SyncArray1);
-              setOnRefresh(true);
+                SyncArray1.push({
+                  name: 'Service Ticket Download Sucsessfully...',
+                  id: arrayindex,
+                });
+                setSyncArray(SyncArray1);
+                setOnRefresh(true);
+                Sync_Priority();
+              }
+
+            } else {
               Sync_Priority();
             }
+
           });
         } else {
           console.log('fails');
@@ -1314,7 +1328,7 @@ const SyncScreen = (props: any) => {
       }
       console.log('ubpload fail Tickets--- ', UploadFailTickets);
       console.log('ubpload fail tickets  length --- ', UploadFailTickets.length);
-       UploadServiceTickets(UploadFailTickets);
+      UploadServiceTickets(UploadFailTickets);
     });
 
   }
@@ -1331,60 +1345,60 @@ const SyncScreen = (props: any) => {
 
       for (let i = 0; i < UnsavedArray.length; i++) {
 
-       
-        
-          // getServiceById(UnsavedArray[i].serviceId, (result: any) => {
-             
-          //     console.log('contact person +++++++++++', result[0].contact_name);
-          //     console.log('service web ref id', result[0].service_web_RefID);
-             
-          //     setContactPerson(result[0].contact_name);
-          //     setWebRefId(result[i].service_web_RefID);
-          //     webRefID2=result[0].service_web_RefID;
-          //     contactPerson2=result[0].contact_name;
-              
-             
-          // });
 
-          const result22:any = await new Promise((resolve, reject) => {
-            getServiceById(UnsavedArray[i].serviceId, (result: any) => {
-              resolve(result);
-            });
+
+        // getServiceById(UnsavedArray[i].serviceId, (result: any) => {
+
+        //     console.log('contact person +++++++++++', result[0].contact_name);
+        //     console.log('service web ref id', result[0].service_web_RefID);
+
+        //     setContactPerson(result[0].contact_name);
+        //     setWebRefId(result[i].service_web_RefID);
+        //     webRefID2=result[0].service_web_RefID;
+        //     contactPerson2=result[0].contact_name;
+
+
+        // });
+
+        const result22: any = await new Promise((resolve, reject) => {
+          getServiceById(UnsavedArray[i].serviceId, (result: any) => {
+            resolve(result);
           });
-          
-          console.log('new try ___________++++++++',result22[0].service_web_RefID)
-             
-          //  console.log('ticket web reffff +++++++++++',webRefId);
-           
-     
-      
+        });
+
+        console.log('new try ___________++++++++', result22[0].service_web_RefID)
+
+        //  console.log('ticket web reffff +++++++++++',webRefId);
+
+
+
         const prams = {
           "UserName": UserNameUpload,
           "objServiceTiketList": [
             {
 
               "UserID": UserIdUpload, // done
-              "ticketId":  UnsavedArray[i].ticketId, //done
+              "ticketId": UnsavedArray[i].ticketId, //done
               "serviceId": result22[0].service_web_RefID, // done
-              "startDate":  UnsavedArray[i].startDate, // done
-              "itemDescription":  UnsavedArray[i].itemDescription,// done
-              "endDate":  UnsavedArray[i].endDate,//done
-              "content":  UnsavedArray[i].content,// done
-              "assignTo":  UnsavedArray[i].assignTo, // done
+              "startDate": UnsavedArray[i].startDate, // done
+              "itemDescription": UnsavedArray[i].itemDescription,// done
+              "endDate": UnsavedArray[i].endDate,//done
+              "content": UnsavedArray[i].content,// done
+              "assignTo": UnsavedArray[i].assignTo, // done
               "attend_status": "Pending",// done
-              "created_At":moment().utcOffset('+05:30').format('YYYY-MM-DD kk:mm:ss'), //done
+              "created_At": moment().utcOffset('+05:30').format('YYYY-MM-DD kk:mm:ss'), //done
               "assignedByMobile": UserIdUpload, // done
-              "assignedToMobile":  UnsavedArray[i].technicianID,// done
+              "assignedToMobile": UnsavedArray[i].technicianID,// done
               "contactPerson": result22[0].contact_name,// not
-              "priority":  UnsavedArray[i].priority//done
+              "priority": UnsavedArray[i].priority//done
             }
           ]
 
         };
 
         console.log('--NEW Ticket UPLOAD JSON--', prams);
-        console.log('ticket web reffff +++++++++++',webRefID2);
-        console.log('ticket web contact person +++++++++++',contactPerson2);
+        console.log('ticket web reffff +++++++++++', webRefID2);
+        console.log('ticket web contact person +++++++++++', contactPerson2);
         const response = await axios.post(URL, prams, {
           headers: headers
         });

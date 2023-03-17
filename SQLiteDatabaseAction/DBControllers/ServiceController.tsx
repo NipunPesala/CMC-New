@@ -128,7 +128,7 @@ export const saveServiceData = (data: any, type: any, callBack: any) => {
               // data[i].syncstatus,
               1,  // sync status
               data[i].ItemId,///done
-              data[i].customerID,
+              data[i].CustomerCode,
               data[i].msnfSN,
               data[i].ServiceCallId,// done
               data[i].ProblemType,

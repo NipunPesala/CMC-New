@@ -819,11 +819,13 @@ const NewServiceCall = (props: any) => {
                 });
 
 
-                const data = route.params.cusList?.filter((a) => a.CusName == result[0].customer)[0];
+                const data = route.params.cusList?.filter((a) => a.CusID == result[0].customerID)[0];
 
-                // console.log(" item count ....1111111.....", data.CusID)
+                console.log(" item count ....1111111.....", data.CusID)
                 console.log(" customer item count ....1111111.....", result[0].item_code)
                 getAllCustomerVsItems(data.CusID, (resultitem: any) => {
+                    console.log(" result items list ------  ", resultitem);
+                    
                     setItemCode(resultitem);
                     const data = resultitem?.filter((a: any) => a.ItemCode == result[0].item_code)[0];
                     setSelectItemCode(data.ItemCode)
