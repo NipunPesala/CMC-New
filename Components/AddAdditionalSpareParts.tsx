@@ -169,9 +169,9 @@ const AddAdditionalSpareParts = () => {
                     if (result === "success") {
                         console.log("inside if++++++");
                         UploadAdditionalSparePart();
-                        CameraRoll.save(imagePath);
+                       // CameraRoll.save(imagePath);
                         ToastAndroid.show("Additional Spare Parts saved success ", ToastAndroid.SHORT);
-                        slideOutModal();
+                        close();
                         getAllSavedTicketSpareParts(ticketID);
 
                     } else {

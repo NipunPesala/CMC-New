@@ -72,9 +72,6 @@ const SparePartsScreen = () => {
 
 
             setSparePartList(result);
-
-
-
            //console.log(" Spare Parts11111111111  ................  ", result);
             // console.log(" Spare Parts List  ................  ", SparePartList.length);
 
