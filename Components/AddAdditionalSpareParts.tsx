@@ -168,7 +168,7 @@ const AddAdditionalSpareParts = () => {
 
                     if (result === "success") {
                         console.log("inside if++++++");
-                       // UploadAdditionalSparePart();
+                        UploadAdditionalSparePart();
                         CameraRoll.save(imagePath);
                         ToastAndroid.show("Additional Spare Parts saved success ", ToastAndroid.SHORT);
                         slideOutModal();
@@ -259,6 +259,7 @@ const AddAdditionalSpareParts = () => {
 
             getALLAdditionalSpareTiketdetasils(data, (result: any) => {
                 setlistdata(result);
+                console.log('ticket spare part table-------',result);
             });
         } catch (error) {
             console.log("AddAdditionalSpareParts GET ALL " + error);
@@ -449,7 +450,7 @@ const AddAdditionalSpareParts = () => {
 
                     }}
 
-                    keyExtractor={item => `${item.id}`}
+                    keyExtractor={item => `${item.spId}`}
                 />
 
                 <ActionButton
