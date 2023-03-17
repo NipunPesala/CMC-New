@@ -75,7 +75,7 @@ const SparePartsScreen = () => {
 
 
 
-            // console.log(" Spare Parts11111111111  ................  ", result);
+           //console.log(" Spare Parts11111111111  ................  ", result);
             // console.log(" Spare Parts List  ................  ", SparePartList.length);
 
 
@@ -266,8 +266,11 @@ const SparePartsScreen = () => {
                             />
                         );
                     }}
-                    keyExtractor={item => `${item.spId}`}
+                    keyExtractor={item => `${item._Id}`}
                 />
+
+
+                
 
                 <ActionButton
                     title="Request Spare Parts "
