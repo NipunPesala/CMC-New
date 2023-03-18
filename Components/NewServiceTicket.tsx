@@ -44,7 +44,7 @@ import { BASE_URL_GET } from "../Constant/Commen_API_Url";
 import { getUserByTypes } from "../SQLiteDatabaseAction/DBControllers/UserController";
 import { get_ASYNC_USERID, getLoginUserName } from "../Constant/AsynStorageFuntion";
 // import { isNetworkAvailable } from "../Constant/CommonFunctions";
-// import NetInfo from '@react-native-community/netinfo';
+import NetInfo from '@react-native-community/netinfo';
 
 var selectMode: any
 var TiketID: any
@@ -87,7 +87,7 @@ const NewServiceTicket = (props: any) => {
     const [attendStatus, setAttendStatus] = useState(0);
     const [isDesable, setIsDesable] = useState(false);
     const routeNav = useRoute();
-    
+
 
 
     const onChangePicker = (event, type) => {
@@ -104,21 +104,22 @@ const NewServiceTicket = (props: any) => {
         }
     }
 
-    const lodeserviceIdAfterSAddCall=()=>{
-            if(routeNav.params.serviceCallNav==''){
-                setselectServiceCallID(null);
+    const lodeserviceIdAfterSAddCall = () => {
+        if (routeNav.params.serviceCallNav == '') {
+            setselectServiceCallID(null);
 
-            }else{
-                setselectServiceCallID(routeNav.params.serviceCallNav);
-                getServiceCallCustomer(routeNav.params.serviceCallNav, (result: any) => {
-                    setCustomer(result[0].customer);
-                    setCallStartDate(result[0].start_date);
-                    setCallEndDate(result[0].end_date);
-        
-        
-                });
-            }
-                
+        } else {
+            setselectServiceCallID(routeNav.params.serviceCallNav);
+            getServiceCallCustomer(routeNav.params.serviceCallNav, (result: any) => {
+                setCustomer(result[0].customer);
+                setCallStartDate(result[0].start_date);
+                setCallEndDate(result[0].end_date);
+
+
+            });
+
+        }
+
 
     }
     const sendData = () => {
@@ -221,11 +222,34 @@ const NewServiceTicket = (props: any) => {
     }
     const save_data = (data: any) => {
         try {
-            saveTicket(data,0, (result: any) => {
+
+            getServiceById(routeNav.params.serviceCallNav, (result: any) => {
+
+                console.log('for web fre id +++++++++++ **************', result[0].service_web_RefID);
+                setWebRefId(result[0].service_web_RefID);
+
+            });
+            saveTicket(data, 0, (result: any) => {
                 if (result === "success") {
 
-                    UploadServiceTicket();
+                    if (webRefId != 0) {
 
+                        NetInfo.fetch().then(state => {
+
+                            if (state.isInternetReachable) {
+
+                                console.log(" connected ********  ");
+
+
+                                UploadServiceTicket();
+
+                            }
+
+                        });
+
+
+
+                    }
                     navigation.navigate('Home');
                     ToastAndroid.show("New Service Ticket Create Success ", ToastAndroid.SHORT);
 
@@ -381,7 +405,7 @@ const NewServiceTicket = (props: any) => {
         getServiceId((result: any) => {
             setserviceCallIdList(result);
             // console.log(" Call List ------------------- [][][]  " , result);
-            
+
         });
     }
     const generateCallID = () => {
@@ -448,6 +472,7 @@ const NewServiceTicket = (props: any) => {
     const UploadServiceTicket = () => {
         try {
 
+
             console.log('this is a set web ref id ++++++++++++++++++', webRefId);
             console.log(" ................. selectAssignPersonID id_________ ", selectAssignPersonID);
             get_ASYNC_TOCKEN().then(res => {
@@ -475,7 +500,7 @@ const NewServiceTicket = (props: any) => {
                             "assignedByMobile": UserIdKey,
                             "assignedToMobile": selectAssignPersonID,
                             "contactPerson": contactPerson,
-                            "priority" : selectPriority
+                            "priority": selectPriority
                         }
                     ]
                 }
@@ -500,7 +525,7 @@ const NewServiceTicket = (props: any) => {
                                 // this use fro update sync flag as 1 
                                 console.log('<------service ticket id  --->', response.data[0].ServiceTicketId)
 
-                                updateUploadedServiceTicket(TicketID, response.data[0].ServiceTicketId,(result: any) => {
+                                updateUploadedServiceTicket(TicketID, response.data[0].ServiceTicketId, (result: any) => {
                                     console.log("ticket sync status,web ref update --------- ", result);
 
                                 });
@@ -520,8 +545,8 @@ const NewServiceTicket = (props: any) => {
 
                     })
                     .catch((error) => {
-                        console.log( "error .........", error);
-                        
+                        console.log("error .........", error);
+
                         Alert.alert('error', error)
 
                     })
@@ -570,7 +595,7 @@ const NewServiceTicket = (props: any) => {
 
     useFocusEffect(
         React.useCallback(() => {
-           
+
             selectMode = route.params.mode;
             TiketID = route.params.ID;
             getLoginUserID();
@@ -743,7 +768,7 @@ const NewServiceTicket = (props: any) => {
                     "attend_status": "Pending",
                     "update_by": UserIdKey,
                     "Update_At": moment().utcOffset('+05:30').format('YYYY-MM-DD kk:mm:ss'),
-                    "priority" : selectPriority
+                    "priority": selectPriority
                 }
             ]
 
@@ -848,7 +873,7 @@ const NewServiceTicket = (props: any) => {
                         valueField="serviceId"
                         placeholder={!isFocus ? 'Select Service Call ID' : '...'}
                         searchPlaceholder="Search Service Call ID "
-                        
+
                         value={selectServiceCallID}
                         onFocus={() => setIsFocus(true)}
                         onBlur={() => setIsFocus(false)}
