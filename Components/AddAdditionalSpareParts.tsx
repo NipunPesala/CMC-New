@@ -22,7 +22,7 @@ import { useNavigation, useRoute } from "@react-navigation/native";
 import InputText from "./InputText";
 import IconA from 'react-native-vector-icons/Ionicons';
 import moment from "moment";
-import { deleteAllSparePartsReleventTickets, getALLAdditionalSpareTiketdetasils, saveTicketSpareparts, getWebRefIdByServiceId, updateSycncSparepart } from "../SQLiteDatabaseAction/DBControllers/TicketController";
+import { deleteAllSparePartsReleventTickets, getALLAdditionalSpareTiketdetasils, saveTicketSpareparts, getWebRefIdByServiceId, updateSycncSparepart,updateTicketSpare_webRef,getSparePart_Remove_web_ref } from "../SQLiteDatabaseAction/DBControllers/TicketController";
 import ListBox from "./ListBox";
 import { getASYNC_CURRENT_SP_REQUEST_ID, get_ASYNC_TOCKEN, get_ASYNC_USERID,getASYNC_CURRENT_TICKET_ID } from "../Constant/AsynStorageFuntion"
 import Header from "./Header";
@@ -50,6 +50,9 @@ var TicketIdNav: any;
 var SparePartIdNav: any;
 var UserIdUpload: any;
 var TicketWebRefId: any;
+var deleteWebRefId: any;
+var descUpdate: any;
+var qtyUpdate: any;
 
 const AddAdditionalSpareParts = () => {
 
@@ -159,6 +162,7 @@ const AddAdditionalSpareParts = () => {
                         SPartID: 0,
                         creationdate: moment().utcOffset('+05:30').format('YYYY-MM-DD'),
                         isSync: "0",
+                        TickSpare_web_RefID:0
 
                     }
                 ]
@@ -247,10 +251,21 @@ const AddAdditionalSpareParts = () => {
     // }
 
     const deleteItem = (result: any) => {
+        getSparePart_Remove_web_ref(result, (result: any) => {
+            console.log('web ref delete -------',result);
+            deleteWebRefId=result[0].TickSpare_web_RefID;
+            descUpdate=result[0].description;
+            qtyUpdate=result[0].qty;
+            console.log('web ref delete -------',deleteWebRefId);
+            UploadUpdatesRemoveSpare();
+        });
 
-        console.log("L " + result);
-        deleteAllSparePartsReleventTickets(result, result);
+         
+        console.log("L ------------------" + result);
+       deleteAllSparePartsReleventTickets(result, result);
         getAllSavedTicketSpareParts(ticketID);
+
+      
     };
 
 
@@ -358,11 +373,15 @@ const AddAdditionalSpareParts = () => {
  
                              if (response.data[0].ErrorId == 0) {
                                  // this use fro update sync flag as 1 
-             
+                                 console.log("additinal id-------------------- ", response.data[0].Additional[0].AdditionalId);
                                  updateSycncSparepart(TicketIdNav,(result: any) => {
                                      console.log("additinal spare part sync status--------- ", result);
  
                                  });
+                                 updateTicketSpare_webRef(TicketIdNav,response.data[0].Additional[0].AdditionalId,(result: any) => {
+                                    console.log("additinal spare part Uodate web ref id--------- ", result);
+
+                                });
  
                              }
  
@@ -392,6 +411,87 @@ const AddAdditionalSpareParts = () => {
          }
      }
 
+
+         
+    const UploadUpdatesRemoveSpare = () => {
+        console.log('spare part id',deleteWebRefId);
+        console.log('user id uplode',UserIdUpload);
+
+                try {
+        
+                    const prams = [{
+        
+                            "additionalId":deleteWebRefId ,
+                            "description": descUpdate,
+                            "remark": "reem",
+                            "qty": qtyUpdate,
+                            "isActive":0,
+                            "modifiedBy": 473762,
+                            "modifiedAt": moment().utcOffset('+05:30').format('YYYY-MM-DD kk:mm:ss')
+                    
+                    }]
+        
+                    console.log('-----Update delete spare part-- ----   ', prams);
+        
+        
+                    get_ASYNC_TOCKEN().then(res => {
+                        // console.log('cus id--' + customerID)
+                        TOCKEN_KEY = res;
+                        // const AuthStr = 'Bearer '.concat(TOCKEN_KEY);
+                        const AuthStr = ` Bearer ${TOCKEN_KEY}`;
+        
+                        const headers = {
+                            'Authorization': AuthStr
+                        }
+                        const URL = BASE_URL_GET + "spare-parts/additional";
+                        axios.put(URL, prams, {
+                            headers: headers
+                        })
+                            .then((response) => {
+                                console.log("[s][t][a][t][u][s][]", response.status);
+                                if (response.status == 200) {
+        
+                                    console.log('<------ NEW Deleted spare part  UPLOAD Method --->', response.data)
+                        
+                                    if (response.data.ErrorId == 0) {
+                                        console.log('this is if inside----');
+                                        // this use fro update sync flag as 1 
+                                        // console.log('this is a web service call id ----', response.data[0].ServiceCallId);
+                                        // updateSycnServiceCAll(serviceId, (result: any) => {
+        
+                                        // });
+        
+                                    } else {
+        
+                                      //  Alert.alert(response.ErrorDescription);
+        
+                                    }
+        
+                                } else {
+                                    Alert.alert(
+                                        "Invalid Details!",
+                                        "Bad Request",
+                                        [
+                                            { text: "OK", onPress: () => console.log("OK Pressed") }
+                                        ]
+                                    );
+        
+                                }
+        
+                            })
+                            .catch((error) => {
+                                Alert.alert('error', error.response)
+                                console.log('error+++++', error);
+        
+                            })
+        
+                    })
+                } catch (error) {
+                    console.log(">>>>>>>>>>>>", error);
+        
+                }
+        
+            }
 
     return (
         <SafeAreaView style={comStyles.CONTAINER}>

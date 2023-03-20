@@ -572,6 +572,13 @@ export const tableData = [
         autoIncrement: false,
         shouldNotAllowNull: false,
       },
+      {
+        name: 'TickSpare_web_RefID',
+        dataType: 'INTEGER',
+        isPrimaryKey: false,
+        autoIncrement: false,
+        shouldNotAllowNull: false,
+      },
     ]
   },
   {

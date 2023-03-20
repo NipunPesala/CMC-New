@@ -504,8 +504,8 @@ export const saveTicketSpareparts = (data: any, callBack: any) => {
             [
                 {
                     table: 'TICKET_SPARE_PARTS',
-                    columns: `SPRequestID,ticketId,SPartID,name,description,qty,approveStatus,spType_ID,creationdate,isSync`,
-                    values: '?,?,?,?,?,?,?,?,?,?',
+                    columns: `SPRequestID,ticketId,SPartID,name,description,qty,approveStatus,spType_ID,creationdate,isSync,TickSpare_web_RefID`,
+                    values: '?,?,?,?,?,?,?,?,?,?,?',
                     params: [
                         data[i].SPRequestID,
                         data[i].ticketId,
@@ -516,7 +516,8 @@ export const saveTicketSpareparts = (data: any, callBack: any) => {
                         data[i].approveStatus,
                         data[i].spType_ID,
                         data[i].creationdate,
-                        data[i].isSync
+                        data[i].isSync,
+                        data[i].TickSpare_web_RefID
 
                     ],
                     primaryKey: 'spId',
@@ -602,6 +603,19 @@ export const updateSycncSparepart = (ticketID: any, callBack: any) => {
     );
   }
 
+  
+//update ticket spare part web ref id
+export const updateTicketSpare_webRef = (ticketID: any,wenRef:any, callBack: any) => {
+  
+    DB.updateData(
+      'UPDATE TICKET_SPARE_PARTS SET TickSpare_web_RefID=? WHERE ticketId=?',
+      [wenRef,ticketID],
+      (resp: any, err: any) => {
+        callBack(resp, err);
+      },
+    );
+  }
+
 export const getSearchSparePart = (txt: String, callBack: any) => {
     DB.searchData(
         'select * from TICKET_SPARE_PARTS WHERE (SPRequestID like ?) ',
@@ -618,6 +632,17 @@ export const getLastRequestId = (callBack: any) => {
     DB.searchData(
         'SELECT spId FROM TICKET_SPARE_PARTS ORDER BY spId DESC LIMIT 1',
         [],
+        (resp: any, err: any) => {
+            callBack(resp, err);
+        },
+    );
+};
+
+// get spare part delete web refId
+export const getSparePart_Remove_web_ref = (SpId:any, callBack: any) => {
+    DB.searchData(
+        'SELECT * FROM TICKET_SPARE_PARTS WHERE spId=?',
+        [SpId],
         (resp: any, err: any) => {
             callBack(resp, err);
         },
