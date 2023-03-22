@@ -147,6 +147,18 @@ export const updateExpences = (ticketID:any,ExpenseTypeID:any,Amount:any,Remark:
     );
   };
 
+// get expences web ref id for uplode update service call
+  export const getExpenWebIdForUpdate = (expenceID:any,callBack:any) => {
+    DB.searchData(
+      'SELECT * FROM EXPENCES WHERE ExpenseRequestID=?',
+      [expenceID],
+      (resp:any, err:any) => {
+        callBack(resp, err);
+      },
+    );
+  };
+
+
 
   export const getSyncExpences = (TicketID:any , callBack:any) => {
 

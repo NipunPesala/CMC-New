@@ -19,7 +19,8 @@ import {
   updateNewSyncExpences,
   getLastExpRequestId,
   getSyncExpences,
-  Update_Expences_webRefId
+  Update_Expences_webRefId,
+  getExpenWebIdForUpdate
 } from '../SQLiteDatabaseAction/DBControllers/ExpencesController';
 import { Dropdown } from 'react-native-element-dropdown';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -41,6 +42,7 @@ var UserNameUpload: any;
 var UserIdUpload: any;
 var M_TicketID:any
 var TicketWebRefId:any;
+var updateWebRefId:any;
 
 const AddExpencesNew = (props: any) => {
   const { navigation, route } = props;
@@ -146,7 +148,7 @@ const AddExpencesNew = (props: any) => {
         // console.log(result, '!!!!!!!!!!!!!!!!!!!!');
         // ToastAndroid.show('Expences Save Success ', ToastAndroid.SHORT);
         if (result === 'success') {
-
+          UploadUpdatesExpences();
           navigation.goBack();
         } else {
           Alert.alert('Failed...!', 'Expences Save Failed.', [
@@ -171,7 +173,7 @@ const AddExpencesNew = (props: any) => {
         // console.log(result, 'saveExpences');
 
         if (result === 'success') {
-         // UploadServiceCall();
+          //UploadServiceCall();
           // navigation.goBack();
           uploadExpences(TicketID);
 
@@ -278,6 +280,7 @@ const AddExpencesNew = (props: any) => {
         exid = route.params.exid;
 
         load_UpdateOldData(exid);
+        
 
       } else if (type === '0') {
 
@@ -319,11 +322,11 @@ const AddExpencesNew = (props: any) => {
     getExpenceById(id, (result: any) => {
       var amount = result[0].Amount;
 
-      console.log(amount, '^^^^^^^^^^^666666666^^^^^^^^^^^^^^', id);
+      console.log(result, '^^^^^^^^^^^666666666^^^^^^^^^^^^^^');
       setamount(result[0].Amount + '');
       setremark(result[0].Remark);
       setStartDate(result[0].RelaventDate);
-
+      get_expencesWebRef(result[0].ExpenseRequestID);
       getAllExpencesType((result1: any) => {
         console.log('************', result1);
 
@@ -339,7 +342,7 @@ const AddExpencesNew = (props: any) => {
   };
 
   const getTicketWebrefId = ()=>{
-console.log('ticket id-=-------------',M_TicketID)
+    console.log('ticket id-=-------------',M_TicketID)
     getWebRefIdByServiceId(M_TicketID, (result: any) => {
       console.log('get web ref idd=======================', result);
       TicketWebRefId = result[0].Ticket_web_RefID;
@@ -441,22 +444,35 @@ console.log('ticket id-=-------------',M_TicketID)
     }
 }
 
+// get expences web ref id for update uplode 
+const get_expencesWebRef=(expReqId:any)=>{
+  getExpenWebIdForUpdate(expReqId, (result: any) => {
+      console.log('get web ref 444+++++++++++++'+result[0].ExpencesWebRefId);
+      updateWebRefId=result[0].ExpencesWebRefId;
+      console.log('check expencess web ref id++++++++++++++'+updateWebRefId);
+  });
+
+
+}
 
 
 const UploadUpdatesExpences= () => {
+
+
+  console.log('check expencess web ref id 22 ++++++++++++++'+updateWebRefId);
 
 
   try {
 
       const prams = [
         {
-            "expenceId":47,
-            "dateExpire": "2022-11-29 10:38:59",
-            "expenseType": "expenseType3",
-            "createdBy": "gayan3",
-            "amount": 95003,
-            "remark": "Remark2",
-            "createdAt": "2022-11-29 10:38:59"
+            "expenceId":updateWebRefId,
+            "dateExpire":startDate ,
+            "expenseType": expencesTypeId,
+            "createdBy":UserIdUpload,
+            "amount": amount,
+            "remark":remark,
+            "createdAt": moment().utcOffset('+05:30').format('YYYY-MM-DD kk:mm:ss')
         }
     ]
       console.log('----- SERVICE CALL UPDATE UPLOAD JSON-- ----   ', prams);
