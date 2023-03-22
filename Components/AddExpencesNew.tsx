@@ -173,7 +173,7 @@ const AddExpencesNew = (props: any) => {
         // console.log(result, 'saveExpences');
 
         if (result === 'success') {
-          //UploadServiceCall();
+          UploadServiceCall();
           // navigation.goBack();
           uploadExpences(TicketID);
 

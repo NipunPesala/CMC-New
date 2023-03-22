@@ -68,6 +68,16 @@ export const DeleteExpences = ( expId:any,callBack:any) => {
         },
     );
 }
+// delete expences change tatus
+export const DeleteExpencesnew = ( expId:any,callBack:any) => {
+    DB.updateData(
+        'UPDATE EXPENCES SET status=1 WHERE ExpenseRequestID=?',
+        [expId],
+        (resp:any, err:any) => {
+          callBack(resp, err);
+        },
+      );
+}
 
 export const getExpenceById = (expId:any, callBack:any) => {
     DB.searchData(
@@ -93,7 +103,7 @@ export const getLastExpRequestId = (callBack:any) => {
 
 export const getAllExpences = (data:any,callBack:any) => {
     DB.searchData(
-      'SELECT EXPENCES_TYPE.name as ExpencesType,EXPENCES.Amount as Amount,EXPENCES._Id as ExId,EXPENCES.CreateDate as CreateDate,EXPENCES.ExpenseRequestID  FROM EXPENCES INNER JOIN EXPENCES_TYPE ON EXPENCES.ExpenseTypeID=EXPENCES_TYPE.name WHERE ServiceCall_ID=?',
+      'SELECT EXPENCES_TYPE.name as ExpencesType,EXPENCES.Amount as Amount,EXPENCES._Id as ExId,EXPENCES.CreateDate as CreateDate,EXPENCES.ExpenseRequestID  FROM EXPENCES INNER JOIN EXPENCES_TYPE ON EXPENCES.ExpenseTypeID=EXPENCES_TYPE.name WHERE EXPENCES.ServiceCall_ID=? AND EXPENCES.status=0',
       [data],
       (resp:any, err:any) => {
         callBack(resp, err);

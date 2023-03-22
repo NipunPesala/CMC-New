@@ -9,7 +9,7 @@ import {
 import ActionButton from "./ActionButton";
 import ComStyles from "../Constant/Components.styles";
 import { FlatList } from "react-native-gesture-handler";
-import { getAllExpences, DeleteExpences, getSyncExpences } from "../SQLiteDatabaseAction/DBControllers/ExpencesController"
+import { getAllExpences, DeleteExpences, getSyncExpences,DeleteExpencesnew } from "../SQLiteDatabaseAction/DBControllers/ExpencesController"
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import ListBox from "./ListBox";
 import { Text } from "react-native-paper";
@@ -68,10 +68,19 @@ const Expences = (isActive:any) => {
                     onPress: () => console.log("Cancel Pressed"),
                     style: "cancel"
                 },
-                { text: "OK", onPress: () => deletefuntion(data) }
+                { text: "OK", onPress: () => deleteExpencesUpdateState(data) }
             ]);
 
     }
+    // chane state after delete expences
+const deleteExpencesUpdateState=(expenId:any)=>{
+    console.log('**************check expences request id +++++++++++',expenId);
+    DeleteExpencesnew(expenId, (result: any) => {
+        Load_All_Expences(ticketID);
+    });
+
+}
+
     const deletefuntion = (data: any) => {
         DeleteExpences(data, (result: any) => {
 
@@ -101,7 +110,7 @@ const Expences = (isActive:any) => {
         });
     }
     const Load_All_Expences = (id:any) => {
-        console.log("REFRESHHHHHHHHHHHHHHHHHHHHHHHH");
+        console.log("REFRESHHHHHHHHHHHHHHHHHHHHHHHH",);
         
         getAllExpences(id,(result: any) => {
             // setServiceCallList(result);
@@ -179,7 +188,7 @@ const Expences = (isActive:any) => {
                                     <View style={{ flexDirection: 'column', margin: 5 }}>
                                         <AntDesign name="delete"
                                             size={20}
-                                            onPress={() => DeleteEx(item.ExId)}
+                                            onPress={() => DeleteEx(item.ExpenseRequestID)}
                                             color={ComponentsStyles.COLORS.RED_COLOR} />
 
                                     </View>
