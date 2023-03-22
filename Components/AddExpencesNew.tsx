@@ -194,15 +194,15 @@ const AddExpencesNew = (props: any) => {
   };
 
   const cancelAndGoBack = () => {
-    // Alert.alert('Cancle', 'Are you sure ?', [
-    //   {
-    //     text: 'Cancel',
-    //     onPress: () => console.log('Cancel Pressed'),
-    //     style: 'cancel',
-    //   },
-    //   { text: 'OK', onPress: () => navigation.goBack() },
-    // ]);
-    UploadUpdatesExpences();
+    Alert.alert('Cancle', 'Are you sure ?', [
+      {
+        text: 'Cancel',
+        onPress: () => console.log('Cancel Pressed'),
+        style: 'cancel',
+      },
+      { text: 'OK', onPress: () => navigation.goBack() },
+    ]);
+   // UploadUpdatesExpences();
   };
 
   const getStartEndDate = (ticketID: any) => {
