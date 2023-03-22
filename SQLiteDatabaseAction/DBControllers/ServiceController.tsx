@@ -1,3 +1,4 @@
+import moment from 'moment';
 import { useState } from 'react';
 import * as DB from '../DBService';
 import { getItemDescription } from './ItemController';
@@ -14,8 +15,8 @@ export const saveServiceData = (data: any, type: any, callBack: any) => {
           {
             table: 'SERVICE',
             columns: `serviceId, priority, service_type, item_code, item_description, customer,customer_address,contact_name,contact_no,
-          subject,clusterHeadId, handle_by, TechnicianID,secretary, SecretaryID,assistance,AssisstanceID,start_date, end_date, created_by,Approve_status,Attend_status,status,CreateAt,Syncstatus,itemID,customerID,serialNumber,service_web_RefID,service_typeID`,
-            values: '?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?',
+          subject,clusterHeadId, handle_by, TechnicianID,secretary, SecretaryID,assistance,AssisstanceID,start_date, end_date, created_by,Approve_status,Attend_status,status,CreateAt,Syncstatus,itemID,customerID,serialNumber,service_web_RefID,service_typeID,Approve_By,Approve_At,AttendDate`,
+            values: '?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?',
             params: [
               data[i].ServiceCallId,
               data[i].Priority,
@@ -47,6 +48,9 @@ export const saveServiceData = (data: any, type: any, callBack: any) => {
               data[i].serialNumber,
               data[i].service_web_RefID,
               data[i].service_typeID,
+              data[i].ApproveBy,
+              data[i].ApproveAt,
+              data[i].AttendDate,
 
             ],
             primaryKey: 'serviceId',
@@ -99,8 +103,8 @@ export const saveServiceData = (data: any, type: any, callBack: any) => {
           {
             table: 'SERVICE',
             columns: `serviceId, priority, service_type, item_code, item_description, customer,customer_address,contact_name,contact_no,
-            subject,clusterHeadId, handle_by, TechnicianID,secretary, SecretaryID,assistance,AssisstanceID,start_date, end_date, created_by,Approve_status,Attend_status,status,CreateAt,Syncstatus,itemID,customerID,serialNumber,service_web_RefID,service_typeID`,
-            values: '?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?',
+            subject,clusterHeadId, handle_by, TechnicianID,secretary, SecretaryID,assistance,AssisstanceID,start_date, end_date, created_by,Approve_status,Attend_status,status,CreateAt,Syncstatus,itemID,customerID,serialNumber,service_web_RefID,service_typeID,Approve_By,Approve_At,AttendDate`,
+            values: '?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?',
             params: [
               data[i].ServiceCallNumber, //mobille service call id   /1
               data[i].Priority, //done  2
@@ -134,6 +138,9 @@ export const saveServiceData = (data: any, type: any, callBack: any) => {
               data[i].msnfSN, // 28
               data[i].ServiceCallId,// done 29
               data[i].ProblemType, // 30
+              data[i].ApprovedBy, // 31
+              data[i].ApprovedAt, // 32
+              data[i].ActualStartDate, // 33
             ],
             primaryKey: 'serviceId',
 
@@ -276,10 +283,10 @@ export const deleteAllServices = (callBack: any) => {
 };
 
 
-export const updateServiceCAll = (serviceId: any, status: any, callBack: any) => {
+export const updateServiceCAll = (serviceId: any, status: any,userID:any,callBack: any) => {
   DB.updateData(
-    'UPDATE SERVICE SET Approve_status=? WHERE serviceId=?',
-    [status, serviceId],
+    'UPDATE SERVICE SET Approve_status=?,Approve_By =?,Approve_At=?  WHERE serviceId=?',
+    [status, serviceId,userID,moment().utcOffset('+05:30').format('YYYY-MM-DD')],
     (resp: any, err: any) => {
       callBack(resp, err);
     },

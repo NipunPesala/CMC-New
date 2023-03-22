@@ -688,7 +688,7 @@ export const deleteAllSparePartsReleventTickets = (id: any, callBack: any) => {
 
 export const getServiceTicketList = (callBack: any) => {
     DB.searchData(
-        'SELECT * FROM TICKET',
+        'SELECT * FROM TICKET WHERE attend_status != 3',
         [],
         (resp: any, err: any) => {
             callBack(resp, err);

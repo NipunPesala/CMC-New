@@ -164,6 +164,20 @@ export const tableData = [
         shouldNotAllowNull: false,
       },
       {
+        name: 'Approve_By',
+        dataType: 'INTEGER',
+        isPrimaryKey: false,
+        autoIncrement: false,
+        shouldNotAllowNull: false,
+      },
+      {
+        name: 'Approve_At',
+        dataType: 'TEXT',
+        isPrimaryKey: false,
+        autoIncrement: false,
+        shouldNotAllowNull: false,
+      },
+      {
         name: 'Attend_status',
         dataType: 'INTEGER',
         isPrimaryKey: false,
@@ -179,6 +193,13 @@ export const tableData = [
       },
       {
         name: 'CreateAt',
+        dataType: 'TEXT',
+        isPrimaryKey: false,
+        autoIncrement: false,
+        shouldNotAllowNull: false,
+      },
+      {
+        name: 'AttendDate',
         dataType: 'TEXT',
         isPrimaryKey: false,
         autoIncrement: false,

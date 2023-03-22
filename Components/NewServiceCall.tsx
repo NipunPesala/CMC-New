@@ -115,6 +115,10 @@ const NewServiceCall = (props: any) => {
     const [createdBy, setCreatedBy] = useState('');
     const [createdDate, setCreatedDate] = useState('');
 
+    //update Upload
+    const [approvedBy, setApprovedBy] = useState('');
+    const [approveAt, setApproveAt] = useState('');
+
     const mode = route.params.mode;
 
     useFocusEffect(
@@ -172,7 +176,11 @@ const NewServiceCall = (props: any) => {
                 serialNumber: selectSerialNum,
                 service_web_RefID: 0,
                 service_typeID: servicetypeID,
-                clusterHeadUserId: ClusterID
+                clusterHeadUserId: ClusterID,
+                ApproveBy: 0,
+                ApproveAt: '',
+                AttendDate: ''
+
 
             }
         ]
@@ -434,7 +442,7 @@ const NewServiceCall = (props: any) => {
                         "Approve_status": approveStatus,
                         "Attend_status": attendStatus,
                         "created_At": createdDate,
-                        "handledByHandledByCode": parseInt(ClusterID),
+                        "handledByHandledByCode": parseInt(TechnicianID),
                         "originsDropDownOriginCode": 1,
                         "problemTypesDropDownProblemTypeCode": parseInt(servicetypeID),
                         "clusterHeadClusterHeadCode": parseInt(ClusterID),
@@ -762,6 +770,8 @@ const NewServiceCall = (props: any) => {
                 setCusAddress(result[0].customer_address);
                 setCreatedBy(result[0].created_by);
                 setCreatedDate(result[0].createdDate);
+                setApprovedBy(result[0].Approve_By);
+                setApproveAt(result[0].Approve_At);
 
                 setItemDescription(result[0].item_description);
                 // setContactPerson(result[0].contact_name);
@@ -890,6 +900,7 @@ const NewServiceCall = (props: any) => {
 
     const UploadUpdates = () => {
 
+        const upload:any = [];
 
         try {
 
@@ -912,11 +923,21 @@ const NewServiceCall = (props: any) => {
                 "secretaryDBSecretaryCode": parseInt(secretaryID),
                 "salesAssistantDBSalesAssistantCode": parseInt(AssistanceID),
                 "subject": subject,
-                "clusterHeadClusterHeadCode" : parseInt(ClusterID)
+                "clusterHeadClusterHeadCode" : parseInt(ClusterID),
+                "approveStatus":approveStatus,
+                "approvedBy":parseInt(approvedBy),
+                "approvedAt": approveAt,
+                "actualStartDate":moment().utcOffset('+05:30').format('YYYY-MM-DD kk:mm:ss'),
+                "status":"Pending",
+                "inquiryType": ""
+              
             }
 
-            console.log('----- SERVICE CALL UPDATE UPLOAD JSON-- ----   ', prams);
+          
 
+            upload.push(prams);
+
+            console.log('----- SERVICE CALL UPDATE UPLOAD JSON-- ----   ', upload);
 
             get_ASYNC_TOCKEN().then(res => {
                 // console.log('cus id--' + customerID)
@@ -928,7 +949,7 @@ const NewServiceCall = (props: any) => {
                     'Authorization': AuthStr
                 }
                 const URL = BASE_URL_GET + "service-call";
-                axios.put(URL, prams, {
+                axios.put(URL, upload, {
                     headers: headers
                 })
                     .then((response) => {
@@ -936,9 +957,9 @@ const NewServiceCall = (props: any) => {
                         if (response.status == 200) {
 
                             console.log('<------ NEW SERVICE CALL UPLOAD Method --->', response.data)
-                            console.log('uplode api response', response.data.ErrorId);
-                            console.log('web service call id', response.data.UniqueNo);
-                            if (response.data.ErrorId == 0) {
+                            console.log('uplode api response', response.data[0].ErrorId);
+                            console.log('web service call id', response.data[0].UniqueNo);
+                            if (response.data[0].ErrorId == 0) {
                                 console.log('this is if inside----');
                                 // this use fro update sync flag as 1 
                                 // console.log('this is a web service call id ----', response.data[0].ServiceCallId);
@@ -948,7 +969,7 @@ const NewServiceCall = (props: any) => {
 
                             } else {
 
-                                Alert.alert(response.ErrorDescription);
+                                Alert.alert(response.data[0].ErrorDescription);
 
                             }
 

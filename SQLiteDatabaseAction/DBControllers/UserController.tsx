@@ -21,7 +21,7 @@ export const saveUser = (data: any, callBack: any) => {
                         data[i].id,
                         data[i].NIC,
                         data[i].userTypeId,
-                        data[i].clusterHeadUserId,
+                        data[i].techClusterHeadUserId,
                         data[i].UserName,
                         data[i].ContactNumber,
                         data[i].Email,

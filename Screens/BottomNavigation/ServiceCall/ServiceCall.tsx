@@ -190,7 +190,7 @@ const ServiceCall = () => {
 
         try {
 
-            updateServiceCAll(serviceID, status, (result: any) => {
+            updateServiceCAll(serviceID, status, UserIdUpload,(result: any) => {
                 // console.log(result, "/////////////......................//////////");
 
                 if (result === "success") {

@@ -1037,15 +1037,18 @@ const SyncScreen = (props: any) => {
   const Sync_ServiceCall = (Key: any) => {
     console.log('this is a sync_service call ')
     const AuthStr = 'Bearer '.concat(Key);
-    const URL = GET_URL + "service-call";
+    const URL = GET_URL + "service-call?userId=" + UserIdUpload;
+    console.log("cal get url >>>>>>>>  " , URL);
+
     axios.get(URL, { headers: { Authorization: AuthStr } })
       .then(response => {
         if (response.status === 200) {
-          DB_ServiceCall.saveServiceData(response.data, 1, (res: any) => {
 
-            setOnRefresh(false);
+          if (response.data.length > 0) {
 
-            if (response.data.length > 0) {
+            DB_ServiceCall.saveServiceData(response.data, 1, (res: any) => {
+
+              setOnRefresh(false);
 
               if (res == 1) {
                 arrayindex++;
@@ -1086,10 +1089,13 @@ const SyncScreen = (props: any) => {
               }
 
 
-            }
+            });
 
+          } else {
 
-          });
+            Sync_Service_ticket(TOCKEN_KEY)
+
+          }
         } else {
           console.log('fails');
 
@@ -1128,16 +1134,16 @@ const SyncScreen = (props: any) => {
   const Sync_Service_ticket = (Key: any) => {
     console.log('this is a sync_servic ticket ')
     const AuthStr = 'Bearer '.concat(Key);
-    const URL = GET_URL + "service-call/service-ticket";
+    const URL = GET_URL + "service-call/service-ticket?userId=" + UserIdUpload;
     axios.get(URL, { headers: { Authorization: AuthStr } })
       .then(response => {
         if (response.status === 200) {
-          // console.log('ticket responce data------------ ',response.data.);
-          DB_ServiceTicket.saveTicket(response.data, 1, (res: any) => {
 
-            setOnRefresh(false);
+          if (response.data.length > 0) {
+            // console.log('ticket responce data------------ ',response.data.);
+            DB_ServiceTicket.saveTicket(response.data, 1, (res: any) => {
 
-            if (response.data.length > 0) {
+              setOnRefresh(false);
 
               if (res == 1) {
                 arrayindex++;
@@ -1175,11 +1181,13 @@ const SyncScreen = (props: any) => {
                 Sync_Priority();
               }
 
-            } else {
-              Sync_Priority();
-            }
 
-          });
+            });
+
+
+          } else {
+            Sync_Priority();
+          }
         } else {
           console.log('fails');
 
@@ -1504,7 +1512,12 @@ const SyncScreen = (props: any) => {
               "secretaryDBSecretaryCode": UnsavedArray[i].SecretaryID,///done
               "salesAssistantDBSalesAssistantCode": UnsavedArray[i].AssisstanceID,///done
               "inquiryType": "new",
-              "subject": UnsavedArray[i].subject//done
+              "subject": UnsavedArray[i].subject,//done
+              "approvedBy":0,
+              "approvedAt":moment().utcOffset('+05:30').format('YYYY-MM-DD kk:mm:ss'),
+              "actualStartDate":moment().utcOffset('+05:30').format('YYYY-MM-DD kk:mm:ss'),
+              "status":"Pending",
+             
             }
           ]
         };
