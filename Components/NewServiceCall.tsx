@@ -910,7 +910,8 @@ const NewServiceCall = (props: any) => {
                 "problemTypesDropDownProblemTypeCode": parseInt(servicetypeID),
                 "secretaryDBSecretaryCode": parseInt(secretaryID),
                 "salesAssistantDBSalesAssistantCode": parseInt(AssistanceID),
-                "subject": subject
+                "subject": subject,
+                "clusterHeadClusterHeadCode" : parseInt(ClusterID)
             }
 
             console.log('----- SERVICE CALL UPDATE UPLOAD JSON-- ----   ', prams);
