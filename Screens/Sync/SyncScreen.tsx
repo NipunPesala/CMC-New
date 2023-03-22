@@ -1476,7 +1476,7 @@ const SyncScreen = (props: any) => {
             {
 
               "UserID": UserIdUpload, //done
-              "problem_type": UnsavedArray[i].service_type,//done
+              "problem_type": UnsavedArray[i].service_typeID,//done
               "serviceId": UnsavedArray[i].serviceId,//done
               "priority": UnsavedArray[i].priority,//done
               "service_type": UnsavedArray[i].service_type,//done
@@ -1492,7 +1492,7 @@ const SyncScreen = (props: any) => {
               "sales_assistance": UnsavedArray[i].assistance,//done
               "start_date": UnsavedArray[i].start_date,
               "end_date": UnsavedArray[i].end_date,//done
-              "created_by": UserNameUpload,//
+              "created_by": UnsavedArray[i].created_by,//
               "active_status": 1,
               "Approve_status": UnsavedArray[i].Approve_status, //done
               "Attend_status": UnsavedArray[i].Attend_status,//done
@@ -1500,7 +1500,7 @@ const SyncScreen = (props: any) => {
               "handledByHandledByCode": UnsavedArray[i].TechnicianID,///done
               "originsDropDownOriginCode": 1,
               "problemTypesDropDownProblemTypeCode": UnsavedArray[i].service_typeID,//done
-              "clusterHeadClusterHeadCode": UnsavedArray[i].TechnicianID,//done
+              "clusterHeadClusterHeadCode": UnsavedArray[i].clusterHeadId,//done
               "secretaryDBSecretaryCode": UnsavedArray[i].SecretaryID,///done
               "salesAssistantDBSalesAssistantCode": UnsavedArray[i].AssisstanceID,///done
               "inquiryType": "new",

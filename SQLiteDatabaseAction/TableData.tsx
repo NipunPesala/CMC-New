@@ -87,6 +87,13 @@ export const tableData = [
         shouldNotAllowNull: false,
       },
       {
+        name: 'clusterHeadId',
+        dataType: 'INTEGER',
+        isPrimaryKey: false,
+        autoIncrement: false,
+        shouldNotAllowNull: false,
+      },
+      {
         name: 'handle_by',
         dataType: 'TEXT',
         isPrimaryKey: false,
@@ -419,6 +426,13 @@ export const tableData = [
         shouldNotAllowNull: false,
       },
       {
+        name: 'TicketType',
+        dataType: 'TEXT',
+        isPrimaryKey: false,
+        autoIncrement: false,
+        shouldNotAllowNull: false,
+      },
+      {
         name: 'attend_status',
         dataType: 'INTEGER',
         isPrimaryKey: false,
@@ -477,6 +491,20 @@ export const tableData = [
       {
         name: 'actualendtDate',
         dataType: 'TEXT',
+        isPrimaryKey: false,
+        autoIncrement: false,
+        shouldNotAllowNull: false,
+      },
+      {
+        name: 'CreatedDate',
+        dataType: 'TEXT',
+        isPrimaryKey: false,
+        autoIncrement: false,
+        shouldNotAllowNull: false,
+      },
+      {
+        name: 'CreatedBy',
+        dataType: 'INTEGER',
         isPrimaryKey: false,
         autoIncrement: false,
         shouldNotAllowNull: false,
@@ -1077,6 +1105,13 @@ export const tableData = [
       },
       {
         name: 'userTypeId',
+        dataType: 'INTEGER',
+        isPrimaryKey: false,
+        autoIncrement: false,
+        shouldNotAllowNull: false,
+      },
+      {
+        name: 'ClusterHeadID',
         dataType: 'INTEGER',
         isPrimaryKey: false,
         autoIncrement: false,

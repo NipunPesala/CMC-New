@@ -1079,3 +1079,22 @@ export const ContactPerson = [
 
 
 ]
+
+
+export const ticketTypes = [
+
+    { 
+        Id:"1",
+        name: "Chargable",
+        status: "1" ,  
+    },
+    { 
+        Id:"2",
+        name: "Not Chargable",
+        status: "1" ,  
+    },
+ 
+  
+
+
+]

@@ -43,6 +43,7 @@ import { getTicketDetailsFromID } from "../SQLiteDatabaseAction/DBControllers/Ti
 import { BASE_URL_GET } from "../Constant/Commen_API_Url";
 import { getUserByTypes } from "../SQLiteDatabaseAction/DBControllers/UserController";
 import { get_ASYNC_USERID, getLoginUserName } from "../Constant/AsynStorageFuntion";
+import { ticketTypes } from "../Constant/DummyData";
 // import { isNetworkAvailable } from "../Constant/CommonFunctions";
 import NetInfo from '@react-native-community/netinfo';
 
@@ -53,7 +54,8 @@ var Assistance: any
 var TOCKEN_KEY: any;
 var UserIdKey: any;
 var UserNameUpload: any;
-// const NewServiceTicket = ({ onClose, onpressclose }: ParamTypes) => {
+
+
 const NewServiceTicket = (props: any) => {
     const { navigation, route } = props;
     // const clostModalc = onClose.bind(this);
@@ -86,6 +88,11 @@ const NewServiceTicket = (props: any) => {
     const [webRefId, setWebRefId] = useState(0);
     const [attendStatus, setAttendStatus] = useState(0);
     const [isDesable, setIsDesable] = useState(false);
+    const [ticketType, setTicketType] = useState('');
+    const [createdBy, setCreatedBy] = useState('');
+    const [createdDate, setCreatedDate] = useState('');
+
+
     const routeNav = useRoute();
 
 
@@ -124,8 +131,6 @@ const NewServiceTicket = (props: any) => {
     }
     const sendData = () => {
 
-
-
         const jsonData = [
             {
                 ticketId: TicketID,
@@ -147,7 +152,10 @@ const NewServiceTicket = (props: any) => {
                 actualendtDate: '',
                 technicianID: selectAssignPersonID,
                 itemCode: ItemCode,
-                Ticket_web_RefID: 0
+                Ticket_web_RefID: 0,
+                TicketType: ticketType,
+                CreatedBy: createdBy,
+                CreatedDate: createdDate
 
 
             }
@@ -385,6 +393,9 @@ const NewServiceTicket = (props: any) => {
                     setAttendStatus(result[i].attend_status);
                     getCustomer(data.serviceId);
                     setWebRefId(result[i].Ticket_web_RefID);
+                    setTicketType(result[i].TicketType);
+                    setCreatedBy(result[i].CreatedBy);
+                    setCreatedDate(result[i].CreatedDate);
 
                 }
             });
@@ -496,8 +507,8 @@ const NewServiceTicket = (props: any) => {
                             "content": content,
                             "assignTo": selectAssignPerson,
                             "attend_status": "Pending",
-                            "created_At": moment().utcOffset('+05:30').format('YYYY-MM-DD kk:mm:ss'),
-                            "assignedByMobile": UserIdKey,
+                            "created_At": createdDate,
+                            "assignedByMobile": createdBy,
                             "assignedToMobile": selectAssignPersonID,
                             "contactPerson": contactPerson,
                             "priority": selectPriority
@@ -609,6 +620,8 @@ const NewServiceTicket = (props: any) => {
                 getAllPriorityList();
                 setCallStartDate(date);
                 setCallEndDate(date);
+                setCreatedBy(UserIdKey);
+                setCreatedDate(moment().utcOffset('+05:30').format('YYYY-MM-DD'));
             } else {
                 setIsDesable(true);
                 getServiceCallIDUpdate();
@@ -933,6 +946,42 @@ const NewServiceTicket = (props: any) => {
                             console.log(item.name);
 
                             setSelectPriority(item.name);
+                            setIsFocus(false);
+                        }}
+                        renderLeftIcon={() => (
+                            <AntDesign
+                                style={style.icon}
+                                color={isFocus ? 'blue' : 'black'}
+                                name="Safety"
+                                size={15}
+                            />
+                        )}
+                    />
+
+
+                </View>
+                <View style={{ zIndex: 50 }}>
+
+                    <Dropdown
+                        style={[style.dropdown, isFocus && { borderColor: comStyles.COLORS.BORDER_COLOR }]}
+                        placeholderStyle={style.placeholderStyle}
+                        selectedTextStyle={style.selectedTextStyle}
+                        inputSearchStyle={style.inputSearchStyle}
+                        iconStyle={style.iconStyle}
+                        data={ticketTypes}
+                        search
+                        maxHeight={300}
+                        labelField="name"
+                        valueField="name"
+                        placeholder={!isFocus ? 'Service Ticket Type' : '...'}
+                        searchPlaceholder="Search Type "
+                        value={ticketType}
+                        onFocus={() => setIsFocus(true)}
+                        onBlur={() => setIsFocus(false)}
+                        onChange={item => {
+                            console.log(item.name);
+
+                            setTicketType(item.name);
                             setIsFocus(false);
                         }}
                         renderLeftIcon={() => (

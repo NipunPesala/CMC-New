@@ -43,7 +43,7 @@ import ComponentsStyles from "../Constant/Components.styles";
 import { get_ASYNC_TOCKEN, get_ASYNC_USERID, getLoginUserName } from "../Constant/AsynStorageFuntion";
 import axios from "axios";
 import { BASE_URL_GET, } from "../Constant/Commen_API_Url";
-import { getUserByTypes } from "../SQLiteDatabaseAction/DBControllers/UserController";
+import { getTechniciasByClusters, getUserByTypes } from "../SQLiteDatabaseAction/DBControllers/UserController";
 import DropdownAlert from 'react-native-dropdownalert';
 import { isNetworkAvailable } from "../Constant/CommonFunctions";
 import NetInfo from '@react-native-community/netinfo';
@@ -68,6 +68,7 @@ const NewServiceCall = (props: any) => {
     const [secretaryItem, setSecretaryItem] = useState([]);
     const [handleBy, setHandleBy] = useState([]);
     const [salesAssistance, setSalesAssistance] = useState([]);
+    const [ClusterHeadList, setClusterHeadList] = useState([]);
 
 
     const [serviceId, setServiceId] = useState('');
@@ -90,6 +91,7 @@ const NewServiceCall = (props: any) => {
     const [selectTechnician, setSelectTechnician] = useState(null);
     const [selectCustomer, setSelectCustomer] = useState(null);
     const [selectItemCode, setSelectItemCode] = useState(null);
+    const [selectCluster, setSelectCluster] = useState(null);
     const [show, setShow] = useState(false);
     const [dateType, setDateType] = useState('');
     const [lastServiceID, setLastServiceID] = useState([]);
@@ -98,6 +100,7 @@ const NewServiceCall = (props: any) => {
     const [secretaryID, setSecretaryID] = useState('');
     const [AssistanceID, setAssisstanceID] = useState('');
     const [TechnicianID, setTechnicianID] = useState('');
+    const [ClusterID, setClusterID] = useState('');
 
     const [formHeading, setformHeading] = useState(route?.params?.mode == 1 ? " Update Service Call" : "Add New Service Call");
     const [savebutton, setsavebutton] = useState(route?.params?.mode == 1 ? "Update" : "Add");
@@ -109,6 +112,8 @@ const NewServiceCall = (props: any) => {
     const [approveStatus, setApproveStatus] = useState(0);
     const [IsDesable, setIsDesable] = useState(false);
     const [webRefID, setWebRefID] = useState(0);
+    const [createdBy, setCreatedBy] = useState('');
+    const [createdDate, setCreatedDate] = useState('');
 
     const mode = route.params.mode;
 
@@ -133,6 +138,9 @@ const NewServiceCall = (props: any) => {
 
     const saveServiceCall = () => {
 
+        console.log(" clus idddddddddd ***********  " , ClusterID);
+        
+
         const sendData = [
             {
                 ServiceCallId: serviceId,
@@ -147,14 +155,14 @@ const NewServiceCall = (props: any) => {
                 PlanedStartDateTime: startDate,
                 PlanedEndDateTime: endDate,
                 Priority: selectPriority,
-                type: selectServiceType,
+                type: servicetypeID,
                 Secretary: selectSecretary,
                 attend_status: attendStatus,
                 Status: '0',
                 customer: selectCustomer,
-                CreatedBy: UserIdUpload,
+                CreatedBy: createdBy,
                 approve_status: approveStatus,
-                createAt: moment().utcOffset('+05:30').format('YYYY-MM-DD kk:mm:ss'),
+                createAt: createdDate,
                 syncstatus: '0',
                 itemID: itemID,
                 customerID: customerID,
@@ -163,7 +171,8 @@ const NewServiceCall = (props: any) => {
                 AssisstanceID: AssistanceID,
                 serialNumber: selectSerialNum,
                 service_web_RefID: 0,
-                service_typeID: servicetypeID
+                service_typeID: servicetypeID,
+                clusterHeadUserId: ClusterID
 
             }
         ]
@@ -283,7 +292,7 @@ const NewServiceCall = (props: any) => {
 
     const Update_serviceCall = (data: any) => {
 
-        console.log(data, '---------------------');
+        console.log(" ======= update data [][][][][][][][][][]  ",data, '---------------------');
 
         updateService(data, (result: any) => {
             // ToastAndroid.show("Service Call Update Success ", ToastAndroid.SHORT);
@@ -297,7 +306,7 @@ const NewServiceCall = (props: any) => {
                         console.log(" connected ********  ");
 
                         UploadUpdates();
-                        
+
                     }
 
                 });
@@ -328,12 +337,12 @@ const NewServiceCall = (props: any) => {
         // console.log("**************", data);
         // console.log("**************", JSON.stringify(data));
         try {
-            saveServiceData(data,0, (result: any) => {
+            saveServiceData(data, 0, (result: any) => {
                 // console.log(result, "NEWSERVICE_CALL_SAVE");
 
                 if (result === "success") {
 
-                
+
                     NetInfo.fetch().then(state => {
 
                         if (state.isInternetReachable) {
@@ -347,7 +356,7 @@ const NewServiceCall = (props: any) => {
 
                     });
 
-                    navigation.navigate('NewServiceTicket', { serviceCallNav: serviceId,mode:0 });
+                    navigation.navigate('NewServiceTicket', { serviceCallNav: serviceId, mode: 0 });
 
                 } else {
 
@@ -396,9 +405,6 @@ const NewServiceCall = (props: any) => {
         // console.log('contact num-'+servicetypeID);
         // console.log('user name '+UserNameUpload);
         // console.log('user id -'+UserIdUpload);
-
-
-
         try {
 
             const prams = {
@@ -422,18 +428,18 @@ const NewServiceCall = (props: any) => {
                         "sales_assistance": parseInt(AssistanceID),
                         "start_date": startDate,
                         "end_date": endDate,
-                        "created_by": UserNameUpload,
+                        "created_by": createdBy,
                         "active_status": 1,
                         "Approve_status": approveStatus,
                         "Attend_status": attendStatus,
-                        "created_At": moment().utcOffset('+05:30').format('YYYY-MM-DD kk:mm:ss'),
-                        "handledByHandledByCode": parseInt(TechnicianID),
+                        "created_At": createdDate,
+                        "handledByHandledByCode": parseInt(ClusterID),
                         "originsDropDownOriginCode": 1,
                         "problemTypesDropDownProblemTypeCode": parseInt(servicetypeID),
-                        "clusterHeadClusterHeadCode": parseInt(TechnicianID),
+                        "clusterHeadClusterHeadCode": parseInt(ClusterID),
                         "secretaryDBSecretaryCode": parseInt(secretaryID),
                         "salesAssistantDBSalesAssistantCode": parseInt(AssistanceID),
-                        "inquiryType": "new",
+                        "inquiryType": " ",
                         "subject": subject
 
                     }
@@ -661,6 +667,8 @@ const NewServiceCall = (props: any) => {
 
         //console.log(" generate ********************");
 
+        setCreatedBy(UserIdUpload);
+        setCreatedDate(moment().utcOffset('+05:30').format('YYYY-MM-DD kk:mm:ss'));
         getLastServiceId((result: any) => {
             // let serviceID = result + 1;
             setLastServiceID(result);
@@ -712,14 +720,14 @@ const NewServiceCall = (props: any) => {
         });
     }
     const getAllUserTypesData = () => {
+        getUserByTypes("Cluster Head", (result: any) => {
+            setClusterHeadList(result);
+        });
         getUserByTypes("Sales Executive", (result: any) => {
             setSalesAssistance(result);
         });
         getUserByTypes("Admin", (result: any) => {
             setSecretaryItem(result);
-        });
-        getUserByTypes("Technician", (result: any) => {
-            setHandleBy(result);
         });
         getAllPriority((result: any) => {
             setPriorityList(result);
@@ -751,13 +759,15 @@ const NewServiceCall = (props: any) => {
                 setWebRefID(result[0].service_web_RefID);
 
                 setCusAddress(result[0].customer_address);
+                setCreatedBy(result[0].created_by);
+                setCreatedDate(result[0].createdDate);
 
                 setItemDescription(result[0].item_description);
                 // setContactPerson(result[0].contact_name);
-              
+
                 console.log(number.length, '>>>>>>>>>>>>>>>>>>>>>');
-        
-              
+
+
                 getUserByTypes("Sales Executive", (resultAssisstance: any) => {
 
                     console.log("set assisstanceee ............ ", resultAssisstance);
@@ -781,16 +791,16 @@ const NewServiceCall = (props: any) => {
                     setSelectServiceType(data.typeName);
                 });
 
-                // getAllItems((result1: any) => {
-                //     setItemCode(result1);
-                //     const data = result1?.filter((a: any) => a.itemCode == result[0].item_code)[0];
-                //     setSelectItemCode(data.itemCode)
+                getUserByTypes("Cluster Head", (resultTech: any) => {
 
-
-                // });
-
-              
-
+                    // console.log(" Cluster  ......... info ", resultTech)
+                    setClusterHeadList(resultTech);
+                    const data = resultTech?.filter((a: any) => a.user_id == result[0].clusterHeadId)[0];
+                    setSelectCluster(data.name);
+                    setClusterID(data.user_id);
+                 
+                    // console.log(" Cluster data  .........  ", data.user_id)
+                });
 
                 getUserByTypes("Admin", (resultSecretary: any) => {
                     setSecretaryItem(resultSecretary);
@@ -805,35 +815,57 @@ const NewServiceCall = (props: any) => {
 
                     setSerialNumList(resultSerial);
                     const data = resultSerial?.filter((a: any) => a.msnfSN == result[0].serialNumber)[0];
-                    console.log("serial number ---------" , result[0].item_code);
-                    
+                    console.log("serial number ---------", result[0].item_code);
+
                     setSelectSerialNum(data.msnfSN);
                 });
 
-                getUserByTypes("Technician", (resultTech: any) => {
-                    setHandleBy(resultTech);
-                    const data = resultTech?.filter((a: any) => a.user_id == result[0].TechnicianID)[0];
-                    setSelectTechnician(data.name);
-                    setTechnicianID(data.user_id);
-                    console.log(" handleby .........  ", data.name)
+
+                // getTechniciasByClusters("Technician",result[0].clusterHeadId,(resp:any) => {
+
+                //     console.log(result[0].TechnicianID , " clus id ******" ,result[0].clusterHeadId,  " handleby  result .........  ", resp)
+
+                //     setHandleBy(resp);
+                //     const data = resp?.filter((a: any) => a.user_id == result[0].TechnicianID)[0];
+                //     setSelectTechnician(data.name);
+                //     setTechnicianID(data.user_id);
+                //     console.log(" handleby .........  ", data.name)
+                // });
+
+                console.log(" Cluster ID ---- " , result[0].clusterHeadId);
+                
+
+                getTechniciasByClusters("Technician",result[0].clusterHeadId ,(resTech: any) => {
+
+                    console.log(result[0].TechnicianID  , " Technician list &&&&&&& ---- " , resTech);
+
+                    setHandleBy(resTech);
+
+                    const data1 = resTech?.filter((a: any) => a.user_id == result[0].TechnicianID)[0];
+                    setSelectTechnician(data1.name);
+                    setTechnicianID(data1.user_id);
+                    console.log(" handleby .........  ", data1.name)
                 });
+        
 
 
-                const data = route.params.cusList?.filter((a) => a.CusID == result[0].customerID)[0];
+                const data = route.params.cusList?.filter((a:any) => a.CusID == result[0].customerID)[0];
+                setSelectCustomer(data.CusName);
+                setcustomerID(data.CusID);
 
                 console.log(" item count ....1111111.....", data.CusID)
                 console.log(" customer item count ....1111111.....", result[0].item_code)
                 getAllCustomerVsItems(data.CusID, (resultitem: any) => {
                     console.log(" result items list ------  ", resultitem);
-                    
+
                     setItemCode(resultitem);
                     const data = resultitem?.filter((a: any) => a.ItemCode == result[0].item_code)[0];
                     setSelectItemCode(data.ItemCode)
                     // console.log(" item count .........  ", data.ItemCode)
                 });
 
-                setSelectCustomer(data.CusName);
-            
+             
+
             });
             // setloandingspinner(false);
         } catch (error) {
@@ -861,24 +893,24 @@ const NewServiceCall = (props: any) => {
         try {
 
             const prams = {
-                        "problem_type": servicetypeID,
-                        "serviceId": webRefID,
-                        "priority": selectPriority,
-                        "service_type": selectServiceType,
-                        "contact_name": contactPerson,
-                        "contact_no": contactNumber, //contactNumber.toString(),// "0769968773"
-                        "handle_by": parseInt(TechnicianID),
-                        "secretary": parseInt(secretaryID),
-                        "sales_assistance": parseInt(AssistanceID),
-                        "start_date": startDate,
-                        "end_date": endDate,
-                        "update_by": UserNameUpload,
-                        "Update_At": moment().utcOffset('+05:30').format('YYYY-MM-DD kk:mm:ss'),
-                        "handledByHandledByCode": parseInt(TechnicianID),
-                        "problemTypesDropDownProblemTypeCode": parseInt(servicetypeID),
-                        "secretaryDBSecretaryCode": parseInt(secretaryID),
-                        "salesAssistantDBSalesAssistantCode": parseInt(AssistanceID),
-                        "subject": subject
+                "problem_type": servicetypeID,
+                "serviceId": webRefID,
+                "priority": selectPriority,
+                "service_type": selectServiceType,
+                "contact_name": contactPerson,
+                "contact_no": contactNumber, //contactNumber.toString(),// "0769968773"
+                "handle_by": parseInt(TechnicianID),
+                "secretary": parseInt(secretaryID),
+                "sales_assistance": parseInt(AssistanceID),
+                "start_date": startDate,
+                "end_date": endDate,
+                "update_by": UserNameUpload,
+                "Update_At": moment().utcOffset('+05:30').format('YYYY-MM-DD kk:mm:ss'),
+                "handledByHandledByCode": parseInt(TechnicianID),
+                "problemTypesDropDownProblemTypeCode": parseInt(servicetypeID),
+                "secretaryDBSecretaryCode": parseInt(secretaryID),
+                "salesAssistantDBSalesAssistantCode": parseInt(AssistanceID),
+                "subject": subject
             }
 
             console.log('----- SERVICE CALL UPDATE UPLOAD JSON-- ----   ', prams);
@@ -941,6 +973,14 @@ const NewServiceCall = (props: any) => {
             console.log(">>>>>>>>>>>>", error);
 
         }
+
+    }
+
+    const getTechnicians = (Cluster_ID:any) => {
+
+        getTechniciasByClusters("Technician",Cluster_ID ,(result: any) => {
+            setHandleBy(result);
+        });
 
     }
 
@@ -1240,6 +1280,46 @@ const NewServiceCall = (props: any) => {
                         setState={setSubject}
                         max={50}
                     />
+
+                    <View style={{ zIndex: 50 }}>
+                        {/* error */}
+                        <Dropdown
+                            style={[style.dropdown, isFocus && { borderColor: comStyles.COLORS.BORDER_COLOR }]}
+                            placeholderStyle={style.placeholderStyle}
+                            selectedTextStyle={style.selectedTextStyle}
+                            inputSearchStyle={style.inputSearchStyle}
+                            iconStyle={style.iconStyle}
+                            data={ClusterHeadList}
+                            search
+                            maxHeight={300}
+                            labelField="name"
+                            valueField="name"
+                            placeholder={!isFocus ? 'Cluster Head' : '...'}
+                            searchPlaceholder="Search Cluster Head "
+                            value={selectCluster}
+                            onFocus={() => setIsFocus(true)}
+                            onBlur={() => setIsFocus(false)}
+                            onChange={item => {
+
+                                // setValue(item.description);
+                                setSelectCluster(item.name);
+                                setClusterID(item.user_id);
+                                getTechnicians(item.user_id);
+                                setIsFocus(false);
+                            }}
+                            renderLeftIcon={() => (
+                                <AntDesign
+                                    style={style.icon}
+                                    color={isFocus ? comStyles.COLORS.HEADER_BLACK : comStyles.COLORS.HEADER_BLACK}
+                                    name="Safety"
+                                    size={15}
+                                />
+                            )}
+                        />
+
+                    </View>
+
+                    <View style={{ padding: 10 }} />
 
                     <View style={{ zIndex: 50 }}>
                         {/* error */}

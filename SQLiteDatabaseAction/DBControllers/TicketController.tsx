@@ -11,29 +11,32 @@ export const saveTicket = (data: any, type: any, callBack: any) => {
                 [
                     {
                         table: 'TICKET',
-                        columns: `ticketId,serviceId,startDate,endDate,itemDescription,content,assignTo,technicianID,priority,attend_status,status,engRemark,cusNic,cusRemark,signatureStatus,syncStatus,actualstartDate,actualendtDate,itemCode,Ticket_web_RefID`,
-                        values: '?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?',
+                        columns: `ticketId,serviceId,startDate,endDate,itemDescription,content,assignTo,technicianID,priority,attend_status,status,engRemark,cusNic,cusRemark,signatureStatus,syncStatus,actualstartDate,actualendtDate,itemCode,CreatedDate,CreatedBy,Ticket_web_RefID,TicketType`,
+                        values: '?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?',
                         params: [
-                            data[i].ticketId,
-                            data[i].serviceId,
-                            data[i].startDate,
-                            data[i].endDate,
-                            data[i].itemDescription,
-                            data[i].content,
-                            data[i].assignTo,
-                            data[i].technicianID,
-                            data[i].priority,
-                            data[i].attend_status,
-                            data[i].status,
-                            data[i].engRemark,
-                            data[i].cusNic,
-                            data[i].cusRemark,
-                            data[i].signatureStatus,
-                            data[i].syncStatus,
-                            data[i].actualstartDate,
-                            data[i].actualendtDate,
-                            data[i].itemCode,
-                            data[i].Ticket_web_RefID,
+                            data[i].ticketId, //1
+                            data[i].serviceId, //2
+                            data[i].startDate, //3
+                            data[i].endDate, //4
+                            data[i].itemDescription, //5
+                            data[i].content, //6
+                            data[i].assignTo, //7
+                            data[i].technicianID, //8
+                            data[i].priority, //9
+                            data[i].attend_status, //10
+                            data[i].status, //11
+                            data[i].engRemark, //12
+                            data[i].cusNic, //13
+                            data[i].cusRemark, //14
+                            data[i].signatureStatus, //15
+                            data[i].syncStatus, //16
+                            data[i].actualstartDate, //17
+                            data[i].actualendtDate, //18
+                            data[i].itemCode, //19
+                            data[i].CreatedDate, //20
+                            data[i].CreatedBy, //21
+                            data[i].Ticket_web_RefID,  //22
+                            data[i].TicketType, //23
                         ],
                         primaryKey: 'ticketId',
 
@@ -61,8 +64,8 @@ export const saveTicket = (data: any, type: any, callBack: any) => {
                 [
                     {
                         table: 'TICKET',
-                        columns: `ticketId,serviceId,startDate,endDate,itemDescription,content,assignTo,technicianID,priority,attend_status,status,engRemark,cusNic,cusRemark,signatureStatus,syncStatus,actualstartDate,actualendtDate,itemCode,Ticket_web_RefID`,
-                        values: '?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?',
+                        columns: `ticketId,serviceId,startDate,endDate,itemDescription,content,assignTo,technicianID,priority,attend_status,status,engRemark,cusNic,cusRemark,signatureStatus,syncStatus,actualstartDate,actualendtDate,itemCode,CreatedDate,CreatedBy,Ticket_web_RefID,TicketType`,
+                        values: '?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?',
                         params: [
                             data[i].ServiceTicketNumber, // need to change done
                             "",
@@ -83,7 +86,10 @@ export const saveTicket = (data: any, type: any, callBack: any) => {
                             data[i].ActualStartDate, //done
                             data[i].ActualEndDate, //done
                             "",
+                            data[i].CreatedOn,//done
+                            data[i].AssignedBY,//done
                             data[i].TicketId,//done
+                            data[i].TicketType,//done
                         ],
                         primaryKey: 'ticketId',
 

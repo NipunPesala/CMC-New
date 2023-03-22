@@ -14,8 +14,8 @@ export const saveServiceData = (data: any, type: any, callBack: any) => {
           {
             table: 'SERVICE',
             columns: `serviceId, priority, service_type, item_code, item_description, customer,customer_address,contact_name,contact_no,
-          subject, handle_by, TechnicianID,secretary, SecretaryID,assistance,AssisstanceID,start_date, end_date, created_by,Approve_status,Attend_status,status,CreateAt,Syncstatus,itemID,customerID,serialNumber,service_web_RefID,service_typeID`,
-            values: '?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?',
+          subject,clusterHeadId, handle_by, TechnicianID,secretary, SecretaryID,assistance,AssisstanceID,start_date, end_date, created_by,Approve_status,Attend_status,status,CreateAt,Syncstatus,itemID,customerID,serialNumber,service_web_RefID,service_typeID`,
+            values: '?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?',
             params: [
               data[i].ServiceCallId,
               data[i].Priority,
@@ -27,6 +27,7 @@ export const saveServiceData = (data: any, type: any, callBack: any) => {
               data[i].contact_name,
               data[i].contact_no,
               data[i].Subject,
+              data[i].clusterHeadUserId,
               data[i].HandledBy,
               data[i].TechnicianID,
               data[i].Secretary,
@@ -98,40 +99,41 @@ export const saveServiceData = (data: any, type: any, callBack: any) => {
           {
             table: 'SERVICE',
             columns: `serviceId, priority, service_type, item_code, item_description, customer,customer_address,contact_name,contact_no,
-            subject, handle_by, TechnicianID,secretary, SecretaryID,assistance,AssisstanceID,start_date, end_date, created_by,Approve_status,Attend_status,status,CreateAt,Syncstatus,itemID,customerID,serialNumber,service_web_RefID,service_typeID`,
-            values: '?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?',
+            subject,clusterHeadId, handle_by, TechnicianID,secretary, SecretaryID,assistance,AssisstanceID,start_date, end_date, created_by,Approve_status,Attend_status,status,CreateAt,Syncstatus,itemID,customerID,serialNumber,service_web_RefID,service_typeID`,
+            values: '?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?',
             params: [
-              data[i].ServiceCallNumber, //mobille service call id 
-              data[i].Priority, //done
-              data[i].ProblemType,
-              data[i].ItemCode,//done
+              data[i].ServiceCallNumber, //mobille service call id   /1
+              data[i].Priority, //done  2
+              data[i].ProblemType, //3
+              data[i].ItemCode,//done 4
               // ItemName,
-              "",
-              data[i].CustomerName,
-              data[i].CustomerAddress,
-              data[i].ContactPerson,//done
-              data[i].TelephoneNumber,//
-              data[i].Subject,
-              data[i].HandledBy, //done
-              data[i].handledByUserId,// done
-              data[i].Secretary,//done
-              data[i].secretaryUserId,//done
-              data[i].SalesAssistant,
-              data[i].salesAssistantUserId,//done
-              start,// done 
-              end, // done
-              data[i].CreatedBy,
-              data[i].IsApprovedBy, //done
-              data[i].StatusId,
-              data[i].Status, //done
-              data[i].CreatedOn,//done
+              "", // 5
+              data[i].CustomerName, //6
+              data[i].CustomerAddress, //7
+              data[i].ContactPerson,//done  8
+              data[i].TelephoneNumber,// 9
+              data[i].Subject, //10
+              data[i].clusterHeadUserId, //11
+              data[i].HandledBy, //done 12
+              data[i].handledByUserId,// done 13
+              data[i].Secretary,//done 14
+              data[i].secretaryUserId,//done 15
+              data[i].SalesAssistant, // 16
+              data[i].salesAssistantUserId,//done 17
+              start,// done  18
+              end, // done 19
+              data[i].CreatedBy, // 20
+              data[i].IsApprovedBy, //done 21
+              data[i].StatusId, // 22
+              data[i].Status, //done 23
+              data[i].CreatedOn,//done 24
               // data[i].syncstatus,
-              1,  // sync status
-              data[i].ItemId,///done
-              data[i].CustomerCode,
-              data[i].msnfSN,
-              data[i].ServiceCallId,// done
-              data[i].ProblemType,
+              1,  // sync status 25
+              data[i].ItemId,///done 26
+              data[i].CustomerCode,  // 27
+              data[i].msnfSN, // 28
+              data[i].ServiceCallId,// done 29
+              data[i].ProblemType, // 30
             ],
             primaryKey: 'serviceId',
 
@@ -187,9 +189,13 @@ export const updateService = (data: any, callBack: any) => {
   console.log(data, ' =======================');
 
   DB.updateData(
-    'UPDATE SERVICE SET priority=?, service_type=?, item_code=?, item_description=?, customer=?,customer_address=?,contact_name=?,contact_no=?,subject=?, handle_by=?,TechnicianID=?, secretary=?,SecretaryID=?, assistance=?,AssisstanceID=?,start_date=?, end_date=?, created_by=?,Approve_status=?,Attend_status=?,status=?,CreateAt=?,Syncstatus=?,itemID=?,customerID=?,serialNumber=? WHERE serviceId=?',
-    [data[0].Priority, data[0].type, data[0].item_code, data[0].item_description, data[0].customer, data[0].customer_address, data[0].contact_name, data[0].contact_no, data[0].Subject, data[0].HandledBy, data[0].TechnicianID, data[0].Secretary, data[0].SecretaryID, data[0].SalesAssistant, data[0].AssisstanceID, data[0].PlanedStartDateTime, data[0].PlanedEndDateTime, data[0].CreatedBy, data[0].approve_status, data[0].attend_status, data[0].Status, data[0].createAt, data[0].syncstatus, data[0].itemID, data[0].customerID, data[0].serialNumber, data[0].ServiceCallId],
+    'UPDATE SERVICE SET priority=?, service_type=?, item_code=?, item_description=?, customer=?,customer_address=?,contact_name=?,contact_no=?,subject=?, handle_by=?,TechnicianID=?, secretary=?,SecretaryID=?, assistance=?,AssisstanceID=?,start_date=?, end_date=?, created_by=?,Approve_status=?,Attend_status=?,status=?,CreateAt=?,Syncstatus=?,itemID=?,customerID=?,serialNumber=?,clusterHeadId=? WHERE serviceId=?',
+    [data[0].Priority, data[0].type, data[0].item_code, data[0].item_description, data[0].customer, data[0].customer_address, data[0].contact_name, data[0].contact_no, data[0].Subject, data[0].HandledBy, data[0].TechnicianID, data[0].Secretary, data[0].SecretaryID, data[0].SalesAssistant, data[0].AssisstanceID, data[0].PlanedStartDateTime, data[0].PlanedEndDateTime, data[0].CreatedBy, data[0].approve_status, data[0].attend_status, data[0].Status, data[0].createAt, data[0].syncstatus, data[0].itemID, data[0].customerID, data[0].serialNumber, data[0].ServiceCallId,data[0].clusterHeadUserId],
     (resp: any, err: any) => {
+
+      console.log(" response ----------   " , resp);
+      console.log(" error ----------   " , err);
+      
       callBack(resp, err);
     },
   );
