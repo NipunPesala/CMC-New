@@ -224,7 +224,6 @@ const AddSparePartsComponent = () => {
                                      console.log("inventory spare part sync status--------- ", result);
 
                                  });
-
                             }
 
                         } else {

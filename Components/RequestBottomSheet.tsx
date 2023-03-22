@@ -160,7 +160,7 @@ const RequestBottomSheet = () => {
 
         } else {
 
-            navigation.navigate("AddSparePartsComponent");
+            navigation.navigate("AddSparePartsComponent",{ ticketIdNav: TicketID,sparePartIdNav:RequestID });
 
         }
 
@@ -198,7 +198,7 @@ const RequestBottomSheet = () => {
 
         } else {
 
-            navigation.navigate("AddAdditionalSpareParts")
+            navigation.navigate("AddAdditionalSpareParts",{ ticketIdNav: TicketID,sparePartIdNav:RequestID })
 
         }
 
