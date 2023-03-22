@@ -394,6 +394,7 @@ const NewServiceCall = (props: any) => {
         })
         get_ASYNC_USERID().then(res => {
             UserIdUpload = res;
+            setCreatedBy(res);
             console.log('user id upload  --' + UserIdUpload);
         })
 
