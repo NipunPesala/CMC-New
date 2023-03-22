@@ -472,6 +472,7 @@ const UploadUpdatesExpences= () => {
             "createdBy":UserIdUpload,
             "amount": amount,
             "remark":remark,
+            "status":0,
             "createdAt": moment().utcOffset('+05:30').format('YYYY-MM-DD kk:mm:ss')
         }
     ]

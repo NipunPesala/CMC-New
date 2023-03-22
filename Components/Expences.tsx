@@ -9,16 +9,24 @@ import {
 import ActionButton from "./ActionButton";
 import ComStyles from "../Constant/Components.styles";
 import { FlatList } from "react-native-gesture-handler";
-import { getAllExpences, DeleteExpences, getSyncExpences,DeleteExpencesnew } from "../SQLiteDatabaseAction/DBControllers/ExpencesController"
+import { getAllExpences, DeleteExpences, getSyncExpences,DeleteExpencesnew,getExpenWebIdForUpdate } from "../SQLiteDatabaseAction/DBControllers/ExpencesController"
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import ListBox from "./ListBox";
 import { Text } from "react-native-paper";
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import ComponentsStyles from "../Constant/Components.styles";
-import { getLoginUserName, getASYNC_CURRENT_TICKET_ID, get_ASYNC_USERID } from "../Constant/AsynStorageFuntion"
-
+import { getLoginUserName, getASYNC_CURRENT_TICKET_ID, get_ASYNC_USERID,get_ASYNC_TOCKEN } from "../Constant/AsynStorageFuntion"
+import { BASE_URL_GET } from "../Constant/Commen_API_Url";
+import axios from "axios";
+import moment from 'moment';
 var ticketID:any;
-
+var TOCKEN_KEY: any;
+var Amount:any;
+var remark:any;
+var createdBy:any;
+var expenseType:any;
+var dateExpire:any;
+var expenceId:any;
 const Expences = (isActive:any) => {
     const navigation = useNavigation();
     const [ExList, setExList] = useState([]);
@@ -78,8 +86,105 @@ const deleteExpencesUpdateState=(expenId:any)=>{
     DeleteExpencesnew(expenId, (result: any) => {
         Load_All_Expences(ticketID);
     });
+    getExpenWebIdForUpdate(expenId, (result2: any) => {
+      console.log('get uplode details ++++++++++++',result2[0]);
+      Amount=result2[0].Amount;
+      remark=result2[0].Remark;
+      createdBy=result2[0].CreatedBy;
+      expenseType=result2[0].ExpenseTypeID;
+      dateExpire=result2[0].RelaventDate;
+      expenceId=result2[0].ExpencesWebRefId;
+      UploadUpdatesExpences();
+    });
+   
 
 }
+
+const UploadUpdatesExpences= () => {
+  
+    try {
+  
+        const prams = [
+          {
+              "expenceId":expenceId,
+              "dateExpire":dateExpire ,
+              "expenseType": expenseType,
+              "createdBy":createdBy,
+              "amount": Amount,
+              "remark":remark,
+              "status":1,
+              "createdAt": moment().utcOffset('+05:30').format('YYYY-MM-DD kk:mm:ss')
+          }
+      ]
+        console.log('----- SERVICE CALL UPDATE UPLOAD JSON-- ----   ', prams);
+  
+  
+        get_ASYNC_TOCKEN().then(res => {
+            // console.log('cus id--' + customerID)
+            TOCKEN_KEY = res;
+            // const AuthStr = 'Bearer '.concat(TOCKEN_KEY);
+            const AuthStr = ` Bearer ${TOCKEN_KEY}`;
+  
+            const headers = {
+                'Authorization': AuthStr
+            }
+            const URL = BASE_URL_GET + "expence";
+            axios.put(URL, prams, {
+                headers: headers
+            })
+                .then((response) => {
+                    console.log("[s][t][a][t][u][s][]", response.status);
+                    if (response.status == 200) {
+  
+                        console.log('<------ NEW SERVICE CALL UPLOAD Method --->', response.data)
+                        console.log('<------ NEW SERVICE error id --->', response.data[0].ErrorId)
+                        if (response.data[0].ErrorId == 0) {
+                    
+                            // this use fro update sync flag as 1 
+                            // console.log('this is a web service call id ----', response.data[0].ServiceCallId);
+                            // updateSycnServiceCAll(serviceId, (result: any) => {
+  
+                            // });
+  
+  
+                        } else {
+                          Alert.alert(
+                            "Axios upload error",
+                            "Bad Request",
+                            [
+                                { text: "OK", onPress: () => console.log("OK Pressed") }
+                            ]
+                        );
+  
+                        }
+  
+                    } else {
+                        Alert.alert(
+                            "Invalid Details!",
+                            "Bad Request",
+                            [
+                                { text: "OK", onPress: () => console.log("OK Pressed") }
+                            ]
+                        );
+  
+                    }
+  
+                })
+                .catch((error) => {
+                    Alert.alert('error', error.response)
+                    console.log('error+++++', error);
+  
+                })
+  
+        })
+    } catch (error) {
+        console.log(">>>>>>>>>>>>", error);
+  
+    }
+  
+  }
+
+
 
     const deletefuntion = (data: any) => {
         DeleteExpences(data, (result: any) => {
