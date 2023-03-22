@@ -187,18 +187,77 @@ export const saveServiceData = (data: any, type: any, callBack: any) => {
 };
 export const updateService = (data: any, callBack: any) => {
   console.log(data, ' =======================');
+  try {
+    DB.updateData(
+      'UPDATE SERVICE SET priority=?, service_type=?, item_code=?, item_description=?, customer=?,customer_address=?,contact_name=?,contact_no=?,subject=?, handle_by=?,TechnicianID=?, secretary=?,SecretaryID=?, assistance=?,AssisstanceID=?,start_date=?, end_date=?, created_by=?,Approve_status=?,Attend_status=?,status=?,CreateAt=?,Syncstatus=?,itemID=?,customerID=?,serialNumber=?,clusterHeadId=? WHERE serviceId=?',
+      // 'UPDATE SERVICE SET priority=?,' +
+      // // 'service_type=?, item_code=?,'+
+      // // 'item_description=?, customer=?,'+
+      // // 'customer_address=?,'+
+      // // 'contact_name=?,'+
+      // // 'contact_no=?,'+
+      // // 'subject=?,'+
+      // // 'handle_by=?,'+
+      // // 'TechnicianID=?,'+
+      // // 'secretary=?,'+
+      // // 'SecretaryID=?,'+
+      // // 'assistance=?,'+
+      // // 'AssisstanceID=?,'+
+      // // 'start_date=?,'+
+      // // 'end_date=?,'+
+      // // 'created_by=?,'+
+      // // 'Approve_status=?,'+
+      // // 'Attend_status=?,'+
+      // // 'status=?,'+
+      // // 'CreateAt=?,'+
+      // // 'Syncstatus=?,'+
+      // // 'itemID=?'+
+      // // ',customerID=?'+
+      // // ',serialNumber=?,'+
+      // // 'clusterHeadId=?'+
+      // 'WHERE serviceId=?',
+      // [data[0].Priority,
+      // data[0].type,
+      // data[0].item_code,
+      // data[0].item_description,
+      // data[0].customer,
+      // data[0].customer_address,
+      // data[0].contact_name,
+      // data[0].contact_no,
+      // data[0].Subject,
+      // data[0].HandledBy,
+      // data[0].TechnicianID,
+      // data[0].Secretary,
+      // data[0].SecretaryID,
+      // data[0].SalesAssistant,
+      // data[0].AssisstanceID,
+      // data[0].PlanedStartDateTime,
+      // data[0].PlanedEndDateTime,
+      //  data[0].CreatedBy, 
+      //  data[0].approve_status, 
+      //  data[0].attend_status, 
+      //  data[0].Status,
+      //   data[0].createAt,
+      //    data[0].syncstatus,
+      //     data[0].itemID,
+      //      data[0].customerID,
+      //       data[0].serialNumber,
+      //       data[0].clusterHeadUserId,
+      //        data[0].ServiceCallId],
+      [data[0].Priority, data[0].type, data[0].item_code, data[0].item_description, data[0].customer, data[0].customer_address, data[0].contact_name, data[0].contact_no, data[0].Subject, data[0].HandledBy, data[0].TechnicianID, data[0].Secretary, data[0].SecretaryID, data[0].SalesAssistant, data[0].AssisstanceID, data[0].PlanedStartDateTime, data[0].PlanedEndDateTime, data[0].CreatedBy, data[0].approve_status, data[0].attend_status, data[0].Status, data[0].createAt, data[0].syncstatus, data[0].itemID, data[0].customerID, data[0].serialNumber,data[0].clusterHeadUserId, data[0].ServiceCallId],
+      (resp: any, err: any) => {
 
-  DB.updateData(
-    'UPDATE SERVICE SET priority=?, service_type=?, item_code=?, item_description=?, customer=?,customer_address=?,contact_name=?,contact_no=?,subject=?, handle_by=?,TechnicianID=?, secretary=?,SecretaryID=?, assistance=?,AssisstanceID=?,start_date=?, end_date=?, created_by=?,Approve_status=?,Attend_status=?,status=?,CreateAt=?,Syncstatus=?,itemID=?,customerID=?,serialNumber=?,clusterHeadId=? WHERE serviceId=?',
-    [data[0].Priority, data[0].type, data[0].item_code, data[0].item_description, data[0].customer, data[0].customer_address, data[0].contact_name, data[0].contact_no, data[0].Subject, data[0].HandledBy, data[0].TechnicianID, data[0].Secretary, data[0].SecretaryID, data[0].SalesAssistant, data[0].AssisstanceID, data[0].PlanedStartDateTime, data[0].PlanedEndDateTime, data[0].CreatedBy, data[0].approve_status, data[0].attend_status, data[0].Status, data[0].createAt, data[0].syncstatus, data[0].itemID, data[0].customerID, data[0].serialNumber, data[0].ServiceCallId,data[0].clusterHeadUserId],
-    (resp: any, err: any) => {
+        console.log(" response ----------   ", resp);
+        console.log(" error ----------   ", err);
 
-      console.log(" response ----------   " , resp);
-      console.log(" error ----------   " , err);
-      
-      callBack(resp, err);
-    },
-  );
+        callBack(resp, err);
+      },
+    );
+  } catch (e) {
+    console.log(e, '=-=-=-=-=--==-=-=-=-=-=-=-');
+
+  }
+
 };
 
 export const deleteAllServices = (callBack: any) => {
