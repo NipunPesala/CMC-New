@@ -1090,7 +1090,7 @@ export const ticketTypes = [
     },
     { 
         Id:"2",
-        name: "Not Chargable",
+        name: "Free of charge",
         status: "1" ,  
     },
  
