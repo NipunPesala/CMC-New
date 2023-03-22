@@ -6,8 +6,8 @@ export const saveExpences = (data:any, callBack:any) => {
             [
                 {
                     table: 'EXPENCES',
-                    columns: `ExpenseRequestID,ServiceCall_ID,ExpenseTypeID,Amount,Remark,CreatedBy,CreateDate,RelaventDate,status,isSync`,
-                    values: '?,?,?,?,?,?,?,?,?,?',
+                    columns: `ExpenseRequestID,ServiceCall_ID,ExpenseTypeID,Amount,Remark,CreatedBy,CreateDate,RelaventDate,status,isSync,ExpencesWebRefId`,
+                    values: '?,?,?,?,?,?,?,?,?,?,?',
                     params: [
                         data[i].ExpenseRequestID,
                         data[i].ServiceCall_ID,
@@ -19,6 +19,7 @@ export const saveExpences = (data:any, callBack:any) => {
                         data[i].RelaventDate,
                         data[i].status,
                         data[i].isSync,
+                        data[i].ExpencesWebRefId,
                     ],
                     primaryKey: '_Id',
                     subQuery: `ServiceCall_ID = EXCLUDED.ServiceCall_ID,
@@ -121,6 +122,31 @@ export const updateExpences = (ticketID:any,ExpenseTypeID:any,Amount:any,Remark:
       },
     );
   };
+
+  // update sync expencess 
+  export const updateNewSyncExpences = (ticketID:any,callBack:any) => {
+    DB.updateData(
+      'UPDATE EXPENCES SET isSync=1 WHERE ServiceCall_ID=?',
+      [ticketID],
+      (resp:any, err:any) => {
+        callBack(resp, err);
+      },
+    );
+  };
+// save expences web reff id
+  export const Update_Expences_webRefId = (webFef: any, expenceID: any, callBack: any) => {
+    // console.log('sql web ref id========='+webFef)
+    // console.log('sql service call id========='+serviceCallId)
+    DB.updateData(
+      'UPDATE EXPENCES SET ExpencesWebRefId=? WHERE ExpenseRequestID=?',
+      [webFef, expenceID],
+      (resp: any, err: any) => {
+        console.log('web ref id update--------- ', resp);
+        callBack(resp, err);
+      },
+    );
+  };
+
 
   export const getSyncExpences = (TicketID:any , callBack:any) => {
 

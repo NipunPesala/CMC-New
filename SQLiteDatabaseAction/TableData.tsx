@@ -863,6 +863,13 @@ export const tableData = [
         autoIncrement: false,
         shouldNotAllowNull: false,
       },
+      {
+        name: 'ExpencesWebRefId',
+        dataType: 'INTEGER',
+        isPrimaryKey: false,
+        autoIncrement: false,
+        shouldNotAllowNull: false,
+      },
     ]
   },
   {
