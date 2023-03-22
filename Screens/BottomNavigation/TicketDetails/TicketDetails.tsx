@@ -537,7 +537,7 @@ const TicketDetails = (props: any) => {
                         textStyle={loadScreen == "spareparts" ? style.activeText : style.deActiveText}
                         onPress={() => setectSparePart()} />
 
-                    <ActionButton title="Service History"
+                    <ActionButton title="Call Details"
                         style={loadScreen == "serviceH" ? style.activeBtn : style.deActiveBtn}
                         textStyle={loadScreen == "serviceH" ? style.activeText : style.deActiveText}
                         onPress={() => selection("serviceH")} />

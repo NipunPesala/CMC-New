@@ -27,6 +27,9 @@ const TicketMoreInfo = (ticketID: any) => {
     const [content_str, setcontent] = useState('');
     const [create_by, setcreate_by] = useState('');
     const [remark, setremark] = useState('');
+    const [contactNo, setContactNo] = useState('');
+    const [contactPerson, setContactPerson] = useState('');
+    const [subject, setSubject] = useState('');
 
 
     useEffect(() => {
@@ -47,6 +50,16 @@ const TicketMoreInfo = (ticketID: any) => {
             setitemGroup("-");
             // setSerial_no(result[0].serialNumber);
 
+
+        });
+
+        getTicketById(ticketID.ID, (res: any) => {
+
+            console.log(" >>>>>>>>>>>>>> {}{}{}{}{} ==========  ", res);
+
+            setContactNo(res[0].contact_no);
+            setContactPerson(res[0].contact_name);
+            setSubject(res[0].subject);
 
         });
 
@@ -81,12 +94,12 @@ const TicketMoreInfo = (ticketID: any) => {
 
                     <MoreInfoComponet
                         title="Service Ticket Details"
-                        content={content_str}
+                        content={subject}
                         st_date={startDate}
                         et_date={endDate}
                         create_by={create_by}
-                        remark={remark}
-                        item_code={itemCode}
+                        remark={contactPerson}
+                        item_code={contactPerson}
                         item_description={itemDescription}
                         item_group={itemGroup}
                         serial_no={""}

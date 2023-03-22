@@ -158,7 +158,7 @@ export const deleteAllTicket = (callBack: any) => {
 
 export const getTicketById = (ticketId: any, callBack: any) => {
     DB.searchData(
-        'SELECT TICKET.ticketId,TICKET.serviceId,TICKET.status,SERVICE.customer,TICKET.assignTo,SERVICE.customer_address,SERVICE.contact_name,SERVICE.contact_no,TICKET.attend_status,TICKET.Ticket_web_RefID,TICKET.priority FROM TICKET INNER JOIN SERVICE ON SERVICE.serviceId = TICKET.serviceId WHERE TICKET.ticketId=?',
+        'SELECT TICKET.ticketId,TICKET.serviceId,TICKET.status,SERVICE.customer,TICKET.assignTo,SERVICE.customer_address,SERVICE.contact_name,SERVICE.contact_no,TICKET.attend_status,TICKET.Ticket_web_RefID,TICKET.priority,SERVICE.subject FROM TICKET INNER JOIN SERVICE ON SERVICE.serviceId = TICKET.serviceId WHERE TICKET.ticketId=?',
         [ticketId],
         (resp: any, err: any) => {
             callBack(resp, err);
@@ -176,6 +176,8 @@ export const getALLTicketById = (ticketId: any, callBack: any) => {
         },
     );
 }
+
+
 
 
 

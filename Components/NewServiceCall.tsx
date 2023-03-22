@@ -116,7 +116,7 @@ const NewServiceCall = (props: any) => {
     const [createdDate, setCreatedDate] = useState('');
 
     //update Upload
-    const [approvedBy, setApprovedBy] = useState('');
+    const [approvedBy, setApprovedBy] = useState(0);
     const [approveAt, setApproveAt] = useState('');
 
     const mode = route.params.mode;
@@ -142,7 +142,7 @@ const NewServiceCall = (props: any) => {
 
     const saveServiceCall = () => {
 
-        console.log(" clus idddddddddd ***********  " , ClusterID);
+        console.log(" clus idddddddddd ***********  " , ClusterID,"  -------   " , approveAt );
         
 
         const sendData = [
@@ -177,9 +177,9 @@ const NewServiceCall = (props: any) => {
                 service_web_RefID: 0,
                 service_typeID: servicetypeID,
                 clusterHeadUserId: ClusterID,
-                ApproveBy: 0,
-                ApproveAt: '',
-                AttendDate: ''
+                ApproveBy: approvedBy,
+                ApproveAt: approveAt,
+                AttendDate: createdDate
 
 
             }
@@ -398,11 +398,12 @@ const NewServiceCall = (props: any) => {
     const getLoginUserNameForUplode = () => {
         getLoginUserName().then(res => {
             UserNameUpload = res;
+             setCreatedBy(res);
             console.log('user Name --' + UserNameUpload);
         })
         get_ASYNC_USERID().then(res => {
             UserIdUpload = res;
-            setCreatedBy(res);
+            // setCreatedBy(res);
             console.log('user id upload  --' + UserIdUpload);
         })
 
@@ -676,7 +677,9 @@ const NewServiceCall = (props: any) => {
 
         //console.log(" generate ********************");
 
-        setCreatedBy(UserIdUpload);
+        // setCreatedBy(UserIdUpload);
+        setCreatedBy(UserNameUpload);
+        setApproveAt(moment().utcOffset('+05:30').format('YYYY-MM-DD kk:mm:ss'));
         setCreatedDate(moment().utcOffset('+05:30').format('YYYY-MM-DD kk:mm:ss'));
         getLastServiceId((result: any) => {
             // let serviceID = result + 1;
@@ -925,7 +928,7 @@ const NewServiceCall = (props: any) => {
                 "subject": subject,
                 "clusterHeadClusterHeadCode" : parseInt(ClusterID),
                 "approveStatus":approveStatus,
-                "approvedBy":parseInt(approvedBy),
+                "approvedBy":approvedBy,
                 "approvedAt": approveAt,
                 "actualStartDate":moment().utcOffset('+05:30').format('YYYY-MM-DD kk:mm:ss'),
                 "status":"Pending",
@@ -1291,6 +1294,7 @@ const NewServiceCall = (props: any) => {
                         stateValue={String(contactNumber)}
                         max={10}
                         setState={setContactNumber}
+                        keyType='numeric'
                     />
 
 
@@ -1302,6 +1306,7 @@ const NewServiceCall = (props: any) => {
                         stateValue={subject}
                         setState={setSubject}
                         max={50}
+                     
                     />
 
                     <View style={{ zIndex: 50 }}>

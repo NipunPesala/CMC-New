@@ -286,7 +286,7 @@ export const deleteAllServices = (callBack: any) => {
 export const updateServiceCAll = (serviceId: any, status: any,userID:any,callBack: any) => {
   DB.updateData(
     'UPDATE SERVICE SET Approve_status=?,Approve_By =?,Approve_At=?  WHERE serviceId=?',
-    [status, serviceId,userID,moment().utcOffset('+05:30').format('YYYY-MM-DD')],
+    [status,userID,moment().utcOffset('+05:30').format('YYYY-MM-DD'),serviceId],
     (resp: any, err: any) => {
       callBack(resp, err);
     },
@@ -320,8 +320,8 @@ export const enableServiceCall = (serviceId: any, status: any, callBack: any) =>
   console.log(serviceId, "---", status);
 
   DB.updateData(
-    'UPDATE SERVICE SET Attend_status=? WHERE serviceId=?',
-    [status, serviceId],
+    'UPDATE SERVICE SET Attend_status=?,AttendDate=? WHERE serviceId=?',
+    [status, moment().utcOffset('+05:30').format('YYYY-MM-DD'),serviceId],
     (resp: any, err: any) => {
       callBack(resp, err);
     },
