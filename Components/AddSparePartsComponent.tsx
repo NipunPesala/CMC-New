@@ -28,8 +28,10 @@ import { getSearchSpareParts, updateSyncSpareParts } from '../SQLiteDatabaseActi
 import Header from "./Header";
 import { BASE_URL_GET } from "../Constant/Commen_API_Url";
 import { getCustomerIDAsyncStorage, get_ASYNC_TOCKEN } from "../Constant/AsynStorageFuntion";
-import { getWebRefIdByServiceId} from "../SQLiteDatabaseAction/DBControllers/TicketController";
+import { getWebRefIdByServiceId } from "../SQLiteDatabaseAction/DBControllers/TicketController";
 import axios from "axios";
+import { checkSparpartsHeader, saveSparepartsHeader } from "../SQLiteDatabaseAction/DBControllers/SparepartsHeaderController";
+import { saveInventrySpareparts, updateSyncInventrySpareParts } from "../SQLiteDatabaseAction/DBControllers/InventrySparepartsController";
 var spareID: any;
 var id: any;
 var reqID: any;
@@ -78,49 +80,66 @@ const AddSparePartsComponent = () => {
             SPqty = qty;
 
             try {
-
-                let data = [
+                get_ASYNC_USERID().then(res => {
+                    UserIdUpload = res;
+                })
+                let HederData = [
                     {
 
-                        SPRequestID: requestID,
-                        ticketId: TicketID,
-                        name: "",
-                        description: Description,
-                        qty: qty,
-                        approveStatus: "1",
-                        spType_ID: 1, //Additional :2 inventory :1
-                        SPartID: spareID1,
-                        creationdate: moment().utcOffset('+05:30').format('YYYY-MM-DD'),
-                        isSync: "true",
+                        spareparts_No: requestID,
+                        ticket_ID: TicketID,
+                        CreatedBy: UserIdUpload,
+                        CreatedAt: moment().utcOffset('+05:30').format('YYYY-MM-DD'),
+                        Web_Ref_Id: TicketWebRefId,
+                        status: 0,
+                        is_Sync: 0,
 
                     }
                 ]
+                checkSparpartsHeader(requestID, (result: any) => {
+                    console.log('get web ref idd=======================', result.length);
 
-                saveTicketSpareparts(data, (result: any) => {
-
-
-                    if (result === "success") {
-                        ToastAndroid.show("Additional Spare Parts saved success ", ToastAndroid.SHORT);
-                        UploadInventrySparePart(qty);
-                        closeDialog();
-
+                    if (result.length > 0) {
+                        console.log("avalable", result[0].spareparts_No);
+                  
+                        savedataDetails_Line(requestID,UserIdUpload,qty);
                     } else {
+                        console.log('not Avalable', HederData);
+                        saveSparepartsHeader(HederData, (result: any) => {
 
-                        Alert.alert(
-                            "Failed...!",
-                            " Save Failed.",
-                            [
-                                {
-                                    text: "OK", onPress: () => {
-
-                                    }
-                                }
-                            ]
-                        );
+                          
+                            savedataDetails_Line(requestID,UserIdUpload,qty);
+                        });
 
                     }
 
+                    // setlistdata(result);
                 });
+                // saveTicketSpareparts(data, (result: any) => {
+
+
+                //     if (result === "success") {
+                //         ToastAndroid.show("Additional Spare Parts saved success ", ToastAndroid.SHORT);
+                //         UploadInventrySparePart(qty);
+                //         closeDialog();
+
+                //     } else {
+
+                //         Alert.alert(
+                //             "Failed...!",
+                //             " Save Failed.",
+                //             [
+                //                 {
+                //                     text: "OK", onPress: () => {
+
+                //                     }
+                //                 }
+                //             ]
+                //         );
+
+                //     }
+
+                // });
 
             } catch (error) {
 
@@ -145,7 +164,39 @@ const AddSparePartsComponent = () => {
 
 
     }
+    const savedataDetails_Line = (spareparts_No: any,UserIdUpload1:any,quantity:any) => {
+        console.log('detai------------------s',spareparts_No,'--------,',UserIdUpload1);
+        let DetailsData = [
+            {
 
+                SP_ItemCode: spareID1,
+                ItemName: Description,
+                Quantity: quantity,
+                Spareparts_HeaderID:spareparts_No,
+                CreatedBy: UserIdUpload1,
+                CreatedAt: moment().utcOffset('+05:30').format('YYYY-MM-DD'),
+                Web_Ref_Id: TicketWebRefId,
+                status: 0,
+                is_Sync: 0,
+
+            }
+        ]
+
+             
+
+        console.log(DetailsData, '==============');
+        saveInventrySpareparts(DetailsData, (result: any) => {
+
+            console.log(result, '======11111111========');
+            setisDialog(false)
+            if(result==3){
+                console.log('++++++++++++++++++++++++++++++');
+                
+                UploadInventrySparePart(quantity,spareparts_No,spareID1);
+            }
+
+        });
+    }
     const getserviceTiketWebID = () => {
 
         getWebRefIdByServiceId(TicketIdNavIn, (result: any) => {
@@ -156,8 +207,8 @@ const AddSparePartsComponent = () => {
         });
     }
 
-    const UploadInventrySparePart = (qty: any) => {
-        // console.log('this is user ID --------------',UserIdKey);
+    const UploadInventrySparePart = (qty:any,headerID:any,itemID:any) => {
+        console.log('this is user ID --------------',qty);
         try {
 
             get_ASYNC_TOCKEN().then(res => {
@@ -220,10 +271,16 @@ const AddSparePartsComponent = () => {
                             if (response.data[0].ErrorId == 0) {
                                 // this use fro update sync flag as 1 
 
-                                updateSyncSpareParts(TicketIdNavIn,(result: any) => {
-                                     console.log("inventory spare part sync status--------- ", result);
+                                updateSyncInventrySpareParts(headerID,itemID, (result: any) => {
+                                    console.log("inventory spare part sync status--------- ", result);
 
-                                 });
+                                });
+                                // updateSyncSpareParts(TicketIdNavIn, (result: any) => {
+                                //     console.log("inventory spare part sync status--------- ", result);
+
+                                // });
+
+                                
                             }
 
                         } else {

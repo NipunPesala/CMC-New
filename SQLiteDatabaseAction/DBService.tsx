@@ -577,6 +577,59 @@ export const tableIndexKey = () => {
     },
   );
 
+  // ----------------------------------- Spartpart_Header IDX --------------------------------------
+
+
+  db.transaction(
+    (tx:any) => {
+      const query_idx_Ticket = `CREATE UNIQUE INDEX IF NOT EXISTS idx_Spartpart_Header ON Spartpart_Header(spareparts_No)`;
+
+      tx.executeSql(
+        query_idx_Ticket,
+        [],
+        (tx: any, response: any) => {
+          console.log(`create table index success Spartpart_Header: `, response);
+        },
+        (tx: any, error: any) => {
+          console.log(`create table index key error Spartpart_Header: `, error);
+        },
+      );
+    },
+    (error:any) => {
+      console.log('table create query transaction failed TICKET: ', error);
+    },
+    (success:any) => {
+      console.log('table create query transaction:', 'success');
+    },
+  );
+  
+  // ----------------------------------- Invenrty_Spartpart IDX --------------------------------------
+
+
+  db.transaction(
+    (tx:any) => {
+      const query_idx_Ticket = `CREATE UNIQUE INDEX IF NOT EXISTS idx_Invenrty_Spartpart ON Invenrty_Spartpart(Spareparts_HeaderID,SP_ItemCode)`;
+
+      tx.executeSql(
+        query_idx_Ticket,
+        [],
+        (tx: any, response: any) => {
+          console.log(`create table index success Invenrty_Spartpart: `, response);
+        },
+        (tx: any, error: any) => {
+          console.log(`create table index key error Invenrty_Spartpart: `, error);
+        },
+      );
+    },
+    (error:any) => {
+      console.log('table create query transaction failed TICKET: ', error);
+    },
+    (success:any) => {
+      console.log('table create query transaction:', 'success');
+    },
+  );
+
+
   return null;
 
 } catch (error) {

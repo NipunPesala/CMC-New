@@ -22,9 +22,9 @@ import { useNavigation, useRoute } from "@react-navigation/native";
 import InputText from "./InputText";
 import IconA from 'react-native-vector-icons/Ionicons';
 import moment from "moment";
-import { deleteAllSparePartsReleventTickets, getALLAdditionalSpareTiketdetasils, saveTicketSpareparts, getWebRefIdByServiceId, updateSycncSparepart,updateTicketSpare_webRef,getSparePart_Remove_web_ref } from "../SQLiteDatabaseAction/DBControllers/TicketController";
+import { deleteAllSparePartsReleventTickets, getALLAdditionalSpareTiketdetasils, saveTicketSpareparts, getWebRefIdByServiceId, updateSycncSparepart, updateTicketSpare_webRef, getSparePart_Remove_web_ref } from "../SQLiteDatabaseAction/DBControllers/TicketController";
 import ListBox from "./ListBox";
-import { getASYNC_CURRENT_SP_REQUEST_ID, get_ASYNC_TOCKEN, get_ASYNC_USERID,getASYNC_CURRENT_TICKET_ID } from "../Constant/AsynStorageFuntion"
+import { getASYNC_CURRENT_SP_REQUEST_ID, get_ASYNC_TOCKEN, get_ASYNC_USERID, getASYNC_CURRENT_TICKET_ID } from "../Constant/AsynStorageFuntion"
 import Header from "./Header";
 import { Colors } from "react-native-paper";
 import ImagePicker from 'react-native-image-crop-picker';
@@ -34,6 +34,8 @@ import { CameraRoll } from "@react-native-camera-roll/camera-roll";
 
 import { BASE_URL_GET, } from "../Constant/Commen_API_Url";
 import axios from "axios";
+import { checkSparpartsHeader, saveSparepartsHeader } from "../SQLiteDatabaseAction/DBControllers/SparepartsHeaderController";
+import { deleteAllSpareParts, getALLAdditionalSpareTiketdetasilsNew, getSpesificData, saveAdditionalSpareparts } from "../SQLiteDatabaseAction/DBControllers/AdditionalSparepartsController";
 var imagePath = '';
 type CustomPropTypes = {
     placeholder?: string;
@@ -86,7 +88,7 @@ const AddAdditionalSpareParts = () => {
                 id = res;
                 setTicketID(id);
                 console.log(id, "=====================================");
-                getAllSavedTicketSpareParts(res);
+                getAllSavedTicketSpareParts(SparePartIdNav);
                 // setTicketID(id);
 
             });
@@ -149,51 +151,88 @@ const AddAdditionalSpareParts = () => {
         if (descriptionvalue && enterQty != "") {
             try {
 
-                let data = [
+                // let data = [
+                //     {
+
+                //         SPRequestID: requestID,
+                //         ticketId: ticketID,
+                //         name: "",
+                //         description: descriptionvalue,
+                //         qty: enterQty,
+                //         approveStatus: "1",
+                //         spType_ID: 2, //Additional :2 inventory :1
+                //         SPartID: 0,
+                //         creationdate: moment().utcOffset('+05:30').format('YYYY-MM-DD'),
+                //         isSync: "0",
+                //         TickSpare_web_RefID:0
+
+                //     }
+                // ]
+
+
+                // saveTicketSpareparts(data, (result: any) => {
+                //     console.log(result, "/ADD_ADDITIONAL_SPARE_PARTS SAVE");
+
+                //     if (result === "success") {
+                //         console.log("inside if++++++");
+                //         UploadAdditionalSparePart();
+                //        // CameraRoll.save(imagePath);
+                //         ToastAndroid.show("Additional Spare Parts saved success ", ToastAndroid.SHORT);
+                //         close();
+                //         getAllSavedTicketSpareParts(ticketID);
+
+                //     } else {
+
+                //         Alert.alert(
+                //             "Failed...!",
+                //             " Save Failed.",
+                //             [
+                //                 {
+                //                     text: "OK", onPress: () => {
+
+                //                     }
+                //                 }
+                //             ]
+                //         );
+
+                //     }
+
+                // });
+                get_ASYNC_USERID().then(res => {
+                    UserIdUpload = res;
+                })
+                let HederData = [
                     {
 
-                        SPRequestID: requestID,
-                        ticketId: ticketID,
-                        name: "",
-                        description: descriptionvalue,
-                        qty: enterQty,
-                        approveStatus: "1",
-                        spType_ID: 2, //Additional :2 inventory :1
-                        SPartID: 0,
-                        creationdate: moment().utcOffset('+05:30').format('YYYY-MM-DD'),
-                        isSync: "0",
-                        TickSpare_web_RefID:0
+                        spareparts_No: requestID,
+                        ticket_ID: ticketID,
+                        CreatedBy: UserIdUpload,
+                        CreatedAt: moment().utcOffset('+05:30').format('YYYY-MM-DD'),
+                        Web_Ref_Id: TicketWebRefId,
+                        status: 0,
+                        is_Sync: 0,
 
                     }
                 ]
+                checkSparpartsHeader(requestID, (result1: any) => {
+                    console.log('get web ref idd=======================', result1);
 
-                saveTicketSpareparts(data, (result: any) => {
-                    console.log(result, "/ADD_ADDITIONAL_SPARE_PARTS SAVE");
-
-                    if (result === "success") {
-                        console.log("inside if++++++");
-                        UploadAdditionalSparePart();
-                       // CameraRoll.save(imagePath);
-                        ToastAndroid.show("Additional Spare Parts saved success ", ToastAndroid.SHORT);
-                        close();
-                        getAllSavedTicketSpareParts(ticketID);
-
+                    if (result1.length > 0) {
+                        console.log("avalable--------------------", requestID);
+                        savedataDetails_Line(requestID,UserIdUpload);
                     } else {
+                        console.log('not Avalable------------------------');
+                        saveSparepartsHeader(HederData, (result: any) => {
 
-                        Alert.alert(
-                            "Failed...!",
-                            " Save Failed.",
-                            [
-                                {
-                                    text: "OK", onPress: () => {
+                            savedataDetails_Line(requestID,UserIdUpload);
 
-                                    }
-                                }
-                            ]
-                        );
+
+
+                        });
 
                     }
 
+                    // setlistdata(result);
                 });
 
             } catch (error) {
@@ -221,6 +260,34 @@ const AddAdditionalSpareParts = () => {
     };
 
 
+    const savedataDetails_Line = (spareparts_No: any,UserIdUpload1:any) => {
+        console.log('detai------------------s',spareparts_No,'--------,',UserIdUpload1);
+        let DetailsData = [
+            {
+
+                Description: descriptionvalue,
+                Quantity: enterQty,
+                Spareparts_HeaderID: spareparts_No,
+                CreatedBy: UserIdUpload1,
+                CreatedAt: moment().utcOffset('+05:30').format('YYYY-MM-DD'),
+                Web_Ref_Id: TicketWebRefId,
+                status: 0,
+                is_Sync: 0,
+
+            }
+        ]
+        saveAdditionalSpareparts(DetailsData, (result2: any) => {
+
+           
+            if (result2 == 3) {
+                console.log('----------awa------------------');
+                close();
+                getAllSavedTicketSpareParts(spareparts_No);
+                UploadAdditionalSparePart();
+            }
+        });
+        console.log(DetailsData, '=====3333=========');
+    }
     //   const onpressDelete = (data: any) => {
 
     //     Alert.alert(
@@ -251,30 +318,34 @@ const AddAdditionalSpareParts = () => {
     // }
 
     const deleteItem = (result: any) => {
-        getSparePart_Remove_web_ref(result, (result: any) => {
-            console.log('web ref delete -------',result);
-            deleteWebRefId=result[0].TickSpare_web_RefID;
-            descUpdate=result[0].description;
-            qtyUpdate=result[0].qty;
-            console.log('web ref delete -------',deleteWebRefId);
+
+
+        getSpesificData(result, (result1: any) => {
+            console.log('web ref delete -+++++++++++++++++++++++++------', result);
+            deleteWebRefId = result1[0].Web_Ref_Id;
+            descUpdate = result1[0].Description;
+            qtyUpdate = result1[0].Quantity;
+            console.log('web ref delete -------', deleteWebRefId);
             UploadUpdatesRemoveSpare();
         });
 
-         
-        console.log("L ------------------" + result);
-       deleteAllSparePartsReleventTickets(result, result);
-        getAllSavedTicketSpareParts(ticketID);
 
-      
+        console.log("L ------------------" + result);
+        deleteAllSpareParts(result, result);
+        // // getAllSavedTicketSpareParts(ticketID);
+        getAllSavedTicketSpareParts(SparePartIdNav);
+
     };
 
 
     const getAllSavedTicketSpareParts = (data: any) => {
         try {
 
-            getALLAdditionalSpareTiketdetasils(data, (result: any) => {
+            console.log('thusoi------------',data);
+            
+            getALLAdditionalSpareTiketdetasilsNew(data, (result: any) => {
                 setlistdata(result);
-                console.log('ticket spare part table-------',result);
+                console.log('ticket spare part table-------', result);
             });
         } catch (error) {
             console.log("AddAdditionalSpareParts GET ALL " + error);
@@ -319,179 +390,179 @@ const AddAdditionalSpareParts = () => {
 
     const UploadAdditionalSparePart = () => {
         // console.log('this is user ID --------------',UserIdKey);
-         try {
- 
-             get_ASYNC_TOCKEN().then(res => {
-                 TOCKEN_KEY = res;
-                 const AuthStr = 'Bearer '.concat(TOCKEN_KEY);
- 
- 
-                 const prams = {
- 
-                     "objSparePartList": [
-                         {
-                             "sparePartCode":SparePartIdNav,// done
-                             "remark": "", 
-                             "content": "",
-                             "secretary": "",
-                             "createdBy": UserIdUpload,// done
-                             "ticketId": TicketWebRefId,
-                             "createdAt": moment().utcOffset('+05:30').format('YYYY-MM-DD kk:mm:ss'), // done
-                             "inventory": [
- 
-                             ],
-                             "additional": [
-                                 {
-                                     "description": descriptionvalue,// done
-                                     "remark": "",
-                                     "qty": enterQty,
-                                     "createdBy": UserIdUpload,
-                                     "createdAt": moment().utcOffset('+05:30').format('YYYY-MM-DD kk:mm:ss') //done
-                                 }
-                             ]
- 
-                         }
-                     ]
-                 }
- 
-                 console.log('--Sparew part UPLOAD JSON--', prams);
- 
-                 const headers = {
-                     'Authorization': AuthStr
-                 }
-                 const URL = BASE_URL_GET + "spare-parts";
-                 axios.post(URL, prams, {
-                     headers: headers
-                 })
-                     .then((response) => {
-                         console.log("[s][t][a][t][u][s][]", response.status);
-                         if (response.status == 200) {
- 
-                             console.log('<------ Spare parts UPLOAD Method --->', response.data)
-                             console.log('<------ Spare parts UPLOAD Method --->', response.data[0].inventory)
-                             console.log(response.data[0].UniqueNo);
- 
-                             if (response.data[0].ErrorId == 0) {
-                                 // this use fro update sync flag as 1 
-                                 console.log("additinal id-------------------- ", response.data[0].Additional[0].AdditionalId);
-                                 updateSycncSparepart(TicketIdNav,(result: any) => {
-                                     console.log("additinal spare part sync status--------- ", result);
- 
-                                 });
-                                 updateTicketSpare_webRef(TicketIdNav,response.data[0].Additional[0].AdditionalId,(result: any) => {
+        try {
+
+            get_ASYNC_TOCKEN().then(res => {
+                TOCKEN_KEY = res;
+                const AuthStr = 'Bearer '.concat(TOCKEN_KEY);
+
+
+                const prams = {
+
+                    "objSparePartList": [
+                        {
+                            "sparePartCode": SparePartIdNav,// done
+                            "remark": "",
+                            "content": "",
+                            "secretary": "",
+                            "createdBy": UserIdUpload,// done
+                            "ticketId": TicketWebRefId,
+                            "createdAt": moment().utcOffset('+05:30').format('YYYY-MM-DD kk:mm:ss'), // done
+                            "inventory": [
+
+                            ],
+                            "additional": [
+                                {
+                                    "description": descriptionvalue,// done
+                                    "remark": "",
+                                    "qty": enterQty,
+                                    "createdBy": UserIdUpload,
+                                    "createdAt": moment().utcOffset('+05:30').format('YYYY-MM-DD kk:mm:ss') //done
+                                }
+                            ]
+
+                        }
+                    ]
+                }
+
+                console.log('--Sparew part UPLOAD JSON--', prams);
+
+                const headers = {
+                    'Authorization': AuthStr
+                }
+                const URL = BASE_URL_GET + "spare-parts";
+                axios.post(URL, prams, {
+                    headers: headers
+                })
+                    .then((response) => {
+                        console.log("[s][t][a][t][u][s][]", response.status);
+                        if (response.status == 200) {
+
+                            console.log('<------ Spare parts UPLOAD Method --->', response.data)
+                            console.log('<------ Spare parts UPLOAD Method --->', response.data[0].inventory)
+                            console.log(response.data[0].UniqueNo);
+
+                            if (response.data[0].ErrorId == 0) {
+                                // this use fro update sync flag as 1 
+                                console.log("additinal id-------------------- ", response.data[0].Additional[0].AdditionalId);
+                                updateSycncSparepart(TicketIdNav, (result: any) => {
+                                    console.log("additinal spare part sync status--------- ", result);
+
+                                });
+                                updateTicketSpare_webRef(TicketIdNav, response.data[0].Additional[0].AdditionalId, (result: any) => {
                                     console.log("additinal spare part Uodate web ref id--------- ", result);
 
                                 });
- 
-                             }
- 
-                         } else {
-                             Alert.alert(
-                                 "Invalid Details!",
-                                 "Bad Request",
-                                 [
-                                     { text: "OK", onPress: () => console.log("OK Pressed") }
-                                 ]
-                             );
- 
-                         }
- 
-                     })
-                     .catch((error) => {
-                         console.log("error .........", error);
- 
-                         Alert.alert('error', error)
- 
-                     })
- 
-             })
-         } catch (error) {
-             console.log(">>>>>>>>>>>>", error);
- 
-         }
-     }
 
+                            }
 
-         
-    const UploadUpdatesRemoveSpare = () => {
-        console.log('spare part id',deleteWebRefId);
-        console.log('user id uplode',UserIdUpload);
+                        } else {
+                            Alert.alert(
+                                "Invalid Details!",
+                                "Bad Request",
+                                [
+                                    { text: "OK", onPress: () => console.log("OK Pressed") }
+                                ]
+                            );
 
-                try {
-        
-                    const prams = [{
-        
-                            "additionalId":deleteWebRefId ,
-                            "description": descUpdate,
-                            "remark": "reem",
-                            "qty": qtyUpdate,
-                            "isActive":0,
-                            "modifiedBy": 473762,
-                            "modifiedAt": moment().utcOffset('+05:30').format('YYYY-MM-DD kk:mm:ss')
-                    
-                    }]
-        
-                    console.log('-----Update delete spare part-- ----   ', prams);
-        
-        
-                    get_ASYNC_TOCKEN().then(res => {
-                        // console.log('cus id--' + customerID)
-                        TOCKEN_KEY = res;
-                        // const AuthStr = 'Bearer '.concat(TOCKEN_KEY);
-                        const AuthStr = ` Bearer ${TOCKEN_KEY}`;
-        
-                        const headers = {
-                            'Authorization': AuthStr
                         }
-                        const URL = BASE_URL_GET + "spare-parts/additional";
-                        axios.put(URL, prams, {
-                            headers: headers
-                        })
-                            .then((response) => {
-                                console.log("[s][t][a][t][u][s][]", response.status);
-                                if (response.status == 200) {
-        
-                                    console.log('<------ NEW Deleted spare part  UPLOAD Method --->', response.data)
-                        
-                                    if (response.data.ErrorId == 0) {
-                                        console.log('this is if inside----');
-                                        // this use fro update sync flag as 1 
-                                        // console.log('this is a web service call id ----', response.data[0].ServiceCallId);
-                                        // updateSycnServiceCAll(serviceId, (result: any) => {
-        
-                                        // });
-        
-                                    } else {
-        
-                                      //  Alert.alert(response.ErrorDescription);
-        
-                                    }
-        
-                                } else {
-                                    Alert.alert(
-                                        "Invalid Details!",
-                                        "Bad Request",
-                                        [
-                                            { text: "OK", onPress: () => console.log("OK Pressed") }
-                                        ]
-                                    );
-        
-                                }
-        
-                            })
-                            .catch((error) => {
-                                Alert.alert('error', error.response)
-                                console.log('error+++++', error);
-        
-                            })
-        
+
                     })
-                } catch (error) {
-                    console.log(">>>>>>>>>>>>", error);
-        
+                    .catch((error) => {
+                        console.log("error .........", error);
+
+                        Alert.alert('error', error)
+
+                    })
+
+            })
+        } catch (error) {
+            console.log(">>>>>>>>>>>>", error);
+
+        }
+    }
+
+
+
+    const UploadUpdatesRemoveSpare = () => {
+        console.log('spare part id', deleteWebRefId);
+        console.log('user id uplode', UserIdUpload);
+
+        try {
+
+            const prams = [{
+
+                "additionalId": deleteWebRefId,
+                "description": descUpdate,
+                "remark": "reem",
+                "qty": qtyUpdate,
+                "isActive": 0,
+                "modifiedBy": 473762,
+                "modifiedAt": moment().utcOffset('+05:30').format('YYYY-MM-DD kk:mm:ss')
+
+            }]
+
+            console.log('-----Update delete spare part-- ----   ', prams);
+
+
+            get_ASYNC_TOCKEN().then(res => {
+                // console.log('cus id--' + customerID)
+                TOCKEN_KEY = res;
+                // const AuthStr = 'Bearer '.concat(TOCKEN_KEY);
+                const AuthStr = ` Bearer ${TOCKEN_KEY}`;
+
+                const headers = {
+                    'Authorization': AuthStr
                 }
-        
-            }
+                const URL = BASE_URL_GET + "spare-parts/additional";
+                axios.put(URL, prams, {
+                    headers: headers
+                })
+                    .then((response) => {
+                        console.log("[s][t][a][t][u][s][]", response.status);
+                        if (response.status == 200) {
+
+                            console.log('<------ NEW Deleted spare part  UPLOAD Method --->', response.data)
+
+                            if (response.data.ErrorId == 0) {
+                                console.log('this is if inside----');
+                                // this use fro update sync flag as 1 
+                                // console.log('this is a web service call id ----', response.data[0].ServiceCallId);
+                                // updateSycnServiceCAll(serviceId, (result: any) => {
+
+                                // });
+
+                            } else {
+
+                                //  Alert.alert(response.ErrorDescription);
+
+                            }
+
+                        } else {
+                            Alert.alert(
+                                "Invalid Details!",
+                                "Bad Request",
+                                [
+                                    { text: "OK", onPress: () => console.log("OK Pressed") }
+                                ]
+                            );
+
+                        }
+
+                    })
+                    .catch((error) => {
+                        Alert.alert('error', error.response)
+                        console.log('error+++++', error);
+
+                    })
+
+            })
+        } catch (error) {
+            console.log(">>>>>>>>>>>>", error);
+
+        }
+
+    }
 
     return (
         <SafeAreaView style={comStyles.CONTAINER}>
@@ -528,11 +599,11 @@ const AddAdditionalSpareParts = () => {
                         return (
 
                             <AdditionalSparepartsItem
-                                id={item.spId}
-                                description={item.description}
-                                quantity={item.qty}
+                                id={item._Id}
+                                description={item.Description}
+                                quantity={item.Quantity}
                                 is_icon={true}
-                                onPressIcon={() => deleteItem(item.spId)}
+                                onPressIcon={() => deleteItem(item._Id)}
                             />
 
                             // <AdditionalSparepartsItem
@@ -550,7 +621,7 @@ const AddAdditionalSpareParts = () => {
 
                     }}
 
-                    keyExtractor={item => `${item.spId}`}
+                    keyExtractor={item => `${item._Id}`}
                 />
 
                 <ActionButton
@@ -620,7 +691,7 @@ const AddAdditionalSpareParts = () => {
                                         style={{ flex: 0.5, backgroundColor: "#17A2B8", marginRight: 10 }} />
                                     <ActionButton title="Remove image"
                                         onPress={() => remove_image()}
-                                      //  onPress={() => UploadAdditionalSparePart()}
+                                        //  onPress={() => UploadAdditionalSparePart()}
                                         style={{ flex: 0.5, backgroundColor: "#FE6464", }} />
                                 </View>
 
