@@ -46,7 +46,7 @@ const SparepartsItem = ({ id, description, quantity, is_checkbox, is_editinput, 
             <View style={{ flex: 2 }}>
                 <Text style={{ fontFamily: ComponentsStyles.FONT_FAMILY.REGULAR, fontSize: 14, color: ComponentsStyles.COLORS.BLACK }}>{description}</Text>
             </View>
-            <View style={{ flex: 1, }}>
+            <View style={{ flex: 0.5, }}>
                 <Text style={{ fontFamily: ComponentsStyles.FONT_FAMILY.REGULAR, fontSize: 14, marginLeft: 10, color: ComponentsStyles.COLORS.BLACK }}>{quantity}</Text>
 
             </View>

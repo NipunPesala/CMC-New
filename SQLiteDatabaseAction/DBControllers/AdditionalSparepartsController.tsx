@@ -99,3 +99,16 @@ export const deleteAllSpareParts = (id: any, callBack: any) => {
 
 };
 
+export const getALLAdditionalSpare = (data: any, callBack: any) => {
+    console.log(data,'=======================');
+    
+    DB.searchData(
+        "SELECT ifnull(Additional_Spartpart.Description,'') as ItemName,ifnull(Additional_Spartpart.Quantity,'') as Quantity FROM Additional_Spartpart INNER JOIN Spartpart_Header ON Spartpart_Header.spareparts_No = Additional_Spartpart.Spareparts_HeaderID  WHERE Spartpart_Header.ticket_ID=? ",
+        [data],
+        (resp: any, err: any) => {
+            callBack(resp, err);
+
+        },
+    );
+
+}

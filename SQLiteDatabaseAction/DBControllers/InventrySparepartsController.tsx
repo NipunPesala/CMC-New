@@ -58,3 +58,19 @@ export const updateSyncInventrySpareParts = (headerID: any,SP_ItemCode:any, call
         },
     );
 };
+
+export const getALLAInventrySpare = (data: any, callBack: any) => {
+    DB.searchData(
+        "SELECT ifnull(Invenrty_Spartpart.SP_ItemCode,'') as SP_ItemCode,"+
+        "ifnull(Invenrty_Spartpart.ItemName,'') as ItemName,"+
+        "ifnull(Invenrty_Spartpart.Quantity,'') as Quantity "+
+        "FROM Invenrty_Spartpart INNER JOIN Spartpart_Header ON Spartpart_Header.spareparts_No = Invenrty_Spartpart.Spareparts_HeaderID  WHERE Spartpart_Header.ticket_ID=? ",
+        [data],
+        (resp: any, err: any) => {
+            callBack(resp, err);
+
+        },
+    );
+
+}
+

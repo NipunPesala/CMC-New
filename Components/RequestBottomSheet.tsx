@@ -23,6 +23,8 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import { Dropdown } from "react-native-element-dropdown";
 import DialogInput from 'react-native-dialog-input';
 import Mailer from 'react-native-mail';
+import { getALLAInventrySpare } from "../SQLiteDatabaseAction/DBControllers/InventrySparepartsController";
+import { getALLAdditionalSpare } from "../SQLiteDatabaseAction/DBControllers/AdditionalSparepartsController";
 
 var id: any;
 const RequestBottomSheet = () => {
@@ -349,9 +351,11 @@ const RequestBottomSheet = () => {
     // }, []);
 
     const getALlDatainventy = (data: any) => {
-        getALLAInventrySpareTiketdetasils(data, (result: any) => {
+        getALLAInventrySpare(data, (result: any) => {
 
 
+            console.log("++++++++++++,",result);
+            
             setsparepartsList(result);
 
 
@@ -361,7 +365,7 @@ const RequestBottomSheet = () => {
 
         console.log(TicketID, "----44--");
 
-        getALLAdditionalSpareTiketdetasils(TicketID, (result: any) => {
+        getALLAdditionalSpare(TicketID, (result: any) => {
 
 
             setsparepartsList(result);
@@ -537,9 +541,9 @@ const RequestBottomSheet = () => {
                                 textStyle={{ color: comStyles.COLORS.ICON_BLUE, }}
                             />
                             <View style={{ flexDirection: 'row', backgroundColor: comStyles.COLORS.TICKET_HEADER_ASH, justifyContent: 'center', alignItems: 'center', padding: 5, marginTop: 5, }}>
-                                <Text style={{ flex: 1 }}>ID</Text>
-                                <Text style={{ flex: 2 }}>Description</Text>
-                                <Text style={{ flex: 1 }}>Requested Qty</Text>
+                                <View style={{ flex: 1,alignItems:'center',justifyContent:'center'}}><Text>ID</Text></View>
+                                <View style={{ flex: 2,alignItems:'center',justifyContent:'center'}}><Text>Description</Text></View>
+                                <View style={{ flex: 0.6,alignItems:'center',justifyContent:'center'}}><Text>Req.Qty</Text></View>
                             </View>
 
                         </View>
@@ -581,9 +585,9 @@ const RequestBottomSheet = () => {
                                     <SparepartsItem
                                         is_editinput={true}
                                         is_additional={AddInventorySpareParts}
-                                        id={item.SPartID}
-                                        description={item.description}
-                                        quantity={item.qty}
+                                        id={item.SP_ItemCode}
+                                        description={item.ItemName}
+                                        quantity={item.Quantity}
 
 
                                     />
