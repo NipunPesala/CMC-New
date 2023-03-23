@@ -11,6 +11,18 @@ export default StyleSheet.create({
         justifyContent: 'center',
         margin: 10,
     },
+    EmptyMassage: {
+        color: ComponentsStyles.COLORS.BLACK,
+        marginLeft: 10,
+        fontFamily: ComponentsStyles.FONT_FAMILY.SEMI_BOLD,
+        fontSize: 16,
+        fontStyle: 'normal',
+    },
+    containerButton:{
+        flexDirection: 'row',
+        justifyContent: 'center',
+        margin: 10,
+    },
 
     selectedbutton: {
         backgroundColor: comStyles.COLORS.ICON_BLUE,

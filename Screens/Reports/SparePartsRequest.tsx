@@ -16,6 +16,8 @@ import { getSparePartsAllData } from "../../SQLiteDatabaseAction/DBControllers/S
 import { getAll_Data, getSearchSparePart, SearchSpairePartByDateRange } from "../../SQLiteDatabaseAction/DBControllers/TicketController";
 import CalendarPicker from 'react-native-calendar-picker';
 import DateRangePicker from "rn-select-date-range";
+import { getALLAdditionalSpare_For_Reports, getALL_AdditionalSpareparts_For_Reports_search, SearchAdditionalSpairePartByDateRange } from "../../SQLiteDatabaseAction/DBControllers/AdditionalSparepartsController";
+import { getALL_InventrySpareparts_For_Reports, getALL_InventrySpareparts_For_Reports_search, SearchInventrySpairePartByDateRange } from "../../SQLiteDatabaseAction/DBControllers/InventrySparepartsController";
 
 let height = Dimensions.get("screen").height;
 const SparePartsRequest = () => {
@@ -29,6 +31,8 @@ const SparePartsRequest = () => {
     const [sparepartsList, setsparepartsList]: any[] = useState([]);
     const [searchText, setSearchText] = useState();
     const [showCalendar, setShowCalendar] = useState(false);
+    const [Additional, setAdditional] = useState(false);
+    const [Inventry, setInventry] = useState(false);
     const [selectedStartDate, setselectedStartDate] = useState('');
     const [selectedEndDate, setselectedEndDate] = useState('');
     const [modalStyle, setModalStyle] = useState(new Animated.Value(height));
@@ -58,11 +62,25 @@ const SparePartsRequest = () => {
 
         setSearchText(text);
 
-        getSearchSparePart(text, (result: any) => {
+        if (Additional) {
+            console.log("additional", text);
+            getALL_AdditionalSpareparts_For_Reports_search(text, (result: any) => {
 
-            setsparepartsList(result);
+                setsparepartsList(result);
 
-        });
+            });
+
+        } else if (Inventry) {
+            console.log("Inventry", text);
+
+            getALL_InventrySpareparts_For_Reports_search(text, (result: any) => {
+
+                setsparepartsList(result);
+
+            });
+        }
+
+
 
 
 
@@ -110,12 +128,25 @@ const SparePartsRequest = () => {
     };
 
     const getRangeData = () => {
-
+        setsparepartsList([]);
         slideOutModal();
 
-        SearchSpairePartByDateRange(selectedStartDate, selectedEndDate, (result: any) => {
-            setsparepartsList(result);
-        });
+        if (Additional) {
+            console.log("additional");
+            SearchAdditionalSpairePartByDateRange(selectedStartDate, selectedEndDate, (result: any) => {
+                setsparepartsList(result);
+            });
+
+        } else if (Inventry) {
+            console.log("Inventry");
+
+            SearchInventrySpairePartByDateRange(selectedStartDate, selectedEndDate, (result: any) => {
+                setsparepartsList(result);
+            });
+        }
+
+        // SearchInventrySpairePartByDateRange
+       
 
     }
 
@@ -160,6 +191,37 @@ const SparePartsRequest = () => {
         setDateType(currentMode)
     };
 
+    const get_Inventry_Spareparts_Data = () => {
+        setsparepartsList([])
+
+        getALL_InventrySpareparts_For_Reports((result: any) => {
+
+            console.log(result, '-------------');
+
+
+            setsparepartsList(result)
+        });
+    }
+    const get_Additional_Spareparts_Data = () => {
+        getALLAdditionalSpare_For_Reports((result: any) => {
+
+            console.log(result, '-------------');
+
+
+            setsparepartsList(result)
+        });
+    }
+    const AdditionalSpareparts = () => {
+        setAdditional(true)
+        setInventry(false)
+        setsparepartsList([])
+        get_Additional_Spareparts_Data();
+    }
+    const InventrySpareparts = () => {
+        setAdditional(false)
+        setInventry(true)
+        get_Inventry_Spareparts_Data();
+    }
     const DatePressed = (currentMode: any) => {
         setShow(true);
         setDate(true);
@@ -167,8 +229,11 @@ const SparePartsRequest = () => {
     }
 
     useEffect(() => {
-
+        setAdditional(true)
+        setInventry(false)
         getRequestedSpareParts();
+
+        get_Additional_Spareparts_Data();
     }, [])
 
     return (
@@ -236,7 +301,7 @@ const SparePartsRequest = () => {
                     />
                 </TouchableOpacity>
 
-        
+
 
                 <InputText
                     placeholder="Search by spare part ID"
@@ -259,9 +324,24 @@ const SparePartsRequest = () => {
                 />
 
 
-                <LeftRightArrowbarComponent
+                {/* <LeftRightArrowbarComponent
                     leftarrow="leftcircle"
-                    rightarrow="rightcircle" />
+                    rightarrow="rightcircle" /> */}
+                <View style={style.containerButton}>
+                    <ActionButton
+                        title="Additional"
+                        onPress={AdditionalSpareparts}
+                        style={Additional === true ? style.selectedbutton : style.defaultbutton}
+                        textStyle={Additional === true ? style.selectedBUTTON_TEXT : style.defaultBUTTON_TEXT}
+                    />
+                    <ActionButton
+                        title="Inventry"
+                        onPress={InventrySpareparts}
+                        style={Inventry === true ? style.selectedbutton : style.defaultbutton}
+                        textStyle={Inventry === true ? style.selectedBUTTON_TEXT : style.defaultBUTTON_TEXT}
+                    />
+                </View>
+
 
                 <AttendanceTableHeaderComponent
                     customstyle={style.customStyletableHeader}
@@ -279,6 +359,7 @@ const SparePartsRequest = () => {
                 <FlatList
                     showsHorizontalScrollIndicator={false}
                     // data={Arrays.SelectPackage.Wash.filter(ob => ob.extras == true)}
+                    ListEmptyComponent={<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}><Text style={style.EmptyMassage}>No data found</Text></View>}
                     data={sparepartsList}
                     style={{ marginTop: 10, marginBottom: 60, }}
                     horizontal={false}
@@ -287,13 +368,13 @@ const SparePartsRequest = () => {
 
                             <AttendanceTableDetailsComponent
                                 isHeadertitle1={true}
-                                Headertitle1={item.creationdate}
+                                Headertitle1={item.CreatedAt}
                                 isHeadertitle2={true}
-                                Headertitle2={item.SPRequestID}
+                                Headertitle2={item.Spareparts_HeaderID}
                                 isHeadertitle3={true}
-                                Headertitle3={item.description}
+                                Headertitle3={item.ItemName}
                                 isHeadertitle4={true}
-                                Headertitle4={item.qty}
+                                Headertitle4={item.Quantity}
                                 isHeadertitle5={false}
                                 Headertitle5={item.twhour}
                             />
@@ -305,7 +386,7 @@ const SparePartsRequest = () => {
 
 
 
-        
+
 
                 {/* <InputText
                     placeholder="Search by spare part ID"
