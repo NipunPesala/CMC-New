@@ -1,51 +1,118 @@
 import * as DB from '../DBService';
+import { getSparePartReqNO } from './SparepartsHeaderController';
 
-export const saveAdditionalSpareparts = (data:any, callBack:any) => {
+export const saveAdditionalSpareparts = (data:any, type:any,callBack:any) => {
     var response:any;
-    for (let i = 0; i < data.length; ++i) {
-        DB.indateData(
-            [
-                {
-                    table: 'Additional_Spartpart',
-                    columns: `Description,Quantity,Spareparts_HeaderID,CreatedBy,CreatedAt,Web_Ref_Id,status,is_Sync`,
-                    values: '?,?,?,?,?,?,?,?',
-                    params: [
-                        data[i].Description,
-                        data[i].Quantity,
-                        data[i].Spareparts_HeaderID,
-                        data[i].CreatedBy,
-                        data[i].CreatedAt,
-                        data[i].Web_Ref_Id,
-                        data[i].status,
-                        data[i].is_Sync,
-                    ],
-                    primaryKey: '_Id',
-                },
-            ],
-            (res:any, err:any) => {
-                if(res === 'success'){
 
-                    if( i+1 == data.length){
-                        response = 3;
-            
-                        callBack(response);
-                        console.log(" done unaaaaaaaa");
-                    }else if(i == 0){
-            
-                        response =1;
-                        callBack(response);
-                        console.log(" first time .....");
-                    }
+
+    if(type == 0){
+
+        for (let i = 0; i < data.length; ++i) {
+            DB.indateData(
+                [
+                    {
+                        table: 'Additional_Spartpart',
+                        columns: `Description,Quantity,Spareparts_HeaderID,CreatedBy,CreatedAt,Web_Ref_Id,status,is_Sync`,
+                        values: '?,?,?,?,?,?,?,?',
+                        params: [
+                            data[i].Description,
+                            data[i].Quantity,
+                            data[i].Spareparts_HeaderID,
+                            data[i].CreatedBy,
+                            data[i].CreatedAt,
+                            data[i].Web_Ref_Id,
+                            data[i].status,
+                            data[i].is_Sync,
+                        ],
+                        primaryKey: '_Id',
+                    },
+                ],
+                (res:any, err:any) => {
+                    if(res === 'success'){
     
-                   
-                }else{
-                    // response =false;
-                    response =2;
-                    callBack(response);
-                }
-            },
-        );
+                        if( i+1 == data.length){
+                            response = 3;
+                
+                            callBack(response);
+                            console.log(" done unaaaaaaaa");
+                        }else if(i == 0){
+                
+                            response =1;
+                            callBack(response);
+                            console.log(" first time .....");
+                        }
+        
+                       
+                    }else{
+                        // response =false;
+                        response =2;
+                        callBack(response);
+                    }
+                },
+            );
+        }
+
+
+    }else if(type == 1){
+
+        for (let i = 0; i < data.length; ++i) {
+            DB.indateData(
+                [
+                    {
+                        table: 'Additional_Spartpart',
+                        columns: `Description,Quantity,Spareparts_HeaderID,CreatedBy,CreatedAt,Web_Ref_Id,status,is_Sync`,
+                        values: '?,?,?,?,?,?,?,?',
+                        params: [
+                            data[i].Description,
+                            data[i].Quantity,
+                            data[i].sparepartsSPReqId,
+                            data[i].CreatedBy,
+                            data[i].CreatedDate,
+                            data[i].Id,
+                            data[i].IsActive,
+                            1,
+                        ],
+                        primaryKey: '_Id',
+                    },
+                ],
+                (res:any, err:any) => {
+                    if(res === 'success'){
+    
+                        if( i+1 == data.length){
+                            response = 3;
+                
+                            callBack(response);
+                            console.log(" done unaaaaaaaa");
+                        }else if(i == 0){
+                
+                            response =1;
+                            callBack(response);
+                            console.log(" first time .....");
+                        }
+        
+                       
+                    }else{
+                        // response =false;
+                        response =2;
+                        callBack(response);
+                    }
+                },
+            );
+
+            getSparePartReqNO( data[i].sparepartsSPReqId, (respone:any) => {
+
+                updateMobileSparePartNo(respone[0].spareparts_No,data[i].Id,(res:any) => {
+
+                });
+
+
+            });
+        }
+
+
     }
+
+  
 
     
 };
@@ -74,6 +141,17 @@ export const getSpesificData = (_id:any, callBack: any) => {
     DB.searchData(
         'SELECT * FROM Additional_Spartpart WHERE _Id=?',
         [_id],
+        (resp: any, err: any) => {
+            callBack(resp, err);
+        },
+    );
+};
+
+
+export const updateMobileSparePartNo = (No: any,refID:any, callBack: any) => {
+    DB.updateData(
+        'UPDATE Additional_Spartpart SET Spareparts_HeaderID=? WHERE Web_Ref_Id=?',
+        [No,refID],
         (resp: any, err: any) => {
             callBack(resp, err);
         },

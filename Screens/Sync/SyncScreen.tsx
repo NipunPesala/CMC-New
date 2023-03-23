@@ -36,6 +36,8 @@ import * as DB_Tool from '../../SQLiteDatabaseAction/DBControllers/ToolControlle
 import * as DB_ServiceCall from '../../SQLiteDatabaseAction/DBControllers/ServiceController';
 import * as DB_Expences from '../../SQLiteDatabaseAction/DBControllers/ExpencesController';
 import * as DB_SPRequest from '../../SQLiteDatabaseAction/DBControllers/SparepartsHeaderController';
+import * as DB_SPInventoryRequest from '../../SQLiteDatabaseAction/DBControllers/InventrySparepartsController';
+import * as DB_SPAdditionalRequest from '../../SQLiteDatabaseAction/DBControllers/AdditionalSparepartsController';
 import { ExpencesType, priorityListInitial, Service_types } from "../../Constant/DummyData";
 import { logProfileData } from 'react-native-calendars/src/Profiler';
 import { getASYNC_LOGIN_STATUS } from "../../Constant/AsynStorageFuntion"
@@ -1324,7 +1326,7 @@ const SyncScreen = (props: any) => {
 
           if (response.data.length > 0) {
             // console.log('ticket responce data------------ ',response.data.);
-            DB_SPRequest.saveSparepartsHeader(response.data, (res: any) => {
+            DB_SPRequest.saveSparepartsHeader(response.data, 1,(res: any) => {
 
               setOnRefresh(false);
 
@@ -1349,7 +1351,7 @@ const SyncScreen = (props: any) => {
                 });
                 setSyncArray(SyncArray1);
                 setOnRefresh(true);
-                Sync_Priority();
+                Sync_Inventory_SpareParts_Request(TOCKEN_KEY);
 
               } else if (res == 3) {
 
@@ -1357,6 +1359,190 @@ const SyncScreen = (props: any) => {
 
                 SyncArray1.push({
                   name: 'Spare Part Requests Download Sucsessfully...',
+                  id: arrayindex,
+                });
+                setSyncArray(SyncArray1);
+                setOnRefresh(true);
+                Sync_Inventory_SpareParts_Request(TOCKEN_KEY);
+              }
+
+
+            });
+
+
+          } else {
+            Sync_Inventory_SpareParts_Request(TOCKEN_KEY);
+          }
+        } else {
+          console.log('fails');
+
+          setOnRefresh(false);
+
+          arrayindex++;
+
+          SyncArray1.push({
+            name: 'Spare Part Requests Download Failed...',
+            id: arrayindex,
+          });
+          setSyncArray(SyncArray1);
+          setOnRefresh(true);
+          Sync_Inventory_SpareParts_Request(TOCKEN_KEY);
+        }
+      })
+      .catch((error) => {
+
+        setOnRefresh(false);
+
+        arrayindex++;
+        SyncArray1.push({
+          name: 'Spare Part Requests Download Failed...',
+          id: arrayindex,
+        });
+        setSyncArray(SyncArray1);
+        console.log('errorrrrr ' + error);
+        setOnRefresh(true);
+        Sync_Inventory_SpareParts_Request(TOCKEN_KEY);
+      });
+
+  }
+
+
+  //--------------------------------Download Inventory Spare Part Requests----------------------------------
+  const Sync_Inventory_SpareParts_Request = (Key: any) => {
+    // console.log('this is a sync_servic ticket ')
+    const AuthStr = 'Bearer '.concat(Key);
+    const URL = GET_URL + "spare-parts/inventory?userId=" + UserIdUpload;
+    axios.get(URL, { headers: { Authorization: AuthStr } })
+      .then(response => {
+        if (response.status === 200) {
+
+          if (response.data.length > 0) {
+            // console.log('ticket responce data------------ ',response.data.);
+            DB_SPInventoryRequest.saveInventrySpareparts(response.data, 1,(res: any) => {
+
+              setOnRefresh(false);
+
+              if (res == 1) {
+                arrayindex++;
+
+                SyncArray1.push({
+                  name: 'Inventory Requests Downloading...',
+                  id: arrayindex,
+                });
+                setSyncArray(SyncArray1);
+                setOnRefresh(true);
+
+
+              } else if (res == 2) {
+
+                arrayindex++;
+
+                SyncArray1.push({
+                  name: 'Inventory Requests Download Failed...',
+                  id: arrayindex,
+                });
+                setSyncArray(SyncArray1);
+                setOnRefresh(true);
+                Sync_Additional_SpareParts_Request(TOCKEN_KEY);
+
+              } else if (res == 3) {
+
+                arrayindex++;
+
+                SyncArray1.push({
+                  name: 'Inventory Requests Download Sucsessfully...',
+                  id: arrayindex,
+                });
+                setSyncArray(SyncArray1);
+                setOnRefresh(true);
+                Sync_Additional_SpareParts_Request(TOCKEN_KEY);
+              }
+
+
+            });
+
+
+          } else {
+            Sync_Additional_SpareParts_Request(TOCKEN_KEY);
+          }
+        } else {
+          console.log('fails');
+
+          setOnRefresh(false);
+
+          arrayindex++;
+
+          SyncArray1.push({
+            name: 'Inventory Request Download Failed...',
+            id: arrayindex,
+          });
+          setSyncArray(SyncArray1);
+          setOnRefresh(true);
+          Sync_Additional_SpareParts_Request(TOCKEN_KEY);
+        }
+      })
+      .catch((error) => {
+
+        setOnRefresh(false);
+
+        arrayindex++;
+        SyncArray1.push({
+          name: 'Inventory Requests Download Failed...',
+          id: arrayindex,
+        });
+        setSyncArray(SyncArray1);
+        console.log('errorrrrr ' + error);
+        setOnRefresh(true);
+        Sync_Additional_SpareParts_Request(TOCKEN_KEY);
+      });
+
+  }
+
+
+  //--------------------------------Download Additional Spare Part Requests----------------------------------
+  const Sync_Additional_SpareParts_Request = (Key: any) => {
+    // console.log('this is a sync_servic ticket ')
+    const AuthStr = 'Bearer '.concat(Key);
+    const URL = GET_URL + "spare-parts/additional?userId=" + UserIdUpload;
+    axios.get(URL, { headers: { Authorization: AuthStr } })
+      .then(response => {
+        if (response.status === 200) {
+
+          if (response.data.length > 0) {
+            // console.log('ticket responce data------------ ',response.data.);
+            DB_SPAdditionalRequest.saveAdditionalSpareparts(response.data, 1,(res: any) => {
+
+              setOnRefresh(false);
+
+              if (res == 1) {
+                arrayindex++;
+
+                SyncArray1.push({
+                  name: 'Additional Requests Downloading...',
+                  id: arrayindex,
+                });
+                setSyncArray(SyncArray1);
+                setOnRefresh(true);
+
+
+              } else if (res == 2) {
+
+                arrayindex++;
+
+                SyncArray1.push({
+                  name: 'Additional Requests Download Failed...',
+                  id: arrayindex,
+                });
+                setSyncArray(SyncArray1);
+                setOnRefresh(true);
+                Sync_Priority();
+
+              } else if (res == 3) {
+
+                arrayindex++;
+
+                SyncArray1.push({
+                  name: 'Additional Requests Download Sucsessfully...',
                   id: arrayindex,
                 });
                 setSyncArray(SyncArray1);
@@ -1379,7 +1565,7 @@ const SyncScreen = (props: any) => {
           arrayindex++;
 
           SyncArray1.push({
-            name: 'Spare Part Requests Download Failed...',
+            name: 'Additional Requests Download Failed...',
             id: arrayindex,
           });
           setSyncArray(SyncArray1);
@@ -1393,7 +1579,7 @@ const SyncScreen = (props: any) => {
 
         arrayindex++;
         SyncArray1.push({
-          name: 'Spare Part Requests Download Failed...',
+          name: 'Additional Requests Download Failed...',
           id: arrayindex,
         });
         setSyncArray(SyncArray1);

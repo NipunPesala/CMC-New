@@ -222,7 +222,7 @@ const AddAdditionalSpareParts = () => {
                         savedataDetails_Line(requestID,UserIdUpload);
                     } else {
                         console.log('not Avalable------------------------');
-                        saveSparepartsHeader(HederData, (result: any) => {
+                        saveSparepartsHeader(HederData, 0,(result: any) => {
 
                             savedataDetails_Line(requestID,UserIdUpload);
 
@@ -276,7 +276,7 @@ const AddAdditionalSpareParts = () => {
 
             }
         ]
-        saveAdditionalSpareparts(DetailsData, (result2: any) => {
+        saveAdditionalSpareparts(DetailsData, 0,(result2: any) => {
 
            
             if (result2 == 3) {

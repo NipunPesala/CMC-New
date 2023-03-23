@@ -105,7 +105,7 @@ const AddSparePartsComponent = () => {
                         savedataDetails_Line(requestID,UserIdUpload,qty);
                     } else {
                         console.log('not Avalable', HederData);
-                        saveSparepartsHeader(HederData, (result: any) => {
+                        saveSparepartsHeader(HederData, 0,(result: any) => {
 
                           
                             savedataDetails_Line(requestID,UserIdUpload,qty);
@@ -185,7 +185,7 @@ const AddSparePartsComponent = () => {
              
 
         console.log(DetailsData, '==============');
-        saveInventrySpareparts(DetailsData, (result: any) => {
+        saveInventrySpareparts(DetailsData, 0,(result: any) => {
 
             console.log(result, '======11111111========');
             setisDialog(false)
