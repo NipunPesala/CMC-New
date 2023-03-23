@@ -114,8 +114,8 @@ const SyncScreen = (props: any) => {
 
   useEffect(() => {
     getLoginUserNameForUplode();
-    getAllUploadFailData();
-    getAllUploadFailTicketData();
+    // getAllUploadFailData();
+    // getAllUploadFailTicketData();
     setdisablebtn(true);
     LoginType = route.params.LoginStatus;
     console.log(LoginType, '-----111111111111111111111111111111111111111-----');
