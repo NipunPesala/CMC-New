@@ -177,6 +177,19 @@ export const getALLTicketById = (ticketId: any, callBack: any) => {
     );
 }
 
+export const getTicketMobileRefData = (refID:any, callBack:any) => {
+
+    DB.searchData(
+        'SELECT ticketId FROM TICKET WHERE Ticket_web_RefID=?',
+        [refID],
+        (resp: any, err: any) => {
+            callBack(resp, err);
+
+        },
+    );
+
+}
+
 
 
 
@@ -454,8 +467,10 @@ export const updateSyncServiceTicket = (ticketID: any, callBack: any) => {
 
 export const updateUploadedServiceTicket = (ticketID: any, webFef: any, callBack: any) => {
     var status = 1;
+    // console.log(" web ref ticket ----  " , webFef);
+    
     DB.updateData(
-        'UPDATE TICKET SET syncStatus=?, Ticket_web_RefID=? WHERE ticketId=?',
+        'UPDATE TICKET SET syncStatus=?,Ticket_web_RefID=? WHERE ticketId=?',
         [status, webFef, ticketID],
         (resp: any, err: any) => {
             callBack(resp, err);

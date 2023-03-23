@@ -32,7 +32,7 @@ import { BASE_URL_GET } from "../Constant/Commen_API_Url";
 import axios from "axios";
 import AsyncStorage from '@react-native-community/async-storage';
 import AsyncStorageConstants from '../Constant/AsyncStorageConstants';
-import { getTicketDates,getWebRefIdByServiceId } from '../SQLiteDatabaseAction/DBControllers/TicketController';
+import { getTicketDates, getWebRefIdByServiceId } from '../SQLiteDatabaseAction/DBControllers/TicketController';
 import DropdownAlert from 'react-native-dropdownalert';
 var id: any;
 var loginUser: any;
@@ -40,14 +40,16 @@ var type: any;
 var exid: any;
 var UserNameUpload: any;
 var UserIdUpload: any;
-var M_TicketID:any
-var TicketWebRefId:any;
-var updateWebRefId:any;
+var M_TicketID: any
+// var TicketWebRefId: any;
+var updateWebRefId: any;
 
 const AddExpencesNew = (props: any) => {
   const { navigation, route } = props;
   let dropDownAlertRef = useRef();
   const [isFocus, setIsFocus] = useState(false);
+  const [TicketWebRefId, setTicketWebRefId] = useState();
+
 
   const [craeteDate, setCreateDate] = useState('');
   const [TicketID, setTicketID] = useState('');
@@ -84,6 +86,10 @@ const AddExpencesNew = (props: any) => {
 
 
   const saveExpencesData = () => {
+
+    // console.log(" exp amount ----  ", amount);
+
+
     const sendData = [
       {
         ExpenseRequestID: ExpID,
@@ -91,19 +97,20 @@ const AddExpencesNew = (props: any) => {
         ExpenseTypeID: expencesTypeId,
         Amount: amount,
         Remark: remark,
-        CreatedBy: loginUser,
+        // CreatedBy: loginUser,
+        CreatedBy: UserNameUpload,
         CreateDate: craeteDate,
         RelaventDate: startDate,
         status: 0,
         isSync: "0",
-        ExpencesWebRefId:0
+        ExpencesWebRefId: 0
       },
     ];
-    // if(!/^[0-9]+$/.test(amount)){
-    //     ToastAndroid.show("Please Enter only  numeric characters..  ", ToastAndroid.SHORT);
-    // }else{
 
-    // }
+
+    // console.log(" SAVE OBJECT ---  ", sendData);
+
+
 
     if (TicketID != null) {
       if (expencesTypeId != '') {
@@ -133,12 +140,16 @@ const AddExpencesNew = (props: any) => {
   };
 
   const UpdateData = () => {
+
+    // console.log(" update expence amount ----- ", amount);
+
+
     updateExpences(
       TicketID,
       expencesTypeId,
       amount,
       remark,
-      loginUser,
+      UserNameUpload,
       craeteDate,
       startDate,
       '0',
@@ -159,7 +170,7 @@ const AddExpencesNew = (props: any) => {
           ]);
         }
 
-        
+
       },
     );
   };
@@ -167,15 +178,15 @@ const AddExpencesNew = (props: any) => {
   const SaveData = (data: any) => {
 
     console.log(data);
-    
+
     try {
-      saveExpences(data, (result: any) => {
+      saveExpences(data, 0,(result: any) => {
         // console.log(result, 'saveExpences');
 
         if (result === 'success') {
-          UploadServiceCall();
+          UploadExpenses();
           // navigation.goBack();
-          uploadExpences(TicketID);
+          // uploadExpences(TicketID);
 
           navigation.navigate('TicketDetails', {
             tab: 'Expences',
@@ -204,7 +215,7 @@ const AddExpencesNew = (props: any) => {
       },
       { text: 'OK', onPress: () => navigation.goBack() },
     ]);
-   // UploadUpdatesExpences();
+    // UploadUpdatesExpences();
   };
 
   const getStartEndDate = (ticketID: any) => {
@@ -266,7 +277,7 @@ const AddExpencesNew = (props: any) => {
   // }, []);
 
   useFocusEffect(
-   
+
     React.useCallback(() => {
 
       type = route.params.type;
@@ -280,7 +291,7 @@ const AddExpencesNew = (props: any) => {
         exid = route.params.exid;
 
         load_UpdateOldData(exid);
-        
+
 
       } else if (type === '0') {
 
@@ -300,12 +311,13 @@ const AddExpencesNew = (props: any) => {
         // console.log(res);
         id = res;
         setTicketID(id);
-        M_TicketID=id;
+        M_TicketID = res;
         getStartEndDate(res);
-    
+        getTicketWebrefId(res);
+
       });
       getLoginUserName().then(res => {
-        
+
         loginUser = res;
         setloginUser1(loginUser);
         // setTicketID(id);
@@ -314,7 +326,7 @@ const AddExpencesNew = (props: any) => {
 
       setCreateDate(moment().utcOffset('+05:30').format('YYYY-MM-DD kk:mm:ss'));
       generateRequestID();
-      getTicketWebrefId();
+     
     }, []),
   );
 
@@ -341,208 +353,209 @@ const AddExpencesNew = (props: any) => {
     });
   };
 
-  const getTicketWebrefId = ()=>{
-    console.log('ticket id-=-------------',M_TicketID)
-    getWebRefIdByServiceId(M_TicketID, (result: any) => {
+  const getTicketWebrefId = (ticket_id:any) => {
+    console.log('ticket id-=-------------', ticket_id)
+    getWebRefIdByServiceId(ticket_id, (result: any) => {
       console.log('get web ref idd=======================', result);
-      TicketWebRefId = result[0].Ticket_web_RefID;
+      // TicketWebRefId = result[0].Ticket_web_RefID;
+      setTicketWebRefId(result[0].Ticket_web_RefID);
       console.log('get web ref idd variable =======================', TicketWebRefId);
       // setlistdata(result);
-  });
+    });
   }
 
-  const UploadServiceCall = () => {
+  const UploadExpenses = () => {
 
     try {
 
-        const prams ={
-          "objExpenceList": [
-              {
-                  // "dateExpire": startDate,
-                  // "expenseType": expencesTypeId,
-                  // "createdBy": UserIdUpload,
-                  // "amount" : amount,
-                  // "remark" : remark,
-                  // "ticketId": 974135,
-                  // "expenceCode":"exp_0001",
-                  // "createdAt": "2022-12-29 10:38:59"
+      const prams = {
+        "objExpenceList": [
+          {
+            // "dateExpire": startDate,
+            // "expenseType": expencesTypeId,
+            // "createdBy": UserIdUpload,
+            // "amount" : amount,
+            // "remark" : remark,
+            // "ticketId": 974135,
+            // "expenceCode":"exp_0001",
+            // "createdAt": "2022-12-29 10:38:59"
 
-                  "dateExpire": startDate,
-                  "expenseType":expencesTypeId,
-                  "createdBy": UserIdUpload,
-                  "amount" : amount,
-                  "remark" : remark,
-                  "ticketId": TicketWebRefId,
-                  "expenceCode":ExpID,
-                  "createdAt":  moment().utcOffset('+05:30').format('YYYY-MM-DD kk:mm:ss')
-              }
-          ]
+            "dateExpire": startDate,
+            "expenseType": expencesTypeId,
+            "createdBy": UserNameUpload,
+            "amount": amount,
+            "remark": remark,
+            "ticketId": TicketWebRefId,
+            "expenceCode": ExpID,
+            "createdAt": moment().utcOffset('+05:30').format('YYYY-MM-DD kk:mm:ss')
+          }
+        ]
       }
 
 
-        console.log("--EXPENCES UPLODE JSON--", prams);
-
-        get_ASYNC_TOCKEN().then(res => {
-            TOCKEN_KEY = res;
-            const AuthStr = ` Bearer ${TOCKEN_KEY}`;
-
-            const headers = {
-                'Authorization': AuthStr
-            }
-            const URL = BASE_URL_GET + "expence";
-
-            console.log("--EXPENCES UPLODE JSON--", prams);
-            axios.post(URL, prams, {
-                headers: headers
-            })
-                .then((response) => {
-                    console.log("[s][t][a][t][u][s][]", response.status);
-                    if (response.status == 200) {
-
-                        console.log('<------ NEW SERVICE CALL UPLOAD Method --->', response.data)
-                        console.log('uplode api response', response.data[0].ErrorId);
-                        if (response.data[0].ErrorId == 0) {
-                            console.log('this is if inside----',M_TicketID);
-                            // this use fro update sync flag as 1 
-                            //console.log('this is a web service call id ----', response.data[0].ServiceCallId);
-                            updateNewSyncExpences(M_TicketID, (result: any) => {
-
-                           });
-                           console.log('web ref expences uplode id+++++++++++++' + response.data[0].ExpenceId);
-                           console.log('web ref expences expencesTypeId+++++++++++++' + ExpID);
-                           Update_Expences_webRefId(response.data[0].ExpenceId, ExpID, (result: any) => {
-                                console.log('web ref expences update_____' + result)
-                            });
-                        } else {
-
-                            //Alert.alert(response.ErrorDescription);
-
-                        }
-
-                    } else {
-                        Alert.alert(
-                            "Invalid Details!",
-                            "Bad Request",
-                            [
-                                { text: "OK", onPress: () => console.log("OK Pressed") }
-                            ]
-                        );
-
-                    }
-
-                })
-                .catch((error) => {
-                    Alert.alert('error', error.response)
-                    console.log('error+++++', error);
-
-                })
-
-        })
-    } catch (error) {
-        console.log(">>>>>>>>>>>>", error);
-
-    }
-}
-
-// get expences web ref id for update uplode 
-const get_expencesWebRef=(expReqId:any)=>{
-  getExpenWebIdForUpdate(expReqId, (result: any) => {
-      console.log('get web ref 444+++++++++++++'+result[0].ExpencesWebRefId);
-      updateWebRefId=result[0].ExpencesWebRefId;
-      console.log('check expencess web ref id++++++++++++++'+updateWebRefId);
-  });
-
-
-}
-
-
-const UploadUpdatesExpences= () => {
-
-
-  console.log('check expencess web ref id 22 ++++++++++++++'+updateWebRefId);
-
-
-  try {
-
-      const prams = [
-        {
-            "expenceId":updateWebRefId,
-            "dateExpire":startDate ,
-            "expenseType": expencesTypeId,
-            "createdBy":UserIdUpload,
-            "amount": amount,
-            "remark":remark,
-            "status":0,
-            "createdAt": moment().utcOffset('+05:30').format('YYYY-MM-DD kk:mm:ss')
-        }
-    ]
-      console.log('----- SERVICE CALL UPDATE UPLOAD JSON-- ----   ', prams);
-
+      console.log("--EXPENCES UPLOD JSON--", prams);
 
       get_ASYNC_TOCKEN().then(res => {
-          // console.log('cus id--' + customerID)
-          TOCKEN_KEY = res;
-          // const AuthStr = 'Bearer '.concat(TOCKEN_KEY);
-          const AuthStr = ` Bearer ${TOCKEN_KEY}`;
+        TOCKEN_KEY = res;
+        const AuthStr = ` Bearer ${TOCKEN_KEY}`;
 
-          const headers = {
-              'Authorization': AuthStr
-          }
-          const URL = BASE_URL_GET + "expence";
-          axios.put(URL, prams, {
-              headers: headers
+        const headers = {
+          'Authorization': AuthStr
+        }
+        const URL = BASE_URL_GET + "expence";
+
+        // console.log("--EXPENCES UPLODE JSON--", prams);
+        axios.post(URL, prams, {
+          headers: headers
+        })
+          .then((response) => {
+            console.log("[s][t][a][t][u][s][]", response.status);
+            if (response.status == 200) {
+
+              console.log('<------ NEW EXPENSE UPLOAD Method --->', response.data)
+              console.log('uplode api response', response.data[0].ErrorId);
+              if (response.data[0].ErrorId == 0) {
+                console.log('this is if inside----', M_TicketID);
+                // this use fro update sync flag as 1 
+                //console.log('this is a web service call id ----', response.data[0].ServiceCallId);
+                updateNewSyncExpences(M_TicketID, (result: any) => {
+
+                });
+                console.log('web ref expences uplode id+++++++++++++' + response.data[0].ExpenceId);
+                console.log('web ref expences expencesTypeId+++++++++++++' + ExpID);
+                Update_Expences_webRefId(response.data[0].ExpenceId, ExpID, (result: any) => {
+                  console.log('web ref expences update_____' + result)
+                });
+              } else {
+
+                //Alert.alert(response.ErrorDescription);
+
+              }
+
+            } else {
+              Alert.alert(
+                "Invalid Details!",
+                "Bad Request",
+                [
+                  { text: "OK", onPress: () => console.log("OK Pressed") }
+                ]
+              );
+
+            }
+
           })
-              .then((response) => {
-                  console.log("[s][t][a][t][u][s][]", response.status);
-                  if (response.status == 200) {
+          .catch((error) => {
+            Alert.alert('error', error.response)
+            console.log('error+++++', error);
 
-                      console.log('<------ NEW SERVICE CALL UPLOAD Method --->', response.data)
-                      console.log('<------ NEW SERVICE error id --->', response.data[0].ErrorId)
-                      if (response.data[0].ErrorId == 0) {
-                  
-                          // this use fro update sync flag as 1 
-                          // console.log('this is a web service call id ----', response.data[0].ServiceCallId);
-                          // updateSycnServiceCAll(serviceId, (result: any) => {
-
-                          // });
-
-
-                      } else {
-                        Alert.alert(
-                          "Axios upload error",
-                          "Bad Request",
-                          [
-                              { text: "OK", onPress: () => console.log("OK Pressed") }
-                          ]
-                      );
-
-                      }
-
-                  } else {
-                      Alert.alert(
-                          "Invalid Details!",
-                          "Bad Request",
-                          [
-                              { text: "OK", onPress: () => console.log("OK Pressed") }
-                          ]
-                      );
-
-                  }
-
-              })
-              .catch((error) => {
-                  Alert.alert('error', error.response)
-                  console.log('error+++++', error);
-
-              })
+          })
 
       })
-  } catch (error) {
+    } catch (error) {
       console.log(">>>>>>>>>>>>", error);
+
+    }
+  }
+
+  // get expences web ref id for update uplode 
+  const get_expencesWebRef = (expReqId: any) => {
+    getExpenWebIdForUpdate(expReqId, (result: any) => {
+      console.log('get web ref 444+++++++++++++' + result[0].ExpencesWebRefId);
+      updateWebRefId = result[0].ExpencesWebRefId;
+      console.log('check expencess web ref id++++++++++++++' + updateWebRefId);
+    });
+
 
   }
 
-}
+
+  const UploadUpdatesExpences = () => {
+
+
+    console.log('check expencess web ref id 22 ++++++++++++++' + updateWebRefId);
+
+
+    try {
+
+      const prams = [
+        {
+          "expenceId": updateWebRefId,
+          "dateExpire": startDate,
+          "expenseType": expencesTypeId,
+          "createdBy": UserIdUpload,
+          "amount": amount,
+          "remark": remark,
+          "status": 0,
+          "createdAt": moment().utcOffset('+05:30').format('YYYY-MM-DD kk:mm:ss')
+        }
+      ]
+      console.log('----- ExPENSE UPDATE UPLOAD JSON-- ----   ', prams);
+
+
+      get_ASYNC_TOCKEN().then(res => {
+        // console.log('cus id--' + customerID)
+        TOCKEN_KEY = res;
+        // const AuthStr = 'Bearer '.concat(TOCKEN_KEY);
+        const AuthStr = ` Bearer ${TOCKEN_KEY}`;
+
+        const headers = {
+          'Authorization': AuthStr
+        }
+        const URL = BASE_URL_GET + "expence";
+        axios.put(URL, prams, {
+          headers: headers
+        })
+          .then((response) => {
+            console.log("[s][t][a][t][u][s][]", response.status);
+            if (response.status == 200) {
+
+              console.log('<------ UPDATE EXPENSE UPLOAD Method --->', response.data)
+              console.log('<------ UPDATE EXPENSE  error id --->', response.data[0].ErrorId)
+              if (response.data[0].ErrorId == 0) {
+
+                // this use fro update sync flag as 1 
+                // console.log('this is a web service call id ----', response.data[0].ServiceCallId);
+                // updateSycnServiceCAll(serviceId, (result: any) => {
+
+                // });
+
+
+              } else {
+                Alert.alert(
+                  "Axios upload error",
+                  "Bad Request",
+                  [
+                    { text: "OK", onPress: () => console.log("OK Pressed") }
+                  ]
+                );
+
+              }
+
+            } else {
+              Alert.alert(
+                "Invalid Details!",
+                "Bad Request",
+                [
+                  { text: "OK", onPress: () => console.log("OK Pressed") }
+                ]
+              );
+
+            }
+
+          })
+          .catch((error) => {
+            Alert.alert('error', error.response)
+            console.log('error+++++', error);
+
+          })
+
+      })
+    } catch (error) {
+      console.log(">>>>>>>>>>>>", error);
+
+    }
+
+  }
 
   const generateRequestID = () => {
 
@@ -573,7 +586,7 @@ const UploadUpdatesExpences= () => {
     var requestID = parseInt(id) + 1;
     console.log(requestID, "  ///////////////////////////////////////   ");
     var randomNum = Math.floor(Math.random() * 1000) + 1;
-    const rid = "EXP_" +UserIdUpload+ "_"+ randomNum + "_" + requestID;
+    const rid = "EXP_" + UserIdUpload + "_" + randomNum + "_" + requestID + "M";
 
     setExpenseID(rid);
     await AsyncStorage.setItem(AsyncStorageConstants.ASYNC_CURRENT_EXP_REQUEST_ID, rid);
@@ -816,7 +829,7 @@ const style = StyleSheet.create({
   },
 });
 
-export  const getLoginUserNameForUplode = () => {
+export const getLoginUserNameForUplode = () => {
   getLoginUserName().then(res => {
     UserNameUpload = res;
     console.log('user Name --' + UserNameUpload);
@@ -828,7 +841,7 @@ export  const getLoginUserNameForUplode = () => {
 
 }
 
-export const uploadExpences = (TicketID:any) => {
+export const uploadExpences = (TicketID: any) => {
 
   try {
 
@@ -849,7 +862,7 @@ export const uploadExpences = (TicketID:any) => {
           "remark": response[i].Remark,
           "ticketId": response[i].Ticket_web_RefID,
           "expenceCode": response[i].ExpenseRequestID,
-          "createdAt" : response[i].CreateDate
+          "createdAt": response[i].CreateDate
         }
 
         objExpenceList.push(params);

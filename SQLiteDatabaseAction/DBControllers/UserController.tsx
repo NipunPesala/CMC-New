@@ -1,3 +1,5 @@
+import AsyncStorage from '@react-native-community/async-storage';
+import { get_ASYNC_USERID } from '../../Constant/AsynStorageFuntion';
 import * as DB from '../DBService';
 
 export const saveUser = (data: any, callBack: any) => {
@@ -59,25 +61,76 @@ export const saveUser = (data: any, callBack: any) => {
 };
 
 
-export const getUserByTypes = (type: any, callBack: any) => {
+export const getUserByTypes = async (type: any, callBack: any) => {
 
-    DB.searchData(
-        'SELECT User.* FROM User INNER JOIN User_Type ON User_Type.type_id = User.userTypeId WHERE User.status=1 AND User_Type.description=?',
-        [type],
-        (resp: any, err: any) => {
-            //  console.log(" **************  all customers ************  " + resp);
-            callBack(resp, err);
-        },
-    );
+    if(type == "Cluster Head"){
+
+        await AsyncStorage.getItem('UserType').then((value) => {
+            // console.log('this is a user type+++++++++++++', value);
+            if (value == 'Cluster Head') {
+    
+                get_ASYNC_USERID().then(res => {
+    
+                    var id = res;
+    
+    
+                    DB.searchData(
+                        'SELECT User.* FROM User INNER JOIN User_Type ON User_Type.type_id = User.userTypeId WHERE User.status=1 AND User.user_id=?',
+                        [id],
+                        (resp: any, err: any) => {
+                            //  console.log(" **************  all customers ************  " + resp);
+                            callBack(resp, err);
+                        },
+                    );
+    
+                })
+    
+    
+    
+            } else {
+    
+                DB.searchData(
+                    'SELECT User.* FROM User INNER JOIN User_Type ON User_Type.type_id = User.userTypeId WHERE User.status=1 AND User_Type.description=?',
+                    [type],
+                    (resp: any, err: any) => {
+                        //  console.log(" **************  all customers ************  " + resp);
+                        callBack(resp, err);
+                    },
+                );
+    
+    
+            }
+    
+        })
+
+
+    }else {
+
+        DB.searchData(
+            'SELECT User.* FROM User INNER JOIN User_Type ON User_Type.type_id = User.userTypeId WHERE User.status=1 AND User_Type.description=?',
+            [type],
+            (resp: any, err: any) => {
+                //  console.log(" **************  all customers ************  " + resp);
+                callBack(resp, err);
+            },
+        );
+
+
+    }
+
+  
+
+
+
 };
-export const getTechniciasByClusters = (type: any, clusterID:any,callBack: any) => {
+export const getTechniciasByClusters = (type: any, clusterID: any, callBack: any) => {
 
-// console.log(type ," query cluser id ^^^^^^^^^^^^^^^  " , clusterID);
+    // console.log(type ," query cluser id ^^^^^^^^^^^^^^^  " , clusterID);
 
 
     DB.searchData(
         'SELECT User.* FROM User INNER JOIN User_Type ON User_Type.type_id = User.userTypeId WHERE User.status=1 AND User_Type.description=? AND User.ClusterHeadID=?',
-        [type,clusterID],
+        [type, clusterID],
         (resp: any, err: any) => {
             //  console.log(" **************  all customers ************  " + resp);
             callBack(resp, err);

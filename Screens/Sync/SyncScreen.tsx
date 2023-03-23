@@ -34,6 +34,7 @@ import * as DB_ExpenseType from '../../SQLiteDatabaseAction/DBControllers/Expenc
 import * as DB_Vehicle from '../../SQLiteDatabaseAction/DBControllers/VehicleController';
 import * as DB_Tool from '../../SQLiteDatabaseAction/DBControllers/ToolController';
 import * as DB_ServiceCall from '../../SQLiteDatabaseAction/DBControllers/ServiceController';
+import * as DB_Expences from '../../SQLiteDatabaseAction/DBControllers/ExpencesController';
 import { ExpencesType, priorityListInitial, Service_types } from "../../Constant/DummyData";
 import { logProfileData } from 'react-native-calendars/src/Profiler';
 import { getASYNC_LOGIN_STATUS } from "../../Constant/AsynStorageFuntion"
@@ -1166,7 +1167,7 @@ const SyncScreen = (props: any) => {
                 });
                 setSyncArray(SyncArray1);
                 setOnRefresh(true);
-                Sync_Priority();
+                Sync_Ticket_Expences(TOCKEN_KEY);
 
               } else if (res == 3) {
 
@@ -1174,6 +1175,96 @@ const SyncScreen = (props: any) => {
 
                 SyncArray1.push({
                   name: 'Service Ticket Download Sucsessfully...',
+                  id: arrayindex,
+                });
+                setSyncArray(SyncArray1);
+                setOnRefresh(true);
+                Sync_Ticket_Expences(TOCKEN_KEY);
+              }
+
+
+            });
+
+
+          } else {
+            Sync_Ticket_Expences(TOCKEN_KEY);
+          }
+        } else {
+          console.log('fails');
+
+          setOnRefresh(false);
+
+          arrayindex++;
+
+          SyncArray1.push({
+            name: 'Ticket Download Failed...',
+            id: arrayindex,
+          });
+          setSyncArray(SyncArray1);
+          setOnRefresh(true);
+          Sync_Ticket_Expences(TOCKEN_KEY);
+        }
+      })
+      .catch((error) => {
+
+        setOnRefresh(false);
+
+        arrayindex++;
+        SyncArray1.push({
+          name: 'Ticket Download Failed...',
+          id: arrayindex,
+        });
+        setSyncArray(SyncArray1);
+        console.log('errorrrrr ' + error);
+        setOnRefresh(true);
+        Sync_Ticket_Expences(TOCKEN_KEY);
+      });
+
+  }
+  //--------------------------------Download Expences----------------------------------
+  const Sync_Ticket_Expences = (Key: any) => {
+    // console.log('this is a sync_servic ticket ')
+    const AuthStr = 'Bearer '.concat(Key);
+    const URL = GET_URL + "expence?userId=" + UserIdUpload;
+    axios.get(URL, { headers: { Authorization: AuthStr } })
+      .then(response => {
+        if (response.status === 200) {
+
+          if (response.data.length > 0) {
+            // console.log('ticket responce data------------ ',response.data.);
+            DB_Expences.saveExpences(response.data, 1, (res: any) => {
+
+              setOnRefresh(false);
+
+              if (res == 1) {
+                arrayindex++;
+
+                SyncArray1.push({
+                  name: 'Expences Downloading...',
+                  id: arrayindex,
+                });
+                setSyncArray(SyncArray1);
+                setOnRefresh(true);
+
+
+              } else if (res == 2) {
+
+                arrayindex++;
+
+                SyncArray1.push({
+                  name: 'Expences Download Failed...',
+                  id: arrayindex,
+                });
+                setSyncArray(SyncArray1);
+                setOnRefresh(true);
+                Sync_Priority();
+
+              } else if (res == 3) {
+
+                arrayindex++;
+
+                SyncArray1.push({
+                  name: 'Expences Download Sucsessfully...',
                   id: arrayindex,
                 });
                 setSyncArray(SyncArray1);
@@ -1196,7 +1287,7 @@ const SyncScreen = (props: any) => {
           arrayindex++;
 
           SyncArray1.push({
-            name: 'Ticket Download Failed...',
+            name: 'Expences Download Failed...',
             id: arrayindex,
           });
           setSyncArray(SyncArray1);
@@ -1210,7 +1301,7 @@ const SyncScreen = (props: any) => {
 
         arrayindex++;
         SyncArray1.push({
-          name: 'Ticket Download Failed...',
+          name: 'Expences Download Failed...',
           id: arrayindex,
         });
         setSyncArray(SyncArray1);

@@ -59,6 +59,7 @@ const Expences = (isActive:any) => {
 
             getASYNC_CURRENT_TICKET_ID().then(res => {
                 ticketID =res;
+                
                 Load_All_Expences(res);
             }); 
 
@@ -83,9 +84,11 @@ const Expences = (isActive:any) => {
     // chane state after delete expences
 const deleteExpencesUpdateState=(expenId:any)=>{
     console.log('**************check expences request id +++++++++++',expenId);
+
     DeleteExpencesnew(expenId, (result: any) => {
         Load_All_Expences(ticketID);
     });
+
     getExpenWebIdForUpdate(expenId, (result2: any) => {
       console.log('get uplode details ++++++++++++',result2[0]);
       Amount=result2[0].Amount;

@@ -33,7 +33,7 @@ const MoreInfo = () => {
             serviceID = res;
             getServiceData(res);
 
-            console.log(" more info  ........  " , serviceID);
+            console.log(" more info  ........  ", serviceID);
 
         })
 
@@ -53,21 +53,21 @@ const MoreInfo = () => {
                 //    "item_description": "EGO ASSEMBLE (FOR SCD-400U CLAIM)",
                 //     "priority": "Medium", "secretary": "1", "serviceId": "SC_2022-11-14_1",
                 //      "service_type": "1", "start_date": "14-11-2022", "status": "0", "subject": "car"}]
-                 console.log(result , "   ------------------------  ");
+                console.log(result, "   ------------------------  ");
 
                 setcontent(result[0].subject);
                 setStartDate(result[0].start_date);
                 setEndDate(result[0].end_date);
                 setremark(result[0].contact_name);
-                setcreate_by(result[0].created_by);
-
 
                 setItemCode(result[0].item_code);
                 setItemDescription(result[0].item_description);
                 setitemGroup("-");
                 setSerial_no(result[0].serialNumber);
 
+                setcreate_by(result[0].created_by);
 
+               
 
             });
 
@@ -97,13 +97,13 @@ const MoreInfo = () => {
                         item_code={itemCode}
                         item_description={itemDescription}
                         item_group={itemGroup}
-                        serial_no={serial_no} 
+                        serial_no={serial_no}
                         isShowEquipment={true}
 
 
                     />
 
-                    <View style={{padding:40}}></View>
+                    <View style={{ padding: 40 }}></View>
                 </View>
             </ScrollView>
 

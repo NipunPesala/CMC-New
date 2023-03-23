@@ -360,11 +360,15 @@ const NewServiceCall = (props: any) => {
 
                             UploadServiceCall();
 
+                        }else{
+
+                            navigation.navigate('NewServiceTicket', { serviceCallNav: serviceId, mode: 0 });
+
                         }
 
                     });
 
-                    navigation.navigate('NewServiceTicket', { serviceCallNav: serviceId, mode: 0 });
+                    
 
                 } else {
 
@@ -488,10 +492,14 @@ const NewServiceCall = (props: any) => {
                                 });
                                 Update_webRefId(response.data[0].ServiceCallId, serviceId, (result: any) => {
                                     console.log('web ref update_____' + result)
+                                    
                                 });
+
+                                navigation.navigate('NewServiceTicket', { serviceCallNav: serviceId, mode: 0 });
                             } else {
 
                                 Alert.alert(response.ErrorDescription);
+                                navigation.navigate('NewServiceTicket', { serviceCallNav: serviceId, mode: 0 });
 
                             }
 
@@ -504,6 +512,8 @@ const NewServiceCall = (props: any) => {
                                 ]
                             );
 
+                            navigation.navigate('NewServiceTicket', { serviceCallNav: serviceId, mode: 0 });
+
                         }
 
                     })
@@ -511,12 +521,15 @@ const NewServiceCall = (props: any) => {
                         Alert.alert('error', error.response)
                         console.log('error+++++', error);
 
+                        navigation.navigate('NewServiceTicket', { serviceCallNav: serviceId, mode: 0 });
+
                     })
 
             })
         } catch (error) {
             console.log(">>>>>>>>>>>>", error);
 
+            navigation.navigate('NewServiceTicket', { serviceCallNav: serviceId, mode: 0 });
         }
     }
 

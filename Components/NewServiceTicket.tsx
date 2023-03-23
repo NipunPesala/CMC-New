@@ -86,6 +86,7 @@ const NewServiceTicket = (props: any) => {
     const [callEndDate, setCallEndDate] = useState('');
     const [ItemCode, setItemCode] = useState('');
     const [webRefId, setWebRefId] = useState(0);
+    const [servicewebRefId, setServiceWebRefId] = useState(0);
     const [attendStatus, setAttendStatus] = useState(0);
     const [isDesable, setIsDesable] = useState(false);
     const [ticketType, setTicketType] = useState('');
@@ -124,6 +125,18 @@ const NewServiceTicket = (props: any) => {
 
 
             });
+
+            getServiceById(routeNav.params.serviceCallNav, (result: any) => {
+
+                console.log('for web fre id +++++++++++ **************', result[0].service_web_RefID);
+                setServiceWebRefId(result[0].service_web_RefID);
+
+                console.log(" web ref id call >>>>>>>>>  " , servicewebRefId);
+                
+
+            });
+
+
 
         }
 
@@ -234,13 +247,18 @@ const NewServiceTicket = (props: any) => {
             getServiceById(routeNav.params.serviceCallNav, (result: any) => {
 
                 console.log('for web fre id +++++++++++ **************', result[0].service_web_RefID);
-                setWebRefId(result[0].service_web_RefID);
+                setServiceWebRefId(result[0].service_web_RefID);
+
+                console.log('this is a set web ref id ++++++++++++++++++', servicewebRefId);
 
             });
             saveTicket(data, 0, (result: any) => {
                 if (result === "success") {
 
-                    if (webRefId != 0) {
+                    console.log(" save ticket ...  ");
+                    
+
+                    // if (webRefId != 0) {
 
                         NetInfo.fetch().then(state => {
 
@@ -248,7 +266,7 @@ const NewServiceTicket = (props: any) => {
 
                                 console.log(" connected ********  ");
 
-
+                                console.log('this is a set web ref id ++++++++++++++++++', servicewebRefId);
                                 UploadServiceTicket();
 
                             }
@@ -257,7 +275,7 @@ const NewServiceTicket = (props: any) => {
 
 
 
-                    }
+                    // }
                     navigation.navigate('Home');
                     ToastAndroid.show("New Service Ticket Create Success ", ToastAndroid.SHORT);
 
@@ -484,14 +502,14 @@ const NewServiceTicket = (props: any) => {
         try {
 
 
-            console.log('this is a set web ref id ++++++++++++++++++', webRefId);
+            console.log('this is a set web ref id ++++++++++++++++++', servicewebRefId);
             console.log(" ................. selectAssignPersonID id_________ ", selectAssignPersonID);
             get_ASYNC_TOCKEN().then(res => {
                 TOCKEN_KEY = res;
                 const AuthStr = 'Bearer '.concat(TOCKEN_KEY);
 
                 console.log('AuthStr####3%%%%%%%%%%%%%', UserIdKey);
-                console.log(' web refffff%%%%%%%%%%%%%', webRefId);
+                console.log(' web refffff%%%%%%%%%%%%%', servicewebRefId);
 
                 const prams = {
                     "UserName": UserNameUpload,
@@ -500,7 +518,7 @@ const NewServiceTicket = (props: any) => {
 
                             "UserID": UserIdKey,
                             "ticketId": TicketID,
-                            "serviceId": webRefId,
+                            "serviceId": servicewebRefId,
                             "startDate": startDate,
                             "itemDescription": itemDescription,
                             "endDate": endDate,
@@ -511,7 +529,8 @@ const NewServiceTicket = (props: any) => {
                             "assignedByMobile": createdBy,
                             "assignedToMobile": selectAssignPersonID,
                             "contactPerson": contactPerson,
-                            "priority": selectPriority
+                            "priority": selectPriority,
+                            "ticket_type": ticketType
                         }
                     ]
                 }
@@ -576,7 +595,7 @@ const NewServiceTicket = (props: any) => {
             setItemCode(result[0].item_code);
             console.log('for web ref object +++++++++++', result[0]);
             console.log('for web fre id +++++++++++', result[0].service_web_RefID);
-            setWebRefId(result[0].service_web_RefID);
+            setServiceWebRefId(result[0].service_web_RefID);
             setContactPerson(result[0].contact_name);
         });
     }
@@ -585,6 +604,7 @@ const NewServiceTicket = (props: any) => {
         get_ASYNC_USERID().then(res => {
             UserIdKey = res;
             console.log('user id upload  --' + UserIdKey);
+            setCreatedBy(UserIdKey);
         })
 
         getLoginUserName().then(res => {
@@ -620,7 +640,6 @@ const NewServiceTicket = (props: any) => {
                 getAllPriorityList();
                 setCallStartDate(date);
                 setCallEndDate(date);
-                setCreatedBy(UserIdKey);
                 setCreatedDate(moment().utcOffset('+05:30').format('YYYY-MM-DD'));
             } else {
                 setIsDesable(true);
