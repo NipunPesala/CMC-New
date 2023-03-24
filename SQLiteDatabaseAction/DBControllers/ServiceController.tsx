@@ -91,11 +91,15 @@ export const saveServiceData = (data: any, type: any, callBack: any) => {
     console.log('web service call+++++++++++');
     var start: any;
     var end: any;
+    var approveAt: any;
+    var actualStartDAte: any;
 
     for (let i = 0; i < data.length; ++i) {
 
       start = data[i].PlanedStartDateTime.split("T")[0];// done 
       end = data[i].PlanedEndDateTime.split("T")[0]; // done
+      approveAt = data[i].ApprovedAt.split("T")[0]; // done
+      actualStartDAte = data[i].ActualStartDate.split("T")[0]; // done
 
 
       DB.indateData(
@@ -139,7 +143,7 @@ export const saveServiceData = (data: any, type: any, callBack: any) => {
               data[i].ServiceCallId,// done 29
               data[i].ProblemType, // 30
               data[i].ApprovedBy, // 31
-              data[i].ApprovedAt, // 32
+              approveAt, // 32
               data[i].ActualStartDate, // 33
             ],
             primaryKey: 'serviceId',

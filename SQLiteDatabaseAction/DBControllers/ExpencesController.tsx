@@ -42,7 +42,13 @@ export const saveExpences = (data: any, type: any, callBack: any) => {
 
     console.log(" sync expences ----------  ");
 
+    var expect:any;
+    var created:any;
+
     for (let i = 0; i < data.length; ++i) {
+
+      expect = data[i].DateExpire.split("T")[0]; // done
+      created = data[i].DateExpire.split("T")[0]; // done
 
       DB.indateData(
         [
@@ -57,8 +63,8 @@ export const saveExpences = (data: any, type: any, callBack: any) => {
               data[i].Amount,
               data[i].Remark,
               data[i].CreatedBy,
-              data[i].CreatedDate,
-              data[i].DateExpire,
+              created,
+              expect,
               data[i].Id,
               0
             ],

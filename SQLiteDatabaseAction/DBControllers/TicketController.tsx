@@ -190,10 +190,6 @@ export const getTicketMobileRefData = (refID:any, callBack:any) => {
 
 }
 
-
-
-
-
 export const getSearchServiceTicket = (txt: String, callBack: any) => {
     DB.searchData(
         'SELECT * FROM TICKET WHERE (ticketId like ? OR assignTo like ? OR priority like ?)',
