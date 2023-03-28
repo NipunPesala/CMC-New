@@ -177,11 +177,12 @@ export const deleteAllSpareParts = (id: any, callBack: any) => {
 
 };
 
+///////////////////////////////////////////////////////////////////
 export const getALLAdditionalSpare = (data: any, callBack: any) => {
     console.log(data,'=======================');
     
     DB.searchData(
-        "SELECT ifnull(Additional_Spartpart.Description,'') as ItemName,ifnull(Additional_Spartpart.Quantity,'') as Quantity FROM Additional_Spartpart INNER JOIN Spartpart_Header ON Spartpart_Header.spareparts_No = Additional_Spartpart.Spareparts_HeaderID  WHERE Spartpart_Header.ticket_ID=? ",
+        "SELECT ifnull(Additional_Spartpart.Description,'') as ItemName,ifnull(Additional_Spartpart.Quantity,'') as Quantity ,ifnull(Additional_Spartpart._Id,'') as Id FROM Additional_Spartpart INNER JOIN Spartpart_Header ON Spartpart_Header.spareparts_No = Additional_Spartpart.Spareparts_HeaderID  WHERE Spartpart_Header.ticket_ID=? ",
         [data],
         (resp: any, err: any) => {
             callBack(resp, err);
@@ -223,3 +224,15 @@ export const SearchAdditionalSpairePartByDateRange = (date1: any, date2: any, ca
         },
     );
 };
+
+//update sync spare part sync state
+// export const updateSycncSparepart = (ticketID: any, callBack: any) => {
+  
+//     DB.updateData(
+//       'UPDATE TICKET_SPARE_PARTS SET isSync=2 WHERE ticketId=?',
+//       [ticketID],
+//       (resp: any, err: any) => {
+//         callBack(resp, err);
+//       },
+//     );
+//   }

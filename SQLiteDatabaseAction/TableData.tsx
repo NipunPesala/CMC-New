@@ -1805,4 +1805,52 @@ export const tableData = [
 
     ]
   },
+  {
+    name: 'Additional_Spart_Image',
+    columns: [
+      {
+        name: '_Id',
+        dataType: 'INTEGER',
+        isPrimaryKey: true,
+        autoIncrement: true,
+        shouldNotAllowNull: false,
+      },
+      {
+        name: 'Spareparts_HeaderID',
+        dataType: 'TEXT',
+        isPrimaryKey: false,
+        autoIncrement: false,
+        shouldNotAllowNull: false,
+      },
+      {
+        name: 'imgPath1',
+        dataType: 'TEXT',
+        isPrimaryKey: false,
+        autoIncrement: false,
+        shouldNotAllowNull: false,
+      },
+      {
+        name: 'imgPath2',
+        dataType: 'TEXT',
+        isPrimaryKey: false,
+        autoIncrement: false,
+        shouldNotAllowNull: false,
+      },
+      {
+        name: 'imgPath3',
+        dataType: 'TEXT',
+        isPrimaryKey: false,
+        autoIncrement: false,
+        shouldNotAllowNull: false,
+      },
+      {
+        name: 'is_Sync',
+        dataType: 'INTEGER',
+        isPrimaryKey: false,
+        autoIncrement: false,
+        shouldNotAllowNull: false,
+      },
+
+    ]
+  },
 ]

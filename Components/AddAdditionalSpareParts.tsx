@@ -36,6 +36,8 @@ import { BASE_URL_GET, } from "../Constant/Commen_API_Url";
 import axios from "axios";
 import { checkSparpartsHeader, saveSparepartsHeader } from "../SQLiteDatabaseAction/DBControllers/SparepartsHeaderController";
 import { deleteAllSpareParts, getALLAdditionalSpareTiketdetasilsNew, getSpesificData, saveAdditionalSpareparts } from "../SQLiteDatabaseAction/DBControllers/AdditionalSparepartsController";
+import { saveImagepathToDB, } from "../SQLiteDatabaseAction/DBControllers/AddionalSpareImageController";
+
 var imagePath = '';
 type CustomPropTypes = {
     placeholder?: string;
@@ -69,6 +71,8 @@ const AddAdditionalSpareParts = () => {
     const [requestID, setRequestID] = useState("");
     const width = Dimensions.get('screen').width;
     const [cameraCaptureImg, setCameraCaptureImg] = useState(null);
+    const [cameraCaptureImg2, setCameraCaptureImg2] = useState(null);
+    const [cameraCaptureImg3, setCameraCaptureImg3] = useState(null);
     const [base64Img, setBase64Img] = useState();
     const routeNav = useRoute();
 
@@ -219,18 +223,23 @@ const AddAdditionalSpareParts = () => {
 
                     if (result1.length > 0) {
                         console.log("avalable--------------------", requestID);
-                        savedataDetails_Line(requestID,UserIdUpload);
+                        saveImagepathTodb();
+                        savedataDetails_Line(requestID, UserIdUpload);
+                       
                     } else {
                         console.log('not Avalable------------------------');
-                        saveSparepartsHeader(HederData, 0,(result: any) => {
+                        saveSparepartsHeader(HederData, 0, (result: any) => {
 
-                            savedataDetails_Line(requestID,UserIdUpload);
-
-
-
+                            savedataDetails_Line(requestID, UserIdUpload);
+                            saveImagepathTodb();
                         });
 
+
                     }
+
+                    // console.log('this is file pathe befor save to gallary+++++++++++++', cameraCaptureImg);
+                    // CameraRoll.save(cameraCaptureImg);
+                    // setCameraCaptureImg(null);
 
                     // setlistdata(result);
                 });
@@ -260,8 +269,8 @@ const AddAdditionalSpareParts = () => {
     };
 
 
-    const savedataDetails_Line = (spareparts_No: any,UserIdUpload1:any) => {
-        console.log('detai------------------s',spareparts_No,'--------,',UserIdUpload1);
+    const savedataDetails_Line = (spareparts_No: any, UserIdUpload1: any) => {
+        console.log('detai------------------s', spareparts_No, '--------,', UserIdUpload1);
         let DetailsData = [
             {
 
@@ -276,9 +285,10 @@ const AddAdditionalSpareParts = () => {
 
             }
         ]
-        saveAdditionalSpareparts(DetailsData, 0,(result2: any) => {
 
-           
+        saveAdditionalSpareparts(DetailsData, 0, (result2: any) => {
+
+
             if (result2 == 3) {
                 console.log('----------awa------------------');
                 close();
@@ -341,8 +351,8 @@ const AddAdditionalSpareParts = () => {
     const getAllSavedTicketSpareParts = (data: any) => {
         try {
 
-            console.log('thusoi------------',data);
-            
+            console.log('thusoi------------', data);
+
             getALLAdditionalSpareTiketdetasilsNew(data, (result: any) => {
                 setlistdata(result);
                 console.log('ticket spare part table-------', result);
@@ -353,9 +363,13 @@ const AddAdditionalSpareParts = () => {
     };
 
     const close = () => {
-
+     
         slideOutModal();
+        console.log('check close button ticket id------',ticketID);
         getAllSavedTicketSpareParts(ticketID);
+        setCameraCaptureImg(null);
+        setCameraCaptureImg2(null);
+        setCameraCaptureImg3(null);
     }
 
     const takePhotoFromCamera = async () => {
@@ -367,14 +381,38 @@ const AddAdditionalSpareParts = () => {
                 cropping: true,
                 includeBase64: true,
             }).then(image => {
-                //console.log(image);
-                setCameraCaptureImg(image.path);
+                //capture multiple images
+                if (cameraCaptureImg == null) {
+                    setCameraCaptureImg(image.path);
+                    CameraRoll.save(image.path);
+                
+                } else if (cameraCaptureImg != null && cameraCaptureImg2 == null && cameraCaptureImg3== null ) {
+                    setCameraCaptureImg2(image.path);
+                    CameraRoll.save(image.path);
+                   // CameraRoll.save(cameraCaptureImg2);
+
+                } else if(cameraCaptureImg != null && cameraCaptureImg2!= null && cameraCaptureImg3== null){
+                    CameraRoll.save(image.path);
+                    setCameraCaptureImg3(image.path);
+                 
+                
+                }else if (cameraCaptureImg != null && cameraCaptureImg2!= null && cameraCaptureImg3!= null){
+
+                    Alert.alert(
+                        "Warning!",
+                        "you can capture maximum three images",
+                        [
+                            { text: "OK", onPress: () => console.log("OK Pressed") }
+                        ]
+                    );
+                }
+
                 setBase64Img(image.data);
                 const Base64String = image.data;
-                console.log('Base 64 image-' + Base64String);
+                //console.log('Base 64 image-' + Base64String);
                 imagePath = image.path;
                 // CameraRoll.save(cameraCaptureImg);
-
+                // slideOutModal();
             });
 
             console.log('file path state-', imagePath);
@@ -384,9 +422,55 @@ const AddAdditionalSpareParts = () => {
         }
     }
 
-    const remove_image = () => {
+    const saveImagepathTodb=()=>{
+        
+        let imagepathData = [
+            {
+
+                Spareparts_HeaderID:requestID,
+                imgPath1: cameraCaptureImg,
+                imgPath2: cameraCaptureImg2,
+                imgPath3: cameraCaptureImg3,
+                is_Sync: 0,
+
+            }
+        ]
+              
+
+        console.log('save db data',imagepathData);
+          saveImagepathToDB(imagepathData, (result2: any) => {
+                console.log('save image path____________',result2);
+                if(result2=='success') {
+                    console.log('Save before image++++++++++++++++++++++++++++++');
+                   
+                }
+               
+        });
+
         setCameraCaptureImg(null);
+        setCameraCaptureImg2(null);
+        setCameraCaptureImg3(null);
     }
+
+    const remove_image = () => {
+        if(cameraCaptureImg != null && cameraCaptureImg2!= null && cameraCaptureImg3!= null){
+            setCameraCaptureImg3(null);
+        }else if(cameraCaptureImg != null && cameraCaptureImg2!= null && cameraCaptureImg3== null){
+            setCameraCaptureImg3(null);
+            setCameraCaptureImg2(null);
+        }else if(cameraCaptureImg != null && cameraCaptureImg2== null && cameraCaptureImg3== null){
+            setCameraCaptureImg3(null);
+            setCameraCaptureImg2(null);
+            setCameraCaptureImg(null);
+        }else{
+            setCameraCaptureImg3(null);
+            setCameraCaptureImg2(null);
+            setCameraCaptureImg(null);
+        }
+     
+    }
+
+
 
     const UploadAdditionalSparePart = () => {
         // console.log('this is user ID --------------',UserIdKey);
@@ -481,6 +565,8 @@ const AddAdditionalSpareParts = () => {
 
         }
     }
+
+
 
 
 
@@ -691,21 +777,38 @@ const AddAdditionalSpareParts = () => {
                                         style={{ flex: 0.5, backgroundColor: "#17A2B8", marginRight: 10 }} />
                                     <ActionButton title="Remove image"
                                         onPress={() => remove_image()}
-                                        //  onPress={() => UploadAdditionalSparePart()}
+                                        //onPress={() => saveImagepathTodb()}
                                         style={{ flex: 0.5, backgroundColor: "#FE6464", }} />
                                 </View>
 
-                                <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", }}>
+                                <View style={{ flexDirection: "row", }}>
+                                    <View style={{ marginLeft:5  }}>
+                                        <Image
+                                            style={{ width: 100, height: 100, }}
+                                            //source={require('../assets/images/out24.png')}
+                                            source={{
+                                                uri: cameraCaptureImg,
+                                            }}
+                                        />
+                                    </View>
 
-                                    <Image
-                                        style={{ width: 225, height: 175, }}
-                                        //source={require('../assets/images/out24.png')}
-                                        source={{
-                                            uri: cameraCaptureImg,
-                                        }}
-
-
-                                    />
+                                    <View style={{marginLeft:5 }}>
+                                        <Image
+                                            style={{ width: 100, height: 100, }}
+                                            //source={require('../assets/images/out24.png')}
+                                            source={{
+                                                uri: cameraCaptureImg2,
+                                            }}
+                                        />
+                                    </View>
+                                    <View style={{ marginLeft:5  }}>
+                                        <Image
+                                            style={{ width: 100, height: 100, }}
+                                            source={{
+                                                uri: cameraCaptureImg3,
+                                            }}
+                                        />
+                                    </View>
                                 </View>
 
                                 <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", marginTop: 10, }}>
