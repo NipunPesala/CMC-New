@@ -1063,6 +1063,7 @@ const NewServiceCall = (props: any) => {
                             placeholderStyle={style.placeholderStyle}
                             selectedTextStyle={style.selectedTextStyle}
                             inputSearchStyle={style.inputSearchStyle}
+                            itemTextStyle={{ color: comStyles.COLORS.BLACK, }}
                             iconStyle={style.iconStyle}
                             data={customerList}
                             disable={IsDesable}
@@ -1117,6 +1118,7 @@ const NewServiceCall = (props: any) => {
                             placeholderStyle={style.placeholderStyle}
                             selectedTextStyle={style.selectedTextStyle}
                             inputSearchStyle={style.inputSearchStyle}
+                            itemTextStyle={{ color: comStyles.COLORS.BLACK, }}
                             iconStyle={style.iconStyle}
                             data={priorityList}
                             search
@@ -1154,6 +1156,7 @@ const NewServiceCall = (props: any) => {
                             placeholderStyle={style.placeholderStyle}
                             selectedTextStyle={style.selectedTextStyle}
                             inputSearchStyle={style.inputSearchStyle}
+                            itemTextStyle={{ color: comStyles.COLORS.BLACK, }}
                             iconStyle={style.iconStyle}
                             data={serviceType}
                             search
@@ -1195,6 +1198,7 @@ const NewServiceCall = (props: any) => {
                             placeholderStyle={style.placeholderStyle}
                             selectedTextStyle={style.selectedTextStyle}
                             inputSearchStyle={style.inputSearchStyle}
+                            itemTextStyle={{ color: comStyles.COLORS.BLACK, }}
                             iconStyle={style.iconStyle}
                             data={itemCode}
                             disable={IsDesable}
@@ -1252,6 +1256,7 @@ const NewServiceCall = (props: any) => {
                             placeholderStyle={style.placeholderStyle}
                             selectedTextStyle={style.selectedTextStyle}
                             inputSearchStyle={style.inputSearchStyle}
+                            itemTextStyle={{ color: comStyles.COLORS.BLACK, }}
                             iconStyle={style.iconStyle}
                             data={serialNumList}
                             disable={IsDesable}
@@ -1329,6 +1334,7 @@ const NewServiceCall = (props: any) => {
                             placeholderStyle={style.placeholderStyle}
                             selectedTextStyle={style.selectedTextStyle}
                             inputSearchStyle={style.inputSearchStyle}
+                            itemTextStyle={{ color: comStyles.COLORS.BLACK, }}
                             iconStyle={style.iconStyle}
                             data={ClusterHeadList}
                             search
@@ -1369,6 +1375,7 @@ const NewServiceCall = (props: any) => {
                             placeholderStyle={style.placeholderStyle}
                             selectedTextStyle={style.selectedTextStyle}
                             inputSearchStyle={style.inputSearchStyle}
+                            itemTextStyle={{ color: comStyles.COLORS.BLACK, }}
                             iconStyle={style.iconStyle}
                             data={handleBy}
                             search
@@ -1408,6 +1415,7 @@ const NewServiceCall = (props: any) => {
                             placeholderStyle={style.placeholderStyle}
                             selectedTextStyle={style.selectedTextStyle}
                             inputSearchStyle={style.inputSearchStyle}
+                            itemTextStyle={{ color: comStyles.COLORS.BLACK, }}
                             iconStyle={style.iconStyle}
                             data={secretaryItem}
                             search
@@ -1450,6 +1458,7 @@ const NewServiceCall = (props: any) => {
                             placeholderStyle={style.placeholderStyle}
                             selectedTextStyle={style.selectedTextStyle}
                             inputSearchStyle={style.inputSearchStyle}
+                            itemTextStyle={{ color: comStyles.COLORS.BLACK, }}
                             iconStyle={style.iconStyle}
                             data={salesAssistance}
                             search
@@ -1612,6 +1621,7 @@ const style = StyleSheet.create({
     inputSearchStyle: {
         height: 40,
         fontSize: 14,
+        color: comStyles.COLORS.BLACK,
     },
 
 });

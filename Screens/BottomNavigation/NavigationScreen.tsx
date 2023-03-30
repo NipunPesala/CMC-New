@@ -39,6 +39,7 @@ import AddExpencesNew from "../../Components/AddExpencesNew";
 import ResourcesRequestComponent from "../../Components/ResourcesRequestComponent";
 import SyncScreen from "../Sync/SyncScreen";
 import CusTicketSummary from "../../Screens/Reports/CusTicketSummary";
+import Login from "../Login/Login";
 
 let width = Dimensions.get("screen").width;
 
@@ -73,6 +74,7 @@ function HomeStack() {
             <Stack.Screen name="RouteScreen" component={RouteScreen} options={{ headerShown: false }} />
             <Stack.Screen name="ServiceTicketList" component={ServiceTicketList} options={{ headerShown: false }} />
             <Stack.Screen name="CusTicketSummary" component={CusTicketSummary} options={{ headerShown: false }} />
+            <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
         </Stack.Navigator>
 
     )

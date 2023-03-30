@@ -18,6 +18,9 @@ import { transparent } from "react-native-paper/lib/typescript/styles/colors";
 import IconA from 'react-native-vector-icons/Ionicons';
 import ComponentsStyles from "../Constant/Components.styles";
 import {useIsFocused, useNavigation} from '@react-navigation/native';
+import * as DB from '../SQLiteDatabaseAction/DBService';
+import AsyncStorage from "@react-native-community/async-storage";
+import SQLite from 'react-native-sqlite-storage';
 
 type ParamTypes = {
     title: string;
@@ -31,6 +34,7 @@ type ParamTypes = {
 
 const Header = ({ title, isIcon, image, isBtn, iconOnPress, btnOnPress,IconUserOnPress }: ParamTypes) => {
     const [visible, setVisible]=useState(false);
+    const [isDeleted, setIsDeleted]=useState(false);
     const navigation = useNavigation();
     const scale=useRef(new Animated.Value(0)).current;
     const options=[
@@ -66,9 +70,42 @@ const Header = ({ title, isIcon, image, isBtn, iconOnPress, btnOnPress,IconUserO
         ]);
       };
 
-      const logout = () => {
-        navigation.navigate('Login');
+      const logout = async () => {
+
+        console.log(" logout -------------  ");
+
+        // SQLite.backup();
+        
+        await AsyncStorage.clear();
+        deleteDB();
+
+    
       };
+
+
+      const deleteDB = () => {
+
+        console.log("delete db function ********   ");
+        
+          SQLite.deleteDatabase('cmc.db');
+
+          setIsDeleted(true);
+
+          navigateLogin();
+
+      }
+
+      const navigateLogin = () => {
+
+        if(isDeleted){
+
+            console.log("deleted db  ******** ^^^^^^^^^^   ");
+
+            navigation.navigate('Login');
+
+        }
+      }
+
     return (
 
    

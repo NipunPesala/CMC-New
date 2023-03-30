@@ -565,6 +565,7 @@ const ResourcesRequestComponent = (props: any) => {
                                     placeholderStyle={style.placeholderStyle}
                                     selectedTextStyle={style.selectedTextStyle}
                                     inputSearchStyle={style.inputSearchStyle}
+                                    itemTextStyle={{ color: comStyles.COLORS.BLACK, }}
                                     iconStyle={style.iconStyle}
                                     data={serviceCallIdList}
                                     search
@@ -701,6 +702,7 @@ const style = StyleSheet.create({
     inputSearchStyle: {
         height: 40,
         fontSize: 14,
+        color: comStyles.COLORS.BLACK
     },
     icon: {
         marginRight: 5,

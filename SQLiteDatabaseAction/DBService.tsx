@@ -33,6 +33,10 @@ export const createTables = () => {
   );
 };
 
+const exportDB = () => {
+  
+}
+
 const createTableMakeQueryString = (tableQuery:any) => {
   try {
     let query = `CREATE TABLE IF NOT EXISTS ${tableQuery.name} (`;

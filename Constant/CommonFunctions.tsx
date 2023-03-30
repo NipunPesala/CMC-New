@@ -1,8 +1,15 @@
 import moment from "moment";
-import { BackHandler } from "react-native";
+import { Alert, BackHandler } from "react-native";
 import NetInfo from '@react-native-community/netinfo';
+import AsyncStorage from "@react-native-community/async-storage";
+import SQLite from 'react-native-sqlite-storage';
+import { useState } from "react";
+import { useNavigation } from "@react-navigation/native";
 
- export const getCurrentTime = callback => {
+const [isDeleted, setIsDeleted]=useState(false);
+const navigation = useNavigation();
+
+ export const getCurrentTime = (callback:any) => {
 
     console.log(".............................  " + moment().utcOffset('+05:30').format(' hh:mm:ss a') + "...................................")
 
@@ -20,7 +27,7 @@ export const getCurrentDate = (callback:any) => {
 
 }
 
-export const BackPressHandler = callback => {
+export const BackPressHandler = (callback:any) => {
     BackHandler.addEventListener('hardwareBackPress', () => {
       callback();
       return true;
@@ -41,6 +48,53 @@ export const isNetworkAvailable = (callBack:any) => {
   callBack(isConnect);
 
 }
+
+  export const LogoutApp = () => {
+        Alert.alert('LogOut', 'Are you sure LogOut', [
+          {
+            text: 'Cancel',
+            onPress: () => console.log('Cancel Pressed'),
+            style: 'cancel',
+          },
+          {text: 'OK', onPress: () => logout()},
+        ]);
+      };
+
+      const logout = async () => {
+
+        console.log(" logout -------------  ");
+
+        // SQLite.backup();
+        
+        await AsyncStorage.clear();
+        deleteDB();
+
+    
+      };
+
+
+      const deleteDB = () => {
+
+        console.log("delete db function ********   ");
+        
+          SQLite.deleteDatabase('cmc.db');
+
+          setIsDeleted(true);
+
+          navigateLogin();
+
+      }
+
+      const navigateLogin = () => {
+
+        if(isDeleted){
+
+            console.log("deleted db  ******** ^^^^^^^^^^   ");
+
+            navigation.navigate('Login');
+
+        }
+      }
 
 
 

@@ -654,6 +654,7 @@ const AddExpencesNew = (props: any) => {
               placeholderStyle={style.placeholderStyle}
               selectedTextStyle={style.selectedTextStyle}
               inputSearchStyle={style.inputSearchStyle}
+              itemTextStyle={{ color: ComponentsStyles.COLORS.BLACK, }}
               iconStyle={style.iconStyle}
               data={ExTypeList}
               search
@@ -826,6 +827,7 @@ const style = StyleSheet.create({
   inputSearchStyle: {
     height: 40,
     fontSize: 14,
+    color: ComponentsStyles.COLORS.BLACK,
   },
 });
 

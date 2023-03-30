@@ -59,6 +59,7 @@ const RequestDetails = (props: any) => {
     const [latitude, setLatitude] = useState("");
     const [longitude, setLongitude] = useState("");
 
+    const [isStarted, setIsStarted] = useState(false);
 
 
     var callID: any;
@@ -111,7 +112,7 @@ const RequestDetails = (props: any) => {
 
             console.log("  tickets available ......  ", ticketList.length);
 
-          
+
 
 
             enableServiceCall(sid, 1, (result: any) => {
@@ -267,7 +268,15 @@ const RequestDetails = (props: any) => {
 
     }
 
-    const LoadMap = () => {
+    const StartJourney = () => {
+
+
+        if (isStarted) {
+            setIsStarted(false);
+        } else {
+            setIsStarted(true);
+        }
+
 
         selection("location")
 
@@ -302,11 +311,11 @@ const RequestDetails = (props: any) => {
             "serviceId": webRefCallID,
             "Attend_status": "Ongoing",
             "created_At": moment().utcOffset('+05:30').format('YYYY-MM-DD kk:mm:ss'),
-                
+
         }
 
-        console.log(" =========== [][][][][] ============  ",params);
-        
+        console.log(" =========== [][][][][] ============  ", params);
+
 
         get_ASYNC_TOCKEN().then(res => {
             // console.log('cus id--' + customerID)
@@ -358,6 +367,28 @@ const RequestDetails = (props: any) => {
 
         })
 
+
+    }
+
+    const ViewLocation = () => {
+
+        selection("location")
+
+        const maplatitude = parseFloat(latitude); // latitude of your desire location
+        const maplongitude = parseFloat(longitude); // longitude of your desire location
+
+        const scheme = Platform.select({
+            ios: "maps:0,0?q=",  // if device is ios 
+            android: "geo:0,0?q=", // if device is android 
+        });
+        const latLng = `${maplatitude},${maplongitude}`;
+        const label = cusName;
+        const url = Platform.select({
+            ios: `${scheme}${label}@${latLng}`,
+            android: `${scheme}${latLng}(${label})`,
+        });
+
+        Linking.openURL(url);
 
     }
 
@@ -459,12 +490,14 @@ const RequestDetails = (props: any) => {
                             />
                             :
                             loadScreen == "location" ?
-                                // <Locations
-                                //     btnTitle="Start Journey"
-                                //     pressbtn={() => LoadMap()}
-                                // />
+                                <Locations
+                                    btnTitle={isStarted ? "End Travel" : "Start Travel"}
+                                    pressbtn={() => StartJourney()}
+                                    btnTitle1={"View Location"}
+                                    pressbtn1={() => ViewLocation()}
+                                />
 
-                                <></>
+                                // <></>
 
                                 :
                                 loadScreen == "serviceH" ?

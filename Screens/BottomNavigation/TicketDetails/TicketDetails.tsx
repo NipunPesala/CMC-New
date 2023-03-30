@@ -44,6 +44,7 @@ import style from "./style";
 import moment from 'moment';
 import { BASE_URL_GET } from "../../../Constant/Commen_API_Url";
 import axios from "axios";
+import NetInfo from '@react-native-community/netinfo';
 const currentstsartDate = moment().format('YYYY-MM-DD HH:mm:ss');
 console.log('this is a currnt start date=====' + currentstsartDate);
 let height = Dimensions.get("screen").height;
@@ -181,7 +182,18 @@ const TicketDetails = (props: any) => {
 
                             await AsyncStorage.setItem(AsyncStorageConstants.ASYNC_CURRENT_TICKET_ID, ticket_id);
 
-                            UploadTicketAttendStatus();
+                            NetInfo.fetch().then(state => {
+
+                                if (state.isInternetReachable) {
+
+                                    UploadTicketAttendStatus();
+
+                                    UploadAttendance();
+
+                                }
+                            });
+
+
 
                             ToastAndroid.show("Ticket Started ", ToastAndroid.SHORT);
                             setStatus("Pending");
@@ -242,8 +254,8 @@ const TicketDetails = (props: any) => {
             "created_At": moment().utcOffset('+05:30').format('YYYY-MM-DD kk:mm:ss'),
         }
 
-        console.log(" =========== [][][][][] TICKET START UPLOAD JSON ============  ",params);
-        
+        console.log(" =========== [][][][][] TICKET START UPLOAD JSON ============  ", params);
+
 
         get_ASYNC_TOCKEN().then(res => {
             // console.log('cus id--' + customerID)
@@ -305,11 +317,11 @@ const TicketDetails = (props: any) => {
 
         getTicketById(ticketId, (result: any) => {
 
-            console.log(" TICKET DETAILS *********  " , result);
-            
+            console.log(" TICKET DETAILS *********  ", result);
+
             for (let i = 0; i < result.length; ++i) {
 
-               
+
                 setCustomer(result[i].customer);
                 setTechnician(result[i].assignTo);
                 setLocation(result[i].customer_address);
@@ -359,7 +371,7 @@ const TicketDetails = (props: any) => {
 
         // console.log("Ticket id ........ " , ticketID);
 
-        
+
         await AsyncStorage.setItem(AsyncStorageConstants.SELECT_TICKET, 'false');
         navigation.navigate("RequestBottomSheet");
 
@@ -396,6 +408,25 @@ const TicketDetails = (props: any) => {
         //     }
 
         // });
+    }
+
+    const UploadAttendance = () => {
+
+        const attendance:any = [];
+
+        // {
+        //     "objAttendanceList": [
+        //         {
+        //             "attendance_date": "2022-12-29",
+        //             "start_time": "2023-03-20 13:38:49",
+        //             "end_time": "2023-03-20 18:38:50",
+        //             "user_id": 15134,
+        //             "ticket_id": 1
+        //         },
+
+        //     ]
+        // }
+
     }
 
     useFocusEffect(
@@ -551,10 +582,10 @@ const TicketDetails = (props: any) => {
                 <View style={{ flex: 1 }}>
                     {
                         loadScreen == "moreInfo" ?
-                           
+
                             <TicketMoreInfo
-                             ID={route.params.ticketID} 
-                             />
+                                ID={route.params.ticketID}
+                            />
                             :
                             loadScreen == "spareparts" ?
                                 <SpareParts
@@ -567,7 +598,7 @@ const TicketDetails = (props: any) => {
                                 :
                                 loadScreen == "serviceH" ?
 
-                                <MoreInfo />
+                                    <MoreInfo />
                                     // <TicketsHistory />
                                     :
                                     <Expences

@@ -524,6 +524,20 @@ export const tableData = [
         shouldNotAllowNull: false,
       },
       {
+        name: 'TravelStart',
+        dataType: 'TEXT',
+        isPrimaryKey: false,
+        autoIncrement: false,
+        shouldNotAllowNull: false,
+      },
+      {
+        name: 'TravelEnd',
+        dataType: 'TEXT',
+        isPrimaryKey: false,
+        autoIncrement: false,
+        shouldNotAllowNull: false,
+      },
+      {
         name: 'CreatedBy',
         dataType: 'INTEGER',
         isPrimaryKey: false,

@@ -23,7 +23,7 @@ import {
 import ActionButton from "../../Components/ActionButton";
 import InputText from "../../Components/InputText";
 import comStyles from "../../Constant/Components.styles";
-import { useNavigation } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import ModalComponent from "../../Components/ModalComponent";
 import style from "./style";
 import IconA from 'react-native-vector-icons/Ionicons';
@@ -131,6 +131,13 @@ const Login = () => {
     }
 
     const createChannels = () => {
+
+        console.log("Create db ,,,,,,,,,,,  ");
+        
+
+        DB.createTables();
+        DB.tableIndexKey();
+        getLastReadervalue();
 
 
     }
@@ -281,6 +288,10 @@ const Login = () => {
                 console.log(response.data);
                 if (response.data.ResponseDescription == "Login Successful") {
 
+                    DB.createTables();
+                    DB.tableIndexKey();
+                    getLastReadervalue();
+
                     var userID = '' + response.data.Data[0].UserId;
 
                     await AsyncStorage.setItem(AsyncStorageConstants.ASYNC_STORAGE_LOGIN_NAME, response.data.Username);
@@ -366,6 +377,8 @@ const Login = () => {
     };
 
     const insertMeterReading = () => {
+
+
 
         // console.log("awaaaaaa")
 
@@ -556,17 +569,32 @@ const Login = () => {
 
 
     useEffect(() => {
-        DB.createTables();
-        DB.tableIndexKey();
-        getLastReadervalue();
-        createChannels();
+
+        const focusHandler = navigation.addListener('focus', () => {
 
         // const IMEI = require('...react-native-imei');
         // IMEI.getImei().then(imeiList => {
         //     console.log(imeiList)
         // });
 
-    }, [])
+        createChannels();
+
+    });
+    return focusHandler;
+
+    }, [navigation])
+
+    // useFocusEffect(
+    //     React.useCallback(() => {
+
+
+    //         console.log("  reload login ----------->>>>>>   ");
+
+    //         createChannels();
+
+
+    //     }, [])
+    // );
 
     return (
         <SafeAreaView style={comStyles.CONTAINER}>
@@ -596,75 +624,75 @@ const Login = () => {
 
                     {/* ........................................ meter reading modal start.......................................... */}
                     <ScrollView
-                    style={comStyles.CONTENTLOG}
-                    showsVerticalScrollIndicator={true}>
-
-                    <View style={styles.modalMainContainer}>
-
-                        <View style={styles.modalSubContainer}>
-                            <IconA name='location-outline' size={20} />
-                            <Text style={styles.modalRegularTitle}>Location: </Text>
-                            <Text style={styles.modalTitle}>Colombo 05</Text>
-                        </View>
-
-                        <View style={{ justifyContent: "center", alignItems: "center", flexDirection: "row", marginBottom: 10 }}>
-                            <IconA name='time-outline' size={20} />
-                            <Text style={styles.modalRegularTitle}>Time: </Text>
-                            <Text style={styles.modalTitle}>{moment().utcOffset('+05:30').format(' hh:mm a')}</Text>
-                        </View>
+                        style={comStyles.CONTENTLOG}
+                        showsVerticalScrollIndicator={true}>
 
                         <View style={styles.modalMainContainer}>
-                            <Text style={{ fontFamily: comStyles.FONT_FAMILY.BOLD, color: comStyles.COLORS.HEADER_BLACK, fontSize: 15, marginTop: 10 }}>Add the meter you are starting from</Text>
+
+                            <View style={styles.modalSubContainer}>
+                                <IconA name='location-outline' size={20} />
+                                <Text style={styles.modalRegularTitle}>Location: </Text>
+                                <Text style={styles.modalTitle}>Colombo 05</Text>
+                            </View>
+
+                            <View style={{ justifyContent: "center", alignItems: "center", flexDirection: "row", marginBottom: 10 }}>
+                                <IconA name='time-outline' size={20} />
+                                <Text style={styles.modalRegularTitle}>Time: </Text>
+                                <Text style={styles.modalTitle}>{moment().utcOffset('+05:30').format(' hh:mm a')}</Text>
+                            </View>
+
+                            <View style={styles.modalMainContainer}>
+                                <Text style={{ fontFamily: comStyles.FONT_FAMILY.BOLD, color: comStyles.COLORS.HEADER_BLACK, fontSize: 15, marginTop: 10 }}>Add the meter you are starting from</Text>
+                            </View>
+                            <InputText
+                                style={styles.inputTextStyle}
+                                placeholder="125KM"
+                                stateValue={meterValue}
+                                keyType='numeric'
+                                setState={
+                                    (meterValue) => setMeterValue(meterValue)}
+                            />
+                            <InputText
+                                style={styles.inputTextStyle}
+                                placeholder="Enter Remark"
+                                stateValue={remark}
+                                setState={
+                                    (remark) => setremark(remark)}
+                            />
+                            <Text style={style.subtxt}>OR</Text>
+
+                            <View style={{ justifyContent: "center", alignItems: "center", flexDirection: "column", }}>
+                                <Text style={styles.modalTitle}>Update the photo of the meter</Text>
+                                <Text style={styles.modalTitle}>time you are starting from</Text>
+                            </View>
+
+                            <View style={styles.txtUpload}>
+                                {
+                                    image ?
+
+                                        <View style={{ flexDirection: 'row', }}>
+                                            <Text style={{ fontFamily: comStyles.FONT_FAMILY.BOLD, color: comStyles.COLORS.ORANGE, fontSize: 18, marginRight: 5 }}>Image Uploaded</Text>
+                                            <IconA name='ios-checkmark-circle' size={20} color={comStyles.COLORS.LOW_BUTTON_GREEN} style={{ marginRight: 5 }} />
+                                        </View>
+                                        :
+                                        <TouchableOpacity style={{ justifyContent: "center", alignItems: "center", flexDirection: "row", }} onPress={() => openCamera()}>
+                                            <IconA name='cloud-upload' size={20} color={comStyles.COLORS.ICON_BLUE} style={{ marginRight: 5 }} />
+                                            <Text style={{ fontFamily: comStyles.FONT_FAMILY.BOLD, color: comStyles.COLORS.ICON_BLUE, fontSize: 18, marginRight: 5 }}>Photo of Meter*</Text>
+                                        </TouchableOpacity>
+                                }
+                            </View>
+
+                            <ActionButton
+                                title="Let's Get Start"
+                                style={style.ActionButton}
+                                onPress={() => insertMeterReading()}
+
+                            />
+
                         </View>
-                        <InputText
-                            style={styles.inputTextStyle}
-                            placeholder="125KM"
-                            stateValue={meterValue}
-                            keyType='numeric'
-                            setState={
-                                (meterValue) => setMeterValue(meterValue)}
-                        />
-                        <InputText
-                            style={styles.inputTextStyle}
-                            placeholder="Enter Remark"
-                            stateValue={remark}
-                            setState={
-                                (remark) => setremark(remark)}
-                        />
-                        <Text style={style.subtxt}>OR</Text>
-
-                        <View style={{ justifyContent: "center", alignItems: "center", flexDirection: "column", }}>
-                            <Text style={styles.modalTitle}>Update the photo of the meter</Text>
-                            <Text style={styles.modalTitle}>time you are starting from</Text>
-                        </View>
-
-                        <View style={styles.txtUpload}>
-                            {
-                                image ?
-
-                                    <View style={{ flexDirection: 'row', }}>
-                                        <Text style={{ fontFamily: comStyles.FONT_FAMILY.BOLD, color: comStyles.COLORS.ORANGE, fontSize: 18, marginRight: 5 }}>Image Uploaded</Text>
-                                        <IconA name='ios-checkmark-circle' size={20} color={comStyles.COLORS.LOW_BUTTON_GREEN} style={{ marginRight: 5 }} />
-                                    </View>
-                                    :
-                                    <TouchableOpacity style={{ justifyContent: "center", alignItems: "center", flexDirection: "row", }} onPress={() => openCamera()}>
-                                        <IconA name='cloud-upload' size={20} color={comStyles.COLORS.ICON_BLUE} style={{ marginRight: 5 }} />
-                                        <Text style={{ fontFamily: comStyles.FONT_FAMILY.BOLD, color: comStyles.COLORS.ICON_BLUE, fontSize: 18, marginRight: 5 }}>Photo of Meter*</Text>
-                                    </TouchableOpacity>
-                            }
-                        </View>
-
-                        <ActionButton
-                            title="Let's Get Start"
-                            style={style.ActionButton}
-                            onPress={() => insertMeterReading()}
-
-                        />
-
-                    </View>
 
 
-                    {/* ........................................ meter reading modal end.......................................... */}
+                        {/* ........................................ meter reading modal end.......................................... */}
 
                     </ScrollView>
                 </View>

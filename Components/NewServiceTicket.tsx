@@ -896,6 +896,7 @@ const NewServiceTicket = (props: any) => {
                         placeholderStyle={style.placeholderStyle}
                         selectedTextStyle={style.selectedTextStyle}
                         inputSearchStyle={style.inputSearchStyle}
+                        itemTextStyle={{ color: comStyles.COLORS.BLACK, }}
                         iconStyle={style.iconStyle}
                         data={serviceCallIdList}
                         disable={isDesable}
@@ -950,6 +951,7 @@ const NewServiceTicket = (props: any) => {
                         placeholderStyle={style.placeholderStyle}
                         selectedTextStyle={style.selectedTextStyle}
                         inputSearchStyle={style.inputSearchStyle}
+                        itemTextStyle={{ color: comStyles.COLORS.BLACK, }}
                         iconStyle={style.iconStyle}
                         data={priorityList}
                         search
@@ -1025,6 +1027,7 @@ const NewServiceTicket = (props: any) => {
                         placeholderStyle={style.placeholderStyle}
                         selectedTextStyle={style.selectedTextStyle}
                         inputSearchStyle={style.inputSearchStyle}
+                        itemTextStyle={{ color: comStyles.COLORS.BLACK, }}
                         iconStyle={style.iconStyle}
                         data={assignPersonList}
                         search
@@ -1223,6 +1226,7 @@ const style = StyleSheet.create({
     inputSearchStyle: {
         height: 40,
         fontSize: 14,
+        color: comStyles.COLORS.BLACK,
     },
 });
 export default NewServiceTicket;
