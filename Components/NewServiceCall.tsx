@@ -40,19 +40,21 @@ import { getAllUserTypes } from "../SQLiteDatabaseAction/DBControllers/Users_Typ
 import { getAllContactPerson } from "../SQLiteDatabaseAction/DBControllers/ContactPersonController";
 import Spinner from 'react-native-loading-spinner-overlay';
 import ComponentsStyles from "../Constant/Components.styles";
-import { get_ASYNC_TOCKEN, get_ASYNC_USERID, getLoginUserName } from "../Constant/AsynStorageFuntion";
+import { get_ASYNC_TOCKEN, get_ASYNC_USERID, getLoginUserName, getLoginPassword } from "../Constant/AsynStorageFuntion";
 import axios from "axios";
 import { BASE_URL_GET, } from "../Constant/Commen_API_Url";
 import { getTechniciasByClusters, getUserByTypes } from "../SQLiteDatabaseAction/DBControllers/UserController";
 import DropdownAlert from 'react-native-dropdownalert';
 import { isNetworkAvailable } from "../Constant/CommonFunctions";
 import NetInfo from '@react-native-community/netinfo';
+import { setTocken } from "../Screens/Sync/SyncScreen";
 
 let ItemDesc = "";
 let serviceid = "";
 var TOCKEN_KEY: any;
 var UserNameUpload: any;
 var UserIdUpload: any;
+var password: any;
 // const NewServiceCall = ({ onClose }: ParamTypes) => {
 const NewServiceCall = (props: any) => {
 
@@ -142,8 +144,8 @@ const NewServiceCall = (props: any) => {
 
     const saveServiceCall = () => {
 
-        console.log(" clus idddddddddd ***********  " , ClusterID,"  -------   " , approveAt );
-        
+        console.log(" clus idddddddddd ***********  ", ClusterID, "  -------   ", approveAt);
+
 
         const sendData = [
             {
@@ -300,7 +302,7 @@ const NewServiceCall = (props: any) => {
 
     const Update_serviceCall = (data: any) => {
 
-        console.log(" ======= update data [][][][][][][][][][]  ",data, '---------------------');
+        console.log(" ======= update data [][][][][][][][][][]  ", data, '---------------------');
 
         updateService(data, (result: any) => {
             // ToastAndroid.show("Service Call Update Success ", ToastAndroid.SHORT);
@@ -360,7 +362,7 @@ const NewServiceCall = (props: any) => {
 
                             UploadServiceCall();
 
-                        }else{
+                        } else {
 
                             navigation.navigate('NewServiceTicket', { serviceCallNav: serviceId, mode: 0 });
 
@@ -368,7 +370,7 @@ const NewServiceCall = (props: any) => {
 
                     });
 
-                    
+
 
                 } else {
 
@@ -400,9 +402,11 @@ const NewServiceCall = (props: any) => {
     }
 
     const getLoginUserNameForUplode = () => {
+
+
         getLoginUserName().then(res => {
             UserNameUpload = res;
-             setCreatedBy(res);
+            setCreatedBy(res);
             console.log('user Name --' + UserNameUpload);
         })
         get_ASYNC_USERID().then(res => {
@@ -411,6 +415,13 @@ const NewServiceCall = (props: any) => {
             console.log('user id upload  --' + UserIdUpload);
         })
 
+        getLoginPassword().then(async resp => {
+            password = resp;
+            console.log('user pw upload  --+++++++++++++++' + password);
+        });
+
+
+        setTocken(password, UserNameUpload);
 
 
     }
@@ -492,7 +503,7 @@ const NewServiceCall = (props: any) => {
                                 });
                                 Update_webRefId(response.data[0].ServiceCallId, serviceId, (result: any) => {
                                     console.log('web ref update_____' + result)
-                                    
+
                                 });
 
                                 navigation.navigate('NewServiceTicket', { serviceCallNav: serviceId, mode: 0 });
@@ -825,7 +836,7 @@ const NewServiceCall = (props: any) => {
                     const data = resultTech?.filter((a: any) => a.user_id == result[0].clusterHeadId)[0];
                     setSelectCluster(data.name);
                     setClusterID(data.user_id);
-                 
+
                     // console.log(" Cluster data  .........  ", data.user_id)
                 });
 
@@ -859,12 +870,12 @@ const NewServiceCall = (props: any) => {
                 //     console.log(" handleby .........  ", data.name)
                 // });
 
-                console.log(" Cluster ID ---- " , result[0].clusterHeadId);
-                
+                console.log(" Cluster ID ---- ", result[0].clusterHeadId);
 
-                getTechniciasByClusters("Technician",result[0].clusterHeadId ,(resTech: any) => {
 
-                    console.log(result[0].TechnicianID  , " Technician list &&&&&&& ---- " , resTech);
+                getTechniciasByClusters("Technician", result[0].clusterHeadId, (resTech: any) => {
+
+                    console.log(result[0].TechnicianID, " Technician list &&&&&&& ---- ", resTech);
 
                     setHandleBy(resTech);
 
@@ -873,10 +884,10 @@ const NewServiceCall = (props: any) => {
                     setTechnicianID(data1.user_id);
                     console.log(" handleby .........  ", data1.name)
                 });
-        
 
 
-                const data = route.params.cusList?.filter((a:any) => a.CusID == result[0].customerID)[0];
+
+                const data = route.params.cusList?.filter((a: any) => a.CusID == result[0].customerID)[0];
                 setSelectCustomer(data.CusName);
                 setcustomerID(data.CusID);
 
@@ -891,7 +902,7 @@ const NewServiceCall = (props: any) => {
                     // console.log(" item count .........  ", data.ItemCode)
                 });
 
-             
+
 
             });
             // setloandingspinner(false);
@@ -916,7 +927,7 @@ const NewServiceCall = (props: any) => {
 
     const UploadUpdates = () => {
 
-        const upload:any = [];
+        const upload: any = [];
 
         try {
 
@@ -939,17 +950,17 @@ const NewServiceCall = (props: any) => {
                 "secretaryDBSecretaryCode": parseInt(secretaryID),
                 "salesAssistantDBSalesAssistantCode": parseInt(AssistanceID),
                 "subject": subject,
-                "clusterHeadClusterHeadCode" : parseInt(ClusterID),
-                "approveStatus":approveStatus,
-                "approvedBy":approvedBy,
+                "clusterHeadClusterHeadCode": parseInt(ClusterID),
+                "approveStatus": approveStatus,
+                "approvedBy": approvedBy,
                 "approvedAt": approveAt,
-                "actualStartDate":moment().utcOffset('+05:30').format('YYYY-MM-DD kk:mm:ss'),
-                "status":"Pending",
+                "actualStartDate": moment().utcOffset('+05:30').format('YYYY-MM-DD kk:mm:ss'),
+                "status": "Pending",
                 "inquiryType": ""
-              
+
             }
 
-          
+
 
             upload.push(prams);
 
@@ -1015,9 +1026,9 @@ const NewServiceCall = (props: any) => {
 
     }
 
-    const getTechnicians = (Cluster_ID:any) => {
+    const getTechnicians = (Cluster_ID: any) => {
 
-        getTechniciasByClusters("Technician",Cluster_ID ,(result: any) => {
+        getTechniciasByClusters("Technician", Cluster_ID, (result: any) => {
             setHandleBy(result);
         });
 
@@ -1324,7 +1335,7 @@ const NewServiceCall = (props: any) => {
                         stateValue={subject}
                         setState={setSubject}
                         max={50}
-                     
+
                     />
 
                     <View style={{ zIndex: 50 }}>

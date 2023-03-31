@@ -1,43 +1,105 @@
 import SQLite from 'react-native-sqlite-storage';
 import { tableData } from './TableData';
 
+
+const OpenDatabase = () => {
+
+  const db = SQLite.openDatabase({
+    name: 'cmc.db',
+    location: 'default',
+  });
+
+  console.log('Database opened');
+
+}
+
 const db = SQLite.openDatabase({
   name: 'cmc.db',
   location: 'default',
 });
 
+export const CleanDatabase = async () => {
+
+  try {
+
+    db.transaction(tx => {
+      tx.executeSql('DELETE FROM SERVICE');
+      tx.executeSql('DELETE FROM SERVICE_INFO');
+      tx.executeSql('DELETE FROM SERVICE_HISTORY');
+      tx.executeSql('DELETE FROM TICKET');
+      tx.executeSql('DELETE FROM TICKET_SPARE_PARTS');
+      tx.executeSql('DELETE FROM SERVICE_TYPE');
+      tx.executeSql('DELETE FROM EMPLOYEE');
+      tx.executeSql('DELETE FROM SPARE_PARTS');
+      tx.executeSql('DELETE FROM LOGIN');
+      tx.executeSql('DELETE FROM EXPENCES');
+      tx.executeSql('DELETE FROM METER_READING');
+      tx.executeSql('DELETE FROM EXPENCES_TYPE');
+      tx.executeSql('DELETE FROM ITEM');
+      tx.executeSql('DELETE FROM CUSTOMER');
+      tx.executeSql('DELETE FROM User_Type');
+      tx.executeSql('DELETE FROM User');
+      tx.executeSql('DELETE FROM Vehicle');
+      tx.executeSql('DELETE FROM Tool');
+      tx.executeSql('DELETE FROM RESOURCE_REQUEST');
+      tx.executeSql('DELETE FROM PRIORITY_LIST');
+      tx.executeSql('DELETE FROM USER_TYPES');
+      tx.executeSql('DELETE FROM Contact_Person');
+      tx.executeSql('DELETE FROM Customer_Items');
+      tx.executeSql('DELETE FROM Item_serialNO');
+      tx.executeSql('DELETE FROM Spartpart_Header');
+      tx.executeSql('DELETE FROM Invenrty_Spartpart');
+      tx.executeSql('DELETE FROM Additional_Spartpart');
+      tx.executeSql('DELETE FROM Additional_Spart_Image');
+      // ... and so on for all tables in the database
+    }, 
+    (error:any) => {
+      console.log('Transaction error:', error);
+    }, () => {
+      console.log('Transaction completed successfully!');
+    });
+
+  } catch (error) {
+    console.log(" error --- ", error);
+
+  }
+  console.log('Database clean');
+
+};
+
 export const createTables = () => {
 
+
   db.transaction(
-    (tx:any) => {
+    (tx: any) => {
       tableData.forEach(table => {
         const queryString = createTableMakeQueryString(table);
         tx.executeSql(
           queryString,
           [],
-          (tx:any, response:any) => {
+          (tx: any, response: any) => {
             console.log(`create table success ${table.name}: `, response);
           },
-          (tx:any, error:any) => {
+          (tx: any, error: any) => {
             console.log(`create table error ${table.name}: `, error);
           },
         );
       });
     },
-    (error:any) => {
+    (error: any) => {
       console.log('table create query transaction failed: ', error);
     },
-    (success:any) => {
+    (success: any) => {
       console.log('table create query transaction:', 'success');
     },
   );
 };
 
 const exportDB = () => {
-  
+
 }
 
-const createTableMakeQueryString = (tableQuery:any) => {
+const createTableMakeQueryString = (tableQuery: any) => {
   try {
     let query = `CREATE TABLE IF NOT EXISTS ${tableQuery.name} (`;
     let count = 0;
@@ -65,6 +127,7 @@ const createTableMakeQueryString = (tableQuery:any) => {
 // Index Key
 export const tableIndexKey = () => {
 
+
   try {
 
     // console.log(" index key *********************************************** ")
@@ -74,24 +137,24 @@ export const tableIndexKey = () => {
     //  ------------------------------------  TICKET SPARE PARTS IDX -------------------------------------------------
 
     db.transaction(
-      (tx:any) => {
+      (tx: any) => {
         const query_idx_ticketSpareParts = `CREATE UNIQUE INDEX IF NOT EXISTS idx_ticket_spare_parts ON  TICKET_SPARE_PARTS(spId) `;
 
         tx.executeSql(
           query_idx_ticketSpareParts,
           [],
-          (tx:any, response:any) => {
+          (tx: any, response: any) => {
             console.log(`create table index success TICKET_SPARE_PARTS: `, response);
           },
-          (tx:any, error:any) => {
+          (tx: any, error: any) => {
             console.log(`create table index key error TICKET_SPARE_PARTS: `, error);
           },
         );
       },
-      (error:any) => {
+      (error: any) => {
         console.log('table create query transaction failed: ', error);
       },
-      (success:any) => {
+      (success: any) => {
         console.log('table create query transaction:', 'success');
       },
     );
@@ -99,24 +162,24 @@ export const tableIndexKey = () => {
     //  ------------------------------------  SPARE PARTS IDX -------------------------------------------------
 
     db.transaction(
-      (tx:any) => {
+      (tx: any) => {
         const query_idx_SpareParts = `CREATE UNIQUE INDEX IF NOT EXISTS idx_spare_parts ON  SPARE_PARTS(SparePartNo) `;
 
         tx.executeSql(
           query_idx_SpareParts,
           [],
-          (tx:any, response:any) => {
+          (tx: any, response: any) => {
             console.log(`create table index success SPARE_PARTS: `, response);
           },
-          (tx:any, error:any) => {
+          (tx: any, error: any) => {
             console.log(`create table index key error SPARE_PARTS: `, error);
           },
         );
       },
-      (error:any) => {
+      (error: any) => {
         console.log('table create query transaction failed: ', error);
       },
-      (success:any) => {
+      (success: any) => {
         console.log('table create query transaction:', 'success');
       },
     );
@@ -125,24 +188,24 @@ export const tableIndexKey = () => {
     // ---------------------------------------- METER READING IDX -----------------------------------------------------------
 
     db.transaction(
-      (tx:any) => {
+      (tx: any) => {
         const query_idx_meterReading = `CREATE UNIQUE INDEX IF NOT EXISTS idx_meter_reading ON  METER_READING(readingType,date) `;
 
         tx.executeSql(
           query_idx_meterReading,
           [],
-          (tx:any, response:any) => {
+          (tx: any, response: any) => {
             console.log(`create table index success METER_READING: `, response);
           },
-          (tx:any, error:any) => {
+          (tx: any, error: any) => {
             console.log(`create table index key error METER_READING: `, error);
           },
         );
       },
-      (error:any) => {
+      (error: any) => {
         console.log('table create query transaction failed: ', error);
       },
-      (success:any) => {
+      (success: any) => {
         console.log('table create query transaction:', 'success');
       },
     );
@@ -150,24 +213,24 @@ export const tableIndexKey = () => {
     //  --------------------------------------------- SERVICE TYPES IDX ---------------------------------------------------------
 
     db.transaction(
-      (tx:any) => {
+      (tx: any) => {
         const query_idx_serviceType = `CREATE UNIQUE INDEX IF NOT EXISTS idx_service_types ON  SERVICE_TYPE(typeId) `;
 
         tx.executeSql(
           query_idx_serviceType,
           [],
-          (tx:any, response:any) => {
+          (tx: any, response: any) => {
             console.log(`create table index success SERVICE_TYPE: `, response);
           },
-          (tx:any, error:any) => {
+          (tx: any, error: any) => {
             console.log(`create table index key error SERVICE_TYPE: `, error);
           },
         );
       },
-      (error:any) => {
+      (error: any) => {
         console.log('table create query transaction failed: ', error);
       },
-      (success:any) => {
+      (success: any) => {
         console.log('table create query transaction:', 'success');
       },
     );
@@ -175,24 +238,24 @@ export const tableIndexKey = () => {
     //  ---------------------------------------- ITEM IDX ---------------------------------------------------------------
 
     db.transaction(
-      (tx:any) => {
+      (tx: any) => {
         const query_idx_item = `CREATE UNIQUE INDEX IF NOT EXISTS idx_item ON  ITEM(itemCode) `;
 
         tx.executeSql(
           query_idx_item,
           [],
-          (tx:any, response:any) => {
+          (tx: any, response: any) => {
             console.log(`create table index success SERVICE_TYPE: `, response);
           },
-          (tx:any, error:any) => {
+          (tx: any, error: any) => {
             console.log(`create table index key error SERVICE_TYPE: `, error);
           },
         );
       },
-      (error:any) => {
+      (error: any) => {
         console.log('table create query transaction failed: ', error);
       },
-      (success:any) => {
+      (success: any) => {
         console.log('table create query transaction:', 'success');
       },
     );
@@ -200,24 +263,24 @@ export const tableIndexKey = () => {
     // -------------------------------- CUSTOMER IDX -----------------------------------------------
 
     db.transaction(
-      (tx:any) => {
+      (tx: any) => {
         const query_idx_customer = `CREATE UNIQUE INDEX IF NOT EXISTS idx_customer ON  CUSTOMER(CusID) `;
 
         tx.executeSql(
           query_idx_customer,
           [],
-          (tx:any, response:any) => {
+          (tx: any, response: any) => {
             console.log(`create customer table index success CUSTOMER: `, response);
           },
-          (tx:any, error:any) => {
+          (tx: any, error: any) => {
             console.log(`create customer table index key error CUSTOMER: `, error);
           },
         );
       },
-      (error:any) => {
+      (error: any) => {
         console.log('customer table create query transaction failed: ', error);
       },
-      (success:any) => {
+      (success: any) => {
         console.log('customer table create query transaction:', 'success');
       },
     );
@@ -226,448 +289,448 @@ export const tableIndexKey = () => {
     //  --------------------------------------------- SERVICES IDX ---------------------------------------------------------
 
     db.transaction(
-      (tx:any) => {
+      (tx: any) => {
         const query_idx_service = `CREATE UNIQUE INDEX IF NOT EXISTS idx_service ON  SERVICE(serviceId) `;
 
         tx.executeSql(
           query_idx_service,
           [],
-          (tx:any, response:any) => {
+          (tx: any, response: any) => {
             console.log(`create table index success SERVICE: `, response);
           },
-          (tx:any, error:any) => {
+          (tx: any, error: any) => {
             console.log(`create table index key error SERVICE: `, error);
           },
         );
       },
-      (error:any) => {
+      (error: any) => {
         console.log('table create query transaction failed:SERVICE ', error);
       },
-      (success:any) => {
+      (success: any) => {
         console.log('table create query transaction:SERVICE', 'success');
       },
     );
 
-  //  --------------------------------------------- Expences IDX ---------------------------------------------------------
+    //  --------------------------------------------- Expences IDX ---------------------------------------------------------
 
-  db.transaction(
-    (tx:any) => {
-      const query_idx_Expences = `CREATE UNIQUE INDEX IF NOT EXISTS idx_expences ON  EXPENCES(ExpenseRequestID) `;
+    db.transaction(
+      (tx: any) => {
+        const query_idx_Expences = `CREATE UNIQUE INDEX IF NOT EXISTS idx_expences ON  EXPENCES(ExpenseRequestID) `;
 
-      tx.executeSql(
-        query_idx_Expences,
-        [],
-        (tx:any, response:any) => {
-          console.log(`create table index success EXPENCES: `, response);
-        },
-        (tx:any, error:any) => {
-          console.log(`create table index key error EXPENCES: `, error);
-        },
-      );
-    },
-    (error:any) => {
-      console.log('table create query transaction failed: ', error);
-    },
-    (success:any) => {
-      console.log('table create query transaction:', 'success');
-    },
-  );
+        tx.executeSql(
+          query_idx_Expences,
+          [],
+          (tx: any, response: any) => {
+            console.log(`create table index success EXPENCES: `, response);
+          },
+          (tx: any, error: any) => {
+            console.log(`create table index key error EXPENCES: `, error);
+          },
+        );
+      },
+      (error: any) => {
+        console.log('table create query transaction failed: ', error);
+      },
+      (success: any) => {
+        console.log('table create query transaction:', 'success');
+      },
+    );
 
-  //  --------------------------------------------- Priorirty IDX ---------------------------------------------------------
+    //  --------------------------------------------- Priorirty IDX ---------------------------------------------------------
 
-  db.transaction(
-    (tx:any) => {
-      const query_idx_Priority = `CREATE UNIQUE INDEX IF NOT EXISTS idx_priority ON  PRIORITY_LIST(Id) `;
+    db.transaction(
+      (tx: any) => {
+        const query_idx_Priority = `CREATE UNIQUE INDEX IF NOT EXISTS idx_priority ON  PRIORITY_LIST(Id) `;
 
-      tx.executeSql(
-        query_idx_Priority,
-        [],
-        (tx: any, response: any) => {
-          console.log(`create table index success PRIORITY: `, response);
-        },
-        (tx: any, error: any) => {
-          console.log(`create table index key error PRIORITY: `, error);
-        },
-      );
-    },
-    (error:any) => {
-      console.log('table create query transaction failed_PRIORITY: ', error);
-    },
-    (success:any) => {
-      console.log('table create query transaction:', 'success');
-    },
-  );
+        tx.executeSql(
+          query_idx_Priority,
+          [],
+          (tx: any, response: any) => {
+            console.log(`create table index success PRIORITY: `, response);
+          },
+          (tx: any, error: any) => {
+            console.log(`create table index key error PRIORITY: `, error);
+          },
+        );
+      },
+      (error: any) => {
+        console.log('table create query transaction failed_PRIORITY: ', error);
+      },
+      (success: any) => {
+        console.log('table create query transaction:', 'success');
+      },
+    );
 
-  //  --------------------------------------------- TECHNISIAN IDX ---------------------------------------------------------
+    //  --------------------------------------------- TECHNISIAN IDX ---------------------------------------------------------
 
-  db.transaction(
-    (tx:any) => {
-      const query_idx_userTypes = `CREATE UNIQUE INDEX IF NOT EXISTS idx_userTypes ON  USER_TYPES(Id) `;
+    db.transaction(
+      (tx: any) => {
+        const query_idx_userTypes = `CREATE UNIQUE INDEX IF NOT EXISTS idx_userTypes ON  USER_TYPES(Id) `;
 
-      tx.executeSql(
-        query_idx_userTypes,
-        [],
-        (tx: any, response: any) => {
-          console.log(`create table index success TECHNISIAN: `, response);
-        },
-        (tx: any, error: any) => {
-          console.log(`create table index key error TECHNISIAN: `, error);
-        },
-      );
-    },
-    (error:any) => {
-      console.log('table create query transaction failed_TECHNISIAN: ', error);
-    },
-    (success:any) => {
-      console.log('table create query transaction:', 'success');
-    },
-  );
+        tx.executeSql(
+          query_idx_userTypes,
+          [],
+          (tx: any, response: any) => {
+            console.log(`create table index success TECHNISIAN: `, response);
+          },
+          (tx: any, error: any) => {
+            console.log(`create table index key error TECHNISIAN: `, error);
+          },
+        );
+      },
+      (error: any) => {
+        console.log('table create query transaction failed_TECHNISIAN: ', error);
+      },
+      (success: any) => {
+        console.log('table create query transaction:', 'success');
+      },
+    );
 
-  //  --------------------------------------------- Contact Person IDX ---------------------------------------------------------
+    //  --------------------------------------------- Contact Person IDX ---------------------------------------------------------
 
-  db.transaction(
-    (tx:any) => {
-      const query_idx_ContactPerson = `CREATE UNIQUE INDEX IF NOT EXISTS idx_contactPerson ON  Contact_Person(Id) `;
+    db.transaction(
+      (tx: any) => {
+        const query_idx_ContactPerson = `CREATE UNIQUE INDEX IF NOT EXISTS idx_contactPerson ON  Contact_Person(Id) `;
 
-      tx.executeSql(
-        query_idx_ContactPerson,
-        [],
-        (tx: any, response: any) => {
-          console.log(`create table index success Contact_Person: `, response);
-        },
-        (tx: any, error: any) => {
-          console.log(`create table index key error Contact_Person: `, error);
-        },
-      );
-    },
-    (error:any) => {
-      console.log('table create query transaction failed_Contact_Person: ', error);
-    },
-    (success:any) => {
-      console.log('table create query transaction:', 'success');
-    },
-  );
-
-
-  //  --------------------------------------------- EXPENCES TYPE IDX ---------------------------------------------------------
-
-  db.transaction(
-    (tx:any) => {
-      const query_idx_ExpencesTypes = `CREATE UNIQUE INDEX IF NOT EXISTS idx_expences_type ON  EXPENCES_TYPE(expTypeId) `;
-
-      tx.executeSql(
-        query_idx_ExpencesTypes,
-        [],
-        (tx: any, response: any) => {
-          console.log(`create table index success EXPENCES_TYPE: `, response);
-        },
-        (tx: any, error: any) => {
-          console.log(`create table index key error EXPENCES_TYPE: `, error);
-        },
-      );
-    },
-    (error:any) => {
-      console.log('table create query transaction failed_EXPENCES_TYPE: ', error);
-    },
-    (success:any) => {
-      console.log('table create query transaction:', 'success');
-    },
-  );
-
-  //  ---------------------------------------------  Resorces IDX ---------------------------------------------------------
-
-  db.transaction(
-    (tx:any) => {
-      const query_idx_Resources = `CREATE UNIQUE INDEX IF NOT EXISTS idx_resources ON  Resources(ResourcesID)`;
-
-      tx.executeSql(
-        query_idx_Resources,
-        [],
-        (tx: any, response: any) => {
-          console.log(`create table index success Resources: `, response);
-        },
-        (tx: any, error: any) => {
-          console.log(`create table index key error Resources: `, error);
-        },
-      );
-    },
-    (error:any) => {
-      console.log('table create query transaction failed_Resources: ', error);
-    },
-    (success:any) => {
-      console.log('table create query transaction:', 'success');
-    },
-  );
-
-  // ------------------------------- Customer Items IDX -----------------------------------------
-
-  db.transaction(
-    (tx:any) => {
-      const query_idx_Resources = `CREATE UNIQUE INDEX IF NOT EXISTS idx_customerItem ON  Customer_Items(ItemCode,CustomerCode)`;
-
-      tx.executeSql(
-        query_idx_Resources,
-        [],
-        (tx: any, response: any) => {
-          console.log(`create table index success CustomerItem: `, response);
-        },
-        (tx: any, error: any) => {
-          console.log(`create table index key error CustomerItem: `, error);
-        },
-      );
-    },
-    (error:any) => {
-      console.log('table create query transaction failed_CustomerItem: ', error);
-    },
-    (success:any) => {
-      console.log('table create query transaction:', 'success');
-    },
-  );
+        tx.executeSql(
+          query_idx_ContactPerson,
+          [],
+          (tx: any, response: any) => {
+            console.log(`create table index success Contact_Person: `, response);
+          },
+          (tx: any, error: any) => {
+            console.log(`create table index key error Contact_Person: `, error);
+          },
+        );
+      },
+      (error: any) => {
+        console.log('table create query transaction failed_Contact_Person: ', error);
+      },
+      (success: any) => {
+        console.log('table create query transaction:', 'success');
+      },
+    );
 
 
-  // ------------------------------------------ Item Serial No IDX-------------------------------------------------
+    //  --------------------------------------------- EXPENCES TYPE IDX ---------------------------------------------------------
 
-  db.transaction(
-    (tx:any) => {
-      const query_idx_Resources = `CREATE UNIQUE INDEX IF NOT EXISTS idx_ItemSerialNo ON  Item_serialNO(ItemCode,InternalSN)`;
+    db.transaction(
+      (tx: any) => {
+        const query_idx_ExpencesTypes = `CREATE UNIQUE INDEX IF NOT EXISTS idx_expences_type ON  EXPENCES_TYPE(expTypeId) `;
 
-      tx.executeSql(
-        query_idx_Resources,
-        [],
-        (tx: any, response: any) => {
-          console.log(`create table index success Item_serialNO: `, response);
-        },
-        (tx: any, error: any) => {
-          console.log(`create table index key error Item_serialNO: `, error);
-        },
-      );
-    },
-    (error:any) => {
-      console.log('table create query transaction failed_Item_serialNO: ', error);
-    },
-    (success:any) => {
-      console.log('table create query transaction:', 'success');
-    },
-  );
+        tx.executeSql(
+          query_idx_ExpencesTypes,
+          [],
+          (tx: any, response: any) => {
+            console.log(`create table index success EXPENCES_TYPE: `, response);
+          },
+          (tx: any, error: any) => {
+            console.log(`create table index key error EXPENCES_TYPE: `, error);
+          },
+        );
+      },
+      (error: any) => {
+        console.log('table create query transaction failed_EXPENCES_TYPE: ', error);
+      },
+      (success: any) => {
+        console.log('table create query transaction:', 'success');
+      },
+    );
 
+    //  ---------------------------------------------  Resorces IDX ---------------------------------------------------------
 
-  // ------------------------------------------------ User IDX -----------------------------------------------------
+    db.transaction(
+      (tx: any) => {
+        const query_idx_Resources = `CREATE UNIQUE INDEX IF NOT EXISTS idx_resources ON  Resources(ResourcesID)`;
 
-  db.transaction(
-    (tx:any) => {
-      const query_idx_User = `CREATE UNIQUE INDEX IF NOT EXISTS idx_User ON User(user_id)`;
+        tx.executeSql(
+          query_idx_Resources,
+          [],
+          (tx: any, response: any) => {
+            console.log(`create table index success Resources: `, response);
+          },
+          (tx: any, error: any) => {
+            console.log(`create table index key error Resources: `, error);
+          },
+        );
+      },
+      (error: any) => {
+        console.log('table create query transaction failed_Resources: ', error);
+      },
+      (success: any) => {
+        console.log('table create query transaction:', 'success');
+      },
+    );
 
-      tx.executeSql(
-        query_idx_User,
-        [],
-        (tx: any, response: any) => {
-          console.log(`create table index success User: `, response);
-        },
-        (tx: any, error: any) => {
-          console.log(`create table index key error User: `, error);
-        },
-      );
-    },
-    (error:any) => {
-      console.log('table create query transaction failed User: ', error);
-    },
-    (success:any) => {
-      console.log('table create query transaction:', 'success');
-    },
-  );
+    // ------------------------------- Customer Items IDX -----------------------------------------
 
-  // ----------------------------------- User_Type IDX --------------------------------------
+    db.transaction(
+      (tx: any) => {
+        const query_idx_Resources = `CREATE UNIQUE INDEX IF NOT EXISTS idx_customerItem ON  Customer_Items(ItemCode,CustomerCode)`;
 
-
-  db.transaction(
-    (tx:any) => {
-      const query_idx_UserType = `CREATE UNIQUE INDEX IF NOT EXISTS idx_UserType ON User_Type(type_id)`;
-
-      tx.executeSql(
-        query_idx_UserType,
-        [],
-        (tx: any, response: any) => {
-          console.log(`create table index success User: `, response);
-        },
-        (tx: any, error: any) => {
-          console.log(`create table index key error User: `, error);
-        },
-      );
-    },
-    (error:any) => {
-      console.log('table create query transaction failed User: ', error);
-    },
-    (success:any) => {
-      console.log('table create query transaction:', 'success');
-    },
-  );
+        tx.executeSql(
+          query_idx_Resources,
+          [],
+          (tx: any, response: any) => {
+            console.log(`create table index success CustomerItem: `, response);
+          },
+          (tx: any, error: any) => {
+            console.log(`create table index key error CustomerItem: `, error);
+          },
+        );
+      },
+      (error: any) => {
+        console.log('table create query transaction failed_CustomerItem: ', error);
+      },
+      (success: any) => {
+        console.log('table create query transaction:', 'success');
+      },
+    );
 
 
-   // ----------------------------------- Vehicle IDX --------------------------------------
+    // ------------------------------------------ Item Serial No IDX-------------------------------------------------
+
+    db.transaction(
+      (tx: any) => {
+        const query_idx_Resources = `CREATE UNIQUE INDEX IF NOT EXISTS idx_ItemSerialNo ON  Item_serialNO(ItemCode,InternalSN)`;
+
+        tx.executeSql(
+          query_idx_Resources,
+          [],
+          (tx: any, response: any) => {
+            console.log(`create table index success Item_serialNO: `, response);
+          },
+          (tx: any, error: any) => {
+            console.log(`create table index key error Item_serialNO: `, error);
+          },
+        );
+      },
+      (error: any) => {
+        console.log('table create query transaction failed_Item_serialNO: ', error);
+      },
+      (success: any) => {
+        console.log('table create query transaction:', 'success');
+      },
+    );
 
 
-   db.transaction(
-    (tx:any) => {
-      const query_idx_Vehicle = `CREATE UNIQUE INDEX IF NOT EXISTS idx_Vehicle ON Vehicle(VehicleID)`;
+    // ------------------------------------------------ User IDX -----------------------------------------------------
 
-      tx.executeSql(
-        query_idx_Vehicle,
-        [],
-        (tx: any, response: any) => {
-          console.log(`create table index success Vehicle: `, response);
-        },
-        (tx: any, error: any) => {
-          console.log(`create table index key error Vehicle: `, error);
-        },
-      );
-    },
-    (error:any) => {
-      console.log('table create query transaction failed Vehicle: ', error);
-    },
-    (success:any) => {
-      console.log('table create query transaction:', 'success');
-    },
-  );
+    db.transaction(
+      (tx: any) => {
+        const query_idx_User = `CREATE UNIQUE INDEX IF NOT EXISTS idx_User ON User(user_id)`;
 
-  // ----------------------------------- Tool IDX --------------------------------------
+        tx.executeSql(
+          query_idx_User,
+          [],
+          (tx: any, response: any) => {
+            console.log(`create table index success User: `, response);
+          },
+          (tx: any, error: any) => {
+            console.log(`create table index key error User: `, error);
+          },
+        );
+      },
+      (error: any) => {
+        console.log('table create query transaction failed User: ', error);
+      },
+      (success: any) => {
+        console.log('table create query transaction:', 'success');
+      },
+    );
 
-
-  db.transaction(
-    (tx:any) => {
-      const query_idx_Tool = `CREATE UNIQUE INDEX IF NOT EXISTS idx_Tool ON Tool(ItemCode)`;
-
-      tx.executeSql(
-        query_idx_Tool,
-        [],
-        (tx: any, response: any) => {
-          console.log(`create table index success Tool: `, response);
-        },
-        (tx: any, error: any) => {
-          console.log(`create table index key error Tool: `, error);
-        },
-      );
-    },
-    (error:any) => {
-      console.log('table create query transaction failed Tool: ', error);
-    },
-    (success:any) => {
-      console.log('table create query transaction:', 'success');
-    },
-  );
-
-   // ----------------------------------- TICKET IDX --------------------------------------
+    // ----------------------------------- User_Type IDX --------------------------------------
 
 
-   db.transaction(
-    (tx:any) => {
-      const query_idx_Ticket = `CREATE UNIQUE INDEX IF NOT EXISTS idx_Ticket ON TICKET(ticketId)`;
+    db.transaction(
+      (tx: any) => {
+        const query_idx_UserType = `CREATE UNIQUE INDEX IF NOT EXISTS idx_UserType ON User_Type(type_id)`;
 
-      tx.executeSql(
-        query_idx_Ticket,
-        [],
-        (tx: any, response: any) => {
-          console.log(`create table index success TICKET: `, response);
-        },
-        (tx: any, error: any) => {
-          console.log(`create table index key error TICKET: `, error);
-        },
-      );
-    },
-    (error:any) => {
-      console.log('table create query transaction failed TICKET: ', error);
-    },
-    (success:any) => {
-      console.log('table create query transaction:', 'success');
-    },
-  );
-
-  // ----------------------------------- Spartpart_Header IDX --------------------------------------
+        tx.executeSql(
+          query_idx_UserType,
+          [],
+          (tx: any, response: any) => {
+            console.log(`create table index success User: `, response);
+          },
+          (tx: any, error: any) => {
+            console.log(`create table index key error User: `, error);
+          },
+        );
+      },
+      (error: any) => {
+        console.log('table create query transaction failed User: ', error);
+      },
+      (success: any) => {
+        console.log('table create query transaction:', 'success');
+      },
+    );
 
 
-  db.transaction(
-    (tx:any) => {
-      const query_idx_Ticket = `CREATE UNIQUE INDEX IF NOT EXISTS idx_Spartpart_Header ON Spartpart_Header(spareparts_No)`;
-
-      tx.executeSql(
-        query_idx_Ticket,
-        [],
-        (tx: any, response: any) => {
-          console.log(`create table index success Spartpart_Header: `, response);
-        },
-        (tx: any, error: any) => {
-          console.log(`create table index key error Spartpart_Header: `, error);
-        },
-      );
-    },
-    (error:any) => {
-      console.log('table create query transaction failed TICKET: ', error);
-    },
-    (success:any) => {
-      console.log('table create query transaction:', 'success');
-    },
-  );
-  
-  // ----------------------------------- Invenrty_Spartpart IDX --------------------------------------
+    // ----------------------------------- Vehicle IDX --------------------------------------
 
 
-  db.transaction(
-    (tx:any) => {
-      const query_idx_Ticket = `CREATE UNIQUE INDEX IF NOT EXISTS idx_Invenrty_Spartpart ON Invenrty_Spartpart(Spareparts_HeaderID,SP_ItemCode)`;
+    db.transaction(
+      (tx: any) => {
+        const query_idx_Vehicle = `CREATE UNIQUE INDEX IF NOT EXISTS idx_Vehicle ON Vehicle(VehicleID)`;
 
-      tx.executeSql(
-        query_idx_Ticket,
-        [],
-        (tx: any, response: any) => {
-          console.log(`create table index success Invenrty_Spartpart: `, response);
-        },
-        (tx: any, error: any) => {
-          console.log(`create table index key error Invenrty_Spartpart: `, error);
-        },
-      );
-    },
-    (error:any) => {
-      console.log('table create query transaction failed TICKET: ', error);
-    },
-    (success:any) => {
-      console.log('table create query transaction:', 'success');
-    },
-  );
+        tx.executeSql(
+          query_idx_Vehicle,
+          [],
+          (tx: any, response: any) => {
+            console.log(`create table index success Vehicle: `, response);
+          },
+          (tx: any, error: any) => {
+            console.log(`create table index key error Vehicle: `, error);
+          },
+        );
+      },
+      (error: any) => {
+        console.log('table create query transaction failed Vehicle: ', error);
+      },
+      (success: any) => {
+        console.log('table create query transaction:', 'success');
+      },
+    );
+
+    // ----------------------------------- Tool IDX --------------------------------------
 
 
-  return null;
+    db.transaction(
+      (tx: any) => {
+        const query_idx_Tool = `CREATE UNIQUE INDEX IF NOT EXISTS idx_Tool ON Tool(ItemCode)`;
 
-} catch (error) {
-  console.log('remove Item_serialNO duplicate failed:SERVICE ', error);
+        tx.executeSql(
+          query_idx_Tool,
+          [],
+          (tx: any, response: any) => {
+            console.log(`create table index success Tool: `, response);
+          },
+          (tx: any, error: any) => {
+            console.log(`create table index key error Tool: `, error);
+          },
+        );
+      },
+      (error: any) => {
+        console.log('table create query transaction failed Tool: ', error);
+      },
+      (success: any) => {
+        console.log('table create query transaction:', 'success');
+      },
+    );
 
-}
+    // ----------------------------------- TICKET IDX --------------------------------------
+
+
+    db.transaction(
+      (tx: any) => {
+        const query_idx_Ticket = `CREATE UNIQUE INDEX IF NOT EXISTS idx_Ticket ON TICKET(ticketId)`;
+
+        tx.executeSql(
+          query_idx_Ticket,
+          [],
+          (tx: any, response: any) => {
+            console.log(`create table index success TICKET: `, response);
+          },
+          (tx: any, error: any) => {
+            console.log(`create table index key error TICKET: `, error);
+          },
+        );
+      },
+      (error: any) => {
+        console.log('table create query transaction failed TICKET: ', error);
+      },
+      (success: any) => {
+        console.log('table create query transaction:', 'success');
+      },
+    );
+
+    // ----------------------------------- Spartpart_Header IDX --------------------------------------
+
+
+    db.transaction(
+      (tx: any) => {
+        const query_idx_Ticket = `CREATE UNIQUE INDEX IF NOT EXISTS idx_Spartpart_Header ON Spartpart_Header(spareparts_No)`;
+
+        tx.executeSql(
+          query_idx_Ticket,
+          [],
+          (tx: any, response: any) => {
+            console.log(`create table index success Spartpart_Header: `, response);
+          },
+          (tx: any, error: any) => {
+            console.log(`create table index key error Spartpart_Header: `, error);
+          },
+        );
+      },
+      (error: any) => {
+        console.log('table create query transaction failed TICKET: ', error);
+      },
+      (success: any) => {
+        console.log('table create query transaction:', 'success');
+      },
+    );
+
+    // ----------------------------------- Invenrty_Spartpart IDX --------------------------------------
+
+
+    db.transaction(
+      (tx: any) => {
+        const query_idx_Ticket = `CREATE UNIQUE INDEX IF NOT EXISTS idx_Invenrty_Spartpart ON Invenrty_Spartpart(Spareparts_HeaderID,SP_ItemCode)`;
+
+        tx.executeSql(
+          query_idx_Ticket,
+          [],
+          (tx: any, response: any) => {
+            console.log(`create table index success Invenrty_Spartpart: `, response);
+          },
+          (tx: any, error: any) => {
+            console.log(`create table index key error Invenrty_Spartpart: `, error);
+          },
+        );
+      },
+      (error: any) => {
+        console.log('table create query transaction failed TICKET: ', error);
+      },
+      (success: any) => {
+        console.log('table create query transaction:', 'success');
+      },
+    );
+
+
+    return null;
+
+  } catch (error) {
+    console.log('remove Item_serialNO duplicate failed:SERVICE ', error);
+
+  }
 
 }
 
 //INSERT QUERY
-export const insertData = (data:any, callBack:any) => {
+export const insertData = (data: any, callBack: any) => {
   try {
     db.transaction(
-      (tx:any) => {
+      (tx: any) => {
         data.forEach(table => {
           let queryString = `INSERT INTO ${table.table} (${table.columns}) VALUES (${table.values})`;
 
           tx.executeSql(
             queryString,
             table.params,
-            (tx:any, response:any) => {
+            (tx: any, response: any) => {
               // console.log(`insert data success ${table.table}: `, response);
             },
-            (tx:any, error:any) => {
+            (tx: any, error: any) => {
               console.log(`insert data error ${table.table}: `, error);
             },
           );
         });
       },
-      (error:any) => {
+      (error: any) => {
         console.log('insert data query transaction failed: ', error);
         callBack(null, error); //notify caller
       },
-      (success:any) => {
+      (success: any) => {
         console.log('insert data query transaction success: ', success);
         callBack(success ?? 'success', null); //notify caller
       },
@@ -715,29 +778,29 @@ export const insertData = (data:any, callBack:any) => {
 
 
 //UPDATE QUERY
-export const updateData = (query:any, params:any, callBack:any) => {
+export const updateData = (query: any, params: any, callBack: any) => {
   // console.log("update ticket ref id");
-  
+
   try {
     db.transaction(
-      (tx:any) => {
+      (tx: any) => {
         tx.executeSql(
           query,
           params,
-          (tx:any, response:any) => {
+          (tx: any, response: any) => {
             console.log(`update data success : `, response);
           },
-          (tx:any, error:any) => {
+          (tx: any, error: any) => {
             console.log(`update data error: `, error);
           },
         );
 
       },
-      (error:any) => {
+      (error: any) => {
         console.log('update data query transaction failed: ', error);
         callBack(null, error); //notify caller
       },
-      (success:any) => {
+      (success: any) => {
         console.log('update data query transaction success: ', success);
         callBack(success ?? 'success', null); //notify caller
       },
@@ -749,30 +812,30 @@ export const updateData = (query:any, params:any, callBack:any) => {
 };
 
 //DELETE QUERY
-export const deleteData = (data:any, callBack:any) => {
+export const deleteData = (data: any, callBack: any) => {
   try {
     db.transaction(
-      (tx:any) => {
+      (tx: any) => {
         data.forEach(table => {
           let queryString = `DELETE FROM ${table.table} ${table.query}`;
 
           tx.executeSql(
             queryString,
             table.params,
-            (tx:any, response:any) => {
+            (tx: any, response: any) => {
               // console.log(`delete data success ${table.name}: `, response);
             },
-            (tx:any, error:any) => {
+            (tx: any, error: any) => {
               // console.log(`delete data error ${table.name}: `, error);
             },
           );
         });
       },
-      (error:any) => {
+      (error: any) => {
         // console.log('delete data query transaction failed: ', error);
         callBack(null, error); //notify caller
       },
-      (success:any) => {
+      (success: any) => {
         // console.log('delete data query transaction success: ', success);
         callBack(success ?? 'success', null); //notify caller
       },
@@ -789,7 +852,7 @@ export const searchData = (query: any, params: any, callBack: any) => {
     db.executeSql(
       query,
       params,
-      (tx:any, response:any) => {
+      (tx: any, response: any) => {
 
         if (tx && tx.rows && tx.rows.raw()) {
 
@@ -801,7 +864,7 @@ export const searchData = (query: any, params: any, callBack: any) => {
 
         }
       },
-      (tx:any, error:any) => {
+      (tx: any, error: any) => {
         callBack(null, error); //notify caller
         console.log('search data error : ', error);
       },
@@ -813,19 +876,19 @@ export const searchData = (query: any, params: any, callBack: any) => {
 };
 
 //ANY QUERY
-export const executeQuery = (query:any, params:any, callBack:any) => {
+export const executeQuery = (query: any, params: any, callBack: any) => {
   try {
     db.executeSql(
       query,
       params,
-      (tx:any, response:any) => {
+      (tx: any, response: any) => {
         if (tx) {
           console.log('query data : ', tx);
           return callBack(tx, null); //notify caller
         }
         console.log('query data error : no data');
       },
-      (tx:any, error:any) => {
+      (tx: any, error: any) => {
         callBack(null, error); //notify caller
         console.log('query data error : ', error);
       },
@@ -837,10 +900,13 @@ export const executeQuery = (query:any, params:any, callBack:any) => {
 };
 
 //INSERT + UPDATE QUERY
-export const indateData = (data:any, callBack:any) => {
+export const indateData = (data: any, callBack: any) => {
+
+  // console.log(" save or update here ...........  ");
+
   try {
     db.transaction(
-      (tx:any) => {
+      (tx: any) => {
         data.forEach(table => {
           // let queryString = `INSERT INTO ${table.table} (${table.columns}) VALUES (${table.values})
           // ON CONFLICT(${table.primaryKey}) DO UPDATE SET ${table.subQuery}`;
@@ -853,20 +919,20 @@ export const indateData = (data:any, callBack:any) => {
           tx.executeSql(
             queryString,
             table.params,
-            (tx:any, response:any) => {
+            (tx: any, response: any) => {
               // console.log(`indate data success ${table.table}: `, response);
             },
-            (tx:any, error:any) => {
+            (tx: any, error: any) => {
               console.log(`indate data error ${table.table}: `, error);
             },
           );
         });
       },
-      (error:any) => {
+      (error: any) => {
         console.log(`${data[0].table} data transaction: `, error);
         callBack(null, error); //notify caller
       },
-      (success:any) => {
+      (success: any) => {
         // console.log(`${data[0].table} data transaction: `, 'success');
         callBack(success ?? 'success', null); //notify caller
       },

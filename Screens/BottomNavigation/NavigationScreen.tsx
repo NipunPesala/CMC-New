@@ -33,13 +33,13 @@ import ServiceTicketList from "../../Screens/BottomNavigation/TicketDetails/Serv
 import RequestBottomSheet from "../../Components/RequestBottomSheet";
 import AddAdditionalSpareParts from "../../Components/AddAdditionalSpareParts";
 import AddSparePartsComponent from "../../Components/AddSparePartsComponent";
-import AddExpences from "../../Components/AddExpences";
 import AddExpencesNew from "../../Components/AddExpencesNew";
 
 import ResourcesRequestComponent from "../../Components/ResourcesRequestComponent";
 import SyncScreen from "../Sync/SyncScreen";
 import CusTicketSummary from "../../Screens/Reports/CusTicketSummary";
 import Login from "../Login/Login";
+import SplashScreen from "../Splash/SplashScreen";
 
 let width = Dimensions.get("screen").width;
 

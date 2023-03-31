@@ -56,6 +56,7 @@ import queryString from 'query-string';
 import axios from 'axios';
 import ComponentsStyles from "../../Constant/Components.styles";
 import { userLogin } from "../../Services/Api/UserAuthService";
+import { get_ASYNC_LOGIN_ROUND } from "../../Constant/AsynStorageFuntion";
 //import {Permission,PERMISSION_TYPE}from '../../Constant/AppPermission';
 let height = Dimensions.get("screen").height;
 requestPermission();
@@ -70,7 +71,7 @@ const Login = () => {
     const [isShowSweep, setIsShowSweep] = useState(true);
     const [modalStyle, setModalStyle] = useState(new Animated.Value(height));
     const [ImgStatus, setImgStatus] = useState(false);
-    const [image, setImage] = useState();
+    const [image, setImage] = useState('');
 
     const [lastMeterReadervalue, setlastMeterReadervalue] = useState([]);
     const [readingType, setreadingType] = useState('');
@@ -133,7 +134,7 @@ const Login = () => {
     const createChannels = () => {
 
         console.log("Create db ,,,,,,,,,,,  ");
-        
+
 
         DB.createTables();
         DB.tableIndexKey();
@@ -288,19 +289,39 @@ const Login = () => {
                 console.log(response.data);
                 if (response.data.ResponseDescription == "Login Successful") {
 
-                    DB.createTables();
-                    DB.tableIndexKey();
-                    getLastReadervalue();
+                    // DB.createTables();
+                    // DB.tableIndexKey();
+                    // getLastReadervalue();
 
                     var userID = '' + response.data.Data[0].UserId;
 
                     await AsyncStorage.setItem(AsyncStorageConstants.ASYNC_STORAGE_LOGIN_NAME, response.data.Username);
+                    await AsyncStorage.setItem(AsyncStorageConstants.ASYNC_STORAGE_Login_PASSWORD, pword);
                     await AsyncStorage.setItem(AsyncStorageConstants.ASYNC_TOCKEN, response.data.Data[0].Token);
                     // await AsyncStorage.setItem('UserType','Technician');
                     await AsyncStorage.setItem('UserType', response.data.Data[0].UserType);
                     await AsyncStorage.setItem(AsyncStorageConstants.ASYNC_LOGIN_USERID, userID);
                     // AsyncStorage.setItem(AsyncStorageConstants.ASYNC_TOCKEN, response.data.token);
                     // await AsyncStorage.setItem(AsyncStorageConstants.ASYNC_LOGIN_USERID, "1");
+                  
+
+                    get_ASYNC_LOGIN_ROUND().then(async res => {
+
+                        if(res !== null){
+
+                            var turn = parseInt(res+"") + 1;
+    
+                            await AsyncStorage.setItem(AsyncStorageConstants.ASYNC_STORAGE_Login_Round, turn+"");
+    
+                        }else{
+
+                            await AsyncStorage.setItem(AsyncStorageConstants.ASYNC_STORAGE_Login_Round, "0");
+
+                        }
+    
+                    })
+                
+
                     if (readingType == "OUT" || readingType == "") {
                         // last record has day end .so need to add day statrt
                         setLoginHeading("LOGIN TO START THE DATE");
@@ -568,33 +589,55 @@ const Login = () => {
     }
 
 
-    useEffect(() => {
+    // useEffect(() => {
 
-        const focusHandler = navigation.addListener('focus', () => {
+    //     const focusHandler = navigation.addListener('focus', () => {
 
-        // const IMEI = require('...react-native-imei');
-        // IMEI.getImei().then(imeiList => {
-        //     console.log(imeiList)
-        // });
+    //     // const IMEI = require('...react-native-imei');
+    //     // IMEI.getImei().then(imeiList => {
+    //     //     console.log(imeiList)
+    //     // });
 
-        createChannels();
+    //     createChannels();
 
-    });
-    return focusHandler;
+    // });
+    // return focusHandler;
 
-    }, [navigation])
+    // }, [navigation])
 
-    // useFocusEffect(
-    //     React.useCallback(() => {
+    useFocusEffect(
+        React.useCallback(() => {
+
+              get_ASYNC_LOGIN_ROUND().then(async res => {
+
+                        if(res !== null){
+
+                     
+                            setuName('');
+                            setPword('');
+                            setMeterValue('');
+                            setremark('');
+                            setIsShowSweep(true);
+                            setImgStatus(false);
+                            setImage('');
+                            setreadingType('');
+                            setLoginHeading('');
+                            setLoginStatus(false);
+                        
+                
+                            console.log("  reload login ----------->>>>>>   ");
+                
+    
+                        }else{
+
+                            createChannels();
+                        }
+    
+                    })
 
 
-    //         console.log("  reload login ----------->>>>>>   ");
-
-    //         createChannels();
-
-
-    //     }, [])
-    // );
+        }, [])
+    );
 
     return (
         <SafeAreaView style={comStyles.CONTAINER}>

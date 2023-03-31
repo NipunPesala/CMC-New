@@ -96,10 +96,28 @@ export const saveServiceData = (data: any, type: any, callBack: any) => {
 
     for (let i = 0; i < data.length; ++i) {
 
-      start = data[i].PlanedStartDateTime.split("T")[0];// done 
-      end = data[i].PlanedEndDateTime.split("T")[0]; // done
-      approveAt = data[i].ApprovedAt.split("T")[0]; // done
-      actualStartDAte = data[i].ActualStartDate.split("T")[0]; // done
+      if(data[i].PlanedStartDateTime !== null || data[i].PlanedStartDateTime !== ''){
+
+        start = data[i].PlanedStartDateTime.split("T")[0];// done 
+
+      }
+
+      if(data[i].PlanedEndDateTime !== null || data[i].PlanedEndDateTime !== ''){
+
+        end = data[i].PlanedEndDateTime.split("T")[0]; // done
+
+
+      }
+      if(data[i].ApprovedAt !== null || data[i].ApprovedAt !== ''){
+
+        approveAt = data[i].ApprovedAt.split("T")[0]; // done
+
+      }
+      // if(data[i].ActualStartDate !== null || data[i].ActualStartDate !== ''){
+
+      //   actualStartDAte = data[i].ActualStartDate.split("T")[0]; // done
+
+      // }
 
 
       DB.indateData(

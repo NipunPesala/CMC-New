@@ -5,19 +5,20 @@ import AsyncStorage from "@react-native-community/async-storage";
 import SQLite from 'react-native-sqlite-storage';
 import { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
+import { getLoginPassword, getLoginUserName } from "./AsynStorageFuntion";
 
-const [isDeleted, setIsDeleted]=useState(false);
+const [isDeleted, setIsDeleted] = useState(false);
 const navigation = useNavigation();
 
- export const getCurrentTime = (callback:any) => {
+export const getCurrentTime = (callback: any) => {
 
-    console.log(".............................  " + moment().utcOffset('+05:30').format(' hh:mm:ss a') + "...................................")
+  console.log(".............................  " + moment().utcOffset('+05:30').format(' hh:mm:ss a') + "...................................")
 
-    return moment().utcOffset('+05:30').format(' hh:mm:ss a');
+  return moment().utcOffset('+05:30').format(' hh:mm:ss a');
 
 }
 
-export const getCurrentDate = (callback:any) => {
+export const getCurrentDate = (callback: any) => {
 
   console.log(".............................  " + moment().format('MMMM Do YYYY') + "...................................")
 
@@ -27,16 +28,16 @@ export const getCurrentDate = (callback:any) => {
 
 }
 
-export const BackPressHandler = (callback:any) => {
-    BackHandler.addEventListener('hardwareBackPress', () => {
-      callback();
-      return true;
-    });
+export const BackPressHandler = (callback: any) => {
+  BackHandler.addEventListener('hardwareBackPress', () => {
+    callback();
+    return true;
+  });
 }
 
-export const isNetworkAvailable = (callBack:any) => {
+export const isNetworkAvailable = (callBack: any) => {
 
-  var isConnect:any;
+  var isConnect: any;
   NetInfo.fetch().then(state => {
     console.log("Connection type", state.type);
     console.log("Is connected?", state.isConnected);
@@ -49,52 +50,27 @@ export const isNetworkAvailable = (callBack:any) => {
 
 }
 
-  export const LogoutApp = () => {
-        Alert.alert('LogOut', 'Are you sure LogOut', [
-          {
-            text: 'Cancel',
-            onPress: () => console.log('Cancel Pressed'),
-            style: 'cancel',
-          },
-          {text: 'OK', onPress: () => logout()},
-        ]);
-      };
+export const getLoginDetails = (callBack: any) => {
 
-      const logout = async () => {
+  var uname:any;
+  var pw:any;
 
-        console.log(" logout -------------  ");
+  getLoginUserName().then(async res => {
 
-        // SQLite.backup();
-        
-        await AsyncStorage.clear();
-        deleteDB();
+    uname = res;
 
-    
-      };
+  });
+  getLoginPassword().then(async resp => {
+
+    pw = resp;
+
+  });
 
 
-      const deleteDB = () => {
+  callBack(uname,pw);
 
-        console.log("delete db function ********   ");
-        
-          SQLite.deleteDatabase('cmc.db');
 
-          setIsDeleted(true);
-
-          navigateLogin();
-
-      }
-
-      const navigateLogin = () => {
-
-        if(isDeleted){
-
-            console.log("deleted db  ******** ^^^^^^^^^^   ");
-
-            navigation.navigate('Login');
-
-        }
-      }
+}
 
 
 

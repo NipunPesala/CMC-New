@@ -2,7 +2,7 @@
 * @author Gagana Lakruwan
 */
 import React, { useState,useRef } from "react";
-import { Image, ImageBackground } from "react-native";
+import { DevSettings, Image, ImageBackground } from "react-native";
 import {
     View,
     Text,
@@ -21,6 +21,8 @@ import {useIsFocused, useNavigation} from '@react-navigation/native';
 import * as DB from '../SQLiteDatabaseAction/DBService';
 import AsyncStorage from "@react-native-community/async-storage";
 import SQLite from 'react-native-sqlite-storage';
+import AsyncStorageConstants from "../Constant/AsyncStorageConstants";
+import { get_ASYNC_USERID } from "../Constant/AsynStorageFuntion";
 
 type ParamTypes = {
     title: string;
@@ -77,35 +79,26 @@ const Header = ({ title, isIcon, image, isBtn, iconOnPress, btnOnPress,IconUserO
         // SQLite.backup();
         
         await AsyncStorage.clear();
+
+
         deleteDB();
 
     
       };
 
 
-      const deleteDB = () => {
+      const deleteDB = async () => {
 
-        console.log("delete db function ********   ");
-        
-          SQLite.deleteDatabase('cmc.db');
+        await AsyncStorage.setItem(AsyncStorageConstants.ASYNC_STORAGE_Login_Round, "1");
 
-          setIsDeleted(true);
+        DB.CleanDatabase();
+        // navigation.navigate('Login');
 
-          navigateLogin();
+        DevSettings.reload();
 
       }
 
-      const navigateLogin = () => {
-
-        if(isDeleted){
-
-            console.log("deleted db  ******** ^^^^^^^^^^   ");
-
-            navigation.navigate('Login');
-
-        }
-      }
-
+    
     return (
 
    

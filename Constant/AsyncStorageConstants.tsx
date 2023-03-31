@@ -11,6 +11,8 @@ export default class AsyncStorageConstants {
     static ASYNC_STORAGE_LOGIN_TYPE = 'as.login.type';
     static ASYNC_STORAGE_LOGIN_NAME = 'as.login.name';
     static ASYNC_STORAGE_Login_User = 'as.login.user';
+    static ASYNC_STORAGE_Login_Round = 'as.login.round';
+    static ASYNC_STORAGE_Login_PASSWORD = 'as.login.password';
 
     //auth types
     static ASYNC_STORAGE_AUTH_IS_AUTHENTICATED = 'as.auth.isauthenticated';

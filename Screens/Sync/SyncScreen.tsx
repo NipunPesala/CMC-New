@@ -20,7 +20,7 @@ import axios from 'axios';
 import AsyncStorageConstants from '../../Constant/AsyncStorageConstants';
 import * as DB_ServiceTicket from '../../SQLiteDatabaseAction/DBControllers/TicketController';
 import { BASE_URL_GET } from '../../Constant/Commen_API_Url';
-import { get_ASYNC_TOCKEN } from '../../Constant/AsynStorageFuntion';
+import { getLoginPassword, get_ASYNC_TOCKEN } from '../../Constant/AsynStorageFuntion';
 import * as DB_Customer from '../../SQLiteDatabaseAction/DBControllers/CustomerController';
 import * as DB_CstomerItems from '../../SQLiteDatabaseAction/DBControllers/CustomerItemsController';
 import * as DB_Item from '../../SQLiteDatabaseAction/DBControllers/ItemController';
@@ -42,12 +42,14 @@ import { ExpencesType, priorityListInitial, Service_types } from "../../Constant
 import { logProfileData } from 'react-native-calendars/src/Profiler';
 import { getASYNC_LOGIN_STATUS } from "../../Constant/AsynStorageFuntion"
 import { getCustomers } from '../../Services/Api/SyncService';
-import { getSpareParts } from '../../Services/Api/UserAuthService';
+import { getSpareParts, userLogin } from '../../Services/Api/UserAuthService';
 import { err } from 'react-native-svg/lib/typescript/xml';
 import { get_ASYNC_USERID, getLoginUserName } from "../../Constant/AsynStorageFuntion";
 import { updateSycnServiceCAll, Update_webRefId, getAllUploadFailServiceCalls, getServiceById, getServiceId } from "../../SQLiteDatabaseAction/DBControllers/ServiceController";
 import { getAllUploadFailServiceTickets, updateUploadedServiceTicket } from "../../SQLiteDatabaseAction/DBControllers/TicketController";
 import moment from "moment";
+import { getLoginDetails } from '../../Constant/CommonFunctions';
+import AsyncStorage from '@react-native-community/async-storage';
 
 let SyncArray1: any[] = [];
 let arrayindex = 0;
@@ -62,6 +64,8 @@ var UserIdUpload: any;
 var UserNameUpload: any;
 var webRefID2: any;
 var contactPerson2: any;
+var password: any;
+
 
 const SyncScreen = (props: any) => {
 
@@ -92,20 +96,24 @@ const SyncScreen = (props: any) => {
       setSyncArray([]);
       get_ASYNC_TOCKEN().then(res => {
         TOCKEN_KEY = res;
+        console.log("tocken");
+
         Sync_Customer(TOCKEN_KEY);
         // SyncCustomer();
-
         setOnRefresh(false);
         setdisablebtn(false)
 
       })
     } else {
       // Alert.alert("Colse")
-      console.log("close .............. ");
 
-      if (LoginType == "FIRST") {
+      if (LoginType === "FIRST") {
+        // console.log(LoginType ," first >>>> .............. ");
         navi.navigate("BottomNavi");
+        // navi.navigate("Home");
       } else {
+
+        // console.log(LoginType ," second >>>> .............. ");
         navi.navigate("Home");
 
       }
@@ -129,14 +137,21 @@ const SyncScreen = (props: any) => {
       setdisablebtn(false)
       syncbtn();
     } else {
+
+      setTocken(password,UserNameUpload);
+
       setbtntitle('Sync')
       ButtonTitle = "Sync";
+
+
+
     }
 
   }, [])
 
 
   const getLoginUserNameForUplode = () => {
+
     getLoginUserName().then(res => {
       UserNameUpload = res;
       console.log('user Name --+++++++++++++' + UserNameUpload);
@@ -145,6 +160,12 @@ const SyncScreen = (props: any) => {
       UserIdUpload = res;
       console.log('user id upload  --+++++++++++++++' + UserIdUpload);
     })
+
+    getLoginPassword().then(async resp => {
+
+      password = resp;
+      console.log('user pw upload  --+++++++++++++++' + password);
+    });
 
 
 
@@ -1326,7 +1347,7 @@ const SyncScreen = (props: any) => {
 
           if (response.data.length > 0) {
             // console.log('ticket responce data------------ ',response.data.);
-            DB_SPRequest.saveSparepartsHeader(response.data, 1,(res: any) => {
+            DB_SPRequest.saveSparepartsHeader(response.data, 1, (res: any) => {
 
               setOnRefresh(false);
 
@@ -1418,7 +1439,7 @@ const SyncScreen = (props: any) => {
 
           if (response.data.length > 0) {
             // console.log('ticket responce data------------ ',response.data.);
-            DB_SPInventoryRequest.saveInventrySpareparts(response.data, 1,(res: any) => {
+            DB_SPInventoryRequest.saveInventrySpareparts(response.data, 1, (res: any) => {
 
               setOnRefresh(false);
 
@@ -1510,7 +1531,7 @@ const SyncScreen = (props: any) => {
 
           if (response.data.length > 0) {
             // console.log('ticket responce data------------ ',response.data.);
-            DB_SPAdditionalRequest.saveAdditionalSpareparts(response.data, 1,(res: any) => {
+            DB_SPAdditionalRequest.saveAdditionalSpareparts(response.data, 1, (res: any) => {
 
               setOnRefresh(false);
 
@@ -1939,8 +1960,6 @@ const SyncScreen = (props: any) => {
     }
   }
 
-
-
   return (
 
     <SafeAreaView style={ComStyles.CONTAINER}>
@@ -2004,3 +2023,38 @@ const SyncScreen = (props: any) => {
   );
 };
 export default SyncScreen; 
+
+export const setTocken = (pword:any ,UserName:any ) => {
+
+
+  let data = {
+    password: pword,
+    username: UserName
+  }
+
+  userLogin(data)
+    .then(async (response: any) => {
+      console.log(response.data);
+      if (response.data.ResponseDescription == "Login Successful") {
+
+
+        await AsyncStorage.setItem(AsyncStorageConstants.ASYNC_TOCKEN, response.data.Data[0].Token);
+
+
+      } else {
+
+        Alert.alert(
+          "Invalid Details!",
+          response.data.ResponseDescription,
+          [
+            { text: "OK", onPress: () => console.log(response.data.ResponseDescription) }
+          ]
+        );
+      }
+    })
+    .catch((err: any) => {
+      console.log("....................", err);
+    });
+
+
+}
