@@ -166,6 +166,20 @@ export const getTicketById = (ticketId: any, callBack: any) => {
         },
     );
 }
+// new report details
+export const getDetailsForReportUp = (callBack: any) => {
+    DB.searchData(
+        // 'SELECT  TICKET._Id, TICKET.ticketId,TICKET.serviceId,SERVICE.status,TICKET.content,SERVICE.service_type,SERVICE.customer,TICKET.assignTo,SERVICE.contact_no,SERVICE.priority,SERVICE.start_date,SERVICE.end_date,TICKET.actualstartDate,TICKET.actualendtDate,TICKET.engRemark,TICKET.cusRemark,TICKET.cusNic FROM TICKET INNER JOIN SERVICE ON SERVICE.serviceId = TICKET.serviceId',
+        // [],
+          'SELECT  TICKET._Id, TICKET.ticketId,TICKET.serviceId,SERVICE.status,TICKET.content,SERVICE.service_type,SERVICE.customer,TICKET.assignTo,SERVICE.contact_no,SERVICE.priority,SERVICE.start_date,SERVICE.end_date,TICKET.actualstartDate,TICKET.actualendtDate,TICKET.engRemark,TICKET.cusRemark,TICKET.cusNic FROM TICKET  LEFT OUTER JOIN SERVICE ON SERVICE.serviceId = TICKET.serviceId',
+        [],
+        (resp: any, err: any) => {
+            callBack(resp, err);
+            // console.log(" ************** test report data 1111************  " ,resp);
+
+        },
+    );
+}
 export const getALLTicketById = (ticketId: any, callBack: any) => {
     DB.searchData(
         'SELECT * FROM TICKET WHERE ticketId=?',
@@ -189,11 +203,12 @@ export const getTicketMobileRefData = (refID:any, callBack:any) => {
     );
 
 }
-
+// search service ticket 
 export const getSearchServiceTicket = (txt: String, callBack: any) => {
     DB.searchData(
-        'SELECT * FROM TICKET WHERE (ticketId like ? OR assignTo like ? OR priority like ?)',
-        [`%${txt}%`, `%${txt}%`, `%${txt}%`],
+        // 'SELECT * FROM TICKET WHERE (ticketId like ? OR assignTo like ? OR priority like ?)',
+        'SELECT  TICKET._Id, TICKET.ticketId,TICKET.serviceId,SERVICE.status,TICKET.content,SERVICE.service_type,SERVICE.customer,TICKET.assignTo,SERVICE.contact_no,SERVICE.priority,SERVICE.start_date,SERVICE.end_date,TICKET.actualstartDate,TICKET.actualendtDate,TICKET.engRemark,TICKET.cusRemark,TICKET.cusNic FROM TICKET  LEFT OUTER JOIN SERVICE ON SERVICE.serviceId = TICKET.serviceId WHERE TICKET.ticketId like ?',
+        [`%${txt}%`],
         (resp: any, err: any) => {
             callBack(resp, err);
         },
@@ -382,7 +397,8 @@ export const SearchTicketUsingDateRange = (date1: any, date2: any, callBack: any
     console.log(" controller data-  ", date1);
     console.log(" controller data-  ", date2);
     DB.searchData(
-        'SELECT * FROM TICKET WHERE(startDate >= ? AND startDate <= ?) OR (endDate >= ? AND endDate <= ?)  ',
+        // 'SELECT * FROM TICKET WHERE(startDate >= ? AND startDate <= ?) OR (endDate >= ? AND endDate <= ?)  ',
+        'SELECT  TICKET._Id, TICKET.ticketId,TICKET.serviceId,SERVICE.status,TICKET.content,SERVICE.service_type,SERVICE.customer,TICKET.assignTo,SERVICE.contact_no,SERVICE.priority,SERVICE.start_date,SERVICE.end_date,TICKET.actualstartDate,TICKET.actualendtDate,TICKET.engRemark,TICKET.cusRemark,TICKET.cusNic FROM TICKET  LEFT OUTER JOIN SERVICE ON SERVICE.serviceId = TICKET.serviceId WHERE(TICKET.startDate >= ? AND TICKET.startDate <= ?) OR (TICKET.endDate >= ? AND TICKET.endDate <= ?)',
         [date1, date2, date1, date2],
         (resp: any, err: any) => {
             callBack(resp, err);

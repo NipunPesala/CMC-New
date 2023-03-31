@@ -160,7 +160,7 @@ export const getALLAInventrySpare = (data: any, callBack: any) => {
 export const getALL_InventrySpareparts_For_Reports= ( callBack: any) => {
     
     DB.searchData(
-        "SELECT ifnull(Invenrty_Spartpart.ItemName,'') as ItemName,ifnull(Invenrty_Spartpart.Quantity,'') as Quantity,ifnull(Invenrty_Spartpart.Spareparts_HeaderID,'') as Spareparts_HeaderID,ifnull(Invenrty_Spartpart.CreatedAt,'') as CreatedAt FROM Invenrty_Spartpart",
+        "SELECT _Id, ifnull(Invenrty_Spartpart.ItemName,'') as ItemName,ifnull(Invenrty_Spartpart.Quantity,'') as Quantity,ifnull(Invenrty_Spartpart.Spareparts_HeaderID,'') as Spareparts_HeaderID,ifnull(Invenrty_Spartpart.CreatedAt,'') as CreatedAt FROM Invenrty_Spartpart",
         [],
         (resp: any, err: any) => {
             callBack(resp, err);
@@ -171,7 +171,7 @@ export const getALL_InventrySpareparts_For_Reports= ( callBack: any) => {
 }
 export const getALL_InventrySpareparts_For_Reports_search = (txt: String, callBack: any) => {
     DB.searchData(
-        'select * from Invenrty_Spartpart WHERE (Spareparts_HeaderID like ?) ',
+        "SELECT _Id, ifnull(Invenrty_Spartpart.ItemName,'') as ItemName,ifnull(Invenrty_Spartpart.Quantity,'') as Quantity,ifnull(Invenrty_Spartpart.Spareparts_HeaderID,'') as Spareparts_HeaderID,ifnull(Invenrty_Spartpart.CreatedAt,'') as CreatedAt FROM Invenrty_Spartpart WHERE (Spareparts_HeaderID like ?) ",
         [`%${txt}%`],
         (resp: any, err: any) => {
             callBack(resp, err);
@@ -182,7 +182,7 @@ export const getALL_InventrySpareparts_For_Reports_search = (txt: String, callBa
 
 export const SearchInventrySpairePartByDateRange = (date1: any, date2: any, callBack: any) => {
     DB.searchData(
-        'SELECT * FROM Invenrty_Spartpart WHERE CreatedAt >= ? AND CreatedAt <= ?',
+        "SELECT _Id, ifnull(Invenrty_Spartpart.ItemName,'') as ItemName,ifnull(Invenrty_Spartpart.Quantity,'') as Quantity,ifnull(Invenrty_Spartpart.Spareparts_HeaderID,'') as Spareparts_HeaderID,ifnull(Invenrty_Spartpart.CreatedAt,'') as CreatedAt FROM Invenrty_Spartpart WHERE CreatedAt >= ? AND CreatedAt <= ?",
         [date1, date2],
         (resp: any, err: any) => {
             callBack(resp, err);

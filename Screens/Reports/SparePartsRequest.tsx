@@ -18,6 +18,8 @@ import CalendarPicker from 'react-native-calendar-picker';
 import DateRangePicker from "rn-select-date-range";
 import { getALLAdditionalSpare_For_Reports, getALL_AdditionalSpareparts_For_Reports_search, SearchAdditionalSpairePartByDateRange } from "../../SQLiteDatabaseAction/DBControllers/AdditionalSparepartsController";
 import { getALL_InventrySpareparts_For_Reports, getALL_InventrySpareparts_For_Reports_search, SearchInventrySpairePartByDateRange } from "../../SQLiteDatabaseAction/DBControllers/InventrySparepartsController";
+import TicketRepart from "../../Components/ReportTableComponent";
+
 
 let height = Dimensions.get("screen").height;
 const SparePartsRequest = () => {
@@ -37,7 +39,28 @@ const SparePartsRequest = () => {
     const [selectedEndDate, setselectedEndDate] = useState('');
     const [modalStyle, setModalStyle] = useState(new Animated.Value(height));
     const [selectedRange, setRange] = useState({});
-
+    const header = [
+        {
+            "id": 1,
+            "title": 'ID',
+        },
+        {
+            "id": 2,
+            "title": 'Date',
+        },
+        {
+            "id": 3,
+            "title": 'Spare Parts Request ID',
+        },
+        {
+            "id": 4,
+            "title": 'Description',
+        },
+        {
+            "id": 5,
+            "title": 'QTY',
+        },
+    ];
     const getRequestedSpareParts = () => {
 
         getAll_Data((result: any) => {
@@ -65,8 +88,8 @@ const SparePartsRequest = () => {
         if (Additional) {
             console.log("additional", text);
             getALL_AdditionalSpareparts_For_Reports_search(text, (result: any) => {
-
-                setsparepartsList(result);
+                restructureSelectedData(result);
+               // setsparepartsList(result);
 
             });
 
@@ -74,8 +97,8 @@ const SparePartsRequest = () => {
             console.log("Inventry", text);
 
             getALL_InventrySpareparts_For_Reports_search(text, (result: any) => {
-
-                setsparepartsList(result);
+                restructureSelectedData(result);
+               // setsparepartsList(result);
 
             });
         }
@@ -134,19 +157,21 @@ const SparePartsRequest = () => {
         if (Additional) {
             console.log("additional");
             SearchAdditionalSpairePartByDateRange(selectedStartDate, selectedEndDate, (result: any) => {
-                setsparepartsList(result);
+                restructureSelectedData(result);
+                //setsparepartsList(result);
             });
 
         } else if (Inventry) {
             console.log("Inventry");
 
             SearchInventrySpairePartByDateRange(selectedStartDate, selectedEndDate, (result: any) => {
-                setsparepartsList(result);
+                restructureSelectedData(result);
+                //setsparepartsList(result);
             });
         }
 
         // SearchInventrySpairePartByDateRange
-       
+
 
     }
 
@@ -198,8 +223,8 @@ const SparePartsRequest = () => {
 
             console.log(result, '-------------');
 
-
-            setsparepartsList(result)
+            restructureSelectedData(result);
+            //setsparepartsList(result)
         });
     }
     const get_Additional_Spareparts_Data = () => {
@@ -208,9 +233,33 @@ const SparePartsRequest = () => {
             console.log(result, '-------------');
 
 
-            setsparepartsList(result)
+            restructureSelectedData(result);
         });
     }
+
+    const restructureSelectedData = (AdditionalSparePart: any) => {
+
+        const StructurerdArray: any[] = [];
+
+       
+
+            for (let i = 0; i < AdditionalSparePart.length; i++) {
+                StructurerdArray.push(
+                    {
+                        a_id: AdditionalSparePart[i]._Id,
+                        b_date: AdditionalSparePart[i].CreatedAt,
+                        c_serviceID: AdditionalSparePart[i].Spareparts_HeaderID,
+                        d_description: AdditionalSparePart[i].ItemName,
+                        e_quantity: AdditionalSparePart[i].Quantity,
+                    }
+                );
+            }
+
+             console.log('StructurerdArray+++++++++++++++++++++++++', StructurerdArray);
+             setsparepartsList(StructurerdArray);
+
+    }
+
     const AdditionalSpareparts = () => {
         setAdditional(true)
         setInventry(false)
@@ -343,7 +392,7 @@ const SparePartsRequest = () => {
                 </View>
 
 
-                <AttendanceTableHeaderComponent
+                {/* <AttendanceTableHeaderComponent
                     customstyle={style.customStyletableHeader}
                     isHeadertitle1={true}
                     Headertitle1="Date"
@@ -382,10 +431,10 @@ const SparePartsRequest = () => {
                         );
                     }}
                     keyExtractor={item => `${item.spId}`}
-                />
+                /> */}
 
 
-
+                <TicketRepart headerTitles={header} rows={sparepartsList} />
 
 
                 {/* <InputText

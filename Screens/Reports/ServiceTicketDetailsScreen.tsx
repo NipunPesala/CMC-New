@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { FlatList, SafeAreaView, Text, View, Modal, Alert, ToastAndroid, Animated, Dimensions, StyleSheet, Platform, Keyboard } from "react-native";
+import { FlatList, SafeAreaView, Text, View, Modal, Alert, ToastAndroid, Animated, Dimensions, StyleSheet, Platform, Keyboard, ScrollView } from "react-native";
 import Header from "../../Components/Header";
 import ComponentsStyles from "../../Constant/Components.styles";
 import { useNavigation } from "@react-navigation/native";
@@ -8,21 +8,92 @@ import IconMC from 'react-native-vector-icons/AntDesign';
 import { AttendanceDetails } from '../../Constant/DummyData';
 import style from "./ReportStyle";
 import LeftRightArrowbarComponent from "../../Components/LeftRightArrowbarComponent";
+import TicketRepart from "../../Components/ReportTableComponent";
 import AttendanceTableHeaderComponent from "../../Components/AttendanceTableHeaderComponent";
 import AttendanceTableDetailsComponent from "../../Components/AttendanceTableDetailsComponent";
 import ActionButton from "../../Components/ActionButton";
-import { getServiceTicketForReport, getSearchServiceTicket, SearchTicketUsingDateRange } from "../../SQLiteDatabaseAction/DBControllers/TicketController";
+import { getDetailsForReportUp, getSearchServiceTicket, SearchTicketUsingDateRange } from "../../SQLiteDatabaseAction/DBControllers/TicketController";
 import { Calendar } from "react-native-calendars";
 import DateRangePicker from "rn-select-date-range";
 import comStyles from "../../Constant/Components.styles";
 
+const header = [
+    {
+        "id": 1,
+        "title": 'ID',
+    },
+    {
+        "id": 2,
+        "title": 'Service Ticket ID',
+    },
+    {
+        "id": 3,
+        "title": 'Service ID',
+    },
+    {
+        "id": 4,
+        "title": 'Service Ticket Status',
+    },
+    {
+        "id": 5,
+        "title": 'Service Ticket Content',
+    },
+    {
+        "id": 6,
+        "title": 'Service Call Type',
+    },
+    {
+        "id": 7,
+        "title": 'Customer Name',
+    },
+    {
+        "id": 8,
+        "title": 'Assign To',
+    },
+    {
+        "id": 9,
+        "title": 'Contact No',
+    },
+    {
+        "id": 10,
+        "title": 'Priority',
+    },
+    {
+        "id": 11,
+        "title": 'Planned Start Date',
+    },
+    {
+        "id": 12,
+        "title": 'Planned End Date',
+    },
+    {
+        "id": 13,
+        "title": 'Actual Start Date',
+    },
+    {
+        "id": 14,
+        "title": 'Actual End Date',
+    },
+    {
+        "id": 15,
+        "title": 'Engineers Remark',
+    },
+    {
+        "id": 16,
+        "title": 'Customer Remark',
+    },
+    {
+        "id": 17,
+        "title": 'Customer NIC',
+    },
+];
 let height = Dimensions.get("screen").height;
 const ServiceTicketDetailsScreen = () => {
     const navigation = useNavigation();
     const [tiketNo, settiketNo] = useState(false);
     const [custome, setcustome] = useState(false);
-    const [serviceTicketDetail, setServiceTicketDetail] = useState();
-    const [searchText, setSearchText] = useState();
+    const [serviceTicketDetail, setServiceTicketDetail] = useState([]);
+    const [searchText, setSearchText] = useState('');
     const [selectedDates, setSelectedDates] = useState({});
     const [showCalendar, setShowCalendar] = useState(false);
     const [selectedRange, setRange] = useState({});
@@ -43,12 +114,49 @@ const ServiceTicketDetailsScreen = () => {
 
     const getDerviceTiket = () => {
 
-        getServiceTicketForReport((result: any) => {
+        getDetailsForReportUp((result: any) => {
 
-            console.log("/////////////////", result.length);
+            // console.log("/////////////////**********", result);
             setServiceTicketDetail(result)
-
+            restructureSelectedData(result);
         });
+
+
+    }
+    // restructure data for report table
+    const restructureSelectedData = (serviceTicketDetail: any) => {
+
+        const StructurerdArray: any[] = [];
+
+       
+
+            for (let i = 0; i < serviceTicketDetail.length; i++) {
+                StructurerdArray.push(
+                    {
+                        a_id: serviceTicketDetail[i]._Id,
+                        b_ticketID: serviceTicketDetail[i].ticketId,
+                        c_serviceID: serviceTicketDetail[i].serviceId,
+                        d_status: serviceTicketDetail[i].status,
+                        e_content: serviceTicketDetail[i].content,
+                        f_service_type: serviceTicketDetail[i].service_type,
+                        g_customer: serviceTicketDetail[i].customer,
+                        h_assignTo: serviceTicketDetail[i].assignTo,
+                        i_contact_no: serviceTicketDetail[i].contact_no,
+                        j_priority: serviceTicketDetail[i].priority,
+                        k_start_date: serviceTicketDetail[i].start_date,
+                        l_end_date: serviceTicketDetail[i].end_date,
+                        m_actualstartDate: serviceTicketDetail[i].actualstartDate,
+                        n_actualendtDate: serviceTicketDetail[i].actualendtDate,
+                        o_engRemark: serviceTicketDetail[i].engRemark,
+                        p_cusRemark: serviceTicketDetail[i].cusRemark,
+                        q_cusNic: serviceTicketDetail[i].cusNic
+                    }
+                );
+            }
+
+             console.log('StructurerdArray+++++++++++++++++++++++++', StructurerdArray);
+            setServiceTicketDetail(StructurerdArray);
+
     }
 
     const searchTicket = (text: any) => {
@@ -56,12 +164,45 @@ const ServiceTicketDetailsScreen = () => {
         setSearchText(text);
 
         getSearchServiceTicket(text, (result: any) => {
-
-            setServiceTicketDetail(result);
+            restructureSelectedSearchData(result)
+            //setServiceTicketDetail(result);
 
         });
     }
 
+
+
+    const restructureSelectedSearchData = (serviceTicketDetail: any) => {
+
+        const StructurerdArray: any[] = [];
+
+        for (let i = 0; i < serviceTicketDetail.length; i++) {
+            StructurerdArray.push(
+                {
+                    a_id: serviceTicketDetail[i]._Id,
+                    b_ticketID: serviceTicketDetail[i].ticketId,
+                    c_serviceID: serviceTicketDetail[i].serviceId,
+                    d_status: serviceTicketDetail[i].status,
+                    e_content: serviceTicketDetail[i].content,
+                    f_service_type: serviceTicketDetail[i].service_type,
+                    g_customer: serviceTicketDetail[i].customer,
+                    h_assignTo: serviceTicketDetail[i].assignTo,
+                    i_contact_no: serviceTicketDetail[i].contact_no,
+                    j_priority: serviceTicketDetail[i].priority,
+                    k_start_date: serviceTicketDetail[i].start_date,
+                    l_end_date: serviceTicketDetail[i].end_date,
+                    m_actualstartDate: serviceTicketDetail[i].actualstartDate,
+                    n_actualendtDate: serviceTicketDetail[i].actualendtDate,
+                    o_engRemark: serviceTicketDetail[i].engRemark,
+                    p_cusRemark: serviceTicketDetail[i].cusRemark,
+                    q_cusNic: serviceTicketDetail[i].cusNic
+                }
+            );
+        }
+        // console.log('StructurerdArray+++++++++++++++++++++++++', StructurerdArray);
+        setServiceTicketDetail(StructurerdArray);
+
+    }
     const onGetDatePress = (day) => {
         if (Object.keys(selectedDates).length <= 2) {
             setSelectedDates({ ...selectedDates, [day.dateString]: { selected: true } });
@@ -126,8 +267,9 @@ const ServiceTicketDetailsScreen = () => {
         slideOutModal();
 
         SearchTicketUsingDateRange(selectedStartDate, selectedEndDate, (result: any) => {
-            console.log('date range result---------'+result.length);
-            setServiceTicketDetail(result);
+            console.log('date range result---------' + result.length);
+            restructureSelectedSearchData(result);
+            //setServiceTicketDetail(result);
         });
 
     }
@@ -226,7 +368,7 @@ const ServiceTicketDetailsScreen = () => {
                         confirmBtnTitle="Search"
                         clearBtnTitle="Clear"
                         font={comStyles.FONT_FAMILY.BOLD}
-                        
+
                     // maxDate={moment()}
                     // minDate={moment().subtract(100, "days")}
                     />
@@ -258,6 +400,7 @@ const ServiceTicketDetailsScreen = () => {
                 leftarrow="leftcircle"
                 rightarrow="rightcircle" />
 
+            {/* <View style={{ flex: 1  }}>
             <AttendanceTableHeaderComponent
                 customstyle={style.customStyletableHeader}
                 isHeadertitle1={true}
@@ -275,10 +418,10 @@ const ServiceTicketDetailsScreen = () => {
 
             />
             <FlatList
-                showsHorizontalScrollIndicator={true}
+                showsHorizontalScrollIndicator={false}
                 // data={Arrays.SelectPackage.Wash.filter(ob => ob.extras == true)}
                 data={serviceTicketDetail}
-                style={{ marginTop: 10, marginBottom: 60, }}
+                style={{ marginTop: 10, marginBottom: 60}}
                 horizontal={false}
                 renderItem={({ item }) => {
                     return (
@@ -304,6 +447,10 @@ const ServiceTicketDetailsScreen = () => {
                 }}
                 keyExtractor={item => `${item._Id}`}
             />
+            </View> */}
+
+            <TicketRepart headerTitles={header} rows={serviceTicketDetail} />
+
         </SafeAreaView>
     );
 }

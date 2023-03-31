@@ -194,7 +194,7 @@ export const getALLAdditionalSpare = (data: any, callBack: any) => {
 export const getALLAdditionalSpare_For_Reports= ( callBack: any) => {
     
     DB.searchData(
-        "SELECT ifnull(Additional_Spartpart.Description,'') as ItemName,ifnull(Additional_Spartpart.Quantity,'') as Quantity,ifnull(Additional_Spartpart.Spareparts_HeaderID,'') as Spareparts_HeaderID,ifnull(Additional_Spartpart.CreatedAt,'') as CreatedAt FROM Additional_Spartpart",
+        "SELECT _Id, ifnull(Additional_Spartpart.Description,'') as ItemName,ifnull(Additional_Spartpart.Quantity,'') as Quantity,ifnull(Additional_Spartpart.Spareparts_HeaderID,'') as Spareparts_HeaderID,ifnull(Additional_Spartpart.CreatedAt,'') as CreatedAt FROM Additional_Spartpart",
         [],
         (resp: any, err: any) => {
             callBack(resp, err);
@@ -205,7 +205,8 @@ export const getALLAdditionalSpare_For_Reports= ( callBack: any) => {
 }
 export const getALL_AdditionalSpareparts_For_Reports_search = (txt: String, callBack: any) => {
     DB.searchData(
-        'select * from Additional_Spartpart WHERE (Spareparts_HeaderID like ?) ',
+        // 'select * from Additional_Spartpart WHERE (Spareparts_HeaderID like ?) ',
+        "SELECT _Id, ifnull(Additional_Spartpart.Description,'') as ItemName,ifnull(Additional_Spartpart.Quantity,'') as Quantity,ifnull(Additional_Spartpart.Spareparts_HeaderID,'') as Spareparts_HeaderID,ifnull(Additional_Spartpart.CreatedAt,'') as CreatedAt FROM Additional_Spartpart  WHERE (Spareparts_HeaderID like ?)",
         [`%${txt}%`],
         (resp: any, err: any) => {
             callBack(resp, err);
@@ -215,7 +216,8 @@ export const getALL_AdditionalSpareparts_For_Reports_search = (txt: String, call
 }
 export const SearchAdditionalSpairePartByDateRange = (date1: any, date2: any, callBack: any) => {
     DB.searchData(
-        'SELECT * FROM Additional_Spartpart WHERE CreatedAt >= ? AND CreatedAt <= ?',
+        // 'SELECT * FROM Additional_Spartpart WHERE CreatedAt >= ? AND CreatedAt <= ?',
+        "SELECT _Id, ifnull(Additional_Spartpart.Description,'') as ItemName,ifnull(Additional_Spartpart.Quantity,'') as Quantity,ifnull(Additional_Spartpart.Spareparts_HeaderID,'') as Spareparts_HeaderID,ifnull(Additional_Spartpart.CreatedAt,'') as CreatedAt FROM Additional_Spartpart WHERE CreatedAt >= ? AND CreatedAt <= ?",
         [date1, date2],
         (resp: any, err: any) => {
             callBack(resp, err);

@@ -77,6 +77,7 @@ export default StyleSheet.create({
         marginTop: 5,
         marginLeft: 5,
         marginRight: 5,
+        
     },
 
     openstyle: {
@@ -96,6 +97,7 @@ export default StyleSheet.create({
         paddingRight:8,
     
     },
+
     pendingstyle: {
         backgroundColor: '#e2a25d',
         borderRadius: 10,
@@ -108,6 +110,7 @@ export default StyleSheet.create({
         color:'#FFFF',
         fontFamily:ComponentsStyles.FONT_FAMILY.BOLD
     },
+    
     modalCont: {
         flex: 1,
         flexGrow: 1,
