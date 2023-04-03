@@ -244,13 +244,14 @@ const SparePartsRequest = () => {
        
 
             for (let i = 0; i < AdditionalSparePart.length; i++) {
+                const nullReplacer = (value:any) => (value === null ? 'Null' : value )|| (value === '' ? 'Null' : value );
                 StructurerdArray.push(
                     {
-                        a_id: AdditionalSparePart[i]._Id,
-                        b_date: AdditionalSparePart[i].CreatedAt,
-                        c_serviceID: AdditionalSparePart[i].Spareparts_HeaderID,
-                        d_description: AdditionalSparePart[i].ItemName,
-                        e_quantity: AdditionalSparePart[i].Quantity,
+                        a_id: nullReplacer(AdditionalSparePart[i]._Id),
+                        b_date:nullReplacer(AdditionalSparePart[i].CreatedAt),
+                        c_serviceID: nullReplacer(AdditionalSparePart[i].Spareparts_HeaderID),
+                        d_description: nullReplacer(AdditionalSparePart[i].ItemName),
+                        e_quantity: nullReplacer(AdditionalSparePart[i].Quantity),
                     }
                 );
             }

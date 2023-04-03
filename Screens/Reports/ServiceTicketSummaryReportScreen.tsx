@@ -163,19 +163,20 @@ const ServiceTicketSummaryReportScreen = () => {
        
 
             for (let i = 0; i < AdditionalSparePart.length; i++) {
+                const nullReplacer = (value:any) => (value === null ? 'Null' : value )|| (value === '' ? 'Null' : value );
                 StructurerdArray.push(
                     {
-                        a_id: AdditionalSparePart[i]._Id,
-                        b_ticketId: AdditionalSparePart[i].ticketId,
-                        c_status: AdditionalSparePart[i].status,
-                        d_content: AdditionalSparePart[i].content,
-                        g_contact_name: AdditionalSparePart[i].contact_name,
-                        h_contact_no: AdditionalSparePart[i].contact_no,
-                        i_priority: AdditionalSparePart[i].priority,
-                        j_startDate: AdditionalSparePart[i].startDate,
-                        k_endDate: AdditionalSparePart[i].endDate,
-                        l_actualstartDate: AdditionalSparePart[i].actualstartDate,
-                        m_actualendtDate: AdditionalSparePart[i].actualendtDate,
+                        a_id: nullReplacer(AdditionalSparePart[i]._Id),
+                        b_ticketId: nullReplacer(AdditionalSparePart[i].ticketId),
+                        c_status:nullReplacer(AdditionalSparePart[i].status),
+                        d_content: nullReplacer(AdditionalSparePart[i].content),
+                        g_contact_name:nullReplacer(AdditionalSparePart[i].contact_name),
+                        h_contact_no: nullReplacer(AdditionalSparePart[i].contact_no),
+                        i_priority: nullReplacer(AdditionalSparePart[i].priority),
+                        j_startDate: nullReplacer(AdditionalSparePart[i].startDate),
+                        k_endDate: nullReplacer(AdditionalSparePart[i].endDate),
+                        l_actualstartDate:nullReplacer(AdditionalSparePart[i].actualstartDate),
+                        m_actualendtDate:nullReplacer( AdditionalSparePart[i].actualendtDate),
                     }
                 );
             }

@@ -129,49 +129,50 @@ const ServiceTicketDetailsScreen = () => {
 
         const StructurerdArray: any[] = [];
 
-       var servicetype1='test'
 
-            for (let i = 0; i < serviceTicketDetail.length; i++) {
-                if(serviceTicketDetail[i].service_type== 1){
-                    setServiceType('Techinical');
-                    servicetype1='Techinical';
-                }else if(serviceTicketDetail[i].service_type== 2){
-                    setServiceType('Replacement');
-                    servicetype1='Techinical';
-                }else if(serviceTicketDetail[i].service_type== 3){
-                    setServiceType('Repair');
-                    servicetype1='Techinical';
-                }else if(serviceTicketDetail[i].service_type== 4){
-                    setServiceType('Mechanical');
-                    servicetype1='Techinical';
-                }else{
-                    setServiceType('Error');
-                }
-                StructurerdArray.push(
-                    {
-                        a_id: serviceTicketDetail[i]._Id,
-                        b_ticketID: serviceTicketDetail[i].ticketId,
-                        c_serviceID: serviceTicketDetail[i].serviceId,
-                        d_status: serviceTicketDetail[i].status,
-                        e_content: serviceTicketDetail[i].content,
-                        f_service_type: serviceTicketDetail[i].service_type,
-                        g_customer: serviceTicketDetail[i].customer,
-                        h_assignTo: serviceTicketDetail[i].assignTo,
-                        i_contact_no: serviceTicketDetail[i].contact_no,
-                        j_priority: serviceTicketDetail[i].priority,
-                        k_start_date: serviceTicketDetail[i].start_date,
-                        l_end_date: serviceTicketDetail[i].end_date,
-                        m_actualstartDate: serviceTicketDetail[i].actualstartDate,
-                        n_actualendtDate: serviceTicketDetail[i].actualendtDate,
-                        o_engRemark: serviceTicketDetail[i].engRemark,
-                        p_cusRemark: serviceTicketDetail[i].cusRemark,
-                        q_cusNic: serviceTicketDetail[i].cusNic
-                    }
-                );
+        for (let i = 0; i < serviceTicketDetail.length; i++) {
+       
+            let serviceTypeValue = 'test';
+            console.log('test service type',serviceTicketDetail[i].service_type);
+            if (serviceTicketDetail[i].service_type == 1) {
+                serviceTypeValue = 'Technical';
+            } else if (serviceTicketDetail[i].service_type == 2) {
+                serviceTypeValue = 'Replacement';
+            }else if (serviceTicketDetail[i].service_type == 3){
+                serviceTypeValue = 'Repair';
+            }else if (serviceTicketDetail[i].service_type == 4){
+                serviceTypeValue = 'Mechanical Problem';
+            }else{
+                serviceTypeValue = 'Null';
             }
+              // Replace any null values with the string 'Null'
+        const nullReplacer = (value:any) => (value === null ? 'Null' : value )|| (value === '' ? 'Null' : value );
+            StructurerdArray.push(
+                {
+                    a_id: serviceTicketDetail[i]._Id,
+                    b_ticketID: nullReplacer(serviceTicketDetail[i].ticketId),
+                    c_serviceID: nullReplacer(serviceTicketDetail[i].serviceId),
+                    d_status: nullReplacer(serviceTicketDetail[i].status),
+                    e_content: nullReplacer(serviceTicketDetail[i].content),
+                   // f_service_type: serviceTicketDetail[i].service_type,
+                   f_service_type: serviceTypeValue,
+                    g_customer: nullReplacer(serviceTicketDetail[i].customer),
+                    h_assignTo:nullReplacer(serviceTicketDetail[i].assignTo),
+                    i_contact_no:nullReplacer(serviceTicketDetail[i].contact_no),
+                    j_priority: nullReplacer(serviceTicketDetail[i].priority),
+                    k_start_date:nullReplacer( serviceTicketDetail[i].start_date),
+                    l_end_date: nullReplacer(serviceTicketDetail[i].end_date),
+                    m_actualstartDate: nullReplacer(serviceTicketDetail[i].actualstartDate),
+                    n_actualendtDate: nullReplacer(serviceTicketDetail[i].actualendtDate),
+                    o_engRemark: nullReplacer(serviceTicketDetail[i].engRemark),
+                    p_cusRemark: nullReplacer(serviceTicketDetail[i].cusRemark),
+                    q_cusNic: nullReplacer(serviceTicketDetail[i].cusNic)
+                }
+            );
+        }
 
-             console.log('StructurerdArray+++++++++++++++++++++++++', StructurerdArray);
-            setServiceTicketDetail(StructurerdArray);
+        console.log('StructurerdArray+++++++++++++++++++++++++', StructurerdArray);
+        setServiceTicketDetail(StructurerdArray);
 
     }
 
@@ -191,30 +192,46 @@ const ServiceTicketDetailsScreen = () => {
     const restructureSelectedSearchData = (serviceTicketDetail: any) => {
 
         const StructurerdArray: any[] = [];
-        
+
 
         for (let i = 0; i < serviceTicketDetail.length; i++) {
-           
+
+            let serviceTypeValue = 'test';
+            console.log('test service type',serviceTicketDetail[i].service_type);
+            if (serviceTicketDetail[i].service_type == 1) {
+                serviceTypeValue = 'Technical';
+            } else if (serviceTicketDetail[i].service_type == 2) {
+                serviceTypeValue = 'Replacement';
+            }else if (serviceTicketDetail[i].service_type == 3){
+                serviceTypeValue = 'Repair';
+            }else if (serviceTicketDetail[i].service_type == 4){
+                serviceTypeValue = 'Mechanical Problem';
+            }else{
+                serviceTypeValue = 'Null';
+            }
+              // Replace any null values with the string 'Null'
+        const nullReplacer = (value:any) => (value === null ? 'Null' : value )|| (value === '' ? 'Null' : value );
+        
             StructurerdArray.push(
                 {
                     a_id: serviceTicketDetail[i]._Id,
-                    b_ticketID: serviceTicketDetail[i].ticketId,
-                    c_serviceID: serviceTicketDetail[i].serviceId,
-                    d_status: serviceTicketDetail[i].status,
-                    e_content: serviceTicketDetail[i].content,
-                    // f_service_type: serviceTicketDetail[i].service_type,
-                    f_service_type: serviceTicketDetail[i].service_type== 1 ? "Techinical" :serviceTicketDetail[i].service_type== 2 ? "Replacement" : serviceTicketDetail[i].service_type== 3 ? "Repair":serviceTicketDetail[i].service_type== 4 ? "Mechanical" :"error",
-                    g_customer: serviceTicketDetail[i].customer,
-                    h_assignTo: serviceTicketDetail[i].assignTo,
-                    i_contact_no: serviceTicketDetail[i].contact_no,
-                    j_priority: serviceTicketDetail[i].priority,
-                    k_start_date: serviceTicketDetail[i].start_date,
-                    l_end_date: serviceTicketDetail[i].end_date,
-                    m_actualstartDate: serviceTicketDetail[i].actualstartDate,
-                    n_actualendtDate: serviceTicketDetail[i].actualendtDate,
-                    o_engRemark: serviceTicketDetail[i].engRemark,
-                    p_cusRemark: serviceTicketDetail[i].cusRemark,
-                    q_cusNic: serviceTicketDetail[i].cusNic
+                    b_ticketID: nullReplacer(serviceTicketDetail[i].ticketId),
+                    c_serviceID: nullReplacer(serviceTicketDetail[i].serviceId),
+                    d_status: nullReplacer(serviceTicketDetail[i].status),
+                    e_content: nullReplacer(serviceTicketDetail[i].content),
+                   // f_service_type: serviceTicketDetail[i].service_type,
+                   f_service_type: serviceTypeValue,
+                    g_customer: nullReplacer(serviceTicketDetail[i].customer),
+                    h_assignTo:nullReplacer(serviceTicketDetail[i].assignTo),
+                    i_contact_no:nullReplacer(serviceTicketDetail[i].contact_no),
+                    j_priority: nullReplacer(serviceTicketDetail[i].priority),
+                    k_start_date:nullReplacer( serviceTicketDetail[i].start_date),
+                    l_end_date: nullReplacer(serviceTicketDetail[i].end_date),
+                    m_actualstartDate: nullReplacer(serviceTicketDetail[i].actualstartDate),
+                    n_actualendtDate: nullReplacer(serviceTicketDetail[i].actualendtDate),
+                    o_engRemark: nullReplacer(serviceTicketDetail[i].engRemark),
+                    p_cusRemark: nullReplacer(serviceTicketDetail[i].cusRemark),
+                    q_cusNic: nullReplacer(serviceTicketDetail[i].cusNic)
                 }
             );
         }

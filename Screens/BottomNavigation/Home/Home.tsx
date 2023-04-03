@@ -41,7 +41,7 @@ import axios from 'axios';
 import * as DB_Customer from '../../../SQLiteDatabaseAction/DBControllers/CustomerController';
 import ComponentsStyles from '../../../Constant/Components.styles';
 import { getLoginUserName } from '../../../Constant/AsynStorageFuntion';
-
+import PushNotification from 'react-native-push-notification';
 const SyncArray1: any[] = [];
 let arrayindex = 0;
 var loginUser: any;
@@ -128,11 +128,11 @@ const Home = () => {
 
   //handle notifications
   const handleNotification = () => {
-    // PushNotification.localNotification({
-    //   channelId: "test_channel", // (required)
-    //   title: "Notification title",
-    //   message: "Hiii this is a test notification",
-    // });
+    PushNotification.localNotification({
+      channelId: "test_channel", // (required)
+      title: "Notification title",
+      message: "Hiii this is a test notification",
+    });
   }
 
   const getWellcomeNote = () => {
@@ -290,7 +290,7 @@ const Home = () => {
   // }
 
   const handleAttendance = () => {
-    //handleNotification();
+   // handleNotification();
     navigation.navigate('AttendanceScreen');
   };
 
@@ -732,6 +732,8 @@ const Home = () => {
             icon_name="people"
             iconColor={comStyles.COLORS.ICON_BLUE}
             onPress={() => navigation.navigate('Customers')}
+            // onPress={handleNotification()}
+            
           />
           <ActionButton
             homeStyle={style.homebuttonStyle}
