@@ -81,7 +81,7 @@ const Login = () => {
     const navigation = useNavigation();
     //let LoginHeading='LOGIN TO START THE DATE';
     const [LoginHeading, setLoginHeading] = useState('');
-    const [ShowQuckAcess, setShowQuckAcess] = useState(false);
+    const [ShowQuckAcess, setShowQuckAcess] = useState(true);
     const [loginarray, setloginarray]: any[] = useState([]);
     const [loginStatus, setLoginStatus] = useState(false);
     const [loandingspinner, setloandingspinner] = useState(false);
