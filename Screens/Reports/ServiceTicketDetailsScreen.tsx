@@ -100,6 +100,7 @@ const ServiceTicketDetailsScreen = () => {
     const [selectedStartDate, setselectedStartDate] = useState('');
     const [selectedEndDate, setselectedEndDate] = useState('');
     const [modalStyle, setModalStyle] = useState(new Animated.Value(height));
+    const [serviceType, setServiceType] = useState('');
 
 
     const handleTicket = () => {
@@ -128,9 +129,24 @@ const ServiceTicketDetailsScreen = () => {
 
         const StructurerdArray: any[] = [];
 
-       
+       var servicetype1='test'
 
             for (let i = 0; i < serviceTicketDetail.length; i++) {
+                if(serviceTicketDetail[i].service_type== 1){
+                    setServiceType('Techinical');
+                    servicetype1='Techinical';
+                }else if(serviceTicketDetail[i].service_type== 2){
+                    setServiceType('Replacement');
+                    servicetype1='Techinical';
+                }else if(serviceTicketDetail[i].service_type== 3){
+                    setServiceType('Repair');
+                    servicetype1='Techinical';
+                }else if(serviceTicketDetail[i].service_type== 4){
+                    setServiceType('Mechanical');
+                    servicetype1='Techinical';
+                }else{
+                    setServiceType('Error');
+                }
                 StructurerdArray.push(
                     {
                         a_id: serviceTicketDetail[i]._Id,
@@ -175,8 +191,10 @@ const ServiceTicketDetailsScreen = () => {
     const restructureSelectedSearchData = (serviceTicketDetail: any) => {
 
         const StructurerdArray: any[] = [];
+        
 
         for (let i = 0; i < serviceTicketDetail.length; i++) {
+           
             StructurerdArray.push(
                 {
                     a_id: serviceTicketDetail[i]._Id,
@@ -184,7 +202,8 @@ const ServiceTicketDetailsScreen = () => {
                     c_serviceID: serviceTicketDetail[i].serviceId,
                     d_status: serviceTicketDetail[i].status,
                     e_content: serviceTicketDetail[i].content,
-                    f_service_type: serviceTicketDetail[i].service_type,
+                    // f_service_type: serviceTicketDetail[i].service_type,
+                    f_service_type: serviceTicketDetail[i].service_type== 1 ? "Techinical" :serviceTicketDetail[i].service_type== 2 ? "Replacement" : serviceTicketDetail[i].service_type== 3 ? "Repair":serviceTicketDetail[i].service_type== 4 ? "Mechanical" :"error",
                     g_customer: serviceTicketDetail[i].customer,
                     h_assignTo: serviceTicketDetail[i].assignTo,
                     i_contact_no: serviceTicketDetail[i].contact_no,
@@ -201,8 +220,8 @@ const ServiceTicketDetailsScreen = () => {
         }
         // console.log('StructurerdArray+++++++++++++++++++++++++', StructurerdArray);
         setServiceTicketDetail(StructurerdArray);
-
     }
+
     const onGetDatePress = (day) => {
         if (Object.keys(selectedDates).length <= 2) {
             setSelectedDates({ ...selectedDates, [day.dateString]: { selected: true } });

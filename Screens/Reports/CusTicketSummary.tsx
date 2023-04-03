@@ -15,7 +15,7 @@ import ActionButton from "../../Components/ActionButton";
 import { getTicketsForCustomerReport } from "../../SQLiteDatabaseAction/DBControllers/TicketController";
 import { getSearchTicket,SearchTicketForSummaryReport,getSearchTicketByCustomer,SearchTicketForCusSummaryReport,} from '../../SQLiteDatabaseAction/DBControllers/TicketController';
 import DateRangePicker from "rn-select-date-range";
-
+import TicketRepart from "../../Components/ReportTableComponent";
 let height = Dimensions.get("screen").height;
 
 
@@ -39,10 +39,49 @@ const ServiceTicketSummaryReportScreen = () => {
     const [selectedEndDate, setselectedEndDate] = useState('');
     const [modalStyle, setModalStyle] = useState(new Animated.Value(height));
     const [selectedRange, setRange] = useState({});
+    const header = [
+        {
+            "id": 1,
+            "title": 'ID',
+        },
+        {
+            "id": 2,
+            "title": 'Service Ticket Id',
+        },
+        {
+            "id": 3,
+            "title": 'Service Ticket Status',
+        },
+        {
+            "id": 4,
+            "title": 'Service Ticket Content',
+        }, 
+        {
+            "id": 5,
+            "title": 'Customer ID',
+        }, 
+        {
+            "id": 6,
+            "title": 'Customer',
+        }, 
+        {
+            "id": 7,
+            "title": 'Contact Name',
+        },
+        {
+            "id": 8,
+            "title": 'Contact No',
+        },
+        {
+            "id": 9,
+            "title": 'Priority',
+        }
+     
     
-    const Handleback = () => {
-        navigation.navigate('ServiceTicketDetailsScreen');
-    }
+    ];
+    // const Handleback = () => {
+    //     navigation.navigate('ServiceTicketDetailsScreen');
+    // }
 
     const getTicketCustomerSummary = () =>{
 
@@ -52,10 +91,41 @@ const ServiceTicketSummaryReportScreen = () => {
             for(const key in result){
                 console.log(result[key]);
             }
-            setTicketList(result)
+            restructureSelectedData(result);
+           // setTicketList(result)
         
         });
     }
+
+
+    const restructureSelectedData = (AdditionalSparePart: any) => {
+
+        const StructurerdArray: any[] = [];
+
+       
+
+            for (let i = 0; i < AdditionalSparePart.length; i++) {
+                StructurerdArray.push(
+                    {
+                        a_id: AdditionalSparePart[i]._Id,
+                        b_ticketId: AdditionalSparePart[i].ticketId,
+                        c_status: AdditionalSparePart[i].status,
+                        d_content: AdditionalSparePart[i].content,
+                        e_customer: AdditionalSparePart[i].customerID,
+                        f_customer: AdditionalSparePart[i].customer,
+                        g_contact_name: AdditionalSparePart[i].contact_name,
+                        h_contact_no: AdditionalSparePart[i].contact_no,
+                        i_priority: AdditionalSparePart[i].priority,
+                
+                    }
+                );
+            }
+
+             console.log('StructurerdArray+++++++++++++++++++++++++', StructurerdArray);
+             setTicketList(StructurerdArray);
+
+    }
+
   
       const btnCloseOnpress=()=>{
         setShowCalendar(!showCalendar);
@@ -78,8 +148,8 @@ const ServiceTicketSummaryReportScreen = () => {
         setSearchText(text);
 
         getSearchTicketByCustomer(text , (result:any) => {
-
-            setTicketList(result);
+            restructureSelectedData(result);
+            //setTicketList(result);
             
         });
     }
@@ -134,7 +204,8 @@ const ServiceTicketSummaryReportScreen = () => {
         slideOutModal();
     
         SearchTicketForCusSummaryReport(selectedStartDate,selectedEndDate,(result:any) => {
-            setTicketList(result);
+            restructureSelectedData(result);
+           // setTicketList(result);
         });
     
     }
@@ -277,7 +348,9 @@ const ServiceTicketSummaryReportScreen = () => {
                 rightarrow="rightcircle" />
 
 
-              <AttendanceTableHeaderComponent
+                <TicketRepart headerTitles={header} rows={ticketList} />
+
+              {/* <AttendanceTableHeaderComponent
                 customstyle={style.customStyletableHeader}
                 isHeadertitle1={true}
                 Headertitle1="Service Ticket ID"
@@ -292,7 +365,7 @@ const ServiceTicketSummaryReportScreen = () => {
                 isHeadertitle6={false}
                 Headertitle6=""
 
-            />
+            /> */}
             {/* <FlatList
                 showsHorizontalScrollIndicator={false}
                 // data={Arrays.SelectPackage.Wash.filter(ob => ob.extras == true)}
@@ -323,7 +396,7 @@ const ServiceTicketSummaryReportScreen = () => {
                 }}
                 keyExtractor={item => `${item.ticketId}`}
             /> */}
-
+{/* 
                     <FlatList
                         showsHorizontalScrollIndicator={false}
                         // data={Arrays.SelectPackage.Wash.filter(ob => ob.extras == true)}
@@ -353,7 +426,7 @@ const ServiceTicketSummaryReportScreen = () => {
                             );
                         }}
                         keyExtractor={item => `${item.cusNic}`}
-                    />
+                    /> */}
         </SafeAreaView>
     );
 }
