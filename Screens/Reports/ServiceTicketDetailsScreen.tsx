@@ -149,7 +149,7 @@ const ServiceTicketDetailsScreen = () => {
         const nullReplacer = (value:any) => (value === null ? 'Null' : value )|| (value === '' ? 'Null' : value );
             StructurerdArray.push(
                 {
-                    a_id: serviceTicketDetail[i]._Id,
+                    a_id: i+1,
                     b_ticketID: nullReplacer(serviceTicketDetail[i].ticketId),
                     c_serviceID: nullReplacer(serviceTicketDetail[i].serviceId),
                     d_status: nullReplacer(serviceTicketDetail[i].status),
@@ -214,7 +214,7 @@ const ServiceTicketDetailsScreen = () => {
         
             StructurerdArray.push(
                 {
-                    a_id: serviceTicketDetail[i]._Id,
+                    a_id: i+1,
                     b_ticketID: nullReplacer(serviceTicketDetail[i].ticketId),
                     c_serviceID: nullReplacer(serviceTicketDetail[i].serviceId),
                     d_status: nullReplacer(serviceTicketDetail[i].status),

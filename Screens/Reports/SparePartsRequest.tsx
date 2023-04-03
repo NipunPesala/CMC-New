@@ -247,7 +247,7 @@ const SparePartsRequest = () => {
                 const nullReplacer = (value:any) => (value === null ? 'Null' : value )|| (value === '' ? 'Null' : value );
                 StructurerdArray.push(
                     {
-                        a_id: nullReplacer(AdditionalSparePart[i]._Id),
+                        a_id: i+1,
                         b_date:nullReplacer(AdditionalSparePart[i].CreatedAt),
                         c_serviceID: nullReplacer(AdditionalSparePart[i].Spareparts_HeaderID),
                         d_description: nullReplacer(AdditionalSparePart[i].ItemName),

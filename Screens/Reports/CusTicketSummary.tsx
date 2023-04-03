@@ -108,9 +108,9 @@ const ServiceTicketSummaryReportScreen = () => {
                 const nullReplacer = (value:any) => (value === null ? 'Null' : value )|| (value === '' ? 'Null' : value );
                 StructurerdArray.push(
                     {
-                        a_id: nullReplacer(AdditionalSparePart[i]._Id),
+                        a_id: i+1,
                         b_ticketId:nullReplacer( AdditionalSparePart[i].ticketId),
-                        c_status: nullReplacer(AdditionalSparePart[i].statu),
+                        c_status: nullReplacer(AdditionalSparePart[i].status),
                         d_content: nullReplacer( AdditionalSparePart[i].content),
                         e_customer: nullReplacer( AdditionalSparePart[i].customerID),
                         f_customer: nullReplacer(AdditionalSparePart[i].customer),
